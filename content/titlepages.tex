@@ -10,62 +10,49 @@
 	\rule[5pt]{\textwidth}{.4pt} \par
 	{\Large\thesisName}
 	\vfill
-	\textit{\large\thesisDate} \\
+	\textit{\large\today} \\
 	% Version: \thesisVersion
 \end{titlepage}
 
 
 % ------------------------------------  --> main title page
 \begin{titlepage}
-	\pdfbookmark[0]{Titlepage}{Titlepage}
-	\tgherosfont
-	\centering
-
-	{\Large \thesisUniversity} \\[4mm]
-	\includegraphics[width=6cm]{gfx/FHDO-Logo-large.png} \\[2mm]
-	\textsf{\thesisUniversityDepartment} \\
-	% \textsf{\thesisUniversityInstitute} \\
-	% \textsf{\thesisUniversityGroup} \\
-
-	\vfill
-	{\large \thesisSubject} \\[5mm]
-	{\LARGE \color{ctcolortitle}\textbf{\thesisTitle} \\[10mm]}
-	{\Large \thesisName} \\
-
-	\vfill
-	\begin{minipage}[t]{.27\textwidth}
-		\raggedleft
-		\textit{1. Reviewer}
-	\end{minipage}
-	\hspace*{15pt}
-	\begin{minipage}[t]{.65\textwidth}
-		{\Large \thesisFirstReviewer} \\
-	  	{\small \thesisFirstReviewerDepartment} \\[-1mm]
-		{\small \thesisFirstReviewerUniversity}
-	\end{minipage} \\[5mm]
-	\begin{minipage}[t]{.27\textwidth}
-		\raggedleft
-		\textit{2. Reviewer}
-	\end{minipage}
-	\hspace*{15pt}
-	\begin{minipage}[t]{.65\textwidth}
-		{\Large \thesisSecondReviewer} \\
-	  	{\small \thesisSecondReviewerDepartment} \\[-1mm]
-		{\small \thesisSecondReviewerUniversity}
-	\end{minipage} \\[10mm]
-	\begin{minipage}[t]{.27\textwidth}
-		\raggedleft
-		\textit{Supervisors}
-	\end{minipage}
-	\hspace*{15pt}
-	\begin{minipage}[t]{.65\textwidth}
-		\thesisFirstSupervisor\ and \thesisSecondSupervisor
-	\end{minipage} \\[10mm]
-
-	\thesisDate \\
-
-\end{titlepage}
-
+    \includegraphics[width=5cm]{gfx/FHDO-Logo-large.png}
+    \hfill
+    
+    \begin{center}
+    \vspace{2cm}
+        
+    \huge{\textbf{\thesisTitle}}
+    
+    \vspace{3cm}
+    
+    
+    
+    
+    \Large{\textbf{Bachelor-Thesis\\
+        am \thesisSubject\\
+        Studiengang Maschinenbau}}
+        
+    \vspace{3cm}
+        
+    \normalsize
+    \begin{tabular}{r l}
+    vorgelegt von: & \thesisName\\
+    Matrikelnummer: & \thesisMatrNumber \\
+    Erstprüfer: & \thesisFirstReviewer\\
+    Zweitprüfer: & \thesisSecondReviewer\\
+    Abgabetermin: & \thesisDate\\
+    \end{tabular}
+    
+    \vfill
+        
+    \normalsize
+    \thesisUniversity\\
+    \today
+    
+    \end{center}
+    \end{titlepage}
 
 % ------------------------------------  --> lower title back for single page layout
 \hfill
