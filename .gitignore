@@ -1,4 +1,9 @@
+## LaTeX target directory
 meta
+## Code destination
+dist
+##
+node_modules
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
