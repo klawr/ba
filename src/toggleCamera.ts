@@ -1,6 +1,6 @@
 const video = document.createElement("video") as HTMLVideoElement;
 
-export default function toggleCamera(cnv: HTMLCanvasElement) {
+export default function toggleCamera(cnv: HTMLCanvasElement, fn: () => void) {
     const ctx = cnv.getContext("2d");
     if (!video.paused) {
         const stream = video.srcObject as MediaStream;
@@ -60,6 +60,7 @@ export default function toggleCamera(cnv: HTMLCanvasElement) {
     }, errBack);
 
     function loop() {
+        if (fn) fn();
         if (!ctx) return;
         ctx.drawImage(video, 0, 0, cnv.width, cnv.height, 0, 0, cnv.width, cnv.height);
         rafId = requestAnimationFrame(loop);
