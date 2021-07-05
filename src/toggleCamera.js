@@ -1,17 +1,17 @@
-const video = document.createElement("video") as HTMLVideoElement;
+const canvas_video_element = document.createElement("video");
 
-export default function toggleCamera(cnv: HTMLCanvasElement, fn: () => void) {
+function toggleCamera(cnv, fn) {
     const ctx = cnv.getContext("2d");
-    if (!video.paused) {
-        const stream = video.srcObject as MediaStream;
+    if (!canvas_video_element.paused) {
+        const stream = canvas_video_element.srcObject;
         if (stream === null) {
             return;
         }
         const tracks = stream.getTracks();
 
         if (ctx && tracks?.length > 0) {
-            video.pause();
-            video.currentTime = 0;
+            canvas_video_element.pause();
+            canvas_video_element.currentTime = 0;
             tracks.forEach(track => {
                 track.stop();
                 stream.removeTrack(track)
@@ -22,7 +22,7 @@ export default function toggleCamera(cnv: HTMLCanvasElement, fn: () => void) {
         }
     }
     const videoObj = navigator.getUserMedia ||
-        (navigator as any).mozGetUserMedia ?
+        navigator.mozGetUserMedia ?
         {
             video: {
                 width: { min: cnv.width, max: cnv.width },
@@ -40,29 +40,29 @@ export default function toggleCamera(cnv: HTMLCanvasElement, fn: () => void) {
                 }
             }
         };
-    const errBack = function (e: MediaStreamError) {
+    const errBack = function (e) {
         console.log(e.message);
     };
-    let rafId: number;
+    let rafId;
 
     navigator.getUserMedia = navigator.getUserMedia ||
-        (navigator as any).webkitGetUserMedia ||
-        (navigator as any).mozGetUserMedia;
+        (navigator).webkitGetUserMedia ||
+        (navigator).mozGetUserMedia;
     navigator.getUserMedia(videoObj, function (stream) {
-        video.srcObject = stream;
-        video.onplaying = function () {
+        canvas_video_element.srcObject = stream;
+        canvas_video_element.onplaying = function () {
             rafId = requestAnimationFrame(loop);
         };
-        video.onpause = function () {
+        canvas_video_element.onpause = function () {
             cancelAnimationFrame(rafId);
         }
-        video.play();
+        canvas_video_element.play();
     }, errBack);
 
     function loop() {
         if (fn) fn();
         if (!ctx) return;
-        ctx.drawImage(video, 0, 0, cnv.width, cnv.height, 0, 0, cnv.width, cnv.height);
+        ctx.drawImage(canvas_video_element, 0, 0, cnv.width, cnv.height, 0, 0, cnv.width, cnv.height);
         rafId = requestAnimationFrame(loop);
     }
 }

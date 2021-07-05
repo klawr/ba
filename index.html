@@ -30,7 +30,17 @@
             </td>
         </tr>
     </table>
-    <script src="./dist/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <script src="./src/toggleCamera.js"></script>
+    <script src="./src/detect_changes.js"></script>
+
+    <script>
+        const cnv = document.getElementById('cnv');
+        const snap1 = document.getElementById('snap1');
+
+        const camBtn = document.getElementById("camBtn");
+        camBtn.addEventListener('click', () => toggleCamera(cnv, () => take_image(cnv, snap1)));
+    </script>
 </body>
 
 </html>

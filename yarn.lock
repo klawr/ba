@@ -755,6 +755,11 @@ node-fetch@~2.6.1:
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
+node-opencv@^0.0.2-security:
+  version "0.0.2-security"
+  resolved "https://registry.yarnpkg.com/node-opencv/-/node-opencv-0.0.2-security.tgz#69caeba76365b81b50811ace888f9ea359cb18a8"
+  integrity sha512-fJP1Eosq85ONyhHawEdgvs3LzltCbA2YbGL7f2TyjsiTklrkQ6JH+moAKeW+pdLgCuJipf498qXFCrEMDlpi4A==
+
 node-releases@^1.1.71:
   version "1.1.73"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.73.tgz#dd4e81ddd5277ff846b80b52bb40c49edf7a7b20"
