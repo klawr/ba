@@ -6,40 +6,91 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
 </head>
 
 <body>
     <input id="camBtn" type="button" value="Toggle camera"></input>
     <input id="snapBtn" type="button" value="Take snaps"></input>
+    <p id="angle"></p>
     <br>
-    <table>
-        <tr>
-            <td colspan="3">
-                <canvas id="cnv" width="640" height="360"></canvas><br>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <canvas id="snap1"></canvas>
-            </td>
-            <td>
-                <canvas id="snap2"></canvas>
-            </td>
-            <td>
-                <canvas id="snap3"></canvas>
-            </td>
-        </tr>
-    </table>
+    <canvas id="cnv" width="320" height="180"></canvas>
+    <canvas id="dnv" width="320" height="180"></canvas>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script src="./third_party/mec2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <script src="./src/getDirectionalColor.js"></script>
     <script src="./src/toggleCamera.js"></script>
     <script src="./src/detect_changes.js"></script>
+    <script src="./src/lucas_kanade.js"></script>
 
     <script>
         const cnv = document.getElementById('cnv');
-        const snap1 = document.getElementById('snap1');
+        const ctx = cnv.getContext('2d');
+
+        const dnv = document.getElementById('dnv');
+        const dtx = dnv.getContext('2d');
+
+        let g = g2().clr().view({ cartesian: true }),         // a g2 graphics-object
+            model = {                                             // your model
+                id: 'pendulum',
+                gravity: true,
+                nodes: [
+                    { id: 'A0', x: 150, y: 120, base: true },
+                    { id: 'A1', x: 230, y: 150 }
+                ],
+                constraints: [
+                    { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+                ]
+            };
+
+        const ply = [];
+
+        // simulation
+        const simulate = () => {
+            model.tick(1 / 60);                 // solve model with fixed stepping
+            g.exe(ctx);                       // render its pose on the canvas
+
+            const image1 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
+
+            const coords = [];
+
+            window.setTimeout(() => {
+                const image2 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
+                const result = lucas_kanade(image1, image2, cnv.width, cnv.height);
+
+                dtx.clearRect(0, 0, dnv.width, dnv.height);
+
+                for (let i = 0; i < result.zones.length; ++i) {
+                    const zone = result.zones[i];
+
+                    dtx.strokeStyle = getDirectionalColor(zone.u, zone.v);
+                    dtx.beginPath();
+                    dtx.moveTo(zone.x, zone.y);
+                    dtx.lineTo(zone.x - zone.u * 4, zone.y + zone.v * 4);
+                    dtx.stroke();
+
+                    if (zone.x || zone.y) {
+                        coords.push({ x: zone.x, y: zone.y });
+                    }
+                }
+            }, 1000 / 60);
+
+            requestAnimationFrame(simulate);  // keep calling back
+        };
+
+        mec.model.extend(model);                    // extend the model
+        model.init();                               // initialize it
+        model.draw(g);                              // append model-graphics to graphics-obj
+
+        simulate();                                 // kick-off the simulation
 
         const camBtn = document.getElementById("camBtn");
-        camBtn.addEventListener('click', () => toggleCamera(cnv, () => take_image(cnv, snap1)));
+        camBtn.addEventListener('click', () => toggleCamera(cnv));
     </script>
 </body>
 
