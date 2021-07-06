@@ -71,13 +71,22 @@
                     dtx.strokeStyle = getDirectionalColor(zone.u, zone.v);
                     dtx.beginPath();
                     dtx.moveTo(zone.x, zone.y);
-                    dtx.lineTo(zone.x - zone.u * 40, zone.y + zone.v * 40);
+                    dtx.lineTo(zone.x - zone.u * 4, zone.y + zone.v * 4);
                     dtx.stroke();
 
                     if (zone.x || zone.y) {
                         coords.push({ x: zone.x, y: zone.y });
                     }
                 }
+
+                const schwerpunkt = coords.reduce((a, c) => ({ x: a.x + c.x, y: a.y + c.y }), { x: 0, y: 0 });
+                schwerpunkt.x /= coords.length;
+                schwerpunkt.y /= coords.length;
+
+                ply.push(schwerpunkt);
+
+                g2().cir({ ...schwerpunkt, r: 5, fs: 'black' })
+                    .ply({ pts: ply }).exe(dtx);
             }, 1000 / 60);
 
             requestAnimationFrame(simulate);  // keep calling back
