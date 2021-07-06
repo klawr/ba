@@ -20,13 +20,14 @@
     <br>
     <canvas id="cnv" width="320" height="180"></canvas>
     <canvas id="dnv" width="320" height="180"></canvas>
+    <canvas id="env" width="320" height="180"></canvas>
     <script src="https://goessner.github.io/g2/g2.js"></script>
     <script src="./third_party/mec2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
     <script src="./src/getDirectionalColor.js"></script>
     <script src="./src/smallest_enclosing_circle.js"></script>
     <script src="./src/toggleCamera.js"></script>
-    <script src="./src/detect_changes.js"></script>
+    <script src="./src/compare_images.js"></script>
     <script src="./src/lucas_kanade.js"></script>
 
     <script>
@@ -36,77 +37,72 @@
         const dnv = document.getElementById('dnv');
         const dtx = dnv.getContext('2d');
 
+        const env = document.getElementById('env');
+        const etx = env.getContext('2d');
+
         const g = g2().clr().view({ cartesian: true });         // a g2 graphics-object
-        const model = {                                             // your model
-                id: 'pendulum',
-                gravity: true,
-                nodes: [
-                    { id: 'A0', x: 150, y: 120, base: true },
-                    { id: 'A1', x: 230, y: 150 }
-                ],
-                constraints: [
-                    { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
-                ]
-            };
+        const model = {
+            id: 'pendulum',
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 150, y: 120, base: true },
+                { id: 'A1', x: 230, y: 150 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+            ]
+        };
 
         const ply = [];
+        const err = [];
+        const placeholder = [];
+        const placeholder2 = [];
+        let nod;
 
         // simulation
         const simulate = () => {
-            model.tick(1 / 60);                 // solve model with fixed stepping
-            g.exe(ctx);                       // render its pose on the canvas
+            model.tick(1 / 60); // solve model with fixed stepping
+            g.exe(ctx);         // render its pose on the canvas
 
             const image1 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
-
             const coords = [];
 
             window.setTimeout(() => {
                 const image2 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
-                const result = lucas_kanade(image1, image2, cnv.width, cnv.height);
+                const result = compare_images(image1, image2, cnv.width, cnv.height);
 
-                dtx.clearRect(0, 0, dnv.width, dnv.height);
+                g2().clr().exe(dtx);
 
-                for (let i = 0; i < result.zones.length; ++i) {
-                    const zone = result.zones[i];
+                for (let i = 0; i < result.length; ++i) {
+                    const zone = result[i];
 
-                    dtx.strokeStyle = getDirectionalColor(zone.u, zone.v);
-                    dtx.beginPath();
-                    dtx.moveTo(zone.x, zone.y);
-                    dtx.lineTo(zone.x - zone.u * 4, zone.y + zone.v * 4);
-                    dtx.stroke();
+                    g2().cir({x: zone.x, y: zone.y, r: 1}).exe(dtx);
 
+                    coords.push({ x: zone.x, y: zone.y});
                     if (zone.x || zone.y) {
-                        coords.push({ x: zone.x, y: zone.y });
+                        if (ply.length < 100000) {
+                            ply.push({x: zone.x, y: zone.y})
+                        }
                     }
                 }
-
-                const schwerpunkt = coords.reduce((a, c) => ({ x: a.x + c.x, y: a.y + c.y }), { x: 0, y: 0 });
-                schwerpunkt.x /= coords.length;
-                schwerpunkt.y /= coords.length;
-
-                if (ply.length > 2) {
-                    const last = Math.hypot(
-                        ply[ply.length - 1].x - ply[ply.length - 2].x,
-                        ply[ply.length - 1].y - ply[ply.length - 2].y)
-                    const now = Math.hypot(
-                        schwerpunkt.x - ply[ply.length - 1].x,
-                        schwerpunkt.y - ply[ply.length - 1].y);
-                    if (Math.abs(last - now) < 10) {
-                        ply.push(schwerpunkt);
-                    }
-                } else {
-                    ply.push(schwerpunkt);
-                }
-
-
-
 
                 const c = makeCircle(ply);
 
-                g2().cir({ ...schwerpunkt, r: 5, fs: 'black' })
-                    .ply({ pts: ply })
-                    .cir(c)
-                    .gnd({ ...c, r: 5 })
+                for (let i = 0, max = 0; i < result.length; ++i) {
+                    const zone = result[i];
+                    const hy = Math.hypot(zone.x - c.x, zone.y - c.y);
+                    if (hy > max && (zone.x || zone.y)) {
+                        max = hy - 2.5;
+                        nod = result[i];
+                    }
+                }
+
+                g2()//.cir({ ...schwerpunkt, r: 5, fs: 'black' })
+                    //.ply({ pts: ply })
+                    .cir({ ...c})
+                    .lin({x1: c.x, y1: c.y, x2: nod.x, y2: nod.y})
+                    .gnd({ ...c})
+                    .nod({ ...nod })
                     .exe(dtx)
             }, 1000 / 60);
 

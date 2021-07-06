@@ -1,6 +1,6 @@
-\section{Ermittlung des optischen Flusses}
+\chapter{Ermittlung des optischen Flusses}
 
-Die wahrgenommene Bewegung hervorgerufen durch zwei Bilder in welcher die enthaltenen Objekte sich relativ zu einander Bewegen zu scheinen wird als \name{optischer Fluss}(zu engl. \name{Optical Flow}) bezeichnet. // TODO Zitat aus Modern AI, S. 939 unten. 
+Die wahrgenommene Bewegung hervorgerufen durch zwei Bilder in welcher die enthaltenen Objekte sich relativ zu einander Bewegen zu scheinen wird als \name{optischer Fluss}(zu engl. \name{Optical Flow}) bezeichnet. // TODO Zitat aus Modern AI, S. 939 unten.
 Inspiriert durch diesen Ansatz scheint es naheliegend ihn auf planare Mechanismen anzuwenden um so aus einer Videoaufnahme, oder mehrerer Bildaufnahmen eines Mechanismus diesen synthetisieren zu können.
 
 % Hier ein Bild von Thomas Brox scheint angebracht. (Modern AI S. 941)
@@ -16,10 +16,105 @@ Ein Vergleich der Richtungsvektoren sollte allerdings mit entsprechender Skalier
 Diese Gruppen können dann weiter daraufhin untersucht werden ob sie sich innerhalb bestimmter Rahmenbedingungen zueinander bewegen.
 Das bedeutet, ob sie umeinander rotieren, oder gegebenenfalls die Gruppe selber sich in ihrer Länge ändert, was einer translatorischen Bewegung zugeordnet werden kann.
 
-\subsection{Berechnung des Vektorfeldes}
+\section{Erkennung eines einfachen Pendels}
 
-Um Vektorfelder zu berechnen gibt es verschiedene Ansätze, welche sich in Performanz und Genauigkeit unterscheiden.
+\subsection{Definition des animierten Pendels}
 
+Für den Anfang wird versucht ein mit \name{mec2} erstelltes Pendel zu rekonstruieren.
+Hierfür wird eine einfache HTML Seite erstellt, welche HTML-\code{canvas} Elemente enthält um die Versuche zu visualisieren und entsprechende \code{script} Felder um das \name{JavaScript} einzubetten.
+Das Pendel wird durch Listing~\ref{lst:pendel} definiert, was in einem einfachem schwingendem Pendel resultiert.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition eines einfachen Pendels in \name{mec2}, inklusive animation.}\label{lst:pendel}]
+const model = {
+    id: 'pendulum',
+    gravity: true,
+    nodes: [
+        { id: 'A0', x: 150, y: 120, base: true },
+        { id: 'A1', x: 230, y: 150 }
+    ],
+    constraints: [
+        { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+    ]
+};
+
+mec.model.extend(model); // extend the model
+model.init();            // initialize it
+model.draw(g);           // append model-graphics to graphics-obj
+simulate();              // kick-off the simulation
+\end{lstlisting}
+
+Das Pendel besteht entsprechend aus zwei \code{nodes}, welche die Gelenkpunkte darstellen.
+Eine dieser beiden Gelenkpunkte wird als \code{base} deklariert, was bedeutet sie ist unbeweglich und damit stellt sie den Punkt dar um welchen das Pendel schwingt.
+
+Um das Pendel entsprechend zu animieren wird der Programmcode genutzt der auf der Dokumentationsseite \aka{https://goessner.github.io/mec2/microjam.md/getting_started.html} hinterlegt ist genutzt.
+
+Innerhalb der \code{simulate} Funktion wird \code{requestAnimationFrame(simulate)} aufgerufen, damit der nächste Zeitschritt der Animation ablaufen kann.
+
+\subsection{Erkennung von Änderungen}
+
+Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden zunächst zwei Bilder miteinander verglichen, welche zeitlich etwa 16,7 Millisekunden auseinanderliegen.
+Die Frequenz von \name{requestAnimationFrame} beträgt im Optimalfall\footnote{Das bedeutet das keine Berechnungen länger als 16,7 Millisekunden benötigen, welche die Animation entsprechend verlangsamen würde.} 60 Hertz.
+
+Da sich in der modellierten Videosequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel zu behalten um somit all jene zu bekommen welche ungleich sind.
+Hierfür wurde die \code{simulate} Function, welche in Listing~\ref{lst:pendel} gezeigt wurde mit dem Programmcode aus Listing~\ref{lst:simulate_compare_images} versehen.
+
+\begin{lstlisting}[language=JavaScript, caption={TODO caption....}\label{lst:simulate_compare_images}]
+const simulate = () => {
+    model.tick(1 / 60); // solve model with fixed stepping
+    g.exe(ctx);         // render its pose on the canvas
+
+    const image1 = ctx.getImageData(
+        0, 0, cnv.width, cnv.height).data;
+
+    window.setTimeout(() => {
+        const image2 = ctx.getImageData(
+            0, 0, cnv.width, cnv.height).data;
+        const result = compare_images(
+            image1, image2, cnv.width, cnv.height);
+    }
+
+    g2().clr().exe(dtx);
+    for (let i = 0; i < result.length; ++i) {
+        const zone = result[i];
+
+        g2().clr().cir({x: zone.x, y: zone.y, r: 1}).exe(dtx);
+    }
+};
+\end{lstlisting}
+
+Wobei \code{ctx} und \code{dtx} den \code{RenderingContext} des jeweiligen \code{canvas} Element repräsentieren.
+\code{compareImages} wird in Listing~\ref{lst:compare_images} gezeigt.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \code{compare_images} Function}\label{lst:compare_images}]
+function compare_images(image1, image2, width, height) {
+const difference = [];
+
+for (let y = 0; y < height; ++y) {
+    for (let x = 0; x < width; ++x) {
+        const i = y * width + x;
+        if (image1[i * 4] !== image2[i * 4]) {
+            difference.push({x, y});
+        };
+    }
+}
+
+return difference;
+}
+\end{lstlisting}
+
+Eine Momentaufnahme dieser Konstruktion kann in Abbildung~\ref{fig:compare_images} gesehen werden.
+
+\begin{figure}[htb]
+	\includegraphics[width=\textwidth]{gfx/compare_images_1.png}
+	\caption{Darstellung des Pendels und die dazugehörige erkannte Änderung innerhalb des Bildes.}
+	\label{fig:compare_images}
+\end{figure}
+
+Diese Punkte können dann dazu genutzt werden um einen Kreis zu definieren, indem das \name{Smallest Enclosing Circle Problem} gelöst wird.
+Hierfür werden alle Pixel gespeichert an denen eine Änderung betrachtet wird\footnote{Da die Menge an Punkten sehr schnell sehr groß wird, wird nach 100.000 Koordinaten gestoppt.}.
+Indem der Kreis definiert wird, welcher die geringste Fläche hat kann sowohl die Länge des Pendels, als auch der Punkt ermittelt werden um den es schwingt\footnote{Dies setzt jedoch vorraus, dass das Pendel zumindest über die Hälfte des Kreises schwingt.}.
+
+% http://personal.kent.edu/~rmuhamma/Compgeometry/MyCG/CG-Applets/Center/centercli.htm
 
 
 % NOTES:

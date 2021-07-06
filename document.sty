@@ -1,4 +1,5 @@
 \newcommand\name[1]{\texttt{#1}}
+\newcommand\code[1]{\name}
 
 \newcommand{\akaAbb}{ba}
 \newcommand{\listlinkname}{Link Index - \url{https://aka.klawr.de/\akaAbb}}
@@ -6,3 +7,12 @@
 \newcommand{\theaka}{\url{https://aka.klawr.de/\akaAbb\#\thelinks}}
 \newcommand{\aka}[1]{\refstepcounter{links}\theaka%
 \addcontentsline{aka}{links}{\url{\#\thelinks}: \tiny{\url{#1}}}}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  sensitive=true
+}
