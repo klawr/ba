@@ -24,6 +24,7 @@
     <script src="./third_party/mec2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
     <script src="./src/getDirectionalColor.js"></script>
+    <script src="./src/smallest_enclosing_circle.js"></script>
     <script src="./src/toggleCamera.js"></script>
     <script src="./src/detect_changes.js"></script>
     <script src="./src/lucas_kanade.js"></script>
@@ -35,8 +36,8 @@
         const dnv = document.getElementById('dnv');
         const dtx = dnv.getContext('2d');
 
-        let g = g2().clr().view({ cartesian: true }),         // a g2 graphics-object
-            model = {                                             // your model
+        const g = g2().clr().view({ cartesian: true });         // a g2 graphics-object
+        const model = {                                             // your model
                 id: 'pendulum',
                 gravity: true,
                 nodes: [
@@ -83,10 +84,30 @@
                 schwerpunkt.x /= coords.length;
                 schwerpunkt.y /= coords.length;
 
-                ply.push(schwerpunkt);
+                if (ply.length > 2) {
+                    const last = Math.hypot(
+                        ply[ply.length - 1].x - ply[ply.length - 2].x,
+                        ply[ply.length - 1].y - ply[ply.length - 2].y)
+                    const now = Math.hypot(
+                        schwerpunkt.x - ply[ply.length - 1].x,
+                        schwerpunkt.y - ply[ply.length - 1].y);
+                    if (Math.abs(last - now) < 10) {
+                        ply.push(schwerpunkt);
+                    }
+                } else {
+                    ply.push(schwerpunkt);
+                }
+
+
+
+
+                const c = makeCircle(ply);
 
                 g2().cir({ ...schwerpunkt, r: 5, fs: 'black' })
-                    .ply({ pts: ply }).exe(dtx);
+                    .ply({ pts: ply })
+                    .cir(c)
+                    .gnd({ ...c, r: 5 })
+                    .exe(dtx)
             }, 1000 / 60);
 
             requestAnimationFrame(simulate);  // keep calling back
