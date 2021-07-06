@@ -1,0 +1,26 @@
+\section{Ermittlung des optischen Flusses}
+
+Die wahrgenommene Bewegung hervorgerufen durch zwei Bilder in welcher die enthaltenen Objekte sich relativ zu einander Bewegen zu scheinen wird als \name{optischer Fluss}(zu engl. \name{Optical Flow}) bezeichnet. // TODO Zitat aus Modern AI, S. 939 unten. 
+Inspiriert durch diesen Ansatz scheint es naheliegend ihn auf planare Mechanismen anzuwenden um so aus einer Videoaufnahme, oder mehrerer Bildaufnahmen eines Mechanismus diesen synthetisieren zu können.
+
+% Hier ein Bild von Thomas Brox scheint angebracht. (Modern AI S. 941)
+
+\name{Optical Flow} Methoden können genutzt werden um ein Vektorfeld mit Position, Richtung und Geschwindigkeit der sich bewegenden Pixel zu identifizieren.
+
+Innerhalb der sich bewegenden Pixel sollen nun die Gruppen ermittelt werden, welche sich trotz absoluter Bewegung sich nicht relativ zueinander bewegen.
+Ebenso sind Vektoren zu gruppieren, dessen Bewegungen sich homogen zueinander zu verhalten scheinen, es also davon ausgegangen werden kann, dass diese zu einem Glied gehören.
+
+Bei einem stationärem Schwungpendel wäre es zu erwarten, dass die absolute Geschwindigkeit der Pixel um den Drehpunkt gering ist und linear zum Abstand des Drehpunktes zunimmt.
+Ein Vergleich der Richtungsvektoren sollte allerdings mit entsprechender Skalierung gleich sein, sodass eine Gruppierung hier eindeutig ist.
+
+Diese Gruppen können dann weiter daraufhin untersucht werden ob sie sich innerhalb bestimmter Rahmenbedingungen zueinander bewegen.
+Das bedeutet, ob sie umeinander rotieren, oder gegebenenfalls die Gruppe selber sich in ihrer Länge ändert, was einer translatorischen Bewegung zugeordnet werden kann.
+
+\subsection{Berechnung des Vektorfeldes}
+
+Um Vektorfelder zu berechnen gibt es verschiedene Ansätze, welche sich in Performanz und Genauigkeit unterscheiden.
+
+
+
+% NOTES:
+% Performance increase through "superpixels", superpixels klingt nach etwas, was ich auch haben will. Siehe: Contour Detection and Hierarchical Image Segmentation
