@@ -110,9 +110,31 @@ Eine Momentaufnahme dieser Konstruktion kann in Abbildung~\ref{fig:compare_image
 	\label{fig:compare_images}
 \end{figure}
 
-Diese Punkte können dann dazu genutzt werden um einen Kreis zu definieren, indem das \name{Smallest Enclosing Circle Problem} gelöst wird.
-Hierfür werden alle Pixel gespeichert an denen eine Änderung betrachtet wird\footnote{Da die Menge an Punkten sehr schnell sehr groß wird, wird nach 100.000 Koordinaten gestoppt.}.
-Indem der Kreis definiert wird, welcher die geringste Fläche hat kann sowohl die Länge des Pendels, als auch der Punkt ermittelt werden um den es schwingt\footnote{Dies setzt jedoch vorraus, dass das Pendel zumindest über die Hälfte des Kreises schwingt.}.
+Zu beachten ist, dass das Pendel zwei mal gezeigt wird.
+Das liegt daran, dass wenn die beiden Bilder verglichen werden, genau jene Pixel unterschiedlich sind an denen das Pendel im ersten Bild ist und im zweiten nicht mehr ist und genau dort wo das Pendel im zweiten Bild ist und im ersten nicht.
+Ohne weitere Analyse lässt sich jedoch nicht so einfach bestimmen welche Änderung aus welchem Bild stammt.
+Für die anschließende Untersuchung kann diese Tatsache ignoriert werden, allerdings ist es wichtig solche Besonderheiten zu betrachten um mögliche Fehlerquellen schneller zu finden.
+
+Diese Punkte können dazu genutzt werden um einen Kreis zu definieren, indem das \name{Smallest Enclosing Circle Problem} gelöst wird.
+Hierfür werden alle Pixel gespeichert an denen eine Änderung betrachtet wird.
+Beginnt das Pendel mit dem Schwingen ändert sich der Mittelpunkt des ermittelten Kreises sehr schnell.
+Sobald das Pendel jedoch mindestens einen Halbkreis vollzieht steht der Mittelpunkt mit Ausnahme von ein paar Fluktuationen fest.
+Aus diesem Grund werden als Metrik die letzten zehn Mittelpunkte des Kreises behalten und die Summe der Abstände dieser Punkte bestimmt.
+Sobald diese Summe den Wert null erreicht, wird davon ausgegangen mit einer gewissen Zuversicht den richtigen Mittelpunkt gefunden zu haben.
+
+Sobald der Mittelpunkt des Pendels gefunden wurde, kann das andere Ende des Pendels bestimmt werden, indem der vom Mittelpunkt am weitesten entfernte Punkt gefunden wird.
+
+Um den Fehler zu zeigen den das ermittelte Pendel in Bezug auf den bestimmten Winkel hat wird nun, nachdem die Bestimmung des Drehpunktes geschehen ist, der entsprechende Winkel mit dem von \name{mec2} zur Verfügung gestellten Winkel des Gliedes verglichen.
+Hierfür wird bei jeder Iteration der Winkel zwischen dem Endpunkt und dem Mittelpunkt berechnet und der tatsächliche Winkel davon abgezogen und einer Liste hinzugefügt die dann als ein Graph dargestellt werden kann, welcher in Abbildung~\ref{fig:pendel_prediction} betrachtet werden kann.
+
+\begin{figure}[htb]
+	\includegraphics[width=\textwidth]{gfx/compare_images_2.png}
+	\caption{Darstellung des Pendels und dem dazugehörigen erkannten Pendel. Der Graph zeigt den Fehler des Winkels über die Zeit an. Die X-Achse zeigt die vergangene Zeit in Sekunden ab dem Zeitpunkt der Ermittlung des Mittelpunktes an, die Y-Achse zeigt den berechneten Fehler in Radiant, welcher nach dem ersten halben Intervall bei etwa 0.15 liegt was in etwa 9 grad entspricht.}
+	\label{fig:pendel_prediction}
+\end{figure}
+
+Dieser Ansatz leidet jedoch unter dem Problem, dass um den Drehpunkt zu bestimmen das Glied mindestens eine halbe Umdrehung vollführen muss.
+Der kleinste umfassende Kreis für die Punkte darunter wäre erheblich kleiner als der tatsächliche Kreis, weshalb ein anderer Ansatz zur Bestimmung des Mittelpunktes gewählt werden muss.
 
 % http://personal.kent.edu/~rmuhamma/Compgeometry/MyCG/CG-Applets/Center/centercli.htm
 

@@ -53,11 +53,10 @@
             ]
         };
 
-        const ply = [];
-        const err = [];
-        const placeholder = [];
-        const placeholder2 = [];
-        let nod;
+        const ply = []; // Alle Punkte
+        let gnd = { x: 0, y: 0, confident: false, past: [] }; // Ground
+        let nod; // Endstück des Pendels
+        const data = [];
 
         // simulation
         const simulate = () => {
@@ -65,7 +64,6 @@
             g.exe(ctx);         // render its pose on the canvas
 
             const image1 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
-            const coords = [];
 
             window.setTimeout(() => {
                 const image2 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
@@ -73,37 +71,69 @@
 
                 g2().clr().exe(dtx);
 
-                for (let i = 0; i < result.length; ++i) {
-                    const zone = result[i];
+                if (!gnd.confident) {
+                    result.forEach(r => {
+                        if (!gnd.confident) {
+                            // Draw a circle for every found change
+                            g2().cir({ ...r, r: 1 }).exe(dtx);
+                            ply.push({ ...r });
+                        }
+                    });
+                }
 
-                    g2().cir({x: zone.x, y: zone.y, r: 1}).exe(dtx);
 
-                    coords.push({ x: zone.x, y: zone.y});
-                    if (zone.x || zone.y) {
-                        if (ply.length < 100000) {
-                            ply.push({x: zone.x, y: zone.y})
+                if (gnd.past.push(makeCircle(ply)) > 10) {
+                    gnd.past.shift();
+                };
+
+                let acc = 0;
+                for (let i = 1; i < gnd.past.length; ++i) {
+                    const pre = gnd.past[i - 1];
+                    const cur = gnd.past[i];
+                    acc += Math.hypot(cur.x - pre.x, cur.y - pre.y);
+                }
+
+                if (gnd.past.length === 10 && acc === 0) {
+                    gnd.confident = true;
+                    gnd.x = gnd.past[gnd.past.length - 1].x;
+                    gnd.y = gnd.past[gnd.past.length - 1].y;
+                }
+
+                if (gnd.confident) {
+                    for (let i = 0, max = 0; i < result.length; ++i) {
+                        const r = result[i];
+                        if (r.x === 0 && r.y === 0) {
+                            continue;
+                        }
+                        const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
+
+                        if (hy > max) {
+                            nod = r;
                         }
                     }
-                }
 
-                const c = makeCircle(ply);
-
-                for (let i = 0, max = 0; i < result.length; ++i) {
-                    const zone = result[i];
-                    const hy = Math.hypot(zone.x - c.x, zone.y - c.y);
-                    if (hy > max && (zone.x || zone.y)) {
-                        max = hy - 2.5;
-                        nod = result[i];
+                    const m = (a) => (a + 2 * Math.PI) % Math.PI
+                    const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
+                    data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
+                    const chart = {
+                        x: 20, y: 20, b: 280, h: 150,
+                        funcs: [{data}],
+                        xaxis: {},
+                        yaxis: {},
                     }
+
+                    g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
+                        .gnd(gnd)
+                        .nod(nod)
+                        .exe(dtx);
+
+                    g2().clr().view({ cartesian: true }).chart(chart).exe(etx);
                 }
 
-                g2()//.cir({ ...schwerpunkt, r: 5, fs: 'black' })
-                    //.ply({ pts: ply })
-                    .cir({ ...c})
-                    .lin({x1: c.x, y1: c.y, x2: nod.x, y2: nod.y})
-                    .gnd({ ...c})
-                    .nod({ ...nod })
-                    .exe(dtx)
+
+
+
+
             }, 1000 / 60);
 
             requestAnimationFrame(simulate);  // keep calling back
