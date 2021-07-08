@@ -20,6 +20,11 @@ Ziel ist es dann ein Programm zu schreiben welches, bei entsprechendem Videoeing
 Die \name{mec2} Physik-Engine wird gewählt, weil sie eine direkte Definition der Mechanismen innerhalb der von Menschen und auch dem Computer lesbaren JSON-Formats sofortige Resultate liefern kann.
 Das ermöglicht es die Algorithmen die im Rahmen dieser Arbeit entworfen werden direkt zu testen, da bereits der Videoeingang modelliert werden kann und die Lösung bekannt ist.
 
+Innerhalb der Lösung werden zunächst mehrere Annahmen getroffen, welche durch die Nutzung der Physik-Engine \name{mec2} vorgegeben werden.
+So sind die Glieder des Mechanismus inkompressibel und haben auch keine Biegung.
+Entsprechend kann auch eine Knickung nicht auftreten.
+Die festen Gelenkpunkte sind unbeweglich und auch keines der Gelenke hat ein Spiel.
+
 Der erste Ansatz der getestet wird ist die Ermittlung der sich bewegenden Teile durch den Lucas-Kanade Algorithmus. % TODO citation
 Zum Anfang wird zunächst versucht Bewegung innerhalb einer Videosequenz zuzuordnen und nutzbar zu machen.
 Es wird sich zeigen, dass dies einen Schwerpunkt dieser Arbeit darstellt.
