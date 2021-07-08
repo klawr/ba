@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <p id="angle"></p>
+    <br>
+    <canvas id="cnv" width="320" height="180"></canvas>
+    <canvas id="dnv" width="320" height="180"></canvas>
+    <canvas id="env" width="320" height="180"></canvas>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <script src="../src/compare_images.js"></script>
+
+    <script>
+        const cnv = document.getElementById('cnv');
+        const ctx = cnv.getContext('2d');
+
+        const dnv = document.getElementById('dnv');
+        const dtx = dnv.getContext('2d');
+
+        const env = document.getElementById('env');
+        const etx = env.getContext('2d');
+
+        const angle = document.getElementById('angle');
+
+        const g = g2().clr().view({ cartesian: true });         // a g2 graphics-object
+        const model = {
+            id: 'pendulum',
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 149.9, y: 120, base: true },
+                { id: 'A1', x: 150, y: 220 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+            ]
+        };
+
+        const obj = {
+            mmax: {
+                m: 0,
+                b: 0,
+            },
+            mmin: {
+                m: 0,
+                b: 0,
+            },
+            lin1: {
+                p1: {
+                    x: 0, y: 0
+                },
+                p2: {
+                    x: 0, y: 0
+                }
+            },
+            lin2: {
+                p1: {
+                    x: 0, y: 0
+                },
+                p2: {
+                    x: 0, y: 0
+                }
+            }
+        };
+
+        let gnd = { x: 0, y: 0, confident: false, past: [] }; // Ground
+        let nod; // Endstück des Pendels
+
+        const data = [];
+        const datb = [];
+        const datc = [];
+
+        // simulation
+        const simulate = () => {
+            model.tick(1 / 60); // solve model with fixed stepping
+            g.exe(ctx);         // render its pose on the canvas
+
+            const image1 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
+
+            window.setTimeout(() => {
+                const image2 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
+                const result = compare_images(image1, image2, cnv.width, cnv.height);
+
+                let max = 0;
+                let p1;
+                let p2;
+
+                result.forEach(r => {
+                    result.forEach(s => {
+                        const hy = Math.hypot(r.y - s.y, r.x - s.x);
+                        if (hy > max) {
+                            max = hy;
+                            // p1 = s;
+                            // p2 = r;
+                            if (r.x > s.x) {
+                                p1 = s;
+                                p2 = r;
+                            } else {
+                                p1 = r;
+                                p2 = s;
+                            }
+                        };
+                    });
+                });
+
+                if (!p1 || !p2) {
+                    return;
+                }
+
+                const m = (p2.y - p1.y) / (p2.x - p1.x);
+                const b = p1.y - m * p1.x;
+
+                if (!obj.mmax.m || (m <= 0 && Math.abs(m) > Math.abs(obj.mmax.m))) {
+                    obj.mmax = { m, b };
+                    obj.lin1.p1 = p1;
+                    obj.lin1.p2 = p2;
+                } else if (!obj.mmin.m || (m > 0 && Math.abs(m) > Math.abs(obj.mmin.m))) {
+                    obj.mmin = { m, b };
+                    obj.lin2.p1 = p1;
+                    obj.lin2.p2 = p2;
+                }
+
+                const align = (a) => (Math.PI + a) % Math.PI
+
+                const tmp = model.constraints[0].w;
+                const tmq = Math.atan(m);
+                
+
+                data.push(data.length / 2 * 1 / 60, align(-tmp));
+                datb.push(datb.length / 2 * 1 / 60, align(tmq));
+
+                datc.push(datc.length / 2 * 1 / 60, align(-tmp) - align(tmq));
+
+                const chart = {
+                    x: 20, y: 20, b: 280, h: 150,
+                    funcs: [{ data }, {data: datb}],
+                    xaxis: {},
+                    yaxis: {},
+                }
+
+                const chart2 = {
+                    x: 20, y: 20, b: 280, h: 150,
+                    funcs: [{ data: datc }],
+                    xaxis: {},
+                    yaxis: {},
+                }
+
+                g2().clr().view({ cartesian: true }).chart(chart).exe(dtx);
+                g2().clr().view({ cartesian: true }).chart(chart2).exe(etx);
+            }, 1000 / 60);
+
+            requestAnimationFrame(simulate);  // keep calling back
+        };
+
+        mec.model.extend(model);                    // extend the model
+        model.init();                               // initialize it
+        model.draw(g);                              // append model-graphics to graphics-obj
+
+        simulate();                                 // kick-off the simulation
+
+        const camBtn = document.getElementById("camBtn");
+        camBtn.addEventListener('click', () => toggleCamera(cnv));
+    </script>
+</body>
+
+</html>

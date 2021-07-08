@@ -25,8 +25,15 @@ So sind die Glieder des Mechanismus inkompressibel und haben auch keine Biegung.
 Entsprechend kann auch eine Knickung nicht auftreten.
 Die festen Gelenkpunkte sind unbeweglich und auch keines der Gelenke hat ein Spiel.
 
-Der erste Ansatz der getestet wird ist die Ermittlung der sich bewegenden Teile durch den Lucas-Kanade Algorithmus. % TODO citation
-Zum Anfang wird zunächst versucht Bewegung innerhalb einer Videosequenz zuzuordnen und nutzbar zu machen.
+Der erste Ansatz der untersucht wird ist der Abgleich zweier aufeinanderfolgenden Bilder, worin die Unterschiede ermittelt werden.
+Hier wird untersucht wie sich Bewegung in einer Videosequenz bemerkbar macht und sie entsprechend genutzt werden kann.
+Hierfür werden mit Hilfe von \name{mec2} Mechanismen erstellt, welche daraufhin von entsprechenden Algorithmen rekonstruiert werden sollen.
+Begonnen wird mit der Ermittlung eines einfach Pendels.
+Es wird sich zeigen das ein Schwerpunkt der Aufgabe darin liegen wird, den Drehpunkt einzelner Glieder zu ermitteln, nachdem die zu ermittelnden Glieder differenziert werden.
+
+Daraufhin sollen andere Ansätze untersucht werden, welche Bewegung innerhalb aufeinanderfolgenden Bildern zu ermitteln versuchen.
+Die Untersuchung der Bewegung soll dann Aufschlüsse darüber geben, ob diese einem Mechanismus zugeordnet werden können.
+Einer dieser Ansätze ist der Lucas-Kanade Algorithmus, welcher implementiert und angepasst wird. % TODO citation
 Es wird sich zeigen, dass dies einen Schwerpunkt dieser Arbeit darstellt.
 Dann von der gewonnenen Information den ursprünglichen Mechanismus zu rekonstruieren ist dann die Hauptaufgabe.
 
