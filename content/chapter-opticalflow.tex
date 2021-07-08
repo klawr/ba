@@ -129,12 +129,47 @@ Hierfür wird bei jeder Iteration der Winkel zwischen dem Endpunkt und dem Mitte
 
 \begin{figure}[htb]
 	\includegraphics[width=\textwidth]{gfx/compare_images_2.png}
-	\caption{Darstellung des Pendels und dem dazugehörigen erkannten Pendel. Der Graph zeigt den Fehler des Winkels über die Zeit an. Die X-Achse zeigt die vergangene Zeit in Sekunden ab dem Zeitpunkt der Ermittlung des Mittelpunktes an, die Y-Achse zeigt den berechneten Fehler in Radiant, welcher nach dem ersten halben Intervall bei etwa 0.15 liegt was in etwa 9 grad entspricht.}
+	\caption{Darstellung des Pendels und dem dazugehörigen erkannten Pendel. Der Graph zeigt den Fehler des Winkels über die Zeit an. Die X-Achse zeigt die vergangene Zeit in Sekunden ab dem Zeitpunkt der Ermittlung des Mittelpunktes an, die Y-Achse zeigt den berechneten Fehler in Radiant, welcher nach dem ersten halben Intervall bei etwa 0.15 liegt was in etwa 9° entspricht.}
 	\label{fig:pendel_prediction}
 \end{figure}
 
 Dieser Ansatz leidet jedoch unter dem Problem, dass um den Drehpunkt zu bestimmen das Glied mindestens eine halbe Umdrehung vollführen muss.
 Der kleinste umfassende Kreis für die Punkte darunter wäre erheblich kleiner als der tatsächliche Kreis, weshalb ein anderer Ansatz zur Bestimmung des Mittelpunktes gewählt werden muss.
+
+% TODO hier sollten noch Bilder hin und vllt auch vorher ein Bild bei der Beschreibung wie der kleinste umfassende Kreis berechnet wird?
+
+\section{TODO} %TODO ein Titel für dieses Kapitel wäre gut...
+
+Als ein neuer Ansatz zum berechnen des Mittelpunktes soll versucht werden Anhand der Änderungen innerhalb der Bilder die Linien zu finden welche am ehesten die Menge der Punkte repräsentiert welche ermittelt wurden.
+Dieses Vorgehen basiert auf der Annahme, dass die Glieder eines Mechanismus einen größeren Radius haben als sie in jede andere Richtung gehen.
+
+Die Definition dieser Linie wird gespeichert um mit anderen Linien verglichen welche in weiteren Iterationen gemessen wird.
+Der Schnittpunkt zweier Linien sollte dann innerhalb einer akzeptablen Toleranz des tatsächlichen Drehpunkt des Mechanismus entsprechen.
+
+Dieser Ansatz hat des weiteren den Vorteil, dass er nach nur zwei Iterationen bereits ein hinreichendes Ergebnis liefern kann\footnote{Das sind entsprechend drei Bilder die in den Vergleichen genutzt werden müssen.}.
+
+Der direkte Ansatz ist die zwei Punkte zu ermitteln dessen Distanz zueinander den höchsten Wert hat.
+Der Code zum Vergleichen der Bilder kann hierbei größtenteils aus dem vorherhigen Ansatz übernommen werden.
+Hierfür wird bei jeder Iteration bei der zwei aufeinanderfolgende Bilder verglichen werden, wie in Listing~\ref{lst:compare_images} gesehen kann.
+Problematisch stellt sich jedoch die Unregelmäßigkeit vor mit der die Pixel ermittelt werden in denen Änderungen erkannt werden.
+So liegen die beiden Punkte die am weitesten voneinander entfernt sind nicht auf der tatsächlichen Linie die das Pendel darstellen würde, sondern soweit davon entfernt, dass die sich daraus ermittelbare Steigung erheblich vom echten Wert unterscheidet.
+Entsprechend stellt der Schnittpunkt zweier auf diese Weise ermittelten Linien nicht den Drehpunkt des Gliedes dar.
+
+\begin{figure}[htb]
+	\includegraphics[width=\textwidth]{gfx/max_abstand_steigung differenz.png}
+	\caption{Die grüne Linie des linken Graphen stellt den Winkel des Pendels modulo Pi dar, während die orangene Linie  den Arkustangens der Steigung (ebenfalls modulo Pi) darstellt. Der rechte Graph stellt den berechneten Fehler dar, der einige male gegen den Wert von Pi ausschlägt, aber sonst relativ niedrig ist.}
+	\label{fig:max_abstand_steigung differenz}
+\end{figure}
+
+Ein Ansatz dieses Problem zu umgehen ist statt die Linien zweier direkt aufeinanderfolgender Vergleiche zu betrachtet, sondern stattdessen diejenigen Linien zu vergleichen dessen Winkel untereinander am größten ist.
+Hierfür reicht es jedoch nicht aus nur die Steigung der Linien zu bestimmen, sondern es ist auch notwendig die Richtung zu kennen, in die sich das beobachtete Glied bewegt.
+So kann festgestellt werden in welchem der vier Quadranten des Koordinatensystems sich die Steigung bewegt\footnote{Hier wird implizit die Annahme getroffen, dass ein Mechanismus nicht innerhalb eines Abgleichs eine plötzliche Drehung von 180° vollzieht.}.
+
+% TODO etwas praktischer werden und dann erst zeigen warum das kacke war.
+
+% TODO das muss irgendwo untergebracht werden, bevor ich auf die Gruppierung gehe...
+Des weiteren basiert dieser Ansatz auf der Annahme, dass alle Änderungen der Bilder die verglichen werden zu dem selben Glied gehören.
+Da die Definition eines Mechanismus mindestens 3 bewegliche Glieder benötigt, muss auch hier ein anderer Ansatz genutzt werden. % TODO cite
 
 % http://personal.kent.edu/~rmuhamma/Compgeometry/MyCG/CG-Applets/Center/centercli.htm
 

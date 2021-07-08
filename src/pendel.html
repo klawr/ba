@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="cnv" width="320" height="180"></canvas>
+    <canvas id="dnv" width="320" height="180"></canvas>
+    <canvas id="env" width="320" height="180"></canvas>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <script src="../src/getDirectionalColor.js"></script>
+    <script src="../src/smallest_enclosing_circle.js"></script>
+    <script src="../src/toggleCamera.js"></script>
+    <script src="../src/compare_images.js"></script>
+    <script src="../src/lucas_kanade.js"></script>
+
+    <script>
+        const cnv = document.getElementById('cnv');
+        const ctx = cnv.getContext('2d');
+
+        const dnv = document.getElementById('dnv');
+        const dtx = dnv.getContext('2d');
+
+        const env = document.getElementById('env');
+        const etx = env.getContext('2d');
+
+        const g = g2().clr().view({ cartesian: true });         // a g2 graphics-object
+        const model = {
+            id: 'pendulum',
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 150, y: 120, base: true },
+                { id: 'A1', x: 230, y: 90 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+            ]
+        };
+
+        const ply = []; // Alle Punkte
+        let gnd = { x: 0, y: 0, confident: false, past: [] }; // Ground
+        let nod; // Endstück des Pendels
+        const data = [];
+
+        // simulation
+        const simulate = () => {
+            model.tick(1 / 60); // solve model with fixed stepping
+            g.exe(ctx);         // render its pose on the canvas
+
+            const image1 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
+
+            window.setTimeout(() => {
+                const image2 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
+                const result = compare_images(image1, image2, cnv.width, cnv.height);
+
+                g2().clr().exe(dtx);
+
+                if (!gnd.confident) {
+                    result.forEach(r => {
+                        if (!gnd.confident) {
+                            // Draw a circle for every found change
+                            g2().cir({ ...r, r: 1 }).exe(dtx);
+                            ply.push({ ...r });
+                        }
+                    });
+                }
+
+
+                if (gnd.past.push(makeCircle(ply)) > 10) {
+                    gnd.past.shift();
+                };
+
+                let acc = 0;
+                for (let i = 1; i < gnd.past.length; ++i) {
+                    const pre = gnd.past[i - 1];
+                    const cur = gnd.past[i];
+                    acc += Math.hypot(cur.x - pre.x, cur.y - pre.y);
+                }
+
+                if (gnd.past.length === 10 && acc === 0) {
+                    gnd.confident = true;
+                    gnd.x = gnd.past[gnd.past.length - 1].x;
+                    gnd.y = gnd.past[gnd.past.length - 1].y;
+                }
+
+                if (gnd.confident) {
+                    for (let i = 0, max = 0; i < result.length; ++i) {
+                        const r = result[i];
+                        if (r.x === 0 && r.y === 0) {
+                            continue;
+                        }
+                        const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
+
+                        if (hy > max) {
+                            nod = r;
+                        }
+                    }
+
+                    const m = (a) => (a + 2 * Math.PI) % Math.PI
+                    const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
+                    data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
+                    const chart = {
+                        x: 20, y: 20, b: 280, h: 150,
+                        funcs: [{data}],
+                        xaxis: {},
+                        yaxis: {},
+                    }
+
+                    g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
+                        .cir({})
+                        .gnd(gnd)
+                        .nod(nod)
+                        .exe(dtx);
+
+                    g2().clr().view({ cartesian: true }).chart(chart).exe(etx);
+                }
+
+
+
+
+
+            }, 1000 / 60);
+
+            requestAnimationFrame(simulate);  // keep calling back
+        };
+
+        mec.model.extend(model);                    // extend the model
+        model.init();                               // initialize it
+        model.draw(g);                              // append model-graphics to graphics-obj
+
+        simulate();                                 // kick-off the simulation
+    </script>
+</body>
+
+</html>

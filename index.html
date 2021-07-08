@@ -40,23 +40,54 @@
         const env = document.getElementById('env');
         const etx = env.getContext('2d');
 
+        const angle = document.getElementById('angle');
+
         const g = g2().clr().view({ cartesian: true });         // a g2 graphics-object
         const model = {
             id: 'pendulum',
             gravity: true,
             nodes: [
-                { id: 'A0', x: 150, y: 120, base: true },
-                { id: 'A1', x: 230, y: 150 }
+                { id: 'A0', x: 149.9, y: 20, base: true },
+                { id: 'A1', x: 150, y: 120 }
             ],
             constraints: [
                 { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
             ]
         };
 
-        const ply = []; // Alle Punkte
+        const obj = {
+            mmax: {
+                m: 0,
+                b: 0,
+            },
+            mmin: {
+                m: 0,
+                b: 0,
+            },
+            lin1: {
+                p1: {
+                    x: 0, y: 0
+                },
+                p2: {
+                    x: 0, y: 0
+                }
+            },
+            lin2: {
+                p1: {
+                    x: 0, y: 0
+                },
+                p2: {
+                    x: 0, y: 0
+                }
+            }
+        };
+
         let gnd = { x: 0, y: 0, confident: false, past: [] }; // Ground
         let nod; // Endstück des Pendels
+
         const data = [];
+        const datb = [];
+        const datc = [];
 
         // simulation
         const simulate = () => {
@@ -69,70 +100,131 @@
                 const image2 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
                 const result = compare_images(image1, image2, cnv.width, cnv.height);
 
-                g2().clr().exe(dtx);
+                let max = 0;
+                let p1;
+                let p2;
 
-                if (!gnd.confident) {
-                    result.forEach(r => {
-                        if (!gnd.confident) {
-                            // Draw a circle for every found change
-                            g2().cir({ ...r, r: 1 }).exe(dtx);
-                            ply.push({ ...r });
-                        }
-                    });
-                }
-
-
-                if (gnd.past.push(makeCircle(ply)) > 10) {
-                    gnd.past.shift();
-                };
-
-                let acc = 0;
-                for (let i = 1; i < gnd.past.length; ++i) {
-                    const pre = gnd.past[i - 1];
-                    const cur = gnd.past[i];
-                    acc += Math.hypot(cur.x - pre.x, cur.y - pre.y);
-                }
-
-                if (gnd.past.length === 10 && acc === 0) {
-                    gnd.confident = true;
-                    gnd.x = gnd.past[gnd.past.length - 1].x;
-                    gnd.y = gnd.past[gnd.past.length - 1].y;
-                }
-
-                if (gnd.confident) {
-                    for (let i = 0, max = 0; i < result.length; ++i) {
-                        const r = result[i];
-                        if (r.x === 0 && r.y === 0) {
-                            continue;
-                        }
-                        const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
-
+                result.forEach(r => {
+                    result.forEach(s => {
+                        const hy = Math.hypot(r.y - s.y, r.x - s.x);
                         if (hy > max) {
-                            nod = r;
-                        }
-                    }
+                            max = hy;
+                            // p1 = s;
+                            // p2 = r;
+                            if (r.x > s.x) {
+                                p1 = s;
+                                p2 = r;
+                            } else {
+                                p1 = r;
+                                p2 = s;
+                            }
+                        };
+                    });
+                });
 
-                    const m = (a) => (a + 2 * Math.PI) % Math.PI
-                    const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
-                    data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
-                    const chart = {
-                        x: 20, y: 20, b: 280, h: 150,
-                        funcs: [{data}],
-                        xaxis: {},
-                        yaxis: {},
-                    }
-
-                    g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
-                        .gnd(gnd)
-                        .nod(nod)
-                        .exe(dtx);
-
-                    g2().clr().view({ cartesian: true }).chart(chart).exe(etx);
+                if (!p1 || !p2) {
+                    return;
                 }
 
+                const m = (p2.y - p1.y) / (p2.x - p1.x);
+                const b = p1.y - m * p1.x;
+
+                if (!obj.mmax.m || (m <= 0 && Math.abs(m) > Math.abs(obj.mmax.m))) {
+                    obj.mmax = { m, b };
+                    obj.lin1.p1 = p1;
+                    obj.lin1.p2 = p2;
+                } else if (!obj.mmin.m || (m > 0 && Math.abs(m) > Math.abs(obj.mmin.m))) {
+                    obj.mmin = { m, b };
+                    obj.lin2.p1 = p1;
+                    obj.lin2.p2 = p2;
+                }
+                // g2().clr()
+                //     .lin({ ...obj.lin1, ls: 'green' })
+                //     .lin({ ...obj.lin2, ls: 'red' })
+                //     .exe(dtx);
+
+                const align = (a) => (Math.PI + a) % Math.PI
+
+                const tmp = model.constraints[0].w;
+                const tmq = Math.atan(m);
+                
+
+                data.push(data.length / 2 * 1 / 60, align(-tmp));
+                datb.push(datb.length / 2 * 1 / 60, align(tmq));
+
+                datc.push(datc.length / 2 * 1 / 60, align(-tmp) - align(tmq));
+
+                const chart = {
+                    x: 20, y: 20, b: 280, h: 150,
+                    funcs: [{ data }, {data: datb}],
+                    xaxis: {},
+                    yaxis: {},
+                }
+
+                const chart2 = {
+                    x: 20, y: 20, b: 280, h: 150,
+                    funcs: [{ data: datc }],
+                    xaxis: {},
+                    yaxis: {},
+                }
+
+                g2().clr().view({ cartesian: true }).chart(chart).exe(dtx);
+                g2().clr().view({ cartesian: true }).chart(chart2).exe(etx);
 
 
 
+                angle.innerHTML = "max: " + obj.mmax.m + ", min: " + obj.mmin.m + "m: " + m;
+
+                const x = (obj.mmax.b - obj.mmin.b) / (obj.mmin.m - obj.mmax.m);
+                const y = obj.mmax.m * x + obj.mmax.b;
+
+                // angle.innerHTML = "x: " + x + ", y: " + y;
+
+                // g2().gnd({ x, y }).exe(dtx);
+
+                // TODO berechne das m und das b für diese Linie.
+                // damit kann man dann im nächsten Schritt den Schnittpunkt berechnen.
+
+                // if (p1 && p2) {
+                //     g2().lin({p1, p2}).exe(dtx);
+                // }
+
+                // const max = Math.max(...heatmap.flat());
+                // result.forEach(r => {
+                //     heatmap[r.y*cnv.width+r.x]++;
+                //     const c = Math.max(255 - heatmap[r.y*cnv.width+r.x], 0);
+                //     g2().cir({
+                //         x: r.x, y: r.y, r: 0.5,
+                //         ls: `rgb(${c}, ${c}, ${c})`
+                //     }).exe(dtx);
+                // });
+
+                // if (!gnd.confident && gnd.past.length < 10) {
+                //     const max = heatmap.indexOf(Math.max(...heatmap));
+                //     gnd.past.push({
+                //         x: max % cnv.width,
+                //         y: max / cnv.width,
+                //     });
+
+                // } else {
+                //     gnd.past.shift();
+                // }
+
+                // let acc = 0;
+                // for (let i = 1; i < gnd.past.length; ++i) {
+                //     const pre = gnd.past[i - 1];
+                //     const cur = gnd.past[i];
+                //     acc += Math.hypot(cur.x - pre.x, cur.y - pre.y);
+                // }
+                // if (gnd.past.length === 10 && acc === 0) {
+                //     gnd.confident = true;
+                //     gnd.x = gnd.past[gnd.past.length - 1].x;
+                //     gnd.y = gnd.past[gnd.past.length - 1].y;
+                // }
+
+                // if (gnd.confident) {
+                //     g2().gnd({ ...gnd, r: 10 }).exe(dtx);
+                // }
 
             }, 1000 / 60);
 
