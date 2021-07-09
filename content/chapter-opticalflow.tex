@@ -161,9 +161,30 @@ Entsprechend stellt der Schnittpunkt zweier auf diese Weise ermittelten Linien n
 	\label{fig:max_abstand_steigung differenz}
 \end{figure}
 
-Ein Ansatz dieses Problem zu umgehen ist statt die Linien zweier direkt aufeinanderfolgender Vergleiche zu betrachtet, sondern stattdessen diejenigen Linien zu vergleichen dessen Winkel untereinander am größten ist.
-Hierfür reicht es jedoch nicht aus nur die Steigung der Linien zu bestimmen, sondern es ist auch notwendig die Richtung zu kennen, in die sich das beobachtete Glied bewegt.
-So kann festgestellt werden in welchem der vier Quadranten des Koordinatensystems sich die Steigung bewegt\footnote{Hier wird implizit die Annahme getroffen, dass ein Mechanismus nicht innerhalb eines Abgleichs eine plötzliche Drehung von 180° vollzieht.}.
+Ein Ansatz dieses Problem zu umgehen ist statt die Linien zweier direkt aufeinanderfolgender Vergleiche zu betrachtet, diejenigen Linien zu vergleichen dessen Winkel untereinander am größten ist.
+Sobald der gewanderte Winkel größer ist als ein Halbkreis, kann wieder der Ansatz aus Kapitel~\ref{} % TODO Closest endinging circle in eigenes Kapitel packen. Generell mehr subchapter nutzen um besser referenzieren zu können.
+gewählt werden um den Mittelpunkt zu bestimmen.
+
+Allerdings ist die Varianz der Winkel auch hier wieder so groß, dass die Bestimmung der am meisten auseinanderliegenden Winkel nicht eindeutig ist.
+Entsprechend muss ein anderer Ansatz gewählt werden um die Linien zu bestimmen anhand derer die Steigung bemessen wird.
+
+\subsection{Ermittlung der am besten passenden Linie}
+
+Die Aufgabe die am besten zu der Menge an gefunden Punkten passende Linie zu finden kann durch die Methode der kleinsten Quadraten gelöst werden.
+% Hier ausführlich erklären wie diese Methode funktioniert.
+
+Jedoch entsteht auch mit dieser Methode wieder ein weiteres Problem.
+Wenn zwei Bilder die eine Drehung darstellen miteinander verglichen werden, indem jene Pixel behalten werden in denen eine Änderung zu erkennen ist, dann werden typischerweise mehr Änderungen erkannt, je weiter man sich radial von Drehpunkt entfernt.
+Diese Beobachtung ist nicht überraschend, denn die absolute Geschwindigkeit eines Gelenkes nimmt mit länge des Gliedes zu, allerdings verzerrt es die Beobachtung ein wenig.
+Hier kann jedoch eine Funktion abhilfe schaffen, die auch in der Bilderkennung durch neurale Netzwerke genutzt wird.
+Diese als Non-Max Suppression % TODO writing...
+bezeichnete Funktion wird eigentlich dafür genutzt, dass erkannte Objekte die im Bild direkt nebeneinander liegen gefiltert werden für das Bild, dass den höchsten Konfidenzwert besitzt.
+Da den Pixeln hier kein Konfidenzwert zugeordnet werden kann, kann allerdings eine Funktion genutzt werden welche ähnlich wie die Non-Max Suppression Funktion %TODO oh mann...
+die sich überlappenden Pixel in einem bestimmten Umkreis entfernt.
+Dadurch wird die Dichte der erkannten Pixel quasi homogen und der Drehpunkt liegt etwas näher an dem tatsächlich erkannten, ohne viel Präzision bei der Bestimmung der Steigung in Kauf zu nehmen.
+
+Der nächste Schritt ist entsprechend die Schnittpunkte der erkannten Linien zu definieren und daraus den Drehpunkt zu ermitteln.
+
 
 % TODO etwas praktischer werden und dann erst zeigen warum das kacke war.
 

@@ -87,20 +87,6 @@
 
         const ws = []; // Sammlung der Winkelbewegungen
 
-        function removeOverlaps(boxes) {
-            const mostAccurate = [];
-            while (boxes.length) {
-                const max = boxes.pop();
-                mostAccurate.push(max);
-                boxes = boxes.filter(
-                    (rec) =>
-                        Math.abs(rec.x - max.x) >= 0 ||
-                        Math.abs(rec.y - max.y) >= 0
-                );
-            }
-            return mostAccurate;
-        }
-
         // simulation
         const simulate = () => {
             model.tick(1 / 60); // solve model with fixed stepping
@@ -110,43 +96,44 @@
 
             window.setTimeout(() => {
                 const image2 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
-                const result = removeOverlaps(compare_images(image1, image2, cnv.width, cnv.height));
+                const result = compare_images(image1, image2, cnv.width, cnv.height);
 
                 let max = 0;
                 let p1;
                 let p2;
 
-                const sum = result.reduce((pre, cur) => ({
-                    x: pre.x + cur.x,
-                    y: pre.y + cur.y,
-                }), { x: 0, y: 0 });
-
-                const X = sum.x / result.length;
-                const Y = sum.y / result.length;
-
-                if (!X || !Y) return;
-
-                const counter = result.reduce((pre, cur) =>
-                    pre + (cur.x - X) * (cur.y - Y), 0
-                );
-                const denominator = result.reduce((pre, cur) =>
-                    pre + (cur.x - X)**2, 0
-                );
-
-                const m = counter / denominator;
-                const b = Y - m * X;
-
-                g2().clr().exe(dtx);
-                result.forEach(e => {
-                    g2().cir({ x: e.x, y: e.y, r: 0.5 }).exe(dtx);
+                result.forEach(r => {
+                    result.forEach(s => {
+                        const hy = Math.hypot(r.y - s.y, r.x - s.x);
+                        if (hy > max) {
+                            max = hy;
+                            // p1 = s;
+                            // p2 = r;
+                            if (r.x > s.x) {
+                                p1 = s;
+                                p2 = r;
+                            } else {
+                                p1 = r;
+                                p2 = s;
+                            }
+                        };
+                    });
                 });
 
-                angle.innerHTML = Math.atan(m) * 180 / Math.PI;
+                if (!p1 || !p2) {
+                    return;
+                }
 
-                // TODO Guck dir mal die Linie an wenn das Pendel steht... da stimmt was nicht...
+                const m = (p2.y - p1.y) / (p2.x - p1.x);
+                const b = p1.y - m * p1.x;
 
-                g2().lin({ x1: 150, y1: m * 150 + b, x2: 300, y2: m * 300 + b}).exe(dtx)
+                if (m && ws.length < 200) {
+                    ws.push(Math.atan(m) * 180 / Math.PI);
+                    console.log(((Math.PI + Math.atan(m)) % Math.PI) * 180 / Math.PI);
+                }
 
+                g2().lin({x1: 0, y1: b, x2: 300, y2: m * 300 + b}).exe(dtx)
+                
             }, 1000 / 60);
 
             requestAnimationFrame(simulate);  // keep calling back
