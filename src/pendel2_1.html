@@ -115,15 +115,17 @@
                             const x = (b1 - b2) / (m2 - m1);
                             const y = m1 * x + b1;
 
-                            if (x && y) pts.push({ x, y });
+                            if (Number.isFinite(x) && Number.isFinite(y)) pts.push({ x, y });
                         }
                     }
                     const gnd = pts.reduce((pre, cur) => ({
                         x: pre.x + cur.x,
                         y: pre.y + cur.y
                     }), { x: 0, y: 0 });
+
                     gnd.x /= pts.length;
                     gnd.y /= pts.length;
+
                     gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
 
                     if (Number.isNaN(gnd.x)) {
@@ -148,8 +150,6 @@
                 }
 
                 g2().lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b }).exe(ctx2);
-
-
 
                 g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
             }, 1000 / 60);
