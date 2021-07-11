@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <p>Hier wird eine Linie definiert durch die am weitesten voneinander entfernten Pixel bei denen eine Veränderung
+        gemessen wurde.
+        Alle Schnittpunkte dieser Linien bestimmen dann einen Schwerpunkt, von dem ausgegangen wird, dass dieser in der
+        nähe des Drehpunktes sein muss.
+    </p>
+    <input id="btn" type="button" value="Start/Stop"></input>
+    <div id="gnd1" style="display:inline"></div>
+    <div id="gnd2" style="display:inline"></div>
+    <br>
+    <br>
+
+    <canvas id="cnv1" width="320" height="180"></canvas>
+    <canvas id="cnv2" width="320" height="180"></canvas>
+    <canvas id="cnv3" width="320" height="180"></canvas>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../src/compare_images.js"></script>
+
+    <script>
+        const cnv1 = document.getElementById('cnv1');
+        const ctx1 = cnv1.getContext('2d');
+
+        const cnv2 = document.getElementById('cnv2');
+        const ctx2 = cnv2.getContext('2d');
+
+        const cnv3 = document.getElementById('cnv3');
+        const ctx3 = cnv3.getContext('2d');
+
+        const g = g2().clr().view({ cartesian: true });         // a g2 graphics-object
+        const model = {
+            id: 'pendulum',
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 150, y: 120, base: true },
+                { id: 'A1', x: 230, y: 90 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+            ]
+        };
+
+        const base = model.nodes.find(e => e.id === 'A0');
+        gnd1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
+
+        const data = [];
+        const lines = [];
+
+        // simulation
+        const simulate = () => {
+            model.tick(1 / 60); // solve model with fixed stepping
+            g.exe(ctx1);         // render its pose on the canvas
+
+            const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
+
+            window.setTimeout(() => {
+                const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
+                const result = compare_images(image1, image2, cnv1.width, cnv1.height);
+
+                let max = 0;
+                let p1;
+                let p2;
+
+                result.forEach(r => {
+                    result.forEach(s => {
+                        const hy = Math.hypot(r.y - s.y, r.x - s.x);
+                        if (hy > max) {
+                            max = hy;
+                            // p1 = s;
+                            // p2 = r;
+                            if (r.x > s.x) {
+                                p1 = s;
+                                p2 = r;
+                            } else {
+                                p1 = r;
+                                p2 = s;
+                            }
+                        };
+                    });
+                });
+
+                if (!p1 || !p2) {
+                    return;
+                }
+
+                const m = (p2.y - p1.y) / (p2.x - p1.x);
+                const b = p1.y - m * p1.x;
+                lines.push({ m, b });
+
+                g2().clr().exe(ctx2);
+                if (lines.length > 1) {
+                    const pts = [];
+                    for (let i = 0; i < lines.length; ++i) {
+                        for (let j = 1; j < lines.length; ++j) {
+                            const m1 = lines[i].m;
+                            const b1 = lines[i].b;
+                            const m2 = lines[j].m;
+                            const b2 = lines[j].b;
+
+                            const x = (b1 - b2) / (m2 - m1);
+                            const y = m1 * x + b1;
+
+                            if (x && y) pts.push({ x, y });
+                        }
+                    }
+                    const gnd = pts.reduce((pre, cur) => ({
+                        x: pre.x + cur.x,
+                        y: pre.y + cur.y
+                    }), { x: 0, y: 0 });
+                    gnd.x /= pts.length;
+                    gnd.y /= pts.length;
+                    gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+
+                    if (Number.isNaN(gnd.x)) {
+                        console.log(pts);
+                        running = false;
+                    }
+
+                    g2().gnd(gnd).exe(ctx2);
+                }
+
+
+                const align = (a) => (Math.PI + a) % Math.PI
+
+                data.push(data.length / 2 * 1 / 60,
+                    align(-model.constraints[0].w) - align(Math.atan(m)));
+
+                const chart = {
+                    x: 20, y: 20, b: 280, h: 150,
+                    funcs: [{ data }],
+                    xaxis: {},
+                    yaxis: {},
+                }
+
+                g2().lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b }).exe(ctx2);
+
+
+
+                g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
+            }, 1000 / 60);
+
+            if (running) {
+                requestAnimationFrame(simulate);  // keep calling back
+            }
+        };
+
+        mec.model.extend(model);                    // extend the model
+        model.init();                               // initialize it
+        model.draw(g);                              // append model-graphics to graphics-obj
+
+        let running = false;
+        const btn = document.getElementById('btn');
+        btn.addEventListener('click', () => {
+            running = !running;
+            running && simulate();  // kick-off the simulation
+        });
+        simulate();                                 // kick-off the simulation
+    </script>
+</body>
+
+</html>

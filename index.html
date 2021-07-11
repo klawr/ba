@@ -10,166 +10,17 @@
         canvas {
             outline: 2px solid black !important;
         }
+        iframe {
+            width: 100%;
+            height: 350px;
+        }
     </style>
 </head>
 
 <body>
-<input id="camBtn" type="button" value="Toggle camera"></input>
-    <input id="snapBtn" type="button" value="Take snaps"></input>
-    <p id="angle"></p>
-    <br>
-    <canvas id="cnv" width="320" height="180"></canvas>
-    <canvas id="dnv" width="320" height="180"></canvas>
-    <canvas id="env" width="320" height="180"></canvas>
-    <script src="https://goessner.github.io/g2/g2.js"></script>
-    <script src="./third_party/mec2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
-    <script src="./src/getDirectionalColor.js"></script>
-    <script src="./src/smallest_enclosing_circle.js"></script>
-    <script src="./src/toggleCamera.js"></script>
-    <script src="./src/compare_images.js"></script>
-    <script src="./src/lucas_kanade.js"></script>
-
-    <script>
-        const cnv = document.getElementById('cnv');
-        const ctx = cnv.getContext('2d');
-
-        const dnv = document.getElementById('dnv');
-        const dtx = dnv.getContext('2d');
-
-        const env = document.getElementById('env');
-        const etx = env.getContext('2d');
-
-        const angle = document.getElementById('angle');
-
-        const g = g2().clr().view({ cartesian: true });         // a g2 graphics-object
-        const model = {
-            id: 'pendulum',
-            gravity: true,
-            nodes: [
-                { id: 'A0', x: 149.9, y: 100, base: true },
-                { id: 'A1', x: 150, y: 150 }
-            ],
-            constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
-            ]
-        };
-
-        const obj = {
-            mmax: {
-                m: 0,
-                b: 0,
-            },
-            mmin: {
-                m: 0,
-                b: 0,
-            },
-            lin1: {
-                p1: {
-                    x: 0, y: 0
-                },
-                p2: {
-                    x: 0, y: 0
-                }
-            },
-            lin2: {
-                p1: {
-                    x: 0, y: 0
-                },
-                p2: {
-                    x: 0, y: 0
-                }
-            }
-        };
-
-        let gnd = { x: 0, y: 0, confident: false, past: [] }; // Ground
-        let nod; // Endstück des Pendels
-
-        const ws = []; // Sammlung der Winkelbewegungen
-
-        function removeOverlaps(boxes) {
-            const mostAccurate = [];
-            while (boxes.length) {
-                const max = boxes.pop();
-                mostAccurate.push(max);
-                boxes = boxes.filter(
-                    (rec) =>
-                        Math.abs(rec.x - max.x) >= 10 ||
-                        Math.abs(rec.y - max.y) >= 10
-                );
-            }
-            return mostAccurate;
-        }
-
-        let t = 0;
-        // simulation
-        const simulate = () => {
-            if (t >= 1000) return;
-            t++;
-            angle.innerHTML = t;
-
-            model.tick(1 / 60); // solve model with fixed stepping
-            g.exe(ctx);         // render its pose on the canvas
-
-            const image1 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
-
-            window.setTimeout(() => {
-                const image2 = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
-                const result = removeOverlaps(compare_images(image1, image2, cnv.width, cnv.height));
-
-                if (result.length) last_result = result;
-
-                let max = 0;
-                let p1;
-                let p2;
-
-                const sum = result.reduce((pre, cur) => ({
-                    x: pre.x + cur.x,
-                    y: pre.y + cur.y,
-                }), { x: 0, y: 0 });
-
-                const X = sum.x / result.length;
-                const Y = sum.y / result.length;
-
-                let m;
-                let b;
-
-                if (!X || !Y) {
-                    m = Number.MAX_SAFE_INTEGER;
-                    b = 0;
-                } else {
-                    const counter = result.reduce((pre, cur) =>
-                        pre + (cur.x - X) * (cur.y - Y), 0
-                    );
-                    const denominator = result.reduce((pre, cur) =>
-                        pre + (cur.x - X) ** 2, 0
-                    );
-
-                    m = counter / denominator;
-                    b = Y - m * X;
-                }
-
-                g2().clr().exe(dtx);
-                result.forEach(e => {
-                    g2().cir({ x: e.x, y: e.y, r: 0.5 }).exe(dtx);
-                });
-
-                g2().lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(dtx)
-
-            }, 1000 / 60);
-
-            requestAnimationFrame(simulate);  // keep calling back
-        };
-
-        mec.model.extend(model);                    // extend the model
-        model.init();                               // initialize it
-        model.draw(g);                              // append model-graphics to graphics-obj
-
-        simulate();                                 // kick-off the simulation
-
-        const camBtn = document.getElementById("camBtn");
-        camBtn.addEventListener('click', () => toggleCamera(cnv));
-    </script>
+    <iframe src="./src/pendel1_1.html"></iframe>
+    <iframe src="./src/pendel1_2.html"></iframe>
+    <iframe src="./src/pendel2_1.html"></iframe>
 </body>
 
 </html>
