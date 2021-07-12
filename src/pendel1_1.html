@@ -14,6 +14,7 @@
 </head>
 
 <body>
+    <script src="./gnd.js"></script>
     <script src="https://goessner.github.io/g2/g2.js"></script>
     <script src="../third_party/mec2.min.js"></script>
     <script src="../src/smallest_enclosing_circle.js"></script>
@@ -62,7 +63,7 @@
         gnd1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
 
         const ply = []; // Alle Punkte
-        let gnd = { x: 0, y: 0, confident: false, past: [] }; // Ground
+        let gnd = new Gnd();
         let nod; // Endstück des Pendels
         const data = [];
 
@@ -89,21 +90,7 @@
                     });
                 }
 
-                if (ply.length && gnd.past.push(makeCircle(ply)) > 10) {
-                    gnd.past.shift();
-                };
-
-                let acc = 0;
-                for (let i = 1; i < gnd.past.length; ++i) {
-                    const pre = gnd.past[i - 1];
-                    const cur = gnd.past[i];
-                    acc += Math.hypot(cur.x - pre.x, cur.y - pre.y);
-                }
-                if (gnd.past.length === 10 && acc === 0) {
-                    gnd.confident = true;
-                    gnd.x = gnd.past[gnd.past.length - 1].x;
-                    gnd.y = gnd.past[gnd.past.length - 1].y;
-                }
+                ply.length && gnd.add(makeCircle(ply));
 
                 g2().cir({...gnd.past[gnd.past.length - 1]}).exe(ctx2);
 
@@ -132,7 +119,7 @@
                     }
 
                     g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
-                        .gnd(gnd)
+                        .gnd({...gnd})
                         .nod(nod)
                         .exe(ctx2);
 
