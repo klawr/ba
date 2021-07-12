@@ -78,55 +78,52 @@
 
         // simulation
         const simulate = () => {
+            const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
             model.tick(1 / 60); // solve model with fixed stepping
             g.exe(ctx1);         // render its pose on the canvas
 
-            const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
 
-            window.setTimeout(() => {
-                const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-                const result = removeOverlaps(compare_images(image1, image2, cnv1.width, cnv1.height));
+            const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
+            const result = removeOverlaps(compare_images(image1, image2, cnv1.width, cnv1.height));
 
-                if (result.length) last_result = result;
+            if (result.length) last_result = result;
 
-                let max = 0;
-                let p1;
-                let p2;
+            let max = 0;
+            let p1;
+            let p2;
 
-                const sum = result.reduce((pre, cur) => ({
-                    x: pre.x + cur.x,
-                    y: pre.y + cur.y,
-                }), { x: 0, y: 0 });
+            const sum = result.reduce((pre, cur) => ({
+                x: pre.x + cur.x,
+                y: pre.y + cur.y,
+            }), { x: 0, y: 0 });
 
-                const X = sum.x / result.length;
-                const Y = sum.y / result.length;
+            const X = sum.x / result.length;
+            const Y = sum.y / result.length;
 
-                let m;
-                let b;
+            let m;
+            let b;
 
-                if (!X || !Y) {
-                    m = Number.MAX_SAFE_INTEGER;
-                    b = 0;
-                } else {
-                    const counter = result.reduce((pre, cur) =>
-                        pre + (cur.x - X) * (cur.y - Y), 0
-                    );
-                    const denominator = result.reduce((pre, cur) =>
-                        pre + (cur.x - X) ** 2, 0
-                    );
+            if (!X || !Y) {
+                m = Number.MAX_SAFE_INTEGER;
+                b = 0;
+            } else {
+                const counter = result.reduce((pre, cur) =>
+                    pre + (cur.x - X) * (cur.y - Y), 0
+                );
+                const denominator = result.reduce((pre, cur) =>
+                    pre + (cur.x - X) ** 2, 0
+                );
 
-                    m = counter / denominator;
-                    b = Y - m * X;
-                }
+                m = counter / denominator;
+                b = Y - m * X;
+            }
 
-                g2().clr().exe(ctx2);
-                result.forEach(e => {
-                    g2().cir({ x: e.x, y: e.y, r: 0.5 }).exe(ctx2);
-                });
+            g2().clr().exe(ctx2);
+            result.forEach(e => {
+                g2().cir({ x: e.x, y: e.y, r: 0.5 }).exe(ctx2);
+            });
 
-                g2().lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
-
-            }, 1000 / 60);
+            g2().lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
 
             if (running) {
                 requestAnimationFrame(simulate);  // keep calling back

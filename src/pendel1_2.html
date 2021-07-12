@@ -73,66 +73,61 @@
 
         // simulation
         const simulate = () => {
-            model.tick(1 / 60); // solve model with fixed stepping
-            g.exe(ctx1);         // render its pose on the canvas
-
             const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
+            g.exe(ctx1);         // render its pose on the canvas
+            model.tick(1 / 60); // solve model with fixed stepping
 
-            window.setTimeout(() => {
-                const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-                const result = compare_images(image1, image2, cnv1.width, cnv1.height);
+            const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
+            const result = compare_images(image1, image2, cnv1.width, cnv1.height);
 
-                g2().clr().exe(ctx2);
+            g2().clr().exe(ctx2);
 
-                if (!gnd.confident) {
-                    result.forEach(r => {
-                        if (!gnd.confident) {
-                            // Draw a circle for every found change
-                            g2().cir({ ...r, r: 1 }).exe(ctx2);
-                            ply.push({ ...r });
-                        }
-                    });
+            if (!gnd.confident) {
+                result.forEach(r => {
+                    if (!gnd.confident) {
+                        // Draw a circle for every found change
+                        g2().cir({ ...r, r: 1 }).exe(ctx2);
+                        ply.push({ ...r });
+                    }
+                });
+            }
+
+            ply.length && gnd.add(makeCircle(ply));
+
+            g2().cir({ ...gnd.past[gnd.past.length - 1] }).exe(ctx2);
+
+            if (gnd.confident) {
+                for (let i = 0, max = 0; i < result.length; ++i) {
+                    const r = result[i];
+                    if (r.x === 0 && r.y === 0) {
+                        continue;
+                    }
+                    const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
+
+                    if (hy > max) {
+                        nod = r;
+                    }
                 }
 
-                ply.length && gnd.add(makeCircle(ply));
+                const m = (a) => (a + 2 * Math.PI) % Math.PI;
+                const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
+                data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
 
-                g2().cir({ ...gnd.past[gnd.past.length - 1] }).exe(ctx2);
-
-
-                if (gnd.confident) {
-                    for (let i = 0, max = 0; i < result.length; ++i) {
-                        const r = result[i];
-                        if (r.x === 0 && r.y === 0) {
-                            continue;
-                        }
-                        const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
-
-                        if (hy > max) {
-                            nod = r;
-                        }
-                    }
-
-                    const m = (a) => (a + 2 * Math.PI) % Math.PI;
-                    const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
-                    data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
-
-                    const chart = {
-                        x: 20, y: 20, b: 280, h: 150,
-                        funcs: [{ data }],
-                        xaxis: {},
-                        yaxis: {},
-                    }
-
-                    g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
-                        .gnd({...gnd})
-                        .nod(nod)
-                        .exe(ctx2);
-
-                    g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
-                    gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
-
+                const chart = {
+                    x: 20, y: 20, b: 280, h: 150,
+                    funcs: [{ data }],
+                    xaxis: {},
+                    yaxis: {},
                 }
-            }, 1000 / 60);
+
+                g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
+                    .gnd({ ...gnd })
+                    .nod(nod)
+                    .exe(ctx2);
+
+                g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
+                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+            }
             if (running) {
                 requestAnimationFrame(simulate);  // keep calling back
             }

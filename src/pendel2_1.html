@@ -66,115 +66,111 @@
 
         // simulation
         const simulate = () => {
-            model.tick(1 / 60); // solve model with fixed stepping
-            g.exe(ctx1);         // render its pose on the canvas
-
             const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
+            g.exe(ctx1);         // render its pose on the canvas
+            model.tick(1 / 60); // solve model with fixed stepping
 
-            window.setTimeout(() => {
-                const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-                const result = compare_images(image1, image2, cnv1.width, cnv1.height);
+            const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
+            const result = compare_images(image1, image2, cnv1.width, cnv1.height);
 
-                g2().clr().exe(ctx2);
+            g2().clr().exe(ctx2);
 
-                let max = 0;
-                let p1;
-                let p2;
+            let max = 0;
+            let p1;
+            let p2;
 
-                result.forEach(r => {
-                    result.forEach(s => {
-                        const hy = Math.hypot(r.y - s.y, r.x - s.x);
-                        if (hy > max) {
-                            max = hy;
-                            // p1 = s;
-                            // p2 = r;
-                            if (r.x > s.x) {
-                                p1 = s;
-                                p2 = r;
-                            } else {
-                                p1 = r;
-                                p2 = s;
-                            }
-                        };
-                    });
+            result.forEach(r => {
+                result.forEach(s => {
+                    const hy = Math.hypot(r.y - s.y, r.x - s.x);
+                    if (hy > max) {
+                        max = hy;
+                        // p1 = s;
+                        // p2 = r;
+                        if (r.x > s.x) {
+                            p1 = s;
+                            p2 = r;
+                        } else {
+                            p1 = r;
+                            p2 = s;
+                        }
+                    };
                 });
+            });
 
-                if (!p1 || !p2) {
-                    return;
-                }
+            if (!p1 || !p2) {
+                return;
+            }
 
-                const m = (p2.y - p1.y) / (p2.x - p1.x);
-                const b = p1.y - m * p1.x;
+            const m = (p2.y - p1.y) / (p2.x - p1.x);
+            const b = p1.y - m * p1.x;
 
-                if (!gnd.confident) {
-                    lines.push({ m, b });
+            if (!gnd.confident) {
+                lines.push({ m, b });
 
-                    if (lines.length > 1) {
-                        const pts = [];
-                        for (let i = 0; i < lines.length; ++i) {
-                            for (let j = 1; j < lines.length; ++j) {
-                                const m1 = lines[i].m;
-                                const b1 = lines[i].b;
-                                const m2 = lines[j].m;
-                                const b2 = lines[j].b;
+                if (lines.length > 1) {
+                    const pts = [];
+                    for (let i = 0; i < lines.length; ++i) {
+                        for (let j = 1; j < lines.length; ++j) {
+                            const m1 = lines[i].m;
+                            const b1 = lines[i].b;
+                            const m2 = lines[j].m;
+                            const b2 = lines[j].b;
 
-                                const x = (b1 - b2) / (m2 - m1);
-                                const y = m1 * x + b1;
+                            const x = (b1 - b2) / (m2 - m1);
+                            const y = m1 * x + b1;
 
-                                if (Number.isFinite(x) && Number.isFinite(y)) pts.push({ x, y });
-                            }
-                        }
-                        const pre_gnd = pts.reduce((pre, cur) => ({
-                            x: pre.x + cur.x,
-                            y: pre.y + cur.y
-                        }), { x: 0, y: 0 });
-
-                        pre_gnd.x /= pts.length;
-                        pre_gnd.y /= pts.length;
-
-                        gnd2.innerHTML = `Erstmal: x: ${pre_gnd.x}, y: ${cnv1.height - pre_gnd.y}`;
-
-                        g2().cir({...pre_gnd, r: 5}).exe(ctx2);
-                        
-                        gnd.add(pre_gnd, 0.5);
-                    }
-
-                    g2().lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b }).exe(ctx2);
-
-                } else {
-                    for (let i = 0, max = 0; i < result.length; ++i) {
-                        const r = result[i];
-                        if (r.x === 0 && r.y === 0) {
-                            continue;
-                        }
-                        const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
-
-                        if (hy > max) {
-                            nod = r;
+                            if (Number.isFinite(x) && Number.isFinite(y)) pts.push({ x, y });
                         }
                     }
+                    const pre_gnd = pts.reduce((pre, cur) => ({
+                        x: pre.x + cur.x,
+                        y: pre.y + cur.y
+                    }), { x: 0, y: 0 });
 
-                    gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
-                    g2().lin({ p1: gnd, p2: nod })
-                        .gnd({...gnd})
-                        .nod(nod)
-                        .exe(ctx2);
+                    pre_gnd.x /= pts.length;
+                    pre_gnd.y /= pts.length;
+
+                    gnd2.innerHTML = `Erstmal: x: ${pre_gnd.x}, y: ${cnv1.height - pre_gnd.y}`;
+
+                    g2().cir({ ...pre_gnd, r: 5 }).exe(ctx2);
+
+                    gnd.add(pre_gnd, 0.5);
                 }
 
-                const align = (a) => (Math.PI + a) % Math.PI
+                g2().lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b }).exe(ctx2);
+            } else {
+                for (let i = 0, max = 0; i < result.length; ++i) {
+                    const r = result[i];
+                    if (r.x === 0 && r.y === 0) {
+                        continue;
+                    }
+                    const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
 
-                data.push(data.length / 2 * 1 / 60,
-                    align(-model.constraints[0].w) - align(Math.atan(m)));
-
-                const chart = {
-                    x: 20, y: 20, b: 280, h: 150,
-                    funcs: [{ data }],
-                    xaxis: {},
-                    yaxis: {},
+                    if (hy > max) {
+                        nod = r;
+                    }
                 }
 
-                g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
-            }, 1000 / 60);
+                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+                g2().lin({ p1: gnd, p2: nod })
+                    .gnd({ ...gnd })
+                    .nod(nod)
+                    .exe(ctx2);
+            }
+
+            const align = (a) => (Math.PI + a) % Math.PI
+
+            data.push(data.length / 2 * 1 / 60,
+                align(-model.constraints[0].w) - align(Math.atan(m)));
+
+            const chart = {
+                x: 20, y: 20, b: 280, h: 150,
+                funcs: [{ data }],
+                xaxis: {},
+                yaxis: {},
+            }
+
+            g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
 
             if (running) {
                 requestAnimationFrame(simulate);  // keep calling back
