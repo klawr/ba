@@ -60,6 +60,8 @@
 
         const data = [];
         const lines = [];
+        let gnd = { x: 0, y: 0, confident: false, past: [] }; // Ground
+        let nod; // Endstück des Pendels
 
         // simulation
         const simulate = () => {
@@ -71,6 +73,8 @@
             window.setTimeout(() => {
                 const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
                 const result = compare_images(image1, image2, cnv1.width, cnv1.height);
+
+                g2().clr().exe(ctx2);
 
                 let max = 0;
                 let p1;
@@ -98,42 +102,78 @@
                     return;
                 }
 
+
                 const m = (p2.y - p1.y) / (p2.x - p1.x);
                 const b = p1.y - m * p1.x;
-                lines.push({ m, b });
 
-                g2().clr().exe(ctx2);
-                if (lines.length > 1) {
-                    const pts = [];
-                    for (let i = 0; i < lines.length; ++i) {
-                        for (let j = 1; j < lines.length; ++j) {
-                            const m1 = lines[i].m;
-                            const b1 = lines[i].b;
-                            const m2 = lines[j].m;
-                            const b2 = lines[j].b;
+                if (!gnd.confident) {
+                    lines.push({ m, b });
 
-                            const x = (b1 - b2) / (m2 - m1);
-                            const y = m1 * x + b1;
+                    if (lines.length > 1) {
+                        const pts = [];
+                        for (let i = 0; i < lines.length; ++i) {
+                            for (let j = 1; j < lines.length; ++j) {
+                                const m1 = lines[i].m;
+                                const b1 = lines[i].b;
+                                const m2 = lines[j].m;
+                                const b2 = lines[j].b;
 
-                            if (Number.isFinite(x) && Number.isFinite(y)) pts.push({ x, y });
+                                const x = (b1 - b2) / (m2 - m1);
+                                const y = m1 * x + b1;
+
+                                if (Number.isFinite(x) && Number.isFinite(y)) pts.push({ x, y });
+                            }
+                        }
+                        const pre_gnd = pts.reduce((pre, cur) => ({
+                            x: pre.x + cur.x,
+                            y: pre.y + cur.y
+                        }), { x: 0, y: 0 });
+
+                        pre_gnd.x /= pts.length;
+                        pre_gnd.y /= pts.length;
+
+                        gnd2.innerHTML = `Erstmal: x: ${pre_gnd.x}, y: ${cnv1.height - pre_gnd.y}`;
+
+                        g2().gnd(pre_gnd).exe(ctx2);
+
+                        if (gnd.past.push(pre_gnd) > 10) {
+                            gnd.past.shift();
+                        };
+
+                        let acc = 0;
+                        for (let i = 1; i < gnd.past.length; ++i) {
+                            const pre = gnd.past[i - 1];
+                            const cur = gnd.past[i];
+                            acc += Math.hypot(cur.x - pre.x, cur.y - pre.y);
+                        }
+
+                        if (gnd.past.length === 10 && acc < 0.5) {
+                            gnd.confident = true;
+                            gnd.x = gnd.past[gnd.past.length - 1].x;
+                            gnd.y = gnd.past[gnd.past.length - 1].y;
                         }
                     }
-                    const gnd = pts.reduce((pre, cur) => ({
-                        x: pre.x + cur.x,
-                        y: pre.y + cur.y
-                    }), { x: 0, y: 0 });
+                    g2().lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b }).exe(ctx2);
 
-                    gnd.x /= pts.length;
-                    gnd.y /= pts.length;
+                } else {
+                    for (let i = 0, max = 0; i < result.length; ++i) {
+                        const r = result[i];
+                        if (r.x === 0 && r.y === 0) {
+                            continue;
+                        }
+                        const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
 
-                    gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
-
-                    if (Number.isNaN(gnd.x)) {
-                        console.log(pts);
-                        running = false;
+                        if (hy > max) {
+                            nod = r;
+                        }
                     }
 
-                    g2().gnd(gnd).exe(ctx2);
+                    gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+                    g2().lin({ p1: gnd, p2: nod })
+                        .gnd(gnd)
+                        .nod(nod)
+                        .exe(ctx2);
+
                 }
 
 
@@ -148,8 +188,6 @@
                     xaxis: {},
                     yaxis: {},
                 }
-
-                g2().lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b }).exe(ctx2);
 
                 g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
             }, 1000 / 60);
