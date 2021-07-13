@@ -14,38 +14,19 @@
 </head>
 
 <body>
-    <b>pendel3_2.html</b>
-    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um mehr als 180° dreht.
-        Wie zu sehen ist, ist der vermutete Drehpunkt sehr nah am tatsächlichen Drehpunkt.
-    </p>
-
-    <input id="btn" type="button" value="Start/Stop"></input>
-    <p id="gnd1"></p>
-    <p id="gnd2"></p>
-
-    <canvas id="cnv1" width="320" height="180"></canvas>
-    <canvas id="cnv2" width="320" height="180"></canvas>
-    <canvas id="cnv3" width="320" height="180"></canvas>
     <script src="https://goessner.github.io/g2/g2.js"></script>
     <script src="../third_party/mec2.min.js"></script>
     <script src="./getDirectionalColor.js"></script>
     <script src="./gnd.js"></script>
     <script src="./compare_images.js"></script>
+    <script src="../src/simulation.js"></script>
+
+    <b>pendel3_2.html</b>
+    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um mehr als 180° dreht.
+        Wie zu sehen ist, ist der vermutete Drehpunkt sehr nah am tatsächlichen Drehpunkt.
+    </p>
 
     <script>
-        const gnd1 = document.getElementById('gnd1');
-        const gnd2 = document.getElementById('gnd2');
-
-        const cnv1 = document.getElementById('cnv1');
-        const ctx1 = cnv1.getContext('2d');
-
-        const cnv2 = document.getElementById('cnv2');
-        const ctx2 = cnv2.getContext('2d');
-
-        const cnv3 = document.getElementById('cnv3');
-        const ctx3 = cnv3.getContext('2d');
-
-        const g = g2().clr().view({ cartesian: true });         // a g2 graphics-object
         const model = {
             id: 'pendulum',
             gravity: true,
@@ -77,29 +58,22 @@
             return mostAccurate;
         }
 
-        // simulation
-        const simulate = () => {
-            const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-            model.tick(1 / 60); // solve model with fixed stepping
-            g.exe(ctx1);         // render its pose on the canvas
+        const fn = (result) => {
+            const filtered = removeOverlaps(result);
 
-
-            const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-            const result = removeOverlaps(compare_images(image1, image2, cnv1.width, cnv1.height));
-
-            if (result.length) last_result = result;
+            if (filtered.length) last_result = filtered;
 
             let max = 0;
             let p1;
             let p2;
 
-            const sum = result.reduce((pre, cur) => ({
+            const sum = filtered.reduce((pre, cur) => ({
                 x: pre.x + cur.x,
                 y: pre.y + cur.y,
             }), { x: 0, y: 0 });
 
-            const X = sum.x / result.length;
-            const Y = sum.y / result.length;
+            const X = sum.x / filtered.length;
+            const Y = sum.y / filtered.length;
 
             let m;
             let b;
@@ -108,10 +82,10 @@
                 m = Number.MAX_SAFE_INTEGER;
                 b = 0;
             } else {
-                const counter = result.reduce((pre, cur) =>
+                const counter = filtered.reduce((pre, cur) =>
                     pre + (cur.x - X) * (cur.y - Y), 0
                 );
-                const denominator = result.reduce((pre, cur) =>
+                const denominator = filtered.reduce((pre, cur) =>
                     pre + (cur.x - X) ** 2, 0
                 );
 
@@ -120,28 +94,14 @@
             }
 
             g2().clr().exe(ctx2);
-            result.forEach(e => {
+            filtered.forEach(e => {
                 g2().cir({ x: e.x, y: e.y, r: 0.5 }).exe(ctx2);
             });
 
             g2().lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
-
-            if (running) {
-                requestAnimationFrame(simulate);  // keep calling back
-            }
         };
 
-        let running = false;
-        const btn = document.getElementById('btn');
-        btn.addEventListener('click', () => {
-            running = !running;
-            running && simulate();  // kick-off the simulation
-        });
-
-        mec.model.extend(model);                    // extend the model
-        model.init();                               // initialize it
-        model.draw(g);                              // append model-graphics to graphics-obj
-        simulate();                                 // kick-off the simulation
+        simulation(model, fn);
     </script>
 </body>
 

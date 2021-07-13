@@ -20,31 +20,14 @@
         Alle Schnittpunkte dieser Linien bestimmen dann einen Schwerpunkt, von dem ausgegangen wird, dass dieser in der
         nähe des Drehpunktes sein muss.
     </p>
-    <input id="btn" type="button" value="Start/Stop"></input>
-    <div id="gnd1" style="display:inline"></div>
-    <div id="gnd2" style="display:inline"></div>
-    <br>
-    <br>
-
-    <canvas id="cnv1" width="320" height="180"></canvas>
-    <canvas id="cnv2" width="320" height="180"></canvas>
-    <canvas id="cnv3" width="320" height="180"></canvas>
+    
     <script src="https://goessner.github.io/g2/g2.js"></script>
     <script src="./gnd.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../src/compare_images.js"></script>
+    <script src="./compare_images.js"></script>
+    <script src="./simulation.js"></script>
 
     <script>
-        const cnv1 = document.getElementById('cnv1');
-        const ctx1 = cnv1.getContext('2d');
-
-        const cnv2 = document.getElementById('cnv2');
-        const ctx2 = cnv2.getContext('2d');
-
-        const cnv3 = document.getElementById('cnv3');
-        const ctx3 = cnv3.getContext('2d');
-
-        const g = g2().clr().view({ cartesian: true });         // a g2 graphics-object
         const model = {
             id: 'pendulum',
             gravity: true,
@@ -57,23 +40,12 @@
             ]
         };
 
-        const base = model.nodes.find(e => e.id === 'A0');
-        gnd1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
-
         const data = [];
         const lines = [];
         let gnd = new Gnd();
         let nod; // Endstück des Pendels
 
-        // simulation
-        const simulate = () => {
-            const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-            g.exe(ctx1);         // render its pose on the canvas
-            model.tick(1 / 60); // solve model with fixed stepping
-
-            const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-            const result = compare_images(image1, image2, cnv1.width, cnv1.height);
-
+        const fn = (result) => {
             g2().clr().exe(ctx2);
 
             let max = 0;
@@ -172,23 +144,9 @@
             }
 
             g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
-
-            if (running) {
-                requestAnimationFrame(simulate);  // keep calling back
-            }
         };
 
-        mec.model.extend(model);                    // extend the model
-        model.init();                               // initialize it
-        model.draw(g);                              // append model-graphics to graphics-obj
-
-        let running = false;
-        const btn = document.getElementById('btn');
-        btn.addEventListener('click', () => {
-            running = !running;
-            running && simulate();  // kick-off the simulation
-        });
-        simulate();                                 // kick-off the simulation
+        simulation(model, fn);
     </script>
 </body>
 
