@@ -14,15 +14,9 @@
 </head>
 
 <body>
-    <script src="./gnd.js"></script>
-    <script src="https://goessner.github.io/g2/g2.js"></script>
-    <script src="../third_party/mec2.min.js"></script>
-    <script src="../src/smallest_enclosing_circle.js"></script>
-    <script src="../src/compare_images.js"></script>
-
-    <b>pendel1_1.html</b>
-    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um mehr als 180° dreht.
-        Wie zu sehen ist, ist der vermutete Drehpunkt sehr nah am tatsächlichen Drehpunkt.
+    <b>pendel4_1html</b>
+    <p>Test mit Ermittlung zweier Kreise von denen einer Richtig ist. Durch die Überprüfung der Bewegung der
+        Mittelpunktes kann dann geschaut werden welcher Kreis wahrscheinlicher der Richtige ist.
     </p>
 
     <input id="btn" type="button" value="Start/Stop"></input>
@@ -35,7 +29,15 @@
     <canvas id="cnv2" width="320" height="180"></canvas>
     <canvas id="cnv3" width="320" height="180"></canvas>
 
+    <script src="./gnd.js"></script>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../src/smallest_enclosing_circle.js"></script>
+    <script src="../src/compare_images.js"></script>
+
     <script>
+        let i = 0;
+
         const gnd1 = document.getElementById('gnd1');
         const gnd2 = document.getElementById('gnd2');
 
@@ -54,8 +56,8 @@
             id: 'pendulum',
             gravity: true,
             nodes: [
-                { id: 'A0', x: 150, y: 100, base: true },
-                { id: 'A1', x: 230, y: 130 }
+                { id: 'A0', x: 150, y: 120, base: true },
+                { id: 'A1', x: 230, y: 90 }
             ],
             constraints: [
                 { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
@@ -66,73 +68,75 @@
         gnd1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
 
         const ply = []; // Alle Punkte
-        let gnd = new Gnd();
+        const p1 = new Gnd();
+        const p2 = new Gnd();
         let nod; // Endstück des Pendels
         const data = [];
 
         // simulation
         const simulate = () => {
+            g.exe(ctx1);        // render its pose on the canvas
             const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-            g.exe(ctx1);         // render its pose on the canvas
             model.tick(1 / 60); // solve model with fixed stepping
 
             const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
             const result = compare_images(image1, image2, cnv1.width, cnv1.height);
 
-            g2().clr().exe(ctx2);
+            let hy = Math.hypot(p1.y - p2.y, p1.x - p2.x);
 
-            if (!gnd.confident) {
-                result.forEach(r => {
-                    if (!gnd.confident) {
-                        // Draw a circle for every found change
-                        g2().cir({ ...r, r: 1 }).exe(ctx2);
-                        ply.push({ ...r });
-                    }
-                });
-            }
-
-            ply.length && gnd.add(makeCircle(ply));
-
-            g2().cir({ ...gnd.past[gnd.past.length - 1] }).exe(ctx2);
-
-            if (gnd.confident) {
-                for (let i = 0, max = 0; i < result.length; ++i) {
-                    const r = result[i];
-                    if (r.x === 0 && r.y === 0) {
-                        continue;
-                    }
-                    const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
-
-                    if (hy > max) {
-                        nod = r;
+            for (let i = 0; i < result.length; ++i) {
+                for (let j = i + 1; j < result.length; ++j) {
+                    const r1 = result[i];
+                    const r2 = result[j];
+                    const r = Math.hypot(r1.y - r2.y, r1.x - r2.x)
+                    if (r > hy) {
+                        hy = r;
+                        p1.x = r1.x;
+                        p1.y = r1.y;
+                        p2.x = r2.x;
+                        p2.y = r2.y;
                     }
                 }
-
-                const m = (a) => (a + 2 * Math.PI) % Math.PI;
-                const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
-                data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
-
-                const chart = {
-                    x: 20, y: 20, b: 280, h: 150,
-                    funcs: [{ data }],
-                    xaxis: {},
-                    yaxis: {},
-                }
-
-                g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
-                    .gnd({ ...gnd })
-                    .nod(nod)
-                    .exe(ctx2);
-
-                g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
-                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
-
             }
 
+            p1.add(p1, 0);
+            p2.add(p2, 0);
+
+            const h = g2().clr();
+            if (p1.confident) {
+                h.gnd({...p1});
+            } else {
+                h.nod({...p1});
+            }
+            if (p2.confident) {
+                h.gnd({...p2});
+            } else {
+                h.nod({...p2});
+            }
+            h.cir({...p1, r: hy}).cir({...p2, r: hy}).exe(ctx2);
+
+            // const m = (a) => (a + 2 * Math.PI) % Math.PI;
+            // const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
+            // data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
+
+            // const chart = {
+            //     x: 20, y: 20, b: 280, h: 150,
+            //     funcs: [{ data }],
+            //     xaxis: {},
+            //     yaxis: {},
+            // }
+
+            // g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
+            //     .gnd({ ...gnd })
+            //     .nod(nod)
+            //     .exe(ctx2);
+
+            // g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
+            // gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             if (running) {
                 requestAnimationFrame(simulate);  // keep calling back
-            }
-        };
+            };
+        }
 
         let running = false;
         const btn = document.getElementById('btn');

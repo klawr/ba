@@ -6,8 +6,8 @@ class Gnd {
     past = [];
 
     add(a, threshold) {
-        if (gnd.past.push(a) > 10) {
-            gnd.past.shift();
+        if (this.past.push(a) > 10) {
+            this.past.shift();
         };
 
         this.checkConfidence(threshold);
@@ -23,8 +23,8 @@ class Gnd {
 
         if (this.past.length === 10 && acc < threshold) {
             this.confident = true;
-            this.x = gnd.past[this.past.length - 1].x;
-            this.y = gnd.past[this.past.length - 1].y;
+            this.x = this.past[this.past.length - 1].x;
+            this.y = this.past[this.past.length - 1].y;
         }
     }
 
