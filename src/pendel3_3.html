@@ -20,12 +20,9 @@
     <script src="./gnd.js"></script>
     <script src="./compare_images.js"></script>
     <script src="../src/simulation.js"></script>
-
-    <b>pendel3_2.html</b>
-    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um mehr als 180° dreht.
-        Wie zu sehen ist, ist der vermutete Drehpunkt sehr nah am tatsächlichen Drehpunkt.
+    <b>pendel3_3.html</b>
+    <p>Method of least square regression
     </p>
-
     <script>
         const model = {
             id: 'pendulum',
@@ -65,31 +62,42 @@
             let p1;
             let p2;
 
-            const sum = filtered.reduce((pre, cur) => ({
-                x: pre.x + cur.x,
-                y: pre.y + cur.y,
-            }), { x: 0, y: 0 });
+            result.forEach(r => {
+                result.forEach(s => {
+                    const hy = Math.hypot(r.y - s.y, r.x - s.x);
+                    if (hy > max) {
+                        max = hy;
+                        if (r.x > s.x) {
+                            p1 = s;
+                            p2 = r;
+                        } else {
+                            p1 = r;
+                            p2 = s;
+                        }
+                    };
+                });
+            });
 
-            const X = sum.x / filtered.length;
-            const Y = sum.y / filtered.length;
-
-            let m;
-            let b;
-
-            if (!X || !Y) {
-                m = Number.MAX_SAFE_INTEGER;
-                b = 0;
-            } else {
-                const counter = filtered.reduce((pre, cur) =>
-                    pre + (cur.x - X) * (cur.y - Y), 0
-                );
-                const denominator = filtered.reduce((pre, cur) =>
-                    pre + (cur.x - X) ** 2, 0
-                );
-
-                m = counter / denominator;
-                b = Y - m * X;
+            if (!p1 || !p2) {
+                return;
             }
+
+            const tmp = (p2.y - p1.y) / (p2.x - p1.x);
+            const swap = Math.abs(Math.atan(tmp)) < Math.PI / 4;
+
+            const n = filtered.length;
+            if (!n) return;
+            const sxy = filtered.map(e => e.x * e.y).reduce((pre, cur) => cur + pre);
+            const sx = filtered.map(e => e.x).reduce((pre, cur) => cur + pre);
+            const sy = filtered.map(e => e.y).reduce((pre, cur) => cur + pre);
+
+            const s2 = filtered.map(e => (swap ? e.x : e.y) ** 2).reduce((pre, cur) => cur + pre);
+
+            const counter = (n * sxy - sx * sy);
+            const denominator = (n * s2 - (swap ? sx : sy) ** 2);
+
+            let m = swap ? counter / denominator : denominator / counter;
+            let b = (sy - m * sx) / n;
 
             g2().clr().exe(ctx2);
             filtered.forEach(e => {
