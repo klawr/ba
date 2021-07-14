@@ -20,10 +20,10 @@
     <script src="../src/smallest_enclosing_circle.js"></script>
     <script src="../src/compare_images.js"></script>
     <script src="../src/simulation.js"></script>
+    <script src="../src/getMaxDist.js"></script>
 
     <b>pendel4_1.html</b>
-    <p>Test mit Ermittlung zweier Kreise von denen einer Richtig ist. Durch die Überprüfung der Bewegung der
-        Mittelpunktes kann dann geschaut werden welcher Kreis wahrscheinlicher der Richtige ist.
+    <p>Test mit Ermittlung zweier Kreise von denen einer Richtig ist. Durch die Überprüfung der Bewegung der Mittelpunktes kann dann geschaut werden welcher Kreis wahrscheinlicher der Richtige ist.
     </p>
 
     <script>
@@ -49,23 +49,8 @@
 
         // simulation
         const fn = (result) => {
-            // let hy = Math.hypot(g1.y - g2.y, g1.x - g2.x);
-            let hy = 0;
-            let p1;
-            let p2;
+            const [p1, p2, hy] = getMaxDist(result);
 
-            for (let i = 0; i < result.length; ++i) {
-                for (let j = i + 1; j < result.length; ++j) {
-                    const r1 = result[i];
-                    const r2 = result[j];
-                    const r = Math.hypot(r1.y - r2.y, r1.x - r2.x)
-                    if (r > hy) {
-                        hy = r;
-                        p1 = r1;
-                        p2 = r2;
-                    }
-                }
-            }
             const h = g2().clr();
 
             const cog = (pre, cur) => ({
