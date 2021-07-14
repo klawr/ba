@@ -27,7 +27,7 @@ function getMaxDistCoG(result, number) {
         }
 
         if (!p1 || !p2) continue;
-        
+
         const oneToOne = p1s.length &&
             Math.hypot(p1s[0].y - p1.y, p1s[0].x - p1.x) <
             Math.hypot(p2s[0].y - p2.y, p2s[0].x - p2.x);
@@ -54,5 +54,9 @@ function getMaxDistCoG(result, number) {
         return p;
     }
 
-    return [cog(p1s), cog(p2s)];
+    const p1 = cog(p1s);
+    const p2 = cog(p2s);
+    const max = Math.hypot(p1.y - p2.y, p1.x - p2.x);
+
+    return [p1, p2, max];
 }
