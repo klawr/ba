@@ -92,7 +92,9 @@
                             const x = (b1 - b2) / (m2 - m1);
                             const y = m1 * x + b1;
 
-                            if (Number.isFinite(x) && Number.isFinite(y)) pts.push({ x, y });
+                            if (Number.isFinite(x) && Number.isFinite(y)) {
+                                pts.push({ x, y });
+                            }
                         }
                     }
                     const pre_gnd = pts.reduce((pre, cur) => ({
