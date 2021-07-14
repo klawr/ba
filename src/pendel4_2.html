@@ -21,7 +21,7 @@
     <script src="../src/compare_images.js"></script>
     <script src="../src/simulation.js"></script>
 
-    <b>pendel4_1.html</b>
+    <b>pendel4_2.html</b>
     <p>Test mit Ermittlung zweier Kreise von denen einer Richtig ist. Durch die Überprüfung der Bewegung der
         Mittelpunktes kann dann geschaut werden welcher Kreis wahrscheinlicher der Richtige ist.
     </p>
@@ -45,8 +45,6 @@
         let nod; // Endstück des Pendels
         const data = [];
 
-        const threshold = 10;
-
         // simulation
         const fn = (result) => {
             // let hy = Math.hypot(g1.y - g2.y, g1.x - g2.x);
@@ -66,57 +64,51 @@
                     }
                 }
             }
-            const h = g2().clr();
 
             const cog = (pre, cur) => ({
                 x: pre.x + cur.x,
                 y: pre.y + cur.y,
             });
 
-            let sp1;
-            let sp2;
+            const h = g2().clr();
 
             if (ground1.past.length && ground2.past.length) {
-                sp1 = ground1.past.reduce(cog, { x: 0, y: 0 });
+                const sp1 = ground1.past.reduce(cog, { x: 0, y: 0 });
                 sp1.x /= (ground1.past.length || 1);
                 sp1.y /= (ground1.past.length || 1);
-                sp2 = ground2.past.reduce(cog, { x: 0, y: 0 });
+                const sp2 = ground2.past.reduce(cog, { x: 0, y: 0 });
                 sp2.x /= (ground2.past.length || 1);
                 sp2.y /= (ground2.past.length || 1);
 
                 if (Math.hypot(sp1, p1) < Math.hypot(sp2, p1)) {
-                    ground1.add(p1, threshold);
-                    ground2.add(p2, threshold);
+                    ground1.add(p1, 0);
+                    ground2.add(p2, 0);
                 } else {
-                    ground1.add(p2, threshold);
-                    ground2.add(p1, threshold);
+                    ground1.add(p2, 0);
+                    ground2.add(p1, 0);
                 }
+                h.cir({...sp1, r: 10, fs: 'blue'})
+                 .cir({...sp2, r: 10, fs: 'cyan'}).exe(ctx2);
             } else {
-                ground1.add(p1, threshold);
-                ground2.add(p2, threshold);
+                ground1.add(p1, 0);
+                ground2.add(p2, 0);
             }
 
-            if (!(ground1.confident || ground2.confident)) {
-                h.cir({ ...sp1, r: 10, fs: 'blue' })
-                    .cir({ ...sp2, r: 10, fs: 'cyan' })
-                    .cir({ ...p1, r: 5, fs: 'red' })
-                    .nod({ ...p2, r: 5, fs: 'green' })
-                    .cir({ ...p1, r: hy }).cir({ ...p2, r: hy });
+            console.log(ground1.confident, ground2.confident)
+
+            h.cir({ ...p1, r: 5, fs: 'red' })
+                .nod({ ...p2, r: 5, fs: 'green' });
+            if (ground1.confident) {
+                h.gnd({ ...ground1 });
             } else {
-                if (ground1.confident) {
-                    gnd2.innerHTML = `Vermutet: x: ${ground1.x}, y: ${cnv1.height - ground1.y}`;
-                    h.lin({ p1: ground1, p2: ground2.last_estimate })
-                        .gnd({ ...ground1 })
-                        .nod({ ...ground2.last_estimate });
-                }
-                else if (ground2.confident) {
-                    gnd2.innerHTML = `Vermutet: x: ${ground2.x}, y: ${cnv1.height - ground2.y}`;
-                    h.lin({ p1: ground2, p2: ground1.last_estimate })
-                        .gnd({ ...ground2 })
-                        .nod({ ...ground1.last_estimate });
-                }
+                h.nod({ ...ground1 });
             }
-            h.exe(ctx2);
+            if (ground2.confident) {
+                h.gnd({ ...ground2 });
+            } else {
+                h.nod({ ...ground2 });
+            }
+            h.cir({ ...p1, r: hy }).cir({ ...p2, r: hy }).exe(ctx2);
         }
 
         simulation(model, fn);

@@ -4,6 +4,9 @@ class Gnd {
     y = 0;
     confident = false;
     past = [];
+    get last_estimate() {
+        return this.past[this.past.length - 1];
+    }
 
     add(a, threshold) {
         if (this.past.push(a) > 10) {
