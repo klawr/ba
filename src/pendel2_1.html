@@ -78,6 +78,11 @@
             const b = p1.y - m * p1.x;
 
             if (!gnd.confident) {
+                result.forEach(e => g2().cir({...e, r: 1}).exe(ctx2));
+                g2().cir({...p1, r: 4, fs: 'green'})
+                    .cir({...p2, r: 4, fs: 'red'})
+                    .exe(ctx2);
+
                 lines.push({ m, b });
 
                 if (lines.length > 1) {
