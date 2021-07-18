@@ -15,12 +15,13 @@
 
 <body>
     <script src="./gnd.js"></script>
-    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script src="g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
     <script src="../src/smallest_enclosing_circle.js"></script>
     <script src="../src/compare_images.js"></script>
     <script src="../src/simulation.js"></script>
     <script src="../src/getMaxDist.js"></script>
+    <script src="test.js"></script>
 
     <b>pendel5_1.html</b>
     <p>Test zur Trennung mehrerer Pendel
@@ -52,6 +53,37 @@
         // simulation
         const fn = (result) => {
             g2().clr().exe(ctx2);
+
+            let left;
+            result.forEach(r => {
+                if (!left || left.x > r.x) {
+                    left = r;
+                }
+            });
+
+            const hypos = [];
+
+            for (let i = 0; i < 180; i += 10) {
+                hypos.push([]);
+                const m_i = Math.tan(i * Math.PI / 360);
+                const b_i = left.y - m_i * left.x;
+                const m_o = -1 / m_i;
+
+                result.forEach(e => {
+                    const b_o = e.y - m_o * e.x;
+                    const x = (b_o - b_i) / (m_i - m_o) || e.x;
+                    const y = m_o * x + b_o || b_i;
+
+                    hypos[hypos.length - 1].push(Math.sqrt(Math.hypot(e.y - y, e.x - x)));
+                });
+
+                if (i === 50) {
+                    g2().lin({x1: 0, x2: 400, y1: b_i, y2: m_i * left.x + b_i}).exe(ctx2);
+                }
+            }
+
+            const score = hypos.map(h => h.reduce((pre, cur) => pre + cur));
+            console.log(score);
 
             if (!gnd.confident) {
                 result.forEach(r => {
