@@ -22,7 +22,7 @@
     <script src="simulation.js"></script>
     <script src="removeOverlaps.js"></script>
     <script src="getMaxDist.js"></script>
-    <script src="test.js"></script>
+    <script src="groupUp.js"></script>
 
     <b>pendel5_1.html</b>
     <p>Test zur Trennung mehrerer Pendel
@@ -49,85 +49,13 @@
         let nod; // Endstück des Pendels
         const data = [];
 
-        const groups = [];
-
-        const threshold = 10;
-        const bounds = 10;
-
-        function filterResult(result, group) {
-            return result.filter(e => !group.includes(e));
-        }
-
         // simulation
         const fn = (result) => {
             const filtered = removeOverlaps(result);
 
             g2().clr().exe(ctx2);
 
-            let ungrouped = [...filtered];
-
-            let jdx = 0;
-            colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08']
-
-            last = 0;
-            while (ungrouped.length) {
-                ++jdx;
-                if (last === ungrouped.length) {
-                    break;
-                }
-                last = ungrouped.length
-                const left = ungrouped.reduce((pre, cur) => pre.x < cur.x ? pre : cur);
-
-                const hypos = [];
-                const lines = [];
-
-                for (let i = 0; i < 360; i += 20) {
-                    const m_i = Math.tan(i * Math.PI / 360);
-                    const b_i = left.y - m_i * left.x;
-
-                    hypos.push([]);
-                    lines.push({ m: m_i, b: b_i });
-
-                    const m_o = -1 / m_i;
-
-                    ungrouped.forEach(e => {
-                        const b_o = e.y - m_o * e.x;
-                        const x = (b_o - b_i) / (m_i - m_o) || e.x;
-                        const y = m_o * x + b_o || b_i;
-
-                        hypos[hypos.length - 1].push(Math.sqrt(Math.sqrt(Math.hypot(e.y - y, e.x - x))));
-
-                        // g2().lin({ x1: x, y1: y, x2: e.x, y2: e.y }).exe(ctx2);
-                    });
-
-                    g2().lin({ x1: 0, x2: 400, y1: b_i, y2: m_i * 400 + b_i, ls: 'lightgrey' }).exe(ctx2);
-                }
-                g2().cir({ ...left, r: 5, fs: 'green' }).exe(ctx2);
-
-                const score = hypos.map(h => h.reduce((pre, cur) => pre + cur));
-
-                const idx = score.indexOf(Math.min(...score));
-                const line = lines[idx];
-
-                g2().lin({ x1: 0, x2: 400, y1: line.b, y2: line.m * 400 + line.b, ls: 'blue' }).exe(ctx2);
-
-                const group = [];
-                filtered.forEach(e => {
-                    const m_o = -1 / line.m;
-                    const b_o = e.y - m_o * e.x;
-
-                    const x = (b_o - line.b) / (line.m - m_o) || e.x;
-                    const y = m_o * x + b_o;
-
-                    if (Math.hypot(e.y - y, e.x - x) < bounds) {
-                        group.push(e);
-                        g2().cir({ ...e, r: 5, fs: colors[jdx] }).exe(ctx2);
-                    }
-                });
-
-                groups.push(group);
-                ungrouped = filterResult(ungrouped, group);
-            }
+            const groups = groupUp(filtered, true);
 
             if (!gnd.confident) {
                 filtered.forEach(r => {
