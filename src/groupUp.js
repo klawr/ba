@@ -7,12 +7,14 @@ function groupUp(result, draw = false) {
     const groups = [];
     let ungrouped = [...result];
 
+    const min = ungrouped.length / 10;
+
     colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
 
     const bounds = 10;
 
     last = 0;
-    while (ungrouped.length && ungrouped.length != last) {
+    while (ungrouped.length > min && ungrouped.length != last) {
         last = ungrouped.length
         const pt = ungrouped[0];
 
