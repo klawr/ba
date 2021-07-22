@@ -21,12 +21,10 @@
     <script src="compare_images.js"></script>
     <script src="simulation.js"></script>
 
-    <b>pendel1_4.html</b>
-    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
-        Der erstellte Pfad soll nun genutzt werden um den tatsächlichen Mittelpunkt zu finden, indem die gerade, welche
-        für die ersten 90° erstellt wird genutzt wird, um so bei 90° die orthogonale auf dem ersten Punkt mit Länge der
-        Geraden zu verwenden um damit auf den Drehpunkt zu schließen. Wie sich zeigt, ist dieser Ansatz
-        vielversprechend.
+    <b>pendel1_5.html</b>
+    <p>Tatsächlich ist bereits direkt ersichtlich, dass der Drehpunkt ungefähr dem Radius des ersten Kreises entsprechen muss der
+        die ersten erkannten Datenpunkte enthält. Sobald also die Linie erzeugt wird, kann auf den Drehpunkt geschlossen werden. Der Radius ist
+        allerdings etwas zu klein, sodass ein kleiner Fehler entsteht.
     </p>
 
     <script>
@@ -65,12 +63,6 @@
                 trail.push(makeCircle(ply));
             }
 
-            const hypo = trail.reduce((pre, cur) =>
-                Math.max(
-                    pre,
-                    Math.hypot(cur.x - trail[0].x, cur.y - trail[0].y)),
-                0);
-
             if (trail.length > 5) {
                 const m = (trail[4].y - trail[0].y) / (trail[4].x - trail[0].x);
                 const b = trail[0].y - trail[0].x * m;
@@ -79,8 +71,8 @@
                 const c = trail[0].y - trail[0].x * n;
 
                 const p2 = {
-                    x: trail[0].x - hypo * Math.cos(Math.tan(n)),
-                    y: trail[0].y + hypo * Math.sin(Math.tan(n))
+                    x: trail[0].x - trail[0].r * Math.cos(Math.tan(n)),
+                    y: trail[0].y + trail[0].r * Math.sin(Math.tan(n))
                 };
 
                 g2().lin({
@@ -89,6 +81,9 @@
                 }).lin({ p1: trail[0], p2, }).exe(ctx2);
 
                 ply.length && gnd.add(p2);
+                gnd.x = p2.x;
+                gnd.y = p2.y;
+                gnd.confident = true;
                 gnd.getChart().exe(ctx3);
             }
 
