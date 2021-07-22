@@ -96,6 +96,7 @@
                     g2().cir({ ...pre_gnd, r: 5 }).exe(ctx2);
 
                     gnd.add(pre_gnd, 0.5);
+                    gnd.getChart().exe(ctx3);
                 }
 
                 g2().lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b }).exe(ctx2);
@@ -118,20 +119,6 @@
                     .nod(nod)
                     .exe(ctx2);
             }
-
-            const align = (a) => (Math.PI + a) % Math.PI
-
-            data.push(data.length / 2 * 1 / 60,
-                align(-model.constraints[0].w) - align(Math.atan(m)));
-
-            const chart = {
-                x: 20, y: 20, b: 280, h: 150,
-                funcs: [{ data }],
-                xaxis: {},
-                yaxis: {},
-            }
-
-            g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
         };
 
         simulation(model, fn);
