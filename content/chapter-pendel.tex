@@ -1,0 +1,240 @@
+\chapter{Rekonstruktion eines Pendels}
+
+Statt der vollständigen Rekonstruktion eines Mechansimus, soll zunächst mit einem einfachen Pendel begonnen werden.
+Dieses stellt im Grunde ein einzelnes Glied eines beliebigen Mechanismus dar. Die korrekte Erkennung eines Pendels ist also eine notwendige Bedingung für einen Ansatz der die Glieder des Mechanismus einzeln betrachtet.
+
+Als zentrales Ziel der Aufgabe wird die korrekte Bestimmung des Drehpunkts eines Pendels gesetzt.
+Für die Bestimmung des Endpunktes wird zunächst der Punkt genommen, der am weitesten vom Drehpunkt ist.
+Diese Annahme ist für den Anfang hinreichend und wird im Zuge der Zusammensetzung mehrerer Glieder hinfällig, da dann die Schnittpunkte der unterschiedlichen Glieder als Gelenk definiert werden.
+
+\section{Definition eines \name{mec2} Modells}
+
+Als Pendel wird mittels \name{mec2} ein einfaches Modell definiert, welches dann von verschiedenen Höhen aus losgelassen wird.
+Das Pendel wird einzig und allein durch das Eigengewicht des Endpunktes definiert.
+Auf einen Antrieb wurde hier verzichtet, weil dieser für die Erkennung der Bewegung nicht notwendig ist.
+Ein Beispiel für die Definition eines Pendelmodells für \name{mec2} wird in Listing~\ref{lst:pendel} gezeigt.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition eines einfachen Pendels in \name{mec2}, inklusive animation.}\label{lst:pendel}]
+const model = {
+    id: 'pendulum',
+    gravity: true,
+    nodes: [
+        { id: 'A0', x: 150, y: 120, base: true },
+        { id: 'A1', x: 230, y: 150 }
+    ],
+    constraints: [
+        { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+    ]
+};
+
+mec.model.extend(model); // extend the model
+model.init();            // initialize it
+model.draw(g);           // append model-graphics to graphics-obj
+simulate();              // kick-off the simulation
+\end{lstlisting}
+
+Das Pendel besteht entsprechend aus zwei \code{nodes}, welche die Gelenkpunkte darstellen.
+Eine dieser beiden Gelenkpunkte wird als \code{base} deklariert, was bedeutet sie ist unbeweglich und damit stellt sie den Punkt dar um welchen das Pendel schwingt.
+
+Um das Pendel entsprechend zu animieren wird der Programmcode genutzt der auf der Dokumentationsseite \aka{https://goessner.github.io/mec2/microjam.md/getting_started.html} hinterlegt ist genutzt.
+
+Innerhalb der \code{simulate} Funktion wird \code{requestAnimationFrame(simulate)} aufgerufen, damit der nächste Zeitschritt der Animation ablaufen kann.
+
+\section{Erstellung einer einheitlichen HTML-Seite}
+
+Für die Visualisierung der Versuche wurde ein Skript definiert, welches eine HTML-Seite erstellt welches für alle Versuche eine gleiche Oberfläche erstellt.
+Diese HTML-Seite enthält jeweils einen Text, der kurz beschreibt was versucht wird und drei HTML-Canvas Elemente, mit einer jeweiligen Breite von 320 Pixeln, sowie einer Höhe von 180 Pixeln.
+
+Das erste dieser HTML-Canvas Elemente enthält eine Abbildung des \name{mec2} Modells.
+Dieses HTML-Canvas Element wird dazu verwendet den getesteten Algorithmus mit Bildern zu versorgen mit denen dieser dann den entsprechenden Mechanismus rekonstruieren soll.
+
+Das zweite HTML-Canvas Element soll genutzt werden um zu visualisieren wie dieser Ansatz funktioniert.
+Werden also Linien berechnet sollen diese also im zweiten HTML-Canvas Element gezeichnet werden und so ein Feedback darüber geben ob der Ansatz funktioniert.
+
+% TODO Das kann sich noch ändern... stimmt das noch?
+% TODO Verteilung des X und Y Wertes betrachten. Diese könnten eine Standardabweichung erzeugen.
+
+Das dritte HTML-Canvas Element soll genutzt werden um einen Graphen zu definieren der Rückschlüsse darüber geben soll wie sich das rekonstruierte Modell sich zum gegebenen Modell verhält.
+
+Des weiteren sollen alle Ansätze ihre Genauigkeit im Verlauf der Zeit aufzeichnen um so eine Metrik zu bekommen die es ermöglicht sie miteinander zu vergleichen.
+
+\section{Erkennung von Änderungen}\label{ch:erkennung_von_änderungen}
+
+Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden zunächst zwei Bilder miteinander verglichen, welche zeitlich etwa 16,7 Millisekunden auseinanderliegen.
+Die Frequenz von \name{requestAnimationFrame} beträgt im Optimalfall\footnote{Das bedeutet das keine Berechnungen länger als 16,7 Millisekunden benötigen, welche die Animation entsprechend verlangsamen würde.} 60 Hertz.
+
+Da sich in der modellierten Videosequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel aufzuzeichnen.
+Hierfür wurde die \code{simulate} Function, welche in Listing~\ref{lst:pendel} gezeigt wurde mit dem Programmcode aus Listing~\ref{lst:simulate_compare_images} versehen.
+
+\begin{lstlisting}[language=JavaScript, caption={TODO caption....}\label{lst:simulate_compare_images}]
+const simulate = () => {
+    model.tick(1 / 60); // solve model with fixed stepping
+    g.exe(ctx1);        // render its pose on the canvas
+
+    const image1 = ctx1.getImageData(
+        0, 0, cnv1.width, cnv1.height).data;
+
+    window.setTimeout(() => {
+        const image2 = ctx1.getImageData(
+            0, 0, cnv1.width, cnv1.height).data;
+        const result = compare_images(
+            image1, image2, cnv1.width, cnv1.height);
+    }
+
+    g2().clr().exe(ctx2);
+    for (let i = 0; i < result.length; ++i) {
+        const zone = result[i];
+
+        g2().clr().cir({x: zone.x, y: zone.y, r: 1}).exe(ctx2);
+    }
+};
+\end{lstlisting}
+
+Wobei \code{ctx1} und \code{ctx2} den \code{RenderingContext} des jeweiligen HTML-Canvas Elementes repräsentieren.
+\code{compareImages} wird in Listing~\ref{lst:compare_images} gezeigt.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \code{compare_images} Function}\label{lst:compare_images}]
+function compare_images(image1, image2, width, height) {
+const difference = [];
+
+for (let y = 0; y < height; ++y) {
+    for (let x = 0; x < width; ++x) {
+        const i = y * width + x;
+        if (image1[i * 4] !== image2[i * 4]) {
+            difference.push({x, y});
+        };
+    }
+}
+
+return difference;
+}
+\end{lstlisting}
+
+Eine Momentaufnahme dieser Konstruktion kann in Abbildung~\ref{fig:compare_images} gesehen werden.
+
+\begin{figure}[htb]
+	\includegraphics[width=\textwidth]{gfx/compare_images_1.png}
+	\caption{Darstellung des Pendels und die dazugehörige erkannte Änderung innerhalb des Bildes.}
+	\label{fig:compare_images}
+\end{figure}
+
+Zu beachten ist, dass das Pendel zwei mal gezeigt wird.
+Das liegt daran, dass wenn die beiden Bilder verglichen werden, genau jene Pixel unterschiedlich sind an denen das Pendel im ersten Bild ist und im zweiten nicht mehr ist und genau dort wo das Pendel im zweiten Bild ist und im ersten nicht.
+Ohne weitere Analyse lässt sich jedoch nicht so einfach bestimmen in welche Richtung sich das Pendel bewegt.
+Für die anschließende Untersuchung kann das jedoch ignoriert werden, allerdings ist es wichtig solche Besonderheiten zu betrachten um mögliche Fehlerquellen schneller zu finden.
+
+
+Insgesamt wurden drei verschiedene Ansätze untersucht, welche im Folgenden betrachtet werden sollen.
+
+\section{Betrachtung unterschiedlicher Ansätze}
+
+\subsection{Bestimmung des kleinsten umfassenden Kreises}
+
+Wie bereits vorher angemerkt, werden die Koordinaten aller Pixel aufgezeichnet für die bei einer Bewegung eine Änderung bemerkt wurde.
+Diese Pixel sollten bei der Drehung eines Gliedes um einen festen Punkt einen Bogen definieren, der Aufschluss über die Position dieses Drehpunktes gibt.
+
+Die genaue Bestimmung eines solchen Bogens scheint besonders schwierig zu sein.
+Die Bestimmung eines Kreises anhand der vorhandenen Punkte ist jedoch ein gelöstes Problem welches als \name{Smalles-Circle Problem} bezeichnet wird.
+
+Um einen solchen Kreis zu bestimmen müssen zunächst alle Koordinaten für die eine Änderung erkannt wurde in einer Liste festgehalten werden.
+
+Dann soll ein Algorithmus definiert werden der für diese Punkte als Eingang einen entsprechenden Kreis definiert.
+
+% TODO Definition des Algorithmus
+
+Da zu Beginn der Aufnahme die Region welche durch die Punkte gefüllt wird sehr schnell an Fläche zunimmt, ändern sich die Koordinaten und der Radius des Mittelpunktes sehr schnell.
+Sobald sich das drehende Glied den 180° nähert verändert sich die Definition des Kreises augenscheinlich garnicht mehr und der Drehpunkt scheint mit einer sehr kleinen Abweichung dem tatsächlichen Drehpunkt zu entsprechen.
+
+% TODO Abändern auf Standard-Abweichung.
+Um die Bestimmung zu automatisieren wird als Metrik die Änderung des Mittelpunktes die letzten zehn Iterationen gewählt.
+Ist die akkumulierte Änderung null, also haben die letzten zehn vorhergesagten Drehpunkte die selben Koordinaten, wird davon ausgegangen, dass dieser Punkt korrekt ist und die Prognose wird abgegeben.
+
+Das andere Ende des Pendels wird vorerst durch den Punkt definiert dessen Distanz die größte zum prognostizierten Drehpunkt ist.
+Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für die eigentliche Aufgabe vorerst irrelevant, da ein Pendel noch keinen Mechanismus darstellt.
+
+% TODO Bild.
+% TODO Verbesserung der Performance durch weglassen von... So gut wie allen Punkten.
+
+% TODO check das ° Zeichen ob das anständig gedruckt wird.
+Dieser Ansatz erkennt für ein Glied das sich mindestens 180° um den definierten Punkt dreht ein sehr nahe am tatsächlichen Wert gelegenen Drehpunkt.
+Der offensichtliche Nachteil besteht jedoch darin, dass alle Glieder die sich um weit weniger als 180° drehen mit Sicherheit kein gutes Ergebnis liefern.
+
+Die Veränderung des Mittelpunktes des Kreises für den Bogen mit kleinerem Mittelpunktswinkel kann jedoch Aufschluss darüber geben, wo sich der tatsächliche Drehpunkt womöglich befinden könnte.
+Diese Möglichkeit soll als nächstes untersucht werden.
+% TODO Untersuch das.
+
+\subsection{Schnittpunkte von Linien}
+
+Als ein weiterer Ansatz soll untersucht werden, ob der Drehpunkt durch die Schnittpunkte von ermittelten Linien gefunden werden kann.
+Diese Linie soll durch die Momentaufnahmen bestimmt werden.
+
+Als erster Ansatz soll die Linie genutzt werden, welche durch die am weitesten voneinander entfernten Punkte definiert wird.
+Diese Linie sollte in etwa den selben Winkel haben wie der Winkel des tatsächlichen Gelenkes.
+Eine Annahme die hierbe implizit getroffen wird, ist dass die Glieder länger sind als sie breit sind, wobei die Länge durch den Abstand der Gelenke definiert ist und die Breite entsprechend durch die Punkte welche normal zu der Längenlinie stehen.
+
+Eine auf diese Weise definierte Linie wird dann in einer Liste gespeichert und die nächste Iteration folgt.
+Bereits ab der zweiten Iteration können dann die Schnittpunkte aller Linien genutzt werden um den Drehpunkt zu bestimmen.
+
+% TODO Koordinaten der einzelnen Schnittpunkte betrachten. X und Y sollten im Grunde eine Normalverteilung aufweisen. Dann muss auch nicht der Schwerpunkt genommen werden... Ist aber vermutlich weniger Rechenintensiv.
+
+Idealerweise sollten alle Schnittpunkte die selben Koordinaten haben.
+Da dies jedoch nicht der Fall ist, wird der Schwerpunkt aller Schnittpunkte ermittelt und dieser soll dann als Prognose benutzt werden.
+
+Diese Methode liefert schnell Ergebnisse auch für Mittelpunktswinkel von weit unter 180°.
+
+% /subsection{Ermittlung mehrerer am weitesten auseinander liegenden Punkte}.
+
+Nachteilig ist jedoch, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da wie in Abschnitt~\ref{ch:erkennung_von_änderungen} bereits erwähnt, bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
+Um dieses Problem zu Umgehen sollen nun mehrere am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden.
+
+% TODO hier sollte ein Bild vorher zu nachher eingefügt werden um diese Aussage zu untermauern.
+Durch diese Änderung entspricht der jeweilige Winkel der definierten Linien eher dem tatsächlichen Winkel und der entsprechend resultierende Fehler wird hierdurch kleiner.
+Damit reduziert sich auch die Abweichung zum daraus errechneten Drehpunkt.
+
+\subsection{Methode der kleinsten Quadrate}
+
+Eine weitere Methode jene Linie zu bestimmen welche genutzt werden soll um mit dessen Schnittpunkte den Drehpunkt zu ermitteln ist durch die \name{Methode der kleisten Quadrate}.
+Die Linie die aus der Lösung dieser Methode resultiert entspricht der Linie welche den kleinsten Fehler gegenüber allen Punkten besitzt und wird auch als Ausgleichsgerade bezeichnet. % TODO Ist von Wiki sollte aber zitiert werden...
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TODO Writing
+
+Jedoch entsteht auch mit dieser Methode wieder ein weiteres Problem.
+Wenn zwei Bilder die eine Drehung darstellen miteinander verglichen werden, indem jene Pixel behalten werden in denen eine Änderung zu erkennen ist, dann werden typischerweise mehr Änderungen erkannt, je weiter man sich radial von Drehpunkt entfernt.
+Diese Beobachtung ist nicht überraschend, denn die absolute Geschwindigkeit eines Gelenkes nimmt mit länge des Gliedes zu, allerdings verzerrt es die Beobachtung ein wenig.
+Hier kann jedoch eine Funktion abhilfe schaffen, die auch in der Bilderkennung durch neurale Netzwerke genutzt wird.
+Diese als Non-Max Suppression % TODO writing...
+bezeichnete Funktion wird eigentlich dafür genutzt, dass erkannte Objekte die im Bild direkt nebeneinander liegen gefiltert werden für das Bild, dass den höchsten Konfidenzwert besitzt.
+Da den Pixeln hier kein Konfidenzwert zugeordnet werden kann, kann allerdings eine Funktion genutzt werden welche ähnlich wie die Non-Max Suppression Funktion %TODO oh mann...
+die sich überlappenden Pixel in einem bestimmten Umkreis entfernt.
+Dadurch wird die Dichte der erkannten Pixel quasi homogen und der Drehpunkt liegt etwas näher an dem tatsächlich erkannten, ohne viel Präzision bei der Bestimmung der Steigung in Kauf zu nehmen.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Auch die Ausgleichsgerade basiert auf der Annahme, dass das betrachtete Glied länger ist als es breit ist.
+
+Sie berechnet sich durch... % TODO
+% TODO Formel.
+
+Die vorgeschlagene Formel funktioniert nicht gut für nahezu senkrechte Steigungen.
+Dies liegt an... % TODO
+Deshalb wurde die Formel für alle Winkel über 45° angepasst, sodass die im Nenner die jeweilige Differenz zum Durchschnitt der Y-Achse berechnet wird.
+Zum Spiegeln der Achsen werden außerdem der Zähler und Nenner zur Bestimmung der Steigung vertauscht.
+
+% TODO Formel.
+
+Wie bei den vorangegangen Methoden sollen dann die Schnittpunkte der so errechneten Linien genutzt werden um den Drehpunkt zu bestimmen.
+
+\subsection{Vergleich zweier Kreise}
+
+Die letzte Methode die untersucht werden soll ist\dots
+
+\subsection{Auswertung der Beobachtungen}
+
+% TODO Statistik Gedöhns und Beschreibung der unterschiedlichen Vor- und Nachteile
+
+Die hier besprochenen Ansätze teilen die Annahme, das alle Punkte welche durch die Änderung betrachtet wurden zu dem selben Glied gehören.
+Des weiteren wird davon ausgegangen, dass alle Glieder einen Drehpunkt haben.
+Da die Definition eines Mechanismus mindestens 3 bewegliche Glieder benötigt, muss hierfür eine Lösung gefunden werden, die im folgenden Abschnitt untersucht wird.
+
