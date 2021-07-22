@@ -62,6 +62,7 @@
             }
 
             ply.length && gnd.add(makeCircle(ply));
+            gnd.getChart().exe(ctx3);
 
             g2().cir({ ...gnd.past[gnd.past.length - 1] }).exe(ctx2);
 
@@ -78,23 +79,10 @@
                     }
                 }
 
-                const m = (a) => (a + 2 * Math.PI) % Math.PI;
-                const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
-                data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
-
-                const chart = {
-                    x: 20, y: 20, b: 280, h: 150,
-                    funcs: [{ data }],
-                    xaxis: {},
-                    yaxis: {},
-                }
-
                 g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
                     .gnd({ ...gnd })
                     .nod(nod)
                     .exe(ctx2);
-
-                g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
                 gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             }
         };

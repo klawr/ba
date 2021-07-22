@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="g2.full.js"></script>
+    <script src="mec2.min.js"></script>
+    <script src="getDirectionalColor.js"></script>
+    <script src="gnd.js"></script>
+    <script src="compare_images.js"></script>
+    <script src="simulation.js"></script>
+
+    <b>pendel2_3.html</b>
+    <p>Hier soll durch die Lösung der Methode der kleinsten Quadrate die am besten passende Linie definiert werden. Da hier scheinbar ein starker Fokus auf das Ende des Pendels entsteht, wird der Drehpunkt falsch vorhergesagt.
+    </p>
+    <script>
+        const model = {
+            id: 'pendulum',
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 149.9, y: 100, base: true },
+                { id: 'A1', x: 150, y: 150 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+            ]
+        };
+
+        let gnd = new Gnd();
+        let nod; // Endstück des Pendels
+
+        const ws = []; // Sammlung der Winkelbewegungen
+
+        const fn = (result) => {        
+            let max = 0;
+            let p1;
+            let p2;
+
+            const sum = result.reduce((pre, cur) => ({
+                x: pre.x + cur.x,
+                y: pre.y + cur.y,
+            }), { x: 0, y: 0 });
+
+            const X = sum.x / result.length;
+            const Y = sum.y / result.length;
+
+            let m;
+            let b;
+
+            if (!X || !Y) {
+                m = Number.MAX_SAFE_INTEGER;
+                b = 0;
+            } else {
+                const counter = result.reduce((pre, cur) =>
+                    pre + (cur.x - X) * (cur.y - Y), 0
+                );
+                const denominator = result.reduce((pre, cur) =>
+                    pre + (cur.x - X) ** 2, 0
+                );
+
+                m = counter / denominator;
+                b = Y - m * X;
+            }
+
+            g2().clr().exe(ctx2);
+            result.forEach(e => {
+                g2().cir({ x: e.x, y: e.y, r: 0.5 }).exe(ctx2);
+            });
+
+            g2().lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
+        };
+
+        simulation(model, fn);
+    </script>
+</body>
+
+</html>

@@ -21,29 +21,32 @@
     <script src="compare_images.js"></script>
     <script src="simulation.js"></script>
 
-    <b>pendel1_1.html</b>
-    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um mehr als 180° dreht.
-        Wie zu sehen ist, ist der vermutete Drehpunkt sehr nah am tatsächlichen Drehpunkt.
+    <b>pendel1_3.html</b>
+    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
+        Hier wird zusätzlich der Pfad des Mittelpunktes des Kreises ermittelt. Wie man sieht, bewegt dieser sich zunächst die ersten 90° auf einer geraden Linie und beginnt dann einen Kreisbogen bis zum Mittelpunkt zu vollziehen.
     </p>
-
 
     <script>
         const model = {
             id: 'pendulum',
             gravity: true,
             nodes: [
-                { id: 'A0', x: 150, y: 100, base: true },
-                { id: 'A1', x: 230, y: 130 }
+                { id: 'A0', x: 150, y: 120, base: true },
+                { id: 'A1', x: 230, y: 150 }
             ],
             constraints: [
                 { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
             ]
         };
 
+        const trail = [];
+
         const ply = []; // Alle Punkte
         let gnd = new Gnd();
         let nod; // Endstück des Pendels
         const data = [];
+
+        // simulation
 
         const fn = (result) => {
             g2().clr().exe(ctx2);
@@ -56,13 +59,19 @@
                         ply.push({ ...r });
                     }
                 });
+                trail.push(makeCircle(ply));
+                ply.length && gnd.add(makeCircle(ply));
+                gnd.getChart().exe(ctx3);
             }
 
-            ply.length && gnd.add(makeCircle(ply));
 
-            g2().cir({ ...gnd.past[gnd.past.length - 1] }).exe(ctx2);
 
-            gnd.getChart().exe(ctx3);
+            g2().ply({ pts: trail })
+                .cir({ ...gnd.past[gnd.past.length - 1] })
+                .beg({ cartesian: true })
+                .gnd({ x: 150, y: cnv1.height - 120 })
+                .end()
+                .exe(ctx2);
 
             if (gnd.confident) {
                 for (let i = 0, max = 0; i < result.length; ++i) {
@@ -77,26 +86,13 @@
                     }
                 }
 
-                const m = (a) => (a + 2 * Math.PI) % Math.PI;
-                const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
-                data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
-
-                // const chart = {
-                //     x: 20, y: 20, b: 280, h: 150,
-                //     funcs: [{ data }],
-                //     xaxis: {},
-                //     yaxis: {},
-                // }
-
                 g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
                     .gnd({ ...gnd })
                     .nod(nod)
                     .exe(ctx2);
-
-                // g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
                 gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             }
-        }
+        };
 
         simulation(model, fn);
     </script>

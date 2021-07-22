@@ -21,29 +21,32 @@
     <script src="compare_images.js"></script>
     <script src="simulation.js"></script>
 
-    <b>pendel1_1.html</b>
-    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um mehr als 180° dreht.
-        Wie zu sehen ist, ist der vermutete Drehpunkt sehr nah am tatsächlichen Drehpunkt.
+    <b>pendel1_4.html</b>
+    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
+        Der erstellte Pfad soll nun genutzt werden um den tatsächlichen Mittelpunkt zu finden.
     </p>
-
 
     <script>
         const model = {
             id: 'pendulum',
             gravity: true,
             nodes: [
-                { id: 'A0', x: 150, y: 100, base: true },
-                { id: 'A1', x: 230, y: 130 }
+                { id: 'A0', x: 150, y: 120, base: true },
+                { id: 'A1', x: 230, y: 90 }
             ],
             constraints: [
                 { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
             ]
         };
 
+        const trail = [];
+
         const ply = []; // Alle Punkte
         let gnd = new Gnd();
         let nod; // Endstück des Pendels
         const data = [];
+
+        // simulation
 
         const fn = (result) => {
             g2().clr().exe(ctx2);
@@ -56,13 +59,45 @@
                         ply.push({ ...r });
                     }
                 });
+                trail.push(makeCircle(ply));
+
+                const max = trail.reduce((pre, cur) =>
+                    Math.max(
+                        pre,
+                        Math.hypot(cur.x - trail[0].x, cur.y - trail[0].y)),
+                    0);
+
+                if (trail.length > 5) {
+                    const m = (trail[4].y - trail[0].y) / (trail[4].x - trail[0].x);
+                    const b = trail[0].y - trail[0].x * m;
+
+                    const n = 1 / m;
+                    const c = trail[0].y - trail[0].x * n;
+
+                    const p2 = {
+                        x: trail[0].x - max * Math.cos(Math.tan(n)),
+                        y: trail[0].y + max * Math.sin(Math.tan(n))
+                    };
+
+                    g2().lin({
+                        p1: { x: 0, y: b },
+                        p2: { x: cnv1.width, y: m * cnv1.width + b }
+                    }).lin({ p1: trail[0], p2, }).exe(ctx2);
+
+                    g2().cir({ x: 50, y: 50, fs: 'red', r: 5 }).exe(ctx2);
+
+                    ply.length && gnd.add(p2);
+                    gnd.getChart().exe(ctx3);
+                }
             }
 
-            ply.length && gnd.add(makeCircle(ply));
 
-            g2().cir({ ...gnd.past[gnd.past.length - 1] }).exe(ctx2);
 
-            gnd.getChart().exe(ctx3);
+            g2().ply({ pts: trail })
+                .cir({ ...gnd.past[gnd.past.length - 1] })
+                .beg({ cartesian: true })
+                .end()
+                .exe(ctx2);
 
             if (gnd.confident) {
                 for (let i = 0, max = 0; i < result.length; ++i) {
@@ -77,26 +112,13 @@
                     }
                 }
 
-                const m = (a) => (a + 2 * Math.PI) % Math.PI;
-                const phi = Math.atan2(nod.y - gnd.y, nod.x - gnd.x);
-                data.push(data.length / 2 * 1 / 60, phi + model.constraints[0].w);
-
-                // const chart = {
-                //     x: 20, y: 20, b: 280, h: 150,
-                //     funcs: [{ data }],
-                //     xaxis: {},
-                //     yaxis: {},
-                // }
-
                 g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
                     .gnd({ ...gnd })
                     .nod(nod)
                     .exe(ctx2);
-
-                // g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
                 gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             }
-        }
+        };
 
         simulation(model, fn);
     </script>
