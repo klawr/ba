@@ -16,7 +16,8 @@ function groupUp(result, draw = false) {
     last = 0;
     while (ungrouped.length > min && ungrouped.length != last) {
         last = ungrouped.length
-        const pt = ungrouped[0];
+        // const pt = ungrouped[0];
+        const pt = ungrouped.reduce((pre, cur) => pre.left > cur.left ? pre : cur, ungrouped[0]);
 
         const hypos = [];
         const lines = [];
