@@ -44,6 +44,7 @@ class Gnd {
         this.x = 0;
         this.y = 0;
         this.confident = false;
+        gnd2.innerHTML = "";
         this.data = { x: {}, y: {} };
     }
 

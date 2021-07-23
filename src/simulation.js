@@ -96,13 +96,9 @@ function simulation(model, fn) {
     });
 
     const resetBtn = document.getElementById('reset');
-    resetBtn.addEventListener('click', () => {
-        running = false;
-        model.reset();
-        g.exe(ctx1);
-    });
+    resetBtn.addEventListener('click', resetSimulation);
 
-    cover.addEventListener('input', reset);
+    cover.addEventListener('input', resetSimulation);
 
     model.init();                               // initialize it
 
@@ -110,11 +106,14 @@ function simulation(model, fn) {
     step(fn);
 }
 
-function reset() {
-    g.exe(ctx1);
+let reset; // used to add stuff to reset
+function resetSimulation() {
+    model.reset();
+    reset && reset();
+    gnd.reset();
     running = false;
     cancelAnimationFrame(rafId);
-    gnd.reset();
+    g.exe(ctx1);
     prerender();
 }
 
@@ -129,7 +128,6 @@ function prerender() {
         fs: 'red',
         ls: '@fs'
     }).exe(ctx1);
-    model.reset();
 }
 
 function step(fn) {
