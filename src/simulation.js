@@ -10,31 +10,61 @@ const g = g2().clr().view({ cartesian: true });
 
 let running = false;
 
-function createElement(tag, id, style, size, type, value) {
+function createElement({ tag }) {
     const elm = document.createElement(tag);
-    elm.id = id;
-    if (type) elm.type = type;
-    if (value) elm.value = value;
-    if (style) elm.style = style;
-    if (size) {
-        elm.width = size[0];
-        elm.height = size[1];
-    }
+
+    Object.entries(arguments[0]).forEach(e => {
+        elm[e[0]] = e[1];
+    });
+
     document.body.appendChild(elm);
 
     return elm;
 }
 
 function simulation(model, fn) {
-    createElement("input", "btn", 0, 0, "button", "Start/Stop")
-    gnd1 = createElement("div", "gnd1", "display:inline");
-    gnd2 = createElement("div", "gnd2", "display:inline");
-    createElement("br");
-    createElement("br");
+    createElement({
+        tag: "input",
+        id: "btn",
+        type: "button",
+        value: "Start/Stop"
+    });
+    createElement({
+        tag: "input",
+        id: "slider",
+        type: "range",
+    });
+    gnd1 = createElement({
+        type: "div",
+        id: "gnd1",
+        style: "display:inline"
+    });
+    gnd2 = createElement({
+        type: "div",
+        id: "gnd2",
+        style: "display:inline"
+    });
+    createElement({ tag: "br" });
+    createElement({ tag: "br" });
 
-    ctx1 = createElement("canvas", "cnv1", 0, [320, 180]).getContext('2d');
-    ctx2 = createElement("canvas", "cnv2", 0, [320, 180]).getContext('2d');
-    ctx3 = createElement("canvas", "cnv3", 0, [320, 180]).getContext('2d');
+    ctx1 = createElement({
+        tag: "canvas",
+        id: "cnv1",
+        width: 320,
+        height: 180
+    }).getContext('2d');
+    ctx2 = createElement({
+        tag: "canvas",
+        id: "cnv2",
+        width: 320,
+        height: 180,
+    }).getContext('2d');
+    ctx3 = createElement({
+        tag: "canvas",
+        id: "cnv3",
+        width: 320,
+        height: 180,
+    }).getContext('2d');
 
     mec.model.extend(model);                    // extend the model
 
