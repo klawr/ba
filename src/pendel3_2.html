@@ -89,13 +89,13 @@
                     .cir({ ...p1, r: hy }).cir({ ...p2, r: hy });
             } else {
                 if (ground1.confident) {
-                    gnd2.innerHTML = `Vermutet: x: ${ground1.x}, y: ${cnv1.height - ground1.y}`;
+                    gnd.setRef(ground1);
                     h.lin({ p1: ground1, p2: ground2.last_estimate })
                         .gnd({ ...ground1 })
                         .nod({ ...ground2.last_estimate });
                 }
                 else if (ground2.confident) {
-                    gnd2.innerHTML = `Vermutet: x: ${ground2.x}, y: ${cnv1.height - ground2.y}`;
+                    gnd.setRef(ground2);
                     h.lin({ p1: ground2, p2: ground1.last_estimate })
                         .gnd({ ...ground2 })
                         .nod({ ...ground1.last_estimate });

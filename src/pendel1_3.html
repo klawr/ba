@@ -23,7 +23,9 @@
 
     <b>pendel1_3.html</b>
     <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
-        Hier wird zusätzlich der Pfad des Mittelpunktes des Kreises ermittelt. Wie man sieht, bewegt dieser sich zunächst die ersten 90° auf einer geraden Linie und beginnt dann einen Kreisbogen bis zum Mittelpunkt zu vollziehen.
+        Hier wird zusätzlich der Pfad des Mittelpunktes des Kreises ermittelt. Wie man sieht, bewegt dieser sich
+        zunächst die ersten 90° auf einer geraden Linie und beginnt dann einen Kreisbogen bis zum Mittelpunkt zu
+        vollziehen.
     </p>
 
     <script>
@@ -32,17 +34,16 @@
             gravity: true,
             nodes: [
                 { id: 'A0', x: 150, y: 120, base: true },
-                { id: 'A1', x: 230, y: 150 }
+                { id: 'A1', x: 230, y: 90 }
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dt: 1, Dw: - Math.PI / 1 + 0.01 } }
             ]
         };
 
         const trail = [];
 
         const ply = []; // Alle Punkte
-        let gnd = new Gnd();
         let nod; // Endstück des Pendels
         const data = [];
 
@@ -50,6 +51,10 @@
 
         const fn = (result) => {
             g2().clr().exe(ctx2);
+
+            g2().lin({p1: {x: 150, y: 60}, p2: {x: 230, y: 90}}).exe(ctx2)
+
+            // ply.forEach(e => g2().cir({...e, r: 1, fs:'#000'}).exe(ctx2));
 
             if (!gnd.confident) {
                 result.forEach(r => {
@@ -59,11 +64,10 @@
                         ply.push({ ...r });
                     }
                 });
-                trail.push(makeCircle(ply));
+                ply.length && trail.push(makeCircle(ply));
                 ply.length && gnd.add(makeCircle(ply));
                 gnd.getChart().exe(ctx3);
             }
-
 
 
             g2().ply({ pts: trail })
@@ -90,7 +94,6 @@
                     .gnd({ ...gnd })
                     .nod(nod)
                     .exe(ctx2);
-                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             }
         };
 

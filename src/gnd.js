@@ -1,5 +1,11 @@
 
 class Gnd {
+    setRef(ref) {
+        Object.keys(ref).forEach(key => {
+            this[key] = ref[key];
+        });
+    }
+
     x = 0;
     y = 0;
     confident = false;
@@ -8,11 +14,9 @@ class Gnd {
         return this.past[this.past.length - 1];
     }
 
-    data = {
-        x: {},
-        y: {},
-    };
+    data = { x: {}, y: {}, };
     addDataPoint(a) {
+        if (!a) return;
         const x = Math.round(a.x);
         const y = Math.round(a.y);
         this.data.x[x] = this.data.x[x] ? this.data.x[x] + 1 : 1;
@@ -35,7 +39,17 @@ class Gnd {
         });
     }
 
+    reset() {
+        this.past = [];
+        this.x = 0;
+        this.y = 0;
+        this.confident = false;
+        this.data = { x: {}, y: {} };
+    }
+
     add(a, threshold) {
+        if (!a) return;
+
         if (!this.confident) {
             this.addDataPoint(a);
         }

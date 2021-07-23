@@ -20,6 +20,7 @@
     <script src="gnd.js"></script>
     <script src="compare_images.js"></script>
     <script src="simulation.js"></script>
+
     <b>pendel2_5.html</b>
     <p>Durch die Lösung der Methode der kleinsten Quadrate entsteht wie in den vorherigen Beispielen sichtbar ein Fehler sobald die Linie eher vertikal wird. Indem die Achsen, bzw. die Lösung der Methode gespiegelt wird wenn die Linie mehr vertikal als horizonzal ist soll dieses Problem behoben werden.
     </p>
@@ -36,7 +37,6 @@
             ]
         };
 
-        let gnd = new Gnd();
         let nod; // Endstück des Pendels
 
         const lines = []; // Sammlung der Winkelbewegungen
@@ -157,7 +157,6 @@
                     }
                 }
 
-                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
                 g2().lin({ p1: gnd, p2: nod })
                     .gnd({ ...gnd })
                     .nod(nod)

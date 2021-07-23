@@ -2,11 +2,15 @@
 let gnd1;
 let gnd2;
 
+const gnd = new Gnd();
+
 let ctx1;
 let ctx2;
 let ctx3;
 
-const g = g2().clr().view({ cartesian: true });
+let rafId;
+
+const g = g2().view({ cartesian: true });
 
 let running = false;
 
@@ -25,19 +29,33 @@ function createElement({ tag }) {
 function simulation(model, fn) {
     createElement({
         tag: "input",
-        id: "btn",
+        id: "startstop",
         type: "button",
         value: "Start/Stop"
     });
     createElement({
         tag: "input",
+        id: "reset",
+        type: "button",
+        value: "Reset"
+    });
+    createElement({
+        tag: "div",
+        innerHTML: "cover",
+        style: "display:inline;"
+    })
+    cover = createElement({
+        tag: "input",
         id: "slider",
         type: "range",
+        min: 0,
+        max: 100,
+        value: 0,
     });
     gnd1 = createElement({
         type: "div",
         id: "gnd1",
-        style: "display:inline"
+        style: "display:inline;"
     });
     gnd2 = createElement({
         type: "div",
@@ -71,16 +89,47 @@ function simulation(model, fn) {
     const base = model.nodes.find(e => e.id === 'A0');
     gnd1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
 
-    const btn = document.getElementById('btn');
-    btn.addEventListener('click', () => {
+    const startStopBtn = document.getElementById('startstop');
+    startStopBtn.addEventListener('click', () => {
         running = !running;
         running && step(fn);  // kick-off the simulation
     });
 
+    const resetBtn = document.getElementById('reset');
+    resetBtn.addEventListener('click', () => {
+        running = false;
+        model.reset();
+        g.exe(ctx1);
+    });
+
+    cover.addEventListener('input', reset);
+
     model.init();                               // initialize it
-    model.draw(g);                              // append model-graphics to graphics-obj
-    g.exe(ctx1);
+
+    prerender();
     step(fn);
+}
+
+function reset() {
+    g.exe(ctx1);
+    running = false;
+    cancelAnimationFrame(rafId);
+    gnd.reset();
+    prerender();
+}
+
+function prerender() {
+    step(fn);
+    g.clr();
+    model.draw(g);                              // append model-graphics to graphics-obj
+
+    g.cir({
+        ...model.nodeById("A0"),
+        r: () => cover.value,
+        fs: 'red',
+        ls: '@fs'
+    }).exe(ctx1);
+    model.reset();
 }
 
 function step(fn) {
@@ -92,7 +141,11 @@ function step(fn) {
 
     fn(result);
 
+    if (gnd.confident) {
+        gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+    }
+
     if (running) {
-        requestAnimationFrame(() => step(fn));  // keep calling back
+        rafId = requestAnimationFrame(() => step(fn));  // keep calling back
     }
 }

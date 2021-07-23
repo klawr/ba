@@ -43,7 +43,6 @@
 
         const data = [];
         const lines = [];
-        let gnd = new Gnd();
         let nod; // Endstück des Pendels
 
         const fn = (result) => {
@@ -113,7 +112,6 @@
                     }
                 }
 
-                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
                 g2().lin({ p1: gnd, p2: nod })
                     .gnd({ ...gnd })
                     .nod(nod)

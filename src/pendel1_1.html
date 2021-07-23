@@ -41,7 +41,6 @@
         };
 
         const ply = []; // Alle Punkte
-        let gnd = new Gnd();
         let nod; // Endstück des Pendels
         const data = [];
 
@@ -92,9 +91,6 @@
                     .gnd({ ...gnd })
                     .nod(nod)
                     .exe(ctx2);
-
-                // g2().clr().view({ cartesian: true }).chart(chart).exe(ctx3);
-                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             }
         }
 

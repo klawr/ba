@@ -35,14 +35,13 @@
                 { id: 'A1', x: 230, y: 90 }
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'drive', Dt: 1, Dw: Math.PI / 4 } }
             ]
         };
 
         const trail = [];
 
         const ply = []; // Alle Punkte
-        let gnd = new Gnd();
         let nod; // Endstück des Pendels
         const data = [];
 
@@ -59,7 +58,7 @@
                         ply.push({ ...r });
                     }
                 });
-                trail.push(makeCircle(ply));
+                ply.length && trail.push(makeCircle(ply));
 
                 const max = trail.reduce((pre, cur) =>
                     Math.max(
@@ -75,8 +74,8 @@
                     const c = trail[0].y - trail[0].x * n;
 
                     const p2 = {
-                        x: trail[0].x - max * Math.cos(Math.tan(n)),
-                        y: trail[0].y + max * Math.sin(Math.tan(n))
+                        x: trail[0].x + max * Math.cos(Math.tan(n)),
+                        y: trail[0].y - max * Math.sin(Math.tan(n))
                     };
 
                     g2().lin({
@@ -116,7 +115,6 @@
                     .gnd({ ...gnd })
                     .nod(nod)
                     .exe(ctx2);
-                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             }
         };
 
