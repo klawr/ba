@@ -5,7 +5,7 @@ reset = () => {
 };
 let nod; // Endstück des Pendels
 
-function addPointForCircle(result) {
+function addPointsForCircle(result) {
     if (!gnd.confident) {
         result.forEach(r => {
             if (!gnd.confident) {

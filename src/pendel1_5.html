@@ -22,11 +22,12 @@
     <script src="simulation.js"></script>
     <script src="pendel1.js"></script>
 
-    <b>pendel1_3.html</b>
-    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
-        Hier wird zusätzlich der Pfad des Mittelpunktes des Kreises ermittelt. Wie man sieht, bewegt dieser sich
-        zunächst die ersten 90° auf einer geraden Linie und beginnt dann einen Kreisbogen bis zum Mittelpunkt zu
-        vollziehen.
+    <b>pendel1_5.html</b>
+    <p>Tatsächlich ist bereits direkt ersichtlich, dass der Drehpunkt ungefähr dem Radius des ersten Kreises entsprechen
+        muss der
+        die ersten erkannten Datenpunkte enthält. Sobald also die Linie erzeugt wird, kann auf den Drehpunkt geschlossen
+        werden. Der Radius ist
+        allerdings etwas zu klein, sodass ein kleiner Fehler entsteht.
     </p>
 
     <script>
@@ -38,7 +39,7 @@
                 { id: 'A1', x: 230, y: 90 }
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dt: 1, Dw: - Math.PI } }
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
             ]
         };
 
@@ -54,10 +55,36 @@
             const cir = addPointsForCircle(result);
             cir && trail.push(cir);
 
-            gnd.getChart().exe(ctx3);
+
+            const limit = 30;
+            if (trail.length > limit) {
+                const m =
+                    (trail[limit - 1].y - trail[0].y) /
+                    (trail[limit - 1].x - trail[0].x);
+                const b = trail[0].y - trail[0].x * m;
+                const w = Math.atan(- 1 / m);
+
+                const p2 = {
+                    x: trail[0].x - trail[0].r * Math.cos(w),
+                    y: trail[0].y - trail[0].r * Math.sin(w)
+                }
+
+                g2().lin({
+                    p1: { x: 0, y: b },
+                    p2: { x: cnv1.width, y: m * cnv1.width + b }
+                }).lin({ p1: trail[0], p2, }).exe(ctx2);
+
+                ply.length && gnd.add(p2);
+                gnd.x = p2.x;
+                gnd.y = p2.y;
+                gnd.confident = true;
+                gnd.getChart().exe(ctx3);
+            }
 
             g2().ply({ pts: trail })
                 .cir({ ...gnd.past[gnd.past.length - 1] })
+                .beg({ cartesian: true })
+                .end()
                 .exe(ctx2);
 
             if (gnd.confident) {
@@ -73,14 +100,11 @@
                     }
                 }
 
-                const g = g2();
-
-                if (nod) {
-                    g.lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
-                        .nod(nod);
-
-                }
-                g.gnd({ ...gnd }).exe(ctx2);
+                g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
+                    .gnd({ ...gnd })
+                    .nod(nod)
+                    .exe(ctx2);
+                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             }
         };
 

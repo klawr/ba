@@ -24,7 +24,10 @@
 
     <b>pendel1_4.html</b>
     <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
-        Der erstellte Pfad soll nun genutzt werden um den tatsächlichen Mittelpunkt zu finden.
+        Der erstellte Pfad soll nun genutzt werden um den tatsächlichen Mittelpunkt zu finden, indem die gerade, welche
+        für die ersten 90° erstellt wird genutzt wird, um so bei 90° die orthogonale auf dem ersten Punkt mit Länge der
+        Geraden zu verwenden um damit auf den Drehpunkt zu schließen. Wie sich zeigt, ist dieser Ansatz
+        vielversprechend.
     </p>
 
     <script>
@@ -51,7 +54,7 @@
 
 
             if (!gnd.confident) {
-                const cir = addPointForCircle(result);
+                const cir = addPointsForCircle(result);
                 cir && trail.push(cir);
 
                 const max = trail.reduce((pre, cur) =>
@@ -62,33 +65,42 @@
 
                 const limit = 20;
                 if (trail.length > limit) {
+                    const hypo = trail.reduce((pre, cur) =>
+                        Math.max(
+                            pre,
+                            Math.hypot(cur.x - trail[0].x, cur.y - trail[0].y)),
+                        0);
+
                     const m =
                         (trail[limit - 1].y - trail[0].y) /
                         (trail[limit - 1].x - trail[0].x);
                     const b = trail[0].y - trail[0].x * m;
+                    
+                    const o = Math.atan(m) - Math.PI / 2;
 
                     const p2 = {
-                        x: trail[0].x - max * Math.cos(Math.atan(m) + Math.PI / 2),
-                        y: 0,
+                        x: trail[0].x + Math.cos(o) * hypo,
+                        y: trail[0].y + Math.sin(o) * hypo
                     };
 
                     g2().lin({
                         p1: { x: 0, y: b },
                         p2: { x: cnv1.width, y: m * cnv1.width + b }
-                    }).lin({ p1: trail[0], p2 }).exe(ctx2);
+                    }).lin({
+                        p1: trail[0],
+                        p2,
+                    })
 
                     ply.length && gnd.add(p2);
                     gnd.getChart().exe(ctx3);
                 }
+
+                g2().ply({ pts: trail })
+                    .cir({ ...gnd.past[gnd.past.length - 1] })
+                    .beg({ cartesian: true })
+                    .end()
+                    .exe(ctx2);
             }
-
-
-
-            g2().ply({ pts: trail })
-                .cir({ ...gnd.past[gnd.past.length - 1] })
-                .beg({ cartesian: true })
-                .end()
-                .exe(ctx2);
 
             if (gnd.confident) {
                 for (let i = 0, max = 0; i < result.length; ++i) {
