@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="g2.full.js"></script>
+    <script src="gnd.js"></script>
+    <script src="mec2.min.js"></script>
+    <script src="smallest_enclosing_circle.js"></script>
+    <script src="compare_images.js"></script>
+    <script src="simulation.js"></script>
+
+    <b>pendel1_6.html</b>
+    <p>Jedoch leidet diese Methode darunter, dass sie davon ausgeht, dass das Gelenk um den Drehpunkt herum nicht
+        verdeckt ist.
+    </p>
+
+    <script>
+        const model = {
+            id: 'pendulum',
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 150, y: 120, base: true },
+                { id: 'A1', x: 230, y: 90 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+            ]
+        };
+
+        const trail = [];
+
+        const ply = []; // Alle Punkte
+        let gnd = new Gnd();
+        let nod; // Endstück des Pendels
+        const data = [];
+
+        // simulation
+
+        const fn = (result) => {
+            g2().clr().exe(ctx2);
+
+            if (!gnd.confident) {
+                result.forEach(r => {
+                    if (!gnd.confident) {
+                        // Draw a circle for every found change
+                        g2().cir({ ...r, r: 1 }).exe(ctx2);
+                        ply.push({ ...r });
+                    }
+                });
+                trail.push(makeCircle(ply));
+            }
+
+            if (trail.length > 5) {
+                const m = (trail[4].y - trail[0].y) / (trail[4].x - trail[0].x);
+                const b = trail[0].y - trail[0].x * m;
+
+                const n = 1 / m;
+                const c = trail[0].y - trail[0].x * n;
+
+                const p2 = {
+                    x: trail[0].x - trail[0].r * Math.cos(Math.tan(n)),
+                    y: trail[0].y + trail[0].r * Math.sin(Math.tan(n))
+                };
+
+                g2().lin({
+                    p1: { x: 0, y: b },
+                    p2: { x: cnv1.width, y: m * cnv1.width + b }
+                }).lin({ p1: trail[0], p2, }).exe(ctx2);
+
+                ply.length && gnd.add(p2);
+                gnd.x = p2.x;
+                gnd.y = p2.y;
+                gnd.confident = true;
+                gnd.getChart().exe(ctx3);
+            }
+
+            g2().ply({ pts: trail })
+                .cir({ ...gnd.past[gnd.past.length - 1] })
+                .beg({ cartesian: true })
+                .end()
+                .exe(ctx2);
+
+            if (gnd.confident) {
+                for (let i = 0, max = 0; i < result.length; ++i) {
+                    const r = result[i];
+                    if (r.x === 0 && r.y === 0) {
+                        continue;
+                    }
+                    const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
+
+                    if (hy > max) {
+                        nod = r;
+                    }
+                }
+
+                g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
+                    .gnd({ ...gnd })
+                    .nod(nod)
+                    .exe(ctx2);
+                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+            }
+        };
+        const cover = g2().cir({x: 150, y: 120, r: 40, fs: '#f00', ls: '@fs'});
+
+        simulation(model, fn, cover);
+    </script>
+</body>
+
+</html>

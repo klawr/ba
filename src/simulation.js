@@ -25,7 +25,7 @@ function createElement(tag, id, style, size, type, value) {
     return elm;
 }
 
-function simulation(model, fn) {
+function simulation(model, fn, cover) {
     createElement("input", "btn", 0, 0, "button", "Start/Stop")
     gnd1 = createElement("div", "gnd1", "display:inline");
     gnd2 = createElement("div", "gnd2", "display:inline");
@@ -49,8 +49,9 @@ function simulation(model, fn) {
 
     model.init();                               // initialize it
     model.draw(g);                              // append model-graphics to graphics-obj
+    cover && g.use({grp: cover});
     g.exe(ctx1);
-    step(fn);
+    step(fn, cover);
 }
 
 function step(fn) {
