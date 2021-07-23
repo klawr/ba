@@ -36,24 +36,23 @@
                 { id: 'A1', x: 230, y: 90 }
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'drive', Dt: 1, Dw: Math.PI / 4 } }
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dt: 1, Dw: - Math.PI / 1 + 0.01 } }
             ]
         };
 
-        const trail = [];
+        let trail = [];
+        reset = () => {
+            ply = [];
+            trail = [];
+        }
 
         const fn = (result) => {
             g2().clr().exe(ctx2);
 
+
             if (!gnd.confident) {
-                result.forEach(r => {
-                    if (!gnd.confident) {
-                        // Draw a circle for every found change
-                        g2().cir({ ...r, r: 1 }).exe(ctx2);
-                        ply.push({ ...r });
-                    }
-                });
-                ply.length && trail.push(makeCircle(ply));
+                const cir = addPointForCircle(result);
+                cir && trail.push(cir);
 
                 const max = trail.reduce((pre, cur) =>
                     Math.max(
@@ -61,24 +60,22 @@
                         Math.hypot(cur.x - trail[0].x, cur.y - trail[0].y)),
                     0);
 
-                if (trail.length > 5) {
-                    const m = (trail[4].y - trail[0].y) / (trail[4].x - trail[0].x);
+                const limit = 20;
+                if (trail.length > limit) {
+                    const m =
+                        (trail[limit - 1].y - trail[0].y) /
+                        (trail[limit - 1].x - trail[0].x);
                     const b = trail[0].y - trail[0].x * m;
 
-                    const n = 1 / m;
-                    const c = trail[0].y - trail[0].x * n;
-
                     const p2 = {
-                        x: trail[0].x + max * Math.cos(Math.tan(n)),
-                        y: trail[0].y - max * Math.sin(Math.tan(n))
+                        x: trail[0].x - max * Math.cos(Math.atan(m) + Math.PI / 2),
+                        y: 0,
                     };
 
                     g2().lin({
                         p1: { x: 0, y: b },
                         p2: { x: cnv1.width, y: m * cnv1.width + b }
-                    }).lin({ p1: trail[0], p2, }).exe(ctx2);
-
-                    g2().cir({ x: 50, y: 50, fs: 'red', r: 5 }).exe(ctx2);
+                    }).lin({ p1: trail[0], p2 }).exe(ctx2);
 
                     ply.length && gnd.add(p2);
                     gnd.getChart().exe(ctx3);
