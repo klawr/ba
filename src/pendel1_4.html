@@ -23,11 +23,11 @@
     <script src="pendel1.js"></script>
 
     <b>pendel1_4.html</b>
-    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
-        Der erstellte Pfad soll nun genutzt werden um den tatsächlichen Mittelpunkt zu finden, indem die gerade, welche
-        für die ersten 90° erstellt wird genutzt wird, um so bei 90° die orthogonale auf dem ersten Punkt mit Länge der
-        Geraden zu verwenden um damit auf den Drehpunkt zu schließen. Wie sich zeigt, ist dieser Ansatz
-        vielversprechend.
+    <p>Eine Beobachtung ist in jedem Fall, dass der Drehpunkt auf der Orthogonalen zu der beobachteten Linie mit dem
+        ersten Mittelpunkt als Ursprung liegt.
+
+        Der Abstand der Mittelpunktes zum Drehpunkt entspricht dem Radius des Teilkreises der vom Pfad des Mittelpunktes
+        gezeichnet wird, allerdings nur wenn die Bedeckung 0 ist.
     </p>
 
     <script>
@@ -39,7 +39,7 @@
                 { id: 'A1', x: 230, y: 90 }
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dt: 1, Dw: - Math.PI / 1 + 0.01 } }
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
             ]
         };
 
@@ -52,55 +52,54 @@
         const fn = (result) => {
             g2().clr().exe(ctx2);
 
+            const cir = addPointsForCircle(result);
+            cir && trail.push(cir);
 
-            if (!gnd.confident) {
-                const cir = addPointsForCircle(result);
-                cir && trail.push(cir);
 
-                const max = trail.reduce((pre, cur) =>
-                    Math.max(
-                        pre,
-                        Math.hypot(cur.x - trail[0].x, cur.y - trail[0].y)),
-                    0);
+            const limit = 20;
+            if (trail.length > limit) {
+                const t0 = trail[0];
 
-                const limit = 20;
-                if (trail.length > limit) {
-                    const hypo = trail.reduce((pre, cur) =>
-                        Math.max(
-                            pre,
-                            Math.hypot(cur.x - trail[0].x, cur.y - trail[0].y)),
-                        0);
+                const m =
+                    (trail[limit - 1].y - t0.y) /
+                    (trail[limit - 1].x - t0.x);
+                const b = t0.y - t0.x * m;
+                const w = Math.atan(- 1 / m);
 
-                    const m =
-                        (trail[limit - 1].y - trail[0].y) /
-                        (trail[limit - 1].x - trail[0].x);
-                    const b = trail[0].y - trail[0].x * m;
-                    
-                    const o = Math.atan(m) - Math.PI / 2;
+                const c = t0.y + t0.x / m;
 
-                    const p2 = {
-                        x: trail[0].x + Math.cos(o) * hypo,
-                        y: trail[0].y + Math.sin(o) * hypo
-                    };
-
-                    g2().lin({
-                        p1: { x: 0, y: b },
-                        p2: { x: cnv1.width, y: m * cnv1.width + b }
-                    }).lin({
-                        p1: trail[0],
-                        p2,
-                    })
-
-                    ply.length && gnd.add(p2);
-                    gnd.getChart().exe(ctx3);
+                const p2 = {
+                    x: t0.x - t0.r * Math.cos(w),
+                    y: t0.y - t0.r * Math.sin(w)
                 }
 
-                g2().ply({ pts: trail })
-                    .cir({ ...gnd.past[gnd.past.length - 1] })
-                    .beg({ cartesian: true })
-                    .end()
-                    .exe(ctx2);
+                g2().lin({
+                    p1: { x: 0, y: b },
+                    p2: { x: cnv1.width, y: m * cnv1.width + b },
+                }).lin({
+                    p1: { x: 0, y: c },
+                    p2: { x: cnv1.width, y: - 1 / m * cnv1.width + c },
+                    lw: 2,
+                    ls: 'green',
+                }).lin({
+                    p1: t0,
+                    p2,
+                    lw: 3,
+                    ls: 'blue'
+                }).exe(ctx2);
+
+                ply.length && gnd.add(p2);
+                gnd.x = p2.x;
+                gnd.y = p2.y;
+                gnd.confident = true;
+                gnd.getChart().exe(ctx3);
             }
+
+            g2().ply({ pts: trail })
+                .cir({ ...gnd.past[gnd.past.length - 1] })
+                .beg({ cartesian: true })
+                .end()
+                .exe(ctx2);
 
             if (gnd.confident) {
                 for (let i = 0, max = 0; i < result.length; ++i) {
@@ -119,6 +118,7 @@
                     .gnd({ ...gnd })
                     .nod(nod)
                     .exe(ctx2);
+                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             }
         };
 
