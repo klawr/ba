@@ -153,7 +153,15 @@ Das andere Ende des Pendels wird vorerst durch den Punkt definiert dessen Distan
 Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für die eigentliche Aufgabe vorerst irrelevant, da ein Pendel noch keinen Mechanismus darstellt.
 
 % TODO Bild.
-% TODO Verbesserung der Performance durch weglassen von... So gut wie allen Punkten.
+
+Bisher wurden zur Ermittlung des kleinsten umfassenden Kreises aller bisher ermittelten Datenpunkte alle Datenpunkte verwendet.
+Dies ist jedoch nicht notwendig, da die Kreise welche über den zeitlichen Verlauf hinweg gebildet werden nur jene Datenpunkte behalten werden müssen, welche zur Erstellung des Kreises notwendig sind.
+Dies sind je nach Verteilung der Punktwolke entweder drei oder lediglich zwei Punkte.
+Dafür wurde der genutzte Algorithmus % TODO der Algorithmus wurde noch garnicht erwähnt.
+angepasst, sodass er nicht mehr nur den Kreis, sondern auch die entsprechenden Koordinaten zurückgibt, welche für die Erstellung des entsprechenden Kreises genutzt wurden.
+Außerdem wird bei der Ermittlung des Kreises zwischen den bereits bekannten und der aktuell ermittelten Punktwolke unterschieden, sodass bei der Erweiterung der Liste der bekannten Punkte nach Duplikaten gefiltert werden kann.
+So wird verhindert, dass bereits bekannte Punkte mehrmals in der Liste vorkommen.
+% TODO Vergleich der Performance.
 
 % TODO check das ° Zeichen ob das anständig gedruckt wird.
 Dieser Ansatz erkennt für ein Glied das sich mindestens 180° um den definierten Punkt dreht ein sehr nahe am tatsächlichen Wert gelegenen Drehpunkt.
@@ -162,6 +170,12 @@ Der offensichtliche Nachteil besteht jedoch darin, dass alle Glieder die sich um
 Die Veränderung des Mittelpunktes des Kreises für den Bogen mit kleinerem Mittelpunktswinkel kann jedoch Aufschluss darüber geben, wo sich der tatsächliche Drehpunkt womöglich befinden könnte.
 Diese Möglichkeit soll als nächstes untersucht werden.
 % TODO Untersuch das.
+
+% TODO Gerade Linie und dann Kreis.
+% TODO Abhängigkeit von Bedeckter Fläche
+% TODO Ermittlung von Schnittpunkten durch die geraden
+% TODO Kathetensatz nach Euklid, welcher über h und q das b ermitteln kann, welches durch den Satz von Thales auf das a schließen kann welches mit q einen Schnittpunkt in B haben muss, wobei B bekanntenmaßen der Drehpunkt ist.
+% TODO Das sollte bei steigendem h und q eine immer genauere Prognose von B geben können.
 
 \subsection{Schnittpunkte von Linien}
 
