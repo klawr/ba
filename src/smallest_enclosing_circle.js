@@ -39,9 +39,9 @@ var Circle = /** @class */ (function () {
  * Note: If 0 points are given, null is returned. If 1 point is given, a circle of radius 0 is returned.
  */
 // Initially: No boundary points known
-function makeCircle(points) {
+function makeCircle(points, known) {
     // Clone list to preserve the caller's data, do Durstenfeld shuffle
-    var shuffled = points.slice();
+    const shuffled = [...points, ...known];
     for (var i = points.length - 1; i >= 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
         j = Math.max(Math.min(j, i), 0);
@@ -51,28 +51,33 @@ function makeCircle(points) {
     }
     // Progressively add points to circle or recompute circle
     var c = null;
+    let pts = [];
     shuffled.forEach(function (p, i) {
         if (c === null || !isInCircle(c, p))
-            c = makeCircleOnePoint(shuffled.slice(0, i + 1), p);
+            [c, pts] = makeCircleOnePoint(shuffled.slice(0, i + 1), p);
     });
-    return c;
+
+    return [c, pts.filter(e => !known.includes(e))];
 }
 // One boundary point known
 function makeCircleOnePoint(points, p) {
     var c = new Circle(p.x, p.y, 0);
+    let pts = [p];
     points.forEach(function (q, i) {
         if (!isInCircle(c, q)) {
+            pts = [p, q];
             if (c.r == 0)
                 c = makeDiameter(p, q);
             else
-                c = makeCircleTwoPoints(points.slice(0, i + 1), p, q);
+                [c, pts] = makeCircleTwoPoints(points.slice(0, i + 1), p, q);
         }
     });
-    return c;
+    return [c, pts];
 }
 // Two boundary points known
 function makeCircleTwoPoints(points, p, q) {
     var circ = makeDiameter(p, q);
+    let pts = [p, q];
     var left = null;
     var right = null;
     // For each point not in the two-point circle
@@ -85,20 +90,24 @@ function makeCircleTwoPoints(points, p, q) {
         var c = makeCircumcircle(p, q, r);
         if (c === null)
             continue;
-        else if (cross > 0 && (left === null || crossProduct(p.x, p.y, q.x, q.y, c.x, c.y) > crossProduct(p.x, p.y, q.x, q.y, left.x, left.y)))
+        else if (cross > 0 && (left === null || crossProduct(p.x, p.y, q.x, q.y, c.x, c.y) > crossProduct(p.x, p.y, q.x, q.y, left.x, left.y))) {
+            pts = [p, q, r];
             left = c;
-        else if (cross < 0 && (right === null || crossProduct(p.x, p.y, q.x, q.y, c.x, c.y) < crossProduct(p.x, p.y, q.x, q.y, right.x, right.y)))
+        }
+        else if (cross < 0 && (right === null || crossProduct(p.x, p.y, q.x, q.y, c.x, c.y) < crossProduct(p.x, p.y, q.x, q.y, right.x, right.y))) {
+            pts = [p, q, r];
             right = c;
+        }
     }
     // Select which circle to return
     if (left === null && right === null)
-        return circ;
+        return [circ, pts];
     else if (left === null && right !== null)
-        return right;
+        return [right, pts];
     else if (left !== null && right === null)
-        return left;
+        return [left, pts];
     else if (left !== null && right !== null)
-        return left.r <= right.r ? left : right;
+        return [left.r <= right.r ? left : right, pts];
     else
         throw "Assertion error";
 }

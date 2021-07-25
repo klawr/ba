@@ -52,7 +52,7 @@
             // const cir = addPointsForCircle(result);
             if (!gnd.confident) {
                 result.length && ply.push(result);
-                const cir = makeCircle(ply.flat());
+                const [cir] = makeCircle(ply.flat(), []);
                 ply.length && gnd.add(cir);
                 cir && trail.push(cir);
             }
@@ -64,7 +64,7 @@
                 const t0 = trail[0];
 
                 ply[limit - 1].forEach(e => g2().cir({ ...e, r: 1 }).exe(ctx2));
-                const p1 = makeCircle(ply[limit - 1]);
+                const p1 = makeCircle(ply[limit - 1], []);
 
                 g2().lin({ p1: p1, p2: tl }).exe(ctx2);
 
