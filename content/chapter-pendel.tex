@@ -133,17 +133,18 @@ Insgesamt wurden drei verschiedene Ansätze untersucht, welche im Folgenden betr
 Wie bereits vorher angemerkt, werden die Koordinaten aller Pixel aufgezeichnet für die bei einer Bewegung eine Änderung bemerkt wurde.
 Diese Pixel sollten bei der Drehung eines Gliedes um einen festen Punkt einen Bogen definieren, der Aufschluss über die Position dieses Drehpunktes gibt.
 
-Die genaue Bestimmung eines solchen Bogens scheint besonders schwierig zu sein.
-Die Bestimmung eines Kreises anhand der vorhandenen Punkte ist jedoch ein gelöstes Problem welches als \name{Smalles-Circle Problem} bezeichnet wird.
+Die genaue Bestimmung eines solchen Bogens anhand der Punktwolke zu ermitteln erscheint kein Problem zu sein für welches eine offensichtliche Lösung existiert.
+Stattdessen wird beim ersten untersuchten Ansatz dieser Thesis der kleinste Kreis bestimmt, welcher alle gesammelten Datenpunkte umfasst.
+Diesen Kreis zu ermitteln ist ein Problem für das ein Algorithmus existiert welcher in linearer Zeit\footnote{Das heißt die Dauer des Algorithmus steht in linearem Verhältnis zur Menge der Datenpunkte} durchgeführt werden kann.
+Der entsprechende Algorithmus wurde von Nimrod Megido~\cite[Megiddo1983] entwickelt und die Implementation wird von \aka{https://github.com/nayuki/Nayuki-web-published-code/blob/master/smallest-enclosing-circle/smallest-enclosing-circle-demo.js} bezogen.
+% TODO hier könnte noch etwas vom Algorithmus erzählt werden.
+% TODO ein Hinweis auf die Demo von Nayuki ist vielleicht auch noch sinnvoll: https://www.nayuki.io/page/smallest-enclosing-circle
+
 
 Um einen solchen Kreis zu bestimmen müssen zunächst alle Koordinaten für die eine Änderung erkannt wurde in einer Liste festgehalten werden.
 
-Dann soll ein Algorithmus definiert werden der für diese Punkte als Eingang einen entsprechenden Kreis definiert.
-
-% TODO Definition des Algorithmus
-
-Da zu Beginn der Aufnahme die Region welche durch die Punkte gefüllt wird sehr schnell an Fläche zunimmt, ändern sich die Koordinaten und der Radius des Mittelpunktes sehr schnell.
-Sobald sich das drehende Glied den 180° nähert verändert sich die Definition des Kreises augenscheinlich garnicht mehr und der Drehpunkt scheint mit einer sehr kleinen Abweichung dem tatsächlichen Drehpunkt zu entsprechen.
+Da zu Beginn der Aufnahme die Region welche durch die Punkte gefüllt wird sehr schnell an Fläche zunimmt, ändern sich die Koordinaten und der Radius des Mittelpunktes des kleinsten umfassenden Kreises.
+Sobald sich das drehende Glied einer halben Umdrehung nähert verändert sich die Definition des kleinsten umfassenden Kreises augenscheinlich garnicht mehr und dessen Mittelpunkt scheint mit einer sehr kleinen Abweichung dem tatsächlichen Drehpunkt zu entsprechen.
 
 % TODO Abändern auf Standard-Abweichung.
 Um die Bestimmung zu automatisieren wird als Metrik die Änderung des Mittelpunktes die letzten zehn Iterationen gewählt.
@@ -157,10 +158,24 @@ Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für di
 Bisher wurden zur Ermittlung des kleinsten umfassenden Kreises aller bisher ermittelten Datenpunkte alle Datenpunkte verwendet.
 Dies ist jedoch nicht notwendig, da die Kreise welche über den zeitlichen Verlauf hinweg gebildet werden nur jene Datenpunkte behalten werden müssen, welche zur Erstellung des Kreises notwendig sind.
 Dies sind je nach Verteilung der Punktwolke entweder drei oder lediglich zwei Punkte.
-Dafür wurde der genutzte Algorithmus % TODO der Algorithmus wurde noch garnicht erwähnt.
-angepasst, sodass er nicht mehr nur den Kreis, sondern auch die entsprechenden Koordinaten zurückgibt, welche für die Erstellung des entsprechenden Kreises genutzt wurden.
-Außerdem wird bei der Ermittlung des Kreises zwischen den bereits bekannten und der aktuell ermittelten Punktwolke unterschieden, sodass bei der Erweiterung der Liste der bekannten Punkte nach Duplikaten gefiltert werden kann.
-So wird verhindert, dass bereits bekannte Punkte mehrmals in der Liste vorkommen.
+Dafür wurde der genutzte Algorithmus angepasst, sodass er nicht mehr nur den Kreis, sondern auch die entsprechenden Koordinaten zurückgibt, welche für die Erstellung des entsprechenden Kreises genutzt wurden\footnote{Die entsprechende Änderung kann auf \aka{https://github.com/klawr/ba/commit/7209dfee5ab0a70470e22862f26f7c45046cd98f} nachvollzogen werden}.
+Außerdem wird bei der Ermittlung des Kreises zwischen den bereits bekannten und der aktuell ermittelten Punktwolke unterschieden, sodass bei der Erweiterung der Liste der bekannten Punkte diese nicht mehrfach hinzugefügt werden.
+
+% TODO wurde überhaupt schon eingeführt, dass es solche Tests gibt? Und wie die so aussehen? Man könnte außerdem hier davon sprechen wie ich diesen Test gemacht habe. Ich habe einfach in simulation unter step ein: 
+% let counter = 0;
+% function step(fn) {
+%     counter++;
+%     if (counter > 60) {
+%         running = false;
+%         console.log(ply.length)
+%     }
+% eingebaut. Das ist auch so ungefähr eine halbe Schwingung.
+Diese Anpassung reduziert die Menge der Punkte die im ersten Test in einer Sekunde ermittelt werden von 19880 auf 294 Datenpunkte.
+Von diesen 294 Datenpunkten sind lediglich 69 den bekannten Datenpunkten zuzuordnen.
+Die anderen 225 Punkte lassen sich den gemessenen Veränderungen der letzten beiden verglichenen Bildern zuordnen, was in etwa dem Durchschnitt der Punkte in diesen Tests entspricht.
+Ein weiterer Vorteil ergibt sich noch dadurch, dass Glieder welche sich mehrfach im selben Winkel befinden keine neuen Einträge zu den bekannten Punkten hinzufügen.
+Ohne diesen Filter würde die Menge der Datenpunkte linear zunehmen, und die Dauer des Algorithmus, dessen Zeit ebenfalls linear zur Menge der Datenpunkte wächst, quadratisch wachsen.
+
 % TODO Vergleich der Performance.
 
 % TODO check das ° Zeichen ob das anständig gedruckt wird.
