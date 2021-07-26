@@ -23,7 +23,7 @@ const mag = new cv.Mat(cnv_height, cnv_width, cv.CV_32FC1);
 const ang = new cv.Mat(cnv_height, cnv_width, cv.CV_32FC1);
 const rgb = new cv.Mat(cnv_height, cnv_width, cv.CV_8UC3);
 
-function step_opencv(fn) {
+function step_opencv_farneback(fn) {
     const frame1 = cv.imread(cnv1);
     cv.cvtColor(frame1, prvs, cv.COLOR_RGBA2GRAY);
     frame1.delete();
@@ -61,6 +61,6 @@ function step_opencv(fn) {
     fn?.call();
 
     if (running) {
-        rafId = requestAnimationFrame(() => step_opencv(fn));  // keep calling back
+        rafId = requestAnimationFrame(() => step_opencv_farneback(fn));  // keep calling back
     }
 }
