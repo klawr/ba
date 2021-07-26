@@ -80,7 +80,7 @@
             g2().lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
         };
 
-        simulation(model, fn);
+        simulation(model, () => step_compare_images(fn));
     </script>
 </body>
 

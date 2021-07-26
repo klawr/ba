@@ -23,6 +23,8 @@
     <script src="removeOverlaps.js"></script>
     <script src="getMaxDist.js"></script>
     <script src="groupUp.js"></script>
+    <script src="https://docs.opencv.org/3.4.0/opencv.js"></script>
+    <script src="opencv_farneback.js"></script>
 
     <b>pendel5_1.html</b>
     <p>Test zur Trennung mehrerer Pendel
@@ -30,20 +32,18 @@
 
     <script>
         const model = {
-            id: 'pendulum',
-            gravity: true,
-            nodes: [
-                { id: 'A0', x: 80, y: 120, base: true },
-                { id: 'A1', x: 80, y: 50 },
-                { id: 'B0', x: 240, y: 120, base: true },
-                { id: 'B1', x: 160, y: 90 }
+            "nodes": [
+                { "id": "A0", "x": 60, "y": 60, "base": true },
+                { "id": "A", "x": 60, "y": 110 },
+                { "id": "B", "x": 210, "y": 120 },
+                { "id": "B0", "x": 210, "y": 60, "base": true },
             ],
-            constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } },
-                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
-                { id: 'c', p1: 'B1', p2: 'A1', len: { type: 'const' } }
+            "constraints": [
+                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
+                { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
+                { "id": "c", "p1": "B0", "p2": "B", "len": { "type": "const" } }
             ]
-        };
+        }
 
         const ply = []; // Alle Punkte
         let nod; // Endstück des Pendels
@@ -51,24 +51,10 @@
 
         // simulation
         const fn = (result) => {
-            const filtered = removeOverlaps(result);
 
-            g2().clr().exe(ctx2);
-
-            const groups = groupUp(filtered, true);
-
-            if (!gnd.confident) {
-                filtered.forEach(r => {
-                    if (!gnd.confident) {
-                        // Draw a circle for every found change
-                        g2().cir({ ...r, r: 1 }).exe(ctx2);
-                        ply.push({ ...r });
-                    }
-                });
-            }
         }
 
-        simulation(model, fn);
+        simulation(model, () => step_opencv(fn));
     </script>
 </body>
 

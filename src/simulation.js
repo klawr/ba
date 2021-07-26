@@ -1,4 +1,7 @@
 
+const cnv_width = 320;
+const cnv_height = 180;
+
 let gnd1;
 let gnd2;
 
@@ -7,6 +10,8 @@ const gnd = new Gnd();
 let ctx1;
 let ctx2;
 let ctx3;
+
+let cnv1;
 
 let rafId;
 
@@ -26,7 +31,7 @@ function createElement({ tag }) {
     return elm;
 }
 
-function simulation(model, fn) {
+function createElements() {
     createElement({
         tag: "input",
         id: "startstop",
@@ -65,24 +70,29 @@ function simulation(model, fn) {
     createElement({ tag: "br" });
     createElement({ tag: "br" });
 
-    ctx1 = createElement({
+    cnv1 = createElement({
         tag: "canvas",
         id: "cnv1",
-        width: 320,
-        height: 180
-    }).getContext('2d');
+        width: cnv_width,
+        height: cnv_height
+    });
+    ctx1 = cnv1.getContext('2d');
     ctx2 = createElement({
         tag: "canvas",
         id: "cnv2",
-        width: 320,
-        height: 180,
+        width: cnv_width,
+        height: cnv_height,
     }).getContext('2d');
     ctx3 = createElement({
         tag: "canvas",
         id: "cnv3",
-        width: 320,
-        height: 180,
+        width: cnv_width,
+        height: cnv_height,
     }).getContext('2d');
+}
+
+function simulation(model, step) {
+    createElements();
 
     mec.model.extend(model);                    // extend the model
 
@@ -103,7 +113,7 @@ function simulation(model, fn) {
     model.init();                               // initialize it
 
     prerender();
-    step(fn);
+    step();
 }
 
 let reset; // used to add stuff to reset
@@ -118,7 +128,7 @@ function resetSimulation() {
 }
 
 function prerender() {
-    step(fn);
+    step_compare_images(fn);
     g.clr();
     model.draw(g);                              // append model-graphics to graphics-obj
 
@@ -130,20 +140,20 @@ function prerender() {
     }).exe(ctx1);
 }
 
-function step(fn) {
+function step_compare_images(fn) {
     const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
     model.tick(1 / 60); // solve model with fixed stepping
     g.exe(ctx1);
     const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
     const result = compare_images(image1, image2, cnv1.width, cnv1.height);
 
-    fn(result);
+    fn?.call(undefined, result);
 
     if (gnd.confident) {
         gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
     }
 
     if (running) {
-        rafId = requestAnimationFrame(() => step(fn));  // keep calling back
+        rafId = requestAnimationFrame(() => step_compare_images(fn));  // keep calling back
     }
 }
