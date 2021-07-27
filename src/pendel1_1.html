@@ -14,6 +14,7 @@
 </head>
 
 <body>
+    <b id="title"></b>
     <script src="third_party/g2.full.js"></script>
     <script src="gnd.js"></script>
     <script src="third_party/mec2.min.js"></script>
@@ -22,7 +23,6 @@
     <script src="simulation.js"></script>
     <script src="pendel1.js"></script>
 
-    <b>pendel1_1.html</b>
     <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um mehr als 180° dreht.
         Wie zu sehen ist, ist der vermutete Drehpunkt sehr nah am tatsächlichen Drehpunkt.
         Das Bedecken bis fast zum Ende ändert nichts an der Genauigkeit.
@@ -45,7 +45,7 @@
         const fn = (result) => {
             g2().clr().exe(ctx2);
 
-            addPointsForCircle(result);
+            addPointsForCircle(result, { nofilter: true });
 
             gnd.getChart().exe(ctx3);
 

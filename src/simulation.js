@@ -1,4 +1,6 @@
 
+document.getElementById('title').innerHTML = document.location.pathname.split('/').pop();
+
 const cnv_width = 320;
 const cnv_height = 180;
 
