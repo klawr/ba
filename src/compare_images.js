@@ -1,6 +1,6 @@
 
 /**
- * 
+ *
  * @param {*} image1 The first image
  * @param {*} image2 The second image
  * @param {*} width Width of the images (have to be equal)
