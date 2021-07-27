@@ -15,29 +15,27 @@
 
 <body>
     <b id="title"></b>
-    <script src="third_party/g2.full.js"></script>
-    <script src="gnd.js"></script>
-    <script src="third_party/mec2.min.js"></script>
-    <script src="smallest_enclosing_circle.js"></script>
-    <script src="compare_images.js"></script>
-    <script src="simulation.js"></script>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../scripts/gnd.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../scripts/smallest_enclosing_circle.js"></script>
+    <script src="../scripts/compare_images.js"></script>
+    <script src="../scripts/simulation.js"></script>
     <script src="pendel1.js"></script>
 
-    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
-        Wie man sieht, ist das Ergebnis mit einem sehr großen Fehler behaftet.
-        Das Endstück des Pendels sollte auf dem Umkreis der Kreises verlaufen, was allerdings nicht der Fall ist. Diese
-        Möglichekeit der Korrektur wird jedoch hier nicht weiter untersucht.
-
-        Die Änderung der Bedeckung ändert hier die Genauigkeit auch nicht.
+    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um mehr als 180° dreht.
+        Wie zu sehen ist, ist der vermutete Drehpunkt sehr nah am tatsächlichen Drehpunkt.
+        Das Bedecken bis fast zum Ende ändert nichts an der Genauigkeit.
     </p>
+
 
     <script>
         const model = {
             id: 'pendulum',
             gravity: true,
             nodes: [
-                { id: 'A0', x: 150, y: 120, base: true },
-                { id: 'A1', x: 230, y: 90 }
+                { id: 'A0', x: 150, y: 100, base: true },
+                { id: 'A1', x: 230, y: 130 }
             ],
             constraints: [
                 { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
@@ -47,11 +45,9 @@
         const fn = (result) => {
             g2().clr().exe(ctx2);
 
-            addPointsForCircle(result);
+            addPointsForCircle(result, { nofilter: true });
 
             gnd.getChart().exe(ctx3);
-
-            g2().cir({ ...gnd.past[gnd.past.length - 1] }).exe(ctx2);
 
             if (gnd.confident) {
                 for (let i = 0, max = 0; i < result.length; ++i) {
@@ -71,7 +67,7 @@
                     .nod(nod)
                     .exe(ctx2);
             }
-        };
+        }
 
         register(model, () => step_compare_images(fn));
     </script>

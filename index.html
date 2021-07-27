@@ -65,7 +65,7 @@
 
                 for (let m = 1; m <= e; ++m) {
                     const iframe = document.createElement('iframe');
-                    iframe.src = `src/${kv[0] + (j + 1)}_${m}.html`;
+                    iframe.src = `src/${kv[0]}/${kv[0] + (j + 1)}_${m}.html`;
                     innerDetails.appendChild(iframe);
                 }
             });

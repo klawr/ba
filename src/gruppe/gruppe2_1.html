@@ -15,19 +15,19 @@
 
 <body>
     <b id="title"></b>
-    <script src="gnd.js"></script>
-    <script src="third_party/g2.full.js"></script>
-    <script src="third_party/mec2.min.js"></script>
-    <script src="smallest_enclosing_circle.js"></script>
-    <script src="compare_images.js"></script>
-    <script src="simulation.js"></script>
-    <script src="removeOverlaps.js"></script>
-    <script src="getMaxDist.js"></script>
-    <script src="groupUp.js"></script>
+    <script src="../scripts/gnd.js"></script>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../scripts/smallest_enclosing_circle.js"></script>
+    <script src="../scripts/compare_images.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/removeOverlaps.js"></script>
+    <script src="../scripts/getMaxDist.js"></script>
+    <script src="../scripts/groupUp.js"></script>
     <script src="https://docs.opencv.org/3.4.0/opencv.js"></script>
-    <script src="opencv_lucas_kanade.js"></script>
+    <script src="../scripts/opencv_farneback.js"></script>
 
-    <p>Test zur Lucas_Kanade
+    <p>Test zu Farneback
     </p>
 
     <script>
@@ -54,7 +54,7 @@
 
         }
 
-        register(model, () => step_opencv_lucas_kanade(fn));
+        register(model, () => step_opencv_farneback(fn));
     </script>
 </body>
 
