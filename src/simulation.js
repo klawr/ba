@@ -1,5 +1,6 @@
 
-document.getElementById('title').innerHTML = document.location.pathname.split('/').pop();
+document.getElementById('title').innerHTML =
+    document.location.pathname.split('/').pop();
 
 const cnv_width = 320;
 const cnv_height = 180;
@@ -13,7 +14,6 @@ let ctx1;
 let ctx2;
 let ctx3;
 
-let cnv1;
 
 let rafId;
 
@@ -72,7 +72,7 @@ function createElements() {
     createElement({ tag: "br" });
     createElement({ tag: "br" });
 
-    cnv1 = createElement({
+    createElement({
         tag: "canvas",
         id: "cnv1",
         width: cnv_width,
@@ -141,6 +141,24 @@ function prerender() {
         ls: '@fs'
     }).exe(ctx1);
 }
+
+function register(model, fn) {
+    const btn = createElement({
+        tag: "input",
+        type: "button",
+        value: "Click to load test",
+        style: {
+            height: 200,
+            width: 400,
+        },
+    });
+    btn.addEventListener('click', () => {
+        simulation(model, fn);
+        document.body.removeChild(btn);
+    });
+    document.body.appendChild(btn);
+}
+
 
 function step_compare_images(fn) {
     const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
