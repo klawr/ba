@@ -10,10 +10,9 @@ function find_nearest_centroid(point, centroids) {
             pre : cur));
 }
 
-function k_means_clustering(K, data) {
+function k_means_clustering(K, data, g) {
     const gtv = global_test_variables;
 
-    const g = g2().clr();
 
     const k = Math.min(K, data.length);
 
@@ -51,17 +50,16 @@ function k_means_clustering(K, data) {
 
         centroids.push(newCentroids);
 
-        data_assigned.forEach(d => {
+        g && data_assigned.forEach(d => {
             g.cir({ ...d, r: 1, ls: `${colorize(d.n)}` });
         });
     }
 
-    centroids.forEach((c, i) => c.forEach((d, j) => {
-        g.cir({ ...d, r: i, ls: `${colorize(j)}` });
-    }));
+    g && centroids.forEach((c, i) =>
+        c.forEach(d => { g.cir({ ...d, r: i }); }));
 
-    g.exe(gtv.ctx2);
-    
+    g && g.exe(gtv.ctx2);
+
     return centroids[centroids.length - 1].map((_, i) =>
         data.map(d => ({ ...d, n: find_nearest_centroid(d, centroids[i]) }))
             .filter(d => d.n === i));

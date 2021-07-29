@@ -44,9 +44,15 @@
 
         // simulation
         const fn = (result) => {
+            const { ctx2 } = global_test_variables;
+
             const filtered = removeOverlaps(result);
 
-            k_means_clustering(3, filtered);
+            const g = g2().clr();
+
+            k_means_clustering(3, filtered, g);
+
+            g.exe(ctx2);
         }
 
         register(model, () => step_compare_images(fn));
