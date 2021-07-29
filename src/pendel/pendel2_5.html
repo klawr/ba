@@ -59,7 +59,7 @@
             const { ctx2, ctx3, gnd } = global_test_variables;
             const gpv = global_pendel2_variables;
 
-            g2().clr().exe(ctx2);
+            const g = g2().clr();
 
             const filtered = removeOverlaps(result);
 
@@ -134,19 +134,19 @@
 
                     gnd2.innerHTML = `Erstmal: x: ${pre_gnd.x}, y: ${cnv1.height - pre_gnd.y}`;
 
-                    g2().cir({ ...pre_gnd, r: 5 }).exe(ctx2);
+                    g.cir({ ...pre_gnd, r: 5 });
 
                     gnd.add(pre_gnd, 0.5);
                     gnd.getChart().exe(ctx3);
                 }
 
                 filtered.forEach(e => {
-                    g2().cir({ x: e.x, y: e.y, r: 0.5 }).exe(ctx2);
+                    g.cir({ x: e.x, y: e.y, r: 0.5 });
                 });
 
-                g2().lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2);
+                g.lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b });
 
-                g2().lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b }).exe(ctx2);
+                g.lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b });
             } else {
                 for (let i = 0, max = 0; i < result.length; ++i) {
                     const r = result[i];
@@ -160,11 +160,12 @@
                     }
                 }
 
-                g2().lin({ p1: gnd, p2: gpv.nod })
+                g.lin({ p1: gnd, p2: gpv.nod })
                     .gnd({ ...gnd })
-                    .nod(gpv.nod)
-                    .exe(ctx2);
+                    .nod(gpv.nod);
             }
+
+            g.exe(ctx2);
         };
 
         register(model, () => step_compare_images(fn));

@@ -14,18 +14,19 @@ function addPointsForCircle(result, args = { nofilter: false, nodraw: false }) {
     const gtv = global_test_variables;
     const gpv = global_pendel1_variables;
 
+    const g = g2().clr();
+
     if (!gtv.gnd.confident && !args.nodraw) {
         result.forEach(r => {
             if (!gtv.gnd.confident) {
                 // Draw a circle for every found change
-                g2().cir({ ...r, r: 1 }).exe(gtv.ctx2);
+                g.cir({ ...r, r: 1 });
             }
         });
-
-        global_pendel1_variables.ply.forEach(r => {
+        gpv.ply.forEach(r => {
             if (!gtv.gnd.confident) {
                 // Draw a circle for every found change
-                g2().cir({ ...r, r: 1, ls: 'red' }).exe(gtv.ctx2);
+                g.cir({ ...r, r: 1, ls: 'red' });
             }
         });
     }
@@ -41,7 +42,9 @@ function addPointsForCircle(result, args = { nofilter: false, nodraw: false }) {
 
     gpv.ply.length && gtv.gnd.add(cir);
 
-    g2().cir({ ...gtv.gnd.past[gtv.gnd.past.length - 1] }).exe(gtv.ctx2);
+    g.cir({ ...gtv.gnd.past[gtv.gnd.past.length - 1] });
+    
+    g.exe(gtv.ctx2);
 
     return cir;
 }

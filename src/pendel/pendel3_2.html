@@ -50,7 +50,7 @@
 
             const [p1, p2, hy] = getMaxDistCoG(result, 5);
 
-            const h = g2().clr();
+            const g = g2().clr();
 
             const cog = (pre, cur) => ({
                 x: pre.x + cur.x,
@@ -81,7 +81,7 @@
             }
 
             if (!(ground1.confident || ground2.confident)) {
-                h.cir({ ...sp1, r: 10, fs: 'blue' })
+                g.cir({ ...sp1, r: 10, fs: 'blue' })
                     .cir({ ...sp2, r: 10, fs: 'cyan' })
                     .cir({ ...p1, r: 5, fs: 'red' })
                     .nod({ ...p2, r: 5, fs: 'green' })
@@ -89,18 +89,18 @@
             } else {
                 if (ground1.confident) {
                     gnd.setRef(ground1);
-                    h.lin({ p1: ground1, p2: ground2.last_estimate })
+                    g.lin({ p1: ground1, p2: ground2.last_estimate })
                         .gnd({ ...ground1 })
                         .nod({ ...ground2.last_estimate });
                 }
                 else if (ground2.confident) {
                     gnd.setRef(ground2);
-                    h.lin({ p1: ground2, p2: ground1.last_estimate })
+                    g.lin({ p1: ground2, p2: ground1.last_estimate })
                         .gnd({ ...ground2 })
                         .nod({ ...ground1.last_estimate });
                 }
             }
-            h.exe(ctx2);
+            g.exe(ctx2);
         }
 
         register(model, () => step_compare_images(fn));

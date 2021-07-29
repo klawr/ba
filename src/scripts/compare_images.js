@@ -23,9 +23,9 @@ function compare_images(image1, image2, width, height) {
 }
 
 function step_compare_images(fn) {
-    const { cnv1, ctx1, gnd, gnd2 } = global_test_variables;
+    const { cnv1, gnd, gnd2 } = global_test_variables;
     const gtv = global_test_variables;
-    const new_image = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
+    const new_image = cnv1.getContext('2d').getImageData(0, 0, cnv1.width, cnv1.height).data;
     if (gtv.temp_image) {
         const result = compare_images(gtv.temp_image, new_image, cnv1.width, cnv1.height);
 

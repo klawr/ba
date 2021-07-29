@@ -53,19 +53,21 @@
 
             const filtered = removeOverlaps(result);
 
-            g2().clr().exe(ctx2);
+            const g = g2().clr();
 
-            const groups = groupUp(filtered, ctx2);
+            const groups = groupUp(filtered, g);
 
             if (!gnd.confident) {
                 filtered.forEach(r => {
                     if (!gnd.confident) {
                         // Draw a circle for every found change
-                        g2().cir({ ...r, r: 1 }).exe(ctx2);
+                        g.cir({ ...r, r: 1 });
                         ply.push({ ...r });
                     }
                 });
             }
+
+            g.exe(ctx2);
         }
 
         register(model, () => step_compare_images(fn));

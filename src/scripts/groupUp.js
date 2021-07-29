@@ -3,7 +3,7 @@ function filterResult(result, group) {
     return result.filter(e => !group.includes(e));
 }
 
-function groupUp(result, ctx) {
+function groupUp(result, g) {
     const groups = [];
     let ungrouped = [...result];
 
@@ -47,20 +47,20 @@ function groupUp(result, ctx) {
 
                 hypos[hypos.length - 1].push(score);
 
-                // g2().lin({ x1: x, y1: y, x2: e.x, y2: e.y }).exe(ctx);
+                // g.lin({ x1: x, y1: y, x2: e.x, y2: e.y });
             });
             hypos[hypos.length - 1] = hypos[hypos.length - 1].map(e => e / fix ** 3);
 
-            ctx && g2().lin({ x1: 0, x2: 400, y1: b_i, y2: m_i * 400 + b_i, ls: 'lightgrey' }).exe(ctx);
+            g && g.lin({ x1: 0, x2: 400, y1: b_i, y2: m_i * 400 + b_i, ls: 'lightgrey' });
         }
-        ctx && g2().cir({ ...pt, r: 5, fs: 'green' }).exe(ctx);
+        g && g.cir({ ...pt, r: 5, fs: 'green' });
 
         const score = hypos.map(h => h.reduce((pre, cur) => pre + cur));
 
         const idx = score.indexOf(Math.min(...score));
         const line = lines[idx];
 
-        ctx && g2().lin({ x1: 0, x2: 400, y1: line.b, y2: line.m * 400 + line.b, ls: 'blue' }).exe(ctx);
+        g && g.lin({ x1: 0, x2: 400, y1: line.b, y2: line.m * 400 + line.b, ls: 'blue' });
 
         const group = [];
         result.forEach(e => {
@@ -72,11 +72,12 @@ function groupUp(result, ctx) {
 
             if (Math.hypot(e.y - y, e.x - x) < bounds) {
                 group.push(e);
-                ctx && g2().cir({ ...e, r: 5, fs: colors[groups.length] }).exe(ctx);
+                g && g.cir({ ...e, r: 5, fs: colors[groups.length] });
             }
         });
 
         groups.push(group);
+
         ungrouped = filterResult(ungrouped, group);
     }
     

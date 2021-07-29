@@ -39,15 +39,6 @@ class Gnd {
         });
     }
 
-    reset() {
-        this.past = [];
-        this.x = 0;
-        this.y = 0;
-        this.confident = false;
-        gnd2.innerHTML = "";
-        this.data = { x: {}, y: {} };
-    }
-
     add(a, threshold) {
         if (!a) return;
 

@@ -22,7 +22,7 @@ const global_test_variables = {
 
     rafId: undefined,
 
-    g: g2().view({ cartesian: true }),
+    g: g2().clr().view({ cartesian: true }),
 
     running: false,
 }
@@ -110,10 +110,10 @@ function createElements() {
 
 function run(step) {
     const gtv = global_test_variables;
+    gtv.g.exe(gtv.ctx1);
+    model.tick(1 / 60);
     step();
     if (gtv.running) {
-        model.tick(1 / 60);
-        gtv.g.exe(gtv.ctx1);
         gtv.rafId = requestAnimationFrame(() => run(step));
     }
 }
@@ -146,13 +146,18 @@ function simulation(model, step) {
 function resetSimulation() {
     const gtv = global_test_variables;
 
-    model.reset();
-    gtv.reset && gtv.reset();
-    gtv.gnd.reset();
     gtv.running = false;
+    gtv.gnd = new Gnd();
+    global_test_variables.gnd2.innerHTML = "";
+    global_test_variables.temp_image = undefined;
+
+    gtv.reset && gtv.reset();
+    model.reset();
     cancelAnimationFrame(gtv.rafId);
 
-    gtv.g.clr();
+    g2().clr().exe(gtv.ctx1).exe(gtv.ctx2).exe(gtv.ctx3).exe(gtv.ctx4);
+
+    gtv.g = g2().clr().view({ cartesian: true });
     model.draw(gtv.g);
 
     gtv.g.cir({
@@ -160,7 +165,7 @@ function resetSimulation() {
         r: () => cover.value,
         fs: 'red',
         ls: '@fs'
-    }).exe(gtv.ctx1);
+    });
 }
 
 function register(model, fn) {

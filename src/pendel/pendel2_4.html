@@ -87,12 +87,12 @@
                 b = Y - m * X;
             }
 
-            g2().clr().exe(ctx2);
+            const g = g2().clr();
             filtered.forEach(e => {
-                g2().cir({ x: e.x, y: e.y, r: 0.5 }).exe(ctx2);
+                g.cir({ x: e.x, y: e.y, r: 0.5 });
             });
 
-            g2().lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
+            g.lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
         };
 
         register(model, () => step_compare_images(fn));

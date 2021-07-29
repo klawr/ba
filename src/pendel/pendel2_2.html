@@ -15,7 +15,8 @@
 
 <body>
     <b id="title"></b>
-    <p>Hier wird eine Linie definiert durch den Schwerpunkt der 5 am weitesten voneinander entfernten Pixel bei denen eine Veränderung
+    <p>Hier wird eine Linie definiert durch den Schwerpunkt der 5 am weitesten voneinander entfernten Pixel bei denen
+        eine Veränderung
         gemessen wurde.
         Alle Schnittpunkte dieser Linien bestimmen dann einen Schwerpunkt, von dem ausgegangen wird, dass dieser in der
         nähe des Drehpunktes sein muss.
@@ -47,7 +48,7 @@
             const { data, lines } = global_pendel2_variables;
             const gpv = global_pendel2_variables;
 
-            g2().clr().exe(ctx2);
+            const g = g2().clr();
 
             const [p1, p2] = getMaxDistCoG(result, 5);
 
@@ -59,10 +60,9 @@
             const b = p1.y - m * p1.x;
 
             if (!gnd.confident) {
-                result.forEach(e => g2().cir({ ...e, r: 1 }).exe(ctx2));
-                g2().cir({ ...p1, r: 4, fs: 'green' })
-                    .cir({ ...p2, r: 4, fs: 'red' })
-                    .exe(ctx2);
+                result.forEach(e => g.cir({ ...e, r: 1 }));
+                g.cir({ ...p1, r: 4, fs: 'green' })
+                    .cir({ ...p2, r: 4, fs: 'red' });
 
                 lines.push({ m, b });
 
@@ -93,13 +93,13 @@
 
                     gnd2.innerHTML = `Erstmal: x: ${pre_gnd.x}, y: ${cnv1.height - pre_gnd.y}`;
 
-                    g2().cir({ ...pre_gnd, r: 5 }).exe(ctx2);
+                    g.cir({ ...pre_gnd, r: 5 });
 
                     gnd.add(pre_gnd, 0.5);
                     gnd.getChart().exe(ctx3);
                 }
 
-                g2().lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b }).exe(ctx2);
+                g.lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b });
             } else {
                 for (let i = 0, max = 0; i < result.length; ++i) {
                     const r = result[i];
@@ -113,11 +113,12 @@
                     }
                 }
 
-                g2().lin({ p1: gnd, p2: gpv.nod })
+                g.lin({ p1: gnd, p2: gpv.nod })
                     .gnd({ ...gnd })
-                    .nod(gpv.nod)
-                    .exe(ctx2);
+                    .nod(gpv.nod);
             }
+
+            g.exe(ctx2);
         };
 
         register(model, () => step_compare_images(fn));

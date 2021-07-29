@@ -50,14 +50,14 @@
             const gpv = global_pendel1_variables;
             const { ctx2, ctx3, gnd } = global_test_variables;
 
-            g2().clr().exe(ctx2);
+            const g = g2().clr();
 
             const cir = addPointsForCircle(result);
             cir && gpv.trail.push(cir);
 
             gnd.getChart().exe(ctx3);
 
-            g2().ply({ pts: gpv.trail })
+            g.ply({ pts: gpv.trail })
                 .cir({ ...gnd.past[gnd.past.length - 1] })
                 .exe(ctx2);
 
@@ -81,8 +81,9 @@
                         .nod(gpv.nod);
 
                 }
-                g.gnd({ ...gnd }).exe(ctx2);
+                g.gnd({ ...gnd });
             }
+            g.exe(ctx2);
         };
 
         register(model, () => step_compare_images(fn));

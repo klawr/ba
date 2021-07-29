@@ -46,8 +46,6 @@
             const gpv = global_pendel1_variables;
             const { ctx2, ctx3, gnd } = global_test_variables;
 
-            g2().clr().exe(ctx2);
-
             addPointsForCircle(result, { nofilter: true });
 
             gnd.getChart().exe(ctx3);
@@ -65,7 +63,8 @@
                     }
                 }
 
-                g2().lin({ x1: gnd.x, y1: gnd.y, x2: gpv.nod.x, y2: gpv.nod.y })
+                g2().clr()
+                    .lin({ x1: gnd.x, y1: gnd.y, x2: gpv.nod.x, y2: gpv.nod.y })
                     .gnd({ ...gnd })
                     .nod(gpv.nod)
                     .exe(ctx2);
