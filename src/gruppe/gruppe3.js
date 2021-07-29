@@ -1,7 +1,6 @@
 const gtv = global_test_variables;
 
-const global_opencv_lucas_kanade = {
-    prvs: new cv.Mat(),
+const global_gruppe3_variables = {
     // parameters for ShiTomasi corner detection
     maxCorners: 30,
     qualityLevel: 0.3,
@@ -13,34 +12,41 @@ const global_opencv_lucas_kanade = {
     maxLevel: 2,
     criteria: new cv.TermCriteria(cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03),
 
-    color: [], // filled after object definition
 
-    first_indicator: false, // checks if alg is running 
+    init() {
+        this.first_indicator = false;
 
-    oldGray: new cv.Mat(),
-    p0: new cv.Mat(),
-    none: new cv.Mat(),
+        ["prvs", "oldGray", "p0", "none", "frameGray", "p1", "st", "err"].forEach(k => {
+            this[k] && this[k].delete();
+            this[k] = new cv.Mat();
+        });
 
-    // Create a mask image for drawing purposes
-    mask: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC4, new cv.Scalar(0, 0, 0, 255)),
+        // Create a mask image for drawing purposes
+        this.mask && this.mask.delete();
+        this.mask = new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC4, new cv.Scalar(0, 0, 0, 255));
 
-    frameGray: new cv.Mat(),
-    p1: new cv.Mat(),
-    st: new cv.Mat(),
-    err: new cv.Mat(),
+
+        this.color = []
+        // create some random colors
+        for (let i = 0; i < global_gruppe3_variables.maxCorners; i++) {
+            global_gruppe3_variables.color.push(new cv.Scalar(parseInt(Math.random() * 255), parseInt(Math.random() * 255),
+                parseInt(Math.random() * 255), 255));
+        }
+
+    }
 }
 
+global_gruppe3_variables.init();
 
-// create some random colors
-for (let i = 0; i < global_opencv_lucas_kanade.maxCorners; i++) {
-    global_opencv_lucas_kanade.color.push(new cv.Scalar(parseInt(Math.random() * 255), parseInt(Math.random() * 255),
-        parseInt(Math.random() * 255), 255));
+global_test_variables.reset = function () {
+    global_gruppe3_variables.init();
 }
-
 
 function step_opencv_lucas_kanade(fn) {
-    const olk = global_opencv_lucas_kanade;
+    const olk = global_gruppe3_variables;
     const { g, ctx1, ctx2, running } = global_test_variables;
+
+    console.log(olk);
 
     const frame = cv.imread(cnv1);
     if (!olk.first_indicator) {

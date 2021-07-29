@@ -1,7 +1,7 @@
 
 const gtv = global_test_variables;
 
-const global_opencv_farneback = {
+const global_gruppe2_variables = {
     tmp: new cv.Mat(),
     prvs: new cv.Mat(),
     magLimit: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1, new cv.Scalar(5)),
@@ -19,13 +19,13 @@ const global_opencv_farneback = {
     rgb: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC3),
 }
 
-global_opencv_farneback.hsvVec.push_back(global_opencv_farneback.hsv0);
-global_opencv_farneback.hsvVec.push_back(global_opencv_farneback.hsv1);
-global_opencv_farneback.hsvVec.push_back(global_opencv_farneback.hsv2);
+global_gruppe2_variables.hsvVec.push_back(global_gruppe2_variables.hsv0);
+global_gruppe2_variables.hsvVec.push_back(global_gruppe2_variables.hsv1);
+global_gruppe2_variables.hsvVec.push_back(global_gruppe2_variables.hsv2);
 
 function step_opencv_farneback(fn) {
     const { cnv1, ctx1, ctx2, g, running } = global_test_variables;
-    const { prvs, next, flow, flowVec, ang, hsv, hsv0, hsv2, mag, magLimit, hsvVec, rgb } = global_opencv_farneback;
+    const { prvs, next, flow, flowVec, ang, hsv, hsv0, hsv2, mag, magLimit, hsvVec, rgb } = global_gruppe2_variables;
 
     const frame1 = cv.imread(cnv1);
     cv.cvtColor(frame1, prvs, cv.COLOR_RGBA2GRAY);
