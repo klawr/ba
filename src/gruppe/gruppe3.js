@@ -44,21 +44,17 @@ global_test_variables.reset = function () {
 
 function step_opencv_lucas_kanade(fn) {
     const olk = global_gruppe3_variables;
-    const { g, ctx1, ctx2, running } = global_test_variables;
+    const { ctx2 } = global_test_variables;
 
     const frame = cv.imread(cnv1);
     if (!olk.first_indicator) {
         // take first frame and find corners in it
         cv.cvtColor(frame, olk.oldGray, cv.COLOR_RGB2GRAY);
         cv.goodFeaturesToTrack(olk.oldGray, olk.p0, olk.maxCorners, olk.qualityLevel, olk.minDistance, olk.none, olk.blockSize);
-        g.exe(ctx1);
         olk.first_indicator = true;
     }
 
     cv.cvtColor(frame, olk.frameGray, cv.COLOR_RGBA2GRAY);
-
-    model.tick(1 / 60);
-    g.exe(ctx1);
 
     // calculate optical flow
     cv.calcOpticalFlowPyrLK(olk.oldGray, olk.frameGray, olk.p0, olk.p1, olk.st, olk.err, olk.winSize, olk.maxLevel, olk.criteria);

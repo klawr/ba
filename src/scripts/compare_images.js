@@ -14,7 +14,7 @@ function compare_images(image1, image2, width, height) {
         for (let x = 0; x < width; ++x) {
             const i = y * width + x;
             if (image1[i * 4] !== image2[i * 4]) {
-                difference.push({x, y});
+                difference.push({ x, y });
             };
         }
     }
@@ -24,16 +24,17 @@ function compare_images(image1, image2, width, height) {
 
 function step_compare_images(fn) {
     const { cnv1, ctx1, gnd, gnd2 } = global_test_variables;
+    const gtv = global_test_variables;
+    const new_image = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
+    if (gtv.temp_image) {
+        const result = compare_images(gtv.temp_image, new_image, cnv1.width, cnv1.height);
 
-    const image1 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-    model.tick(1 / 60); // solve model with fixed stepping
-    global_test_variables.g.exe(ctx1);
-    const image2 = ctx1.getImageData(0, 0, cnv1.width, cnv1.height).data;
-    const result = compare_images(image1, image2, cnv1.width, cnv1.height);
+        fn?.call(undefined, result);
 
-    fn?.call(undefined, result);
-
-    if (gnd.confident) {
-        gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+        if (gnd.confident) {
+            gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+        }
     }
+
+    gtv.temp_image = new_image;
 }

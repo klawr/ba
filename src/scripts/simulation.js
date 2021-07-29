@@ -109,9 +109,12 @@ function createElements() {
 }
 
 function run(step) {
+    const gtv = global_test_variables;
     step();
-    if (global_test_variables.running) {
-        global_test_variables.rafId = requestAnimationFrame(() => run(step));
+    if (gtv.running) {
+        model.tick(1 / 60);
+        gtv.g.exe(gtv.ctx1);
+        gtv.rafId = requestAnimationFrame(() => run(step));
     }
 }
 
