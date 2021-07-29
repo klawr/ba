@@ -46,8 +46,6 @@ function step_opencv_lucas_kanade(fn) {
     const olk = global_gruppe3_variables;
     const { g, ctx1, ctx2, running } = global_test_variables;
 
-    console.log(olk);
-
     const frame = cv.imread(cnv1);
     if (!olk.first_indicator) {
         // take first frame and find corners in it
@@ -92,8 +90,4 @@ function step_opencv_lucas_kanade(fn) {
     }
 
     fn?.call();
-
-    if (running) {
-        gtv.rafId = requestAnimationFrame(() => step_opencv_lucas_kanade(fn));  // keep calling back
-    }
 }

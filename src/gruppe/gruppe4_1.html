@@ -19,7 +19,6 @@
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
     <script src="../scripts/smallest_enclosing_circle.js"></script>
-    <script src="../scripts/compare_images.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/removeOverlaps.js"></script>
     <script src="../scripts/getMaxDist.js"></script>
@@ -37,7 +36,7 @@
                 { "id": "B0", "x": 210, "y": 60, "base": true },
             ],
             "constraints": [
-                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" } },
+                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
                 { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
                 { "id": "c", "p1": "B0", "p2": "B", "len": { "type": "const" } }
             ]
@@ -45,9 +44,10 @@
 
         // simulation
         const fn = (result) => {
+            console.log('what')
         }
 
-        // register(model, () => step_opencv_lucas_kanade(fn));
+        register(model, () => fn);
     </script>
 </body>
 

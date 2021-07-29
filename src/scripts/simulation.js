@@ -108,6 +108,13 @@ function createElements() {
     }).getContext('2d');
 }
 
+function run(step) {
+    step();
+    if (global_test_variables.running) {
+        global_test_variables.rafId = requestAnimationFrame(() => run(step));
+    }
+}
+
 function simulation(model, step) {
     const gtv = global_test_variables;
 
@@ -120,7 +127,7 @@ function simulation(model, step) {
 
     gtv.startstopBtn.addEventListener('click', () => {
         gtv.running = !gtv.running;
-        gtv.running && step(fn);  // kick-off the simulation
+        gtv.running && run(step);  // kick-off the simulation
     });
 
     gtv.resetBtn.addEventListener('click', resetSimulation);
@@ -129,8 +136,8 @@ function simulation(model, step) {
 
     model.init();                               // initialize it
 
-    prerender();
-    step();
+    resetSimulation();
+    run(step);
 }
 
 function resetSimulation() {
@@ -141,23 +148,16 @@ function resetSimulation() {
     gtv.gnd.reset();
     gtv.running = false;
     cancelAnimationFrame(gtv.rafId);
-    gtv.g.exe(gtv.ctx1);
-    prerender();
-}
 
-function prerender() {
-    const { ctx1, g } = global_test_variables;
+    gtv.g.clr();
+    model.draw(gtv.g);
 
-    // step_compare_images(fn);
-    g.clr();
-    model.draw(g);                              // append model-graphics to graphics-obj
-
-    g.cir({
+    gtv.g.cir({
         ...model.nodeById("A0"),
         r: () => cover.value,
         fs: 'red',
         ls: '@fs'
-    }).exe(ctx1);
+    }).exe(gtv.ctx1);
 }
 
 function register(model, fn) {

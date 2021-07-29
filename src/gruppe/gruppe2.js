@@ -62,8 +62,4 @@ function step_opencv_farneback(fn) {
     cv.imshow(ctx2.canvas, rgb);
 
     fn?.call();
-
-    if (running) {
-        rafId = requestAnimationFrame(() => step_opencv_farneback(fn));  // keep calling back
-    }
 }
