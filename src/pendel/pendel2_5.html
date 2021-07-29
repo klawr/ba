@@ -20,6 +20,8 @@
     <script src="../scripts/gnd.js"></script>
     <script src="../scripts/compare_images.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/step_compare_images.js"></script>
+    <script src="pendel2.js"></script>
 
     <p>Durch die Lösung der Methode der kleinsten Quadrate entsteht wie in den vorherigen Beispielen sichtbar ein Fehler sobald die Linie eher vertikal wird. Indem die Achsen, bzw. die Lösung der Methode gespiegelt wird wenn die Linie mehr vertikal als horizonzal ist soll dieses Problem behoben werden.
     </p>
@@ -55,6 +57,9 @@
         }
 
         const fn = (result) => {
+            const { ctx2, ctx3, gnd } = global_test_variables;
+            const gpv = global_pendel2_variables;
+
             g2().clr().exe(ctx2);
 
             const filtered = removeOverlaps(result);
@@ -152,13 +157,13 @@
                     const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
 
                     if (hy > max) {
-                        nod = r;
+                        gpv.nod = r;
                     }
                 }
 
-                g2().lin({ p1: gnd, p2: nod })
+                g2().lin({ p1: gnd, p2: gpv.nod })
                     .gnd({ ...gnd })
-                    .nod(nod)
+                    .nod(gpv.nod)
                     .exe(ctx2);
             }
         };

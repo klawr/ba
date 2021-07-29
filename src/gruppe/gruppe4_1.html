@@ -24,10 +24,8 @@
     <script src="../scripts/removeOverlaps.js"></script>
     <script src="../scripts/getMaxDist.js"></script>
     <script src="../scripts/groupUp.js"></script>
-    <script src="../third_party/opencv.js"></script>
-    <script src="../scripts/opencv_farneback.js"></script>
 
-    <p>Test zu Farneback
+    <p>Hier wird eine Gruppierung durch K-Nearest Neighbours versucht.
     </p>
 
     <script>
@@ -39,16 +37,17 @@
                 { "id": "B0", "x": 210, "y": 60, "base": true },
             ],
             "constraints": [
-                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
+                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" } },
                 { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
                 { "id": "c", "p1": "B0", "p2": "B", "len": { "type": "const" } }
             ]
         }
 
+        // simulation
         const fn = (result) => {
         }
 
-        register(model, () => step_opencv_farneback(fn));
+        register(model, () => step_opencv_lucas_kanade(fn));
     </script>
 </body>
 

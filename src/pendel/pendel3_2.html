@@ -21,9 +21,12 @@
     <script src="../scripts/smallest_enclosing_circle.js"></script>
     <script src="../scripts/compare_images.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/step_compare_images.js"></script>
     <script src="../scripts/getMaxDist.js"></script>
+    <script src="pendel3.js"></script>
 
-    <p>Test mit Ermittlung zweier Kreise von denen einer Richtig ist. Als Vergleichsausgangspunkte werden die Schwerpunkte der 5 am größten distanzierten Punkte genommen.
+    <p>Test mit Ermittlung zweier Kreise von denen einer Richtig ist. Als Vergleichsausgangspunkte werden die
+        Schwerpunkte der 5 am größten distanzierten Punkte genommen.
     </p>
 
     <script>
@@ -39,16 +42,13 @@
             ]
         };
 
-        const ply = []; // Alle Punkte
-        const ground1 = new Gnd();
-        const ground2 = new Gnd();
-        let nod; // Endstück des Pendels
-        const data = [];
-
         const threshold = 10;
 
         // simulation
         const fn = (result) => {
+            const { ctx2, ctx3, gnd } = global_test_variables;
+            const { ground1, ground2 } = global_pendel3_variables;
+
             const [p1, p2, hy] = getMaxDistCoG(result, 5);
 
             const h = g2().clr();

@@ -1,39 +1,47 @@
 
-let ply = []; // Alle Punkte
-reset = () => {
-    ply = [];
-};
-let nod; // Endstück des Pendels
+const global_pendel1_variables = {
+    ply: [], // Alle Punkte
+    trail: [], // Genutzt ab pendel1_4
+    nod: undefined,
+}
 
-function addPointsForCircle(result, args = {nofilter: false, nodraw: false}) {
-    if (!gnd.confident && !args.nodraw) {
+global_test_variables.reset = function() {
+    global_pendel1_variables.ply = [];
+    global_pendel1_variables.trail = [];
+}
+
+function addPointsForCircle(result, args = { nofilter: false, nodraw: false }) {
+    const gtv = global_test_variables;
+    const gpv = global_pendel1_variables;
+
+    if (!gtv.gnd.confident && !args.nodraw) {
         result.forEach(r => {
-            if (!gnd.confident) {
+            if (!gtv.gnd.confident) {
                 // Draw a circle for every found change
-                g2().cir({ ...r, r: 1 }).exe(ctx2);
+                g2().cir({ ...r, r: 1 }).exe(gtv.ctx2);
             }
         });
 
-        ply.forEach(r => {
-            if (!gnd.confident) {
+        global_pendel1_variables.ply.forEach(r => {
+            if (!gtv.gnd.confident) {
                 // Draw a circle for every found change
-                g2().cir({ ...r, r: 1, ls: 'red' }).exe(ctx2);
+                g2().cir({ ...r, r: 1, ls: 'red' }).exe(gtv.ctx2);
             }
         });
     }
 
     if (!result) return;
 
-    const [cir, pts] = makeCircle(result, ply);
+    const [cir, pts] = makeCircle(result, gpv.ply);
     if (args.nofilter) {
-        ply.push(...result);
+        gpv.ply.push(...result);
     } else {
-        ply.push(...pts);
+        gpv.ply.push(...pts);
     }
 
-    ply.length && gnd.add(cir);
+    gpv.ply.length && gtv.gnd.add(cir);
 
-    g2().cir({ ...gnd.past[gnd.past.length - 1] }).exe(ctx2);
+    g2().cir({ ...gtv.gnd.past[gtv.gnd.past.length - 1] }).exe(gtv.ctx2);
 
     return cir;
 }

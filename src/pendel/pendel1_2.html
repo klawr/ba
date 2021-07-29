@@ -21,6 +21,7 @@
     <script src="../scripts/smallest_enclosing_circle.js"></script>
     <script src="../scripts/compare_images.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/step_compare_images.js"></script>
     <script src="pendel1.js"></script>
 
     <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
@@ -45,6 +46,9 @@
         };
 
         const fn = (result) => {
+            const gpv = global_pendel1_variables;
+            const { ctx2, ctx3, gnd } = global_test_variables;
+
             g2().clr().exe(ctx2);
 
             addPointsForCircle(result);
@@ -62,13 +66,16 @@
                     const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
 
                     if (hy > max) {
-                        nod = r;
+                        gpv.nod = r;
                     }
                 }
 
-                g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
-                    .gnd({ ...gnd })
-                    .nod(nod)
+                g2().lin({
+                    x1: gnd.x, y1: gnd.y,
+                    x2: gpv.nod.x,
+                    y2: gpv.nod.y
+                }).gnd({ ...gnd })
+                    .nod(gpv.nod)
                     .exe(ctx2);
             }
         };

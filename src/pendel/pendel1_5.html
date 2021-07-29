@@ -21,6 +21,7 @@
     <script src="../scripts/smallest_enclosing_circle.js"></script>
     <script src="../scripts/compare_images.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/step_compare_images.js"></script>
     <script src="pendel1.js"></script>
 
     <p>Werden die Punkte die gemessen wurden nach dem Limit rückwärts abgespielt, dann ergeben sich 2 Linien dessen
@@ -40,13 +41,10 @@
             ]
         };
 
-        let trail = [];
-        reset = () => {
-            ply = [];
-            trail = [];
-        }
-
         const fn = (result) => {
+            const { trail, ply, nod } = global_pendel1_variables;
+            const { ctx2, ctx3, gnd } = global_test_variables;
+
             g2().clr().exe(ctx2);
 
             // const cir = addPointsForCircle(result);

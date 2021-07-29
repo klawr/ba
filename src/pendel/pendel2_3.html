@@ -20,6 +20,7 @@
     <script src="../scripts/gnd.js"></script>
     <script src="../scripts/compare_images.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/step_compare_images.js"></script>
 
     <p>Hier soll durch die Lösung der Methode der kleinsten Quadrate die am besten passende Linie definiert werden. Da hier scheinbar ein starker Fokus auf das Ende des Pendels entsteht, wird der Drehpunkt falsch vorhergesagt.
     </p>
@@ -36,11 +37,10 @@
             ]
         };
 
-        let nod; // Endstück des Pendels
 
-        const ws = []; // Sammlung der Winkelbewegungen
-
-        const fn = (result) => {        
+        const fn = (result) => {
+            const { ctx2, ctx3, gnd } = global_test_variables;
+            
             let max = 0;
             let p1;
             let p2;

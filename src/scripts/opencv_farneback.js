@@ -1,29 +1,32 @@
 
-const tmp = new cv.Mat();
+const gtv = global_test_variables;
 
-const prvs = new cv.Mat();
+const global_opencv_farneback = {
+    tmp: new cv.Mat(),
+    prvs: new cv.Mat(),
+    magLimit: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1, new cv.Scalar(5)),
 
-const magLimit = new cv.Mat(cnv_height, cnv_width, cv.CV_32FC1, new cv.Scalar(5));
+    hsv: new cv.Mat(),
+    hsv0: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC1),
+    hsv1: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC1, new cv.Scalar(255)),
+    hsv2: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC1),
+    hsvVec: new cv.MatVector(),
+    next: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC1),
+    flow: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC2),
+    flowVec: new cv.MatVector(),
+    mag: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1),
+    ang: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1),
+    rgb: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC3),
+}
 
-const hsv = new cv.Mat();
-const hsv0 = new cv.Mat(cnv_height, cnv_width, cv.CV_8UC1);
-const hsv1 = new cv.Mat(cnv_height, cnv_width, cv.CV_8UC1, new cv.Scalar(255));
-const hsv2 = new cv.Mat(cnv_height, cnv_width, cv.CV_8UC1);
-const hsvVec = new cv.MatVector();
-hsvVec.push_back(hsv0);
-hsvVec.push_back(hsv1);
-hsvVec.push_back(hsv2);
-
-const next = new cv.Mat(cnv_height, cnv_width, cv.CV_8UC1);
-
-const flow = new cv.Mat(cnv_height, cnv_width, cv.CV_32FC2);
-const flowVec = new cv.MatVector();
-
-const mag = new cv.Mat(cnv_height, cnv_width, cv.CV_32FC1);
-const ang = new cv.Mat(cnv_height, cnv_width, cv.CV_32FC1);
-const rgb = new cv.Mat(cnv_height, cnv_width, cv.CV_8UC3);
+global_opencv_farneback.hsvVec.push_back(global_opencv_farneback.hsv0);
+global_opencv_farneback.hsvVec.push_back(global_opencv_farneback.hsv1);
+global_opencv_farneback.hsvVec.push_back(global_opencv_farneback.hsv2);
 
 function step_opencv_farneback(fn) {
+    const { cnv1, ctx1, ctx2, g, running } = global_test_variables;
+    const { prvs, next, flow, flowVec, ang, hsv, hsv0, hsv2, mag, magLimit, hsvVec, rgb } = global_opencv_farneback;
+
     const frame1 = cv.imread(cnv1);
     cv.cvtColor(frame1, prvs, cv.COLOR_RGBA2GRAY);
     frame1.delete();
@@ -48,7 +51,7 @@ function step_opencv_farneback(fn) {
     cv.cartToPolar(u, v, mag, ang);
     u.delete();
     v.delete();
-    
+
     ang.convertTo(hsv0, cv.CV_8UC1, 180 / Math.PI / 2);
 
     cv.min(mag, magLimit, mag);

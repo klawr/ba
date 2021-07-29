@@ -21,6 +21,7 @@
     <script src="../scripts/smallest_enclosing_circle.js"></script>
     <script src="../scripts/compare_images.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/step_compare_images.js"></script>
     <script src="pendel1.js"></script>
 
     <p>Eine Beobachtung ist in jedem Fall, dass der Drehpunkt auf der Orthogonalen zu der beobachteten Linie mit dem
@@ -43,26 +44,23 @@
             ]
         };
 
-        let trail = [];
-        reset = () => {
-            ply = [];
-            trail = [];
-        }
-
         const fn = (result) => {
+            const gpv = global_pendel1_variables;
+            const { ctx2, ctx3, gnd } = global_test_variables;
+
             g2().clr().exe(ctx2);
 
             const cir = addPointsForCircle(result);
-            cir && trail.push(cir);
-
+            cir && gpv.trail.push(cir);
+            
 
             const limit = 20;
-            if (trail.length > limit) {
-                const t0 = trail[0];
+            if (gpv.trail.length > limit) {
+                const t0 = gpv.trail[0];
 
                 const m =
-                    (trail[limit - 1].y - t0.y) /
-                    (trail[limit - 1].x - t0.x);
+                    (gpv.trail[limit - 1].y - t0.y) /
+                    (gpv.trail[limit - 1].x - t0.x);
                 const b = t0.y - t0.x * m;
                 const w = Math.atan(- 1 / m);
 
@@ -88,14 +86,14 @@
                     ls: 'blue'
                 }).exe(ctx2);
 
-                ply.length && gnd.add(p2);
+                gpv.ply.length && gnd.add(p2);
                 gnd.x = p2.x;
                 gnd.y = p2.y;
                 gnd.confident = true;
                 gnd.getChart().exe(ctx3);
             }
 
-            g2().ply({ pts: trail })
+            g2().ply({ pts: gpv.trail })
                 .cir({ ...gnd.past[gnd.past.length - 1] })
                 .beg({ cartesian: true })
                 .end()
@@ -110,13 +108,13 @@
                     const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
 
                     if (hy > max) {
-                        nod = r;
+                        gpv.nod = r;
                     }
                 }
 
-                g2().lin({ x1: gnd.x, y1: gnd.y, x2: nod.x, y2: nod.y })
+                g2().lin({ x1: gnd.x, y1: gnd.y, x2: gpv.nod.x, y2: gpv.nod.y })
                     .gnd({ ...gnd })
-                    .nod(nod)
+                    .nod(gpv.nod)
                     .exe(ctx2);
                 gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
             }
