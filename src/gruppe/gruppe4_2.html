@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <b id="title"></b>
+    <script src="../scripts/gnd.js"></script>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../scripts/smallest_enclosing_circle.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/removeOverlaps.js"></script>
+    <script src="../scripts/compare_images.js"></script>
+    <script src="gruppe4.js"></script>
+
+    <p>Hier wird eine Gruppierung durch K-Nearest Neighbours versucht.
+    </p>
+
+    <script>
+        const model = {
+            "nodes": [
+                { "id": "A0", "x": 60, "y": 60, "base": true },
+                { "id": "A", "x": 60, "y": 110 },
+                { "id": "B", "x": 210, "y": 120 },
+                { "id": "B0", "x": 210, "y": 60, "base": true },
+            ],
+            "constraints": [
+                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
+                { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
+                { "id": "c", "p1": "B0", "p2": "B", "len": { "type": "const" } }
+            ]
+        }
+
+        // simulation
+        const fn = (result) => {
+            const filtered = removeOverlaps(result);
+
+            k_means_clustering(3, filtered);
+        }
+
+        register(model, () => step_compare_images(fn));
+    </script>
+</body>
+
+</html>

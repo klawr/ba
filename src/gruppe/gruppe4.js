@@ -21,7 +21,7 @@ function k_means_clustering(K, data) {
     const centroids = [[]];
     for (let i = 0; i < k; ++i) {
         const idx = Math.round(Math.random() * data.length);
-        centroids[0].push({...data[idx]});
+        centroids[0].push({ ...data[idx] });
     }
 
     // TODO only works for k === 3;
@@ -31,14 +31,8 @@ function k_means_clustering(K, data) {
     }
 
     for (let i = 0; i < 10; ++i) {
-
         const data_assigned = data.map(d =>
             ({ ...d, n: find_nearest_centroid(d, centroids[i]) }));
-
-        data_assigned.forEach(d => {
-            g.cir({ ...d, r: 1, ls: `${colorize(d.n)}` });
-        });
-
 
         const filtered = centroids[i].map((_, j) => {
             return data_assigned.filter(d => d.n === j);
@@ -51,18 +45,24 @@ function k_means_clustering(K, data) {
             }), { x: 0, y: 0 });
             centroid.x /= f.length || 1;
             centroid.y /= f.length || 1;
+
             return centroid;
         });
 
         centroids.push(newCentroids);
+
+        data_assigned.forEach(d => {
+            g.cir({ ...d, r: 1, ls: `${colorize(d.n)}` });
+        });
     }
 
-    centroids[centroids.length - 1].forEach(d => {
-        g.cir({ ...d, r: 5 });
-    });
-
-    // gtv.running = false;
-
+    centroids.forEach((c, i) => c.forEach((d, j) => {
+        g.cir({ ...d, r: i, ls: `${colorize(j)}` });
+    }));
 
     g.exe(gtv.ctx2);
+    
+    return centroids[centroids.length - 1].map((_, i) =>
+        data.map(d => ({ ...d, n: find_nearest_centroid(d, centroids[i]) }))
+            .filter(d => d.n === i));
 }
