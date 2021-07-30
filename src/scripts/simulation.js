@@ -18,7 +18,24 @@ const global_test_variables = {
     ctx1: undefined,
     ctx2: undefined,
     ctx3: undefined,
-    ctx4: undefined,
+    ctx_times: undefined,
+    time_reset: undefined,
+    times: [],
+    updateTimesChart() {
+        // Do nothing on first run.
+        if (!this.time_reset) {
+            return g2();
+        }
+        this.times.push(performance.now() - this.time_reset);
+        const data = this.times.map((t, i) => [i, 1000/t]);
+
+        return g2().clr().view({ cartesian: true }).chart({
+            x: 20, y: 20, b: 280, h: 150,
+            funcs: [{ data }],
+            xaxis: {},
+            yaxis: {},
+        });
+    },
 
     rafId: undefined,
 
@@ -100,7 +117,7 @@ function createElements() {
         width: gtv.cnv_width,
         height: gtv.cnv_height,
     }).getContext('2d');
-    gtv.ctx4 = createElement({
+    gtv.ctx_times = createElement({
         tag: "canvas",
         id: "cnv4",
         width: gtv.cnv_width,
@@ -113,8 +130,13 @@ function run(step) {
     gtv.g.exe(gtv.ctx1);
     model.tick(1 / 60);
     step();
+    gtv.updateTimesChart().exe(gtv.ctx_times);
+    
     if (gtv.running) {
-        gtv.rafId = requestAnimationFrame(() => run(step));
+        gtv.rafId = requestAnimationFrame(() => {
+            gtv.time_reset = performance.now();
+            run(step)
+        });
     }
 }
 
@@ -148,14 +170,16 @@ function resetSimulation() {
 
     gtv.running = false;
     gtv.gnd = new Gnd();
-    global_test_variables.gnd2.innerHTML = "";
-    global_test_variables.temp_image = undefined;
+    gtv.gnd2.innerHTML = "";
+    gtv.temp_image = undefined;
+    gtv.last_time = undefined;
+    gtv.times = [];
 
     gtv.reset && gtv.reset();
     model.reset();
     cancelAnimationFrame(gtv.rafId);
 
-    g2().clr().exe(gtv.ctx1).exe(gtv.ctx2).exe(gtv.ctx3).exe(gtv.ctx4);
+    g2().clr().exe(gtv.ctx1).exe(gtv.ctx2).exe(gtv.ctx3).exe(gtv.ctx_times);
 
     gtv.g = g2().clr().view({ cartesian: true });
     model.draw(gtv.g);

@@ -28,8 +28,8 @@ class Gnd {
             .sort((a, b) => +a[0] > +b[0])
             .flatMap(e => [+e[0], e[1]]);
 
-        const x = align(this.data.x, 320); // Canvas width
-        const y = align(this.data.y, 180); // Canvas height
+        const x = align(this.data.x, global_test_variables.cnv_width);
+        const y = align(this.data.y, global_test_variables.cnv_height);
 
         return g2().clr().view({ cartesian: true }).chart({
             x: 20, y: 20, b: 280, h: 150,
