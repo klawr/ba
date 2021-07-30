@@ -20,20 +20,23 @@ const global_test_variables = {
     ctx3: undefined,
     ctx_times: undefined,
     time_reset: undefined,
+    time_first: undefined,
     times: [],
     updateTimesChart() {
-        // Do nothing on first run.
         if (!this.time_reset) {
+            this.time_first = performance.now();
             return g2();
         }
-        this.times.push(performance.now() - this.time_reset);
-        const data = this.times.map((t, i) => [i, 1000/t]);
+        const now = performance.now();
+        this.times.push(
+            (now - this.time_first) / 1000,
+            1000 / (now - this.time_reset));
 
         return g2().clr().view({ cartesian: true }).chart({
-            x: 20, y: 20, b: 280, h: 150,
-            funcs: [{ data }],
-            xaxis: {},
-            yaxis: {},
+            x: 35, y: 30, b: this.cnv_width - 50, h: this.cnv_height - 40,
+            funcs: [{ data: this.times }],
+            xaxis: { title: "Seconds" },
+            yaxis: { title: "Hz" },
         });
     },
 
@@ -131,7 +134,7 @@ function run(step) {
     model.tick(1 / 60);
     step();
     gtv.updateTimesChart().exe(gtv.ctx_times);
-    
+
     if (gtv.running) {
         gtv.rafId = requestAnimationFrame(() => {
             gtv.time_reset = performance.now();
