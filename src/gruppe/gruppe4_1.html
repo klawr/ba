@@ -18,10 +18,10 @@
     <script src="../scripts/gnd.js"></script>
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallest_enclosing_circle.js"></script>
+    <script src="../scripts/smallestEnclosingCircle.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/removeOverlaps.js"></script>
-    <script src="../scripts/compare_images.js"></script>
+    <script src="../scripts/compareImages.js"></script>
     <script src="gruppe4.js"></script>
 
     <p>Hier wird eine Gruppierung durch K-Nearest Neighbours versucht.
@@ -44,7 +44,7 @@
 
         // simulation
         const fn = (result) => {
-            const { ctx2 } = global_test_variables;
+            const { ctx2 } = globalTestVariables;
 
             const g = g2().clr();
 
@@ -53,7 +53,7 @@
             g.exe(ctx2);
         }
 
-        register(model, () => step_compare_images(fn));
+        register(model, () => stepCompareImages(fn));
     </script>
 </body>
 

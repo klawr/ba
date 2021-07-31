@@ -1,5 +1,5 @@
 
-const global_gruppe4_variables = {
+const globalGruppe4Variables = {
 
 }
 
@@ -11,7 +11,7 @@ function find_nearest_centroid(point, centroids) {
 }
 
 function k_means_clustering(K, data, g) {
-    const gtv = global_test_variables;
+    const gtv = globalTestVariables;
 
 
     const k = Math.min(K, data.length);

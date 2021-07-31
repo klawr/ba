@@ -1,6 +1,6 @@
-const gtv = global_test_variables;
+const gtv = globalTestVariables;
 
-const global_gruppe3_variables = {
+const globalGruppe3Variables = {
     // parameters for ShiTomasi corner detection
     maxCorners: 30,
     qualityLevel: 0.3,
@@ -28,23 +28,23 @@ const global_gruppe3_variables = {
 
         this.color = []
         // create some random colors
-        for (let i = 0; i < global_gruppe3_variables.maxCorners; i++) {
-            global_gruppe3_variables.color.push(new cv.Scalar(parseInt(Math.random() * 255), parseInt(Math.random() * 255),
+        for (let i = 0; i < globalGruppe3Variables.maxCorners; i++) {
+            globalGruppe3Variables.color.push(new cv.Scalar(parseInt(Math.random() * 255), parseInt(Math.random() * 255),
                 parseInt(Math.random() * 255), 255));
         }
 
     }
 }
 
-global_gruppe3_variables.init();
+globalGruppe3Variables.init();
 
-global_test_variables.reset = function () {
-    global_gruppe3_variables.init();
+globalTestVariables.reset = function () {
+    globalGruppe3Variables.init();
 }
 
 function step_opencv_lucas_kanade(fn) {
-    const olk = global_gruppe3_variables;
-    const { ctx2 } = global_test_variables;
+    const olk = globalGruppe3Variables;
+    const { ctx2 } = globalTestVariables;
 
     const frame = cv.imread(cnv1);
     if (!olk.first_indicator) {

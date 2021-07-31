@@ -1,7 +1,7 @@
 
-const gtv = global_test_variables;
+const gtv = globalTestVariables;
 
-const global_gruppe2_variables = {
+const globalGruppe2Variables = {
     tmp: new cv.Mat(),
     prvs: new cv.Mat(),
     magLimit: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1, new cv.Scalar(5)),
@@ -20,19 +20,19 @@ const global_gruppe2_variables = {
     frame1: undefined,
 }
 
-global_gruppe2_variables.hsvVec.push_back(global_gruppe2_variables.hsv0);
-global_gruppe2_variables.hsvVec.push_back(global_gruppe2_variables.hsv1);
-global_gruppe2_variables.hsvVec.push_back(global_gruppe2_variables.hsv2);
+globalGruppe2Variables.hsvVec.push_back(globalGruppe2Variables.hsv0);
+globalGruppe2Variables.hsvVec.push_back(globalGruppe2Variables.hsv1);
+globalGruppe2Variables.hsvVec.push_back(globalGruppe2Variables.hsv2);
 
 
 function step_opencv_farneback(fn) {
-    const { cnv1, ctx2 } = global_test_variables;
-    const { prvs, next, flow, flowVec, ang, hsv, hsv0, hsv2, mag, magLimit, hsvVec, rgb } = global_gruppe2_variables;
+    const { cnv1, ctx2 } = globalTestVariables;
+    const { prvs, next, flow, flowVec, ang, hsv, hsv0, hsv2, mag, magLimit, hsvVec, rgb } = globalGruppe2Variables;
 
     const frame2 = cv.imread(cnv1);
 
-    if (global_gruppe2_variables.frame1) {
-        cv.cvtColor(global_gruppe2_variables.frame1, prvs, cv.COLOR_RGBA2GRAY);
+    if (globalGruppe2Variables.frame1) {
+        cv.cvtColor(globalGruppe2Variables.frame1, prvs, cv.COLOR_RGBA2GRAY);
 
         cv.cvtColor(frame2, next, cv.COLOR_RGBA2GRAY);
 
@@ -62,7 +62,7 @@ function step_opencv_farneback(fn) {
 
         fn?.call();
 
-        global_gruppe2_variables.frame1.delete();
+        globalGruppe2Variables.frame1.delete();
     }
-    global_gruppe2_variables.frame1 = frame2;
+    globalGruppe2Variables.frame1 = frame2;
 }

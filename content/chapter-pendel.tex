@@ -64,9 +64,9 @@ Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden zunächst zwei Bi
 Die Frequenz von \name{requestAnimationFrame} beträgt im Optimalfall\footnote{Das bedeutet das keine Berechnungen länger als 16,7 Millisekunden benötigen, welche die Animation entsprechend verlangsamen würde.} 60 Hertz.
 
 Da sich in der modellierten Videosequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel aufzuzeichnen.
-Hierfür wurde die \code{simulate} Function, welche in Listing~\ref{lst:pendel} gezeigt wurde mit dem Programmcode aus Listing~\ref{lst:simulate_compare_images} versehen.
+Hierfür wurde die \code{simulate} Function, welche in Listing~\ref{lst:pendel} gezeigt wurde mit dem Programmcode aus Listing~\ref{lst:simulate_compareImages} versehen.
 
-\begin{lstlisting}[language=JavaScript, caption={TODO caption....}\label{lst:simulate_compare_images}]
+\begin{lstlisting}[language=JavaScript, caption={TODO caption....}\label{lst:simulate_compareImages}]
 const simulate = () => {
     model.tick(1 / 60); // solve model with fixed stepping
     g.exe(ctx1);        // render its pose on the canvas
@@ -77,7 +77,7 @@ const simulate = () => {
     window.setTimeout(() => {
         const image2 = ctx1.getImageData(
             0, 0, cnv1.width, cnv1.height).data;
-        const result = compare_images(
+        const result = compareImages(
             image1, image2, cnv1.width, cnv1.height);
     }
 
@@ -91,10 +91,10 @@ const simulate = () => {
 \end{lstlisting}
 
 Wobei \code{ctx1} und \code{ctx2} den \code{RenderingContext} des jeweiligen HTML-Canvas Elementes repräsentieren.
-\code{compareImages} wird in Listing~\ref{lst:compare_images} gezeigt.
+\code{compareImages} wird in Listing~\ref{lst:compareImages} gezeigt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \code{compare_images} Function}\label{lst:compare_images}]
-function compare_images(image1, image2, width, height) {
+\begin{lstlisting}[language=JavaScript, caption={Definition der \code{compareImages} Function}\label{lst:compareImages}]
+function compareImages(image1, image2, width, height) {
 const difference = [];
 
 for (let y = 0; y < height; ++y) {
@@ -110,12 +110,12 @@ return difference;
 }
 \end{lstlisting}
 
-Eine Momentaufnahme dieser Konstruktion kann in Abbildung~\ref{fig:compare_images} gesehen werden.
+Eine Momentaufnahme dieser Konstruktion kann in Abbildung~\ref{fig:compareImages} gesehen werden.
 
 \begin{figure}[htb]
-	\includegraphics[width=\textwidth]{gfx/compare_images_1.png}
+	\includegraphics[width=\textwidth]{gfx/compareImages_1.png}
 	\caption{Darstellung des Pendels und die dazugehörige erkannte Änderung innerhalb des Bildes.}
-	\label{fig:compare_images}
+	\label{fig:compareImages}
 \end{figure}
 
 Zu beachten ist, dass das Pendel zwei mal gezeigt wird.

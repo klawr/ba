@@ -7,7 +7,7 @@
  * @param {*} height Height of the images (have to be equal)
  * @returns 
  */
-function compare_images(image1, image2, width, height) {
+function compareImages(image1, image2, width, height) {
     const difference = [];
 
     for (let y = 0; y < height; ++y) {
@@ -22,12 +22,12 @@ function compare_images(image1, image2, width, height) {
     return difference;
 }
 
-function step_compare_images(fn) {
-    const { cnv1, gnd, gnd2 } = global_test_variables;
-    const gtv = global_test_variables;
+function stepCompareImages(fn) {
+    const { cnv1, gnd, gnd2 } = globalTestVariables;
+    const gtv = globalTestVariables;
     const new_image = cnv1.getContext('2d').getImageData(0, 0, cnv1.width, cnv1.height).data;
     if (gtv.temp_image) {
-        const result = compare_images(gtv.temp_image, new_image, cnv1.width, cnv1.height);
+        const result = compareImages(gtv.temp_image, new_image, cnv1.width, cnv1.height);
 
         fn?.call(undefined, result);
 

@@ -1,5 +1,5 @@
 
-function regression_line(pts) {
+function regressionLine(pts) {
     let max = 0;
     let p1;
     let p2;

@@ -18,8 +18,8 @@
     <script src="../scripts/gnd.js"></script>
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallest_enclosing_circle.js"></script>
-    <script src="../scripts/compare_images.js"></script>
+    <script src="../scripts/smallestEnclosingCircle.js"></script>
+    <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/getMaxDist.js"></script>
     <script src="pendel3.js"></script>
@@ -45,8 +45,8 @@
 
         // simulation
         const fn = (result) => {
-            const { ctx2, ctx3 } = global_test_variables;
-            const { ground1, ground2 } = global_pendel3_variables;
+            const { ctx2, ctx3 } = globalTestVariables;
+            const { ground1, ground2 } = globalPendel3Variables;
 
             const [p1, p2, hy] = getMaxDist(result);
 
@@ -104,7 +104,7 @@
             g.exe(ctx2);
         }
 
-        register(model, () => step_compare_images(fn));
+        register(model, () => stepCompareImages(fn));
     </script>
 </body>
 

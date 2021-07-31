@@ -2,7 +2,7 @@
 document.getElementById('title').innerHTML =
     document.location.pathname.split('/').pop();
 
-const global_test_variables = {
+const globalTestVariables = {
     cnv_width: 320,
     cnv_height: 180,
     gnd1: undefined,
@@ -59,7 +59,7 @@ function createElement({ tag }) {
 }
 
 function createElements() {
-    const gtv = global_test_variables;
+    const gtv = globalTestVariables;
 
     gtv.startstopBtn = createElement({
         tag: "input",
@@ -132,7 +132,7 @@ function createElements() {
 }
 
 function run(step) {
-    const gtv = global_test_variables;
+    const gtv = globalTestVariables;
     gtv.g.exe(gtv.ctx1);
     model.tick(1 / 60);
     step();
@@ -147,7 +147,7 @@ function run(step) {
 }
 
 function simulation(model, step) {
-    const gtv = global_test_variables;
+    const gtv = globalTestVariables;
 
     createElements();
 
@@ -168,7 +168,7 @@ function simulation(model, step) {
 }
 
 function resetSimulation() {
-    const gtv = global_test_variables;
+    const gtv = globalTestVariables;
 
     gtv.running = false;
     gtv.gnd = new Gnd();

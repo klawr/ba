@@ -1,8 +1,8 @@
 
-const global_pendel3_variables = {
+const globalPendel3Variables = {
     ground1: new Gnd(),
     ground2: new Gnd(),
 }
 
-global_test_variables.reset = function() {
+globalTestVariables.reset = function() {
 }

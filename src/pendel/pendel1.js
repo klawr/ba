@@ -1,18 +1,18 @@
 
-const global_pendel1_variables = {
+const globalPendel1Variables = {
     ply: [], // Alle Punkte
     trail: [], // Genutzt ab pendel1_4
     nod: undefined,
 }
 
-global_test_variables.reset = function() {
-    global_pendel1_variables.ply = [];
-    global_pendel1_variables.trail = [];
+globalTestVariables.reset = function() {
+    globalPendel1Variables.ply = [];
+    globalPendel1Variables.trail = [];
 }
 
 function addPointsForCircle(result, g, args = { nofilter: false, nomemory: false }) {
-    const gtv = global_test_variables;
-    const gpv = global_pendel1_variables;
+    const gtv = globalTestVariables;
+    const gpv = globalPendel1Variables;
 
     if (g && !args.nomemory && !gtv.gnd.confident) {
         gpv.ply.forEach(r => {

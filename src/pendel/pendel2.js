@@ -1,10 +1,10 @@
 
-const global_pendel2_variables = {
+const globalPendel2Variables = {
     nod: undefined,
     data: [],
     lines: [],
 }
 
-global_test_variables.reset = function() {
-    global_pendel2_variables.data = [];
+globalTestVariables.reset = function() {
+    globalPendel2Variables.data = [];
 }

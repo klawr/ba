@@ -1,8 +1,8 @@
 
-const global_gruppe1_variables = {
+const globalGruppe1Variables = {
     ply: [],
 }
 
-global_test_variables.reset = function() {
-    global_gruppe1_variables.ply = [];
+globalTestVariables.reset = function() {
+    globalGruppe1Variables.ply = [];
 }

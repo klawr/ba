@@ -18,8 +18,8 @@
     <script src="../third_party/g2.full.js"></script>
     <script src="../scripts/gnd.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallest_enclosing_circle.js"></script>
-    <script src="../scripts/compare_images.js"></script>
+    <script src="../scripts/smallestEnclosingCircle.js"></script>
+    <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="pendel1.js"></script>
 
@@ -40,8 +40,8 @@
         };
 
         const fn = (result) => {
-            const { trail, ply, nod } = global_pendel1_variables;
-            const { ctx2, ctx3, gnd } = global_test_variables;
+            const { trail, ply, nod } = globalPendel1Variables;
+            const { ctx2, ctx3, gnd } = globalTestVariables;
 
             const g = g2().clr();
 
@@ -132,7 +132,7 @@
             g.exe(ctx2);
         };
 
-        register(model, () => step_compare_images(fn));
+        register(model, () => stepCompareImages(fn));
     </script>
 </body>
 

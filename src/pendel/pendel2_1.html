@@ -24,7 +24,7 @@
     <script src="../third_party/g2.full.js"></script>
     <script src="../scripts/gnd.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/compare_images.js"></script>
+    <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/getMaxDist.js"></script>
     <script src="pendel2.js"></script>
@@ -43,9 +43,9 @@
         };
 
         const fn = (result) => {
-            const { lines, data } = global_pendel2_variables;
-            const gpv = global_pendel2_variables;
-            const { ctx2, ctx3, gnd } = global_test_variables;
+            const { lines, data } = globalPendel2Variables;
+            const gpv = globalPendel2Variables;
+            const { ctx2, ctx3, gnd } = globalTestVariables;
 
             const g = g2().clr();
 
@@ -119,7 +119,7 @@
             g.exe(ctx2);
         };
 
-        register(model, () => step_compare_images(fn));
+        register(model, () => stepCompareImages(fn));
     </script>
 </body>
 

@@ -18,8 +18,8 @@
     <script src="../scripts/gnd.js"></script>
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallest_enclosing_circle.js"></script>
-    <script src="../scripts/compare_images.js"></script>
+    <script src="../scripts/smallestEnclosingCircle.js"></script>
+    <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/removeOverlaps.js"></script>
     <script src="../scripts/getMaxDist.js"></script>
@@ -47,8 +47,8 @@
 
         // simulation
         const fn = (result) => {
-            const { ctx2, gnd } = global_test_variables;
-            const { ply } = global_gruppe1_variables;
+            const { ctx2, gnd } = globalTestVariables;
+            const { ply } = globalGruppe1Variables;
 
             const g = g2().clr();
 
@@ -69,7 +69,7 @@
             g.exe(ctx2);
         }
 
-        register(model, () => step_compare_images(fn));
+        register(model, () => stepCompareImages(fn));
     </script>
 </body>
 
