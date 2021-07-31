@@ -50,7 +50,15 @@
 
             const g = g2().clr();
 
-            addPointsForCircle(result);
+            result.forEach(r => {
+                if (!gnd.confident) {
+                    // Draw a circle for every found change
+                    g.cir({ ...r, r: 1 });
+                }
+            });
+
+
+            addPointsForCircle(result, g);
 
             gnd.getChart().exe(ctx3);
 
@@ -77,7 +85,9 @@
                     .nod(gpv.nod)
                     .exe(ctx2);
             }
-        };
+
+            g.exe(ctx2);
+        }
 
         register(model, () => step_compare_images(fn));
     </script>

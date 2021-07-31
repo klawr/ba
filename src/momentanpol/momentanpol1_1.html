@@ -1,0 +1,48 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <b id="title"></b>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../scripts/gnd.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../scripts/smallest_enclosing_circle.js"></script>
+    <script src="../scripts/compare_images.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="pendel1.js"></script>
+
+    <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
+        Wie man sieht, ist das Ergebnis mit einem sehr großen Fehler behaftet.
+        Das Endstück des Pendels sollte auf dem Umkreis der Kreises verlaufen, was allerdings nicht der Fall ist. Diese
+        Möglichekeit der Korrektur wird jedoch hier nicht weiter untersucht.
+
+        Die Änderung der Bedeckung ändert hier die Genauigkeit auch nicht.
+    </p>
+
+    <script>
+        const model = {
+        };
+
+        const fn = (result) => {
+          
+        };
+
+        register(model, () => step_compare_images(fn));
+    </script>
+</body>
+
+</html>

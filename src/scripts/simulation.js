@@ -10,7 +10,6 @@ const global_test_variables = {
     gnd: new Gnd(),
 
     startstopBtn: undefined,
-    resetBtn: undefined,
     reset: undefined, // filled by tests
 
     cnv1: undefined,
@@ -68,7 +67,7 @@ function createElements() {
         type: "button",
         value: "Start/Stop"
     });
-    gtv.resetBtn = createElement({
+    resetBtn = createElement({
         tag: "input",
         id: "reset",
         type: "button",
@@ -126,6 +125,10 @@ function createElements() {
         width: gtv.cnv_width,
         height: gtv.cnv_height,
     }).getContext('2d');
+
+    resetBtn.addEventListener('click', resetSimulation);
+
+    cover.addEventListener('input', resetSimulation);
 }
 
 function run(step) {
@@ -157,10 +160,6 @@ function simulation(model, step) {
         gtv.running = !gtv.running;
         gtv.running && run(step);  // kick-off the simulation
     });
-
-    gtv.resetBtn.addEventListener('click', resetSimulation);
-
-    cover.addEventListener('input', resetSimulation);
 
     model.init();                               // initialize it
 

@@ -46,7 +46,15 @@
             const gpv = global_pendel1_variables;
             const { ctx2, ctx3, gnd } = global_test_variables;
 
-            addPointsForCircle(result, { nofilter: true });
+            const g = g2().clr();
+            result.forEach(r => {
+                if (!gnd.confident) {
+                    // Draw a circle for every found change
+                    g.cir({ ...r, r: 1 });
+                }
+            });
+
+            addPointsForCircle(result, g, { nofilter: true });
 
             gnd.getChart().exe(ctx3);
 
@@ -69,6 +77,8 @@
                     .nod(gpv.nod)
                     .exe(ctx2);
             }
+
+            g.exe(ctx2);
         }
 
         register(model, () => step_compare_images(fn));
