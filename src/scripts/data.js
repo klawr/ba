@@ -11,12 +11,8 @@ class Data {
         if (!a) return;
         const x = Math.round(a.x);
         const y = Math.round(a.y);
-        if (Number.isSafeInteger(x)) {
-            this.dataX[x] = this.dataX[x] ? this.dataX[x] + 1 : 1;
-        }
-        if (Number.isSafeInteger(y)) {
-            this.dataY[y] = this.dataY[y] ? this.dataY[y] + 1 : 1;
-        }
+        this.dataX[x] = this.dataX[x] ? this.dataX[x] + 1 : 1;
+        this.dataY[y] = this.dataY[y] ? this.dataY[y] + 1 : 1;
     };
 
     getChart(showX = true, showY = true) {
