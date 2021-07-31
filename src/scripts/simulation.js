@@ -31,7 +31,7 @@ const globalTestVariables = {
             (now - this.time_first) / 1000,
             1000 / (now - this.time_reset));
 
-        return g2().clr().view({ cartesian: true }).chart({
+        return g2().view({ cartesian: true }).clr().chart({
             x: 35, y: 30, b: this.cnv_width - 50, h: this.cnv_height - 40,
             funcs: [{ data: this.times }],
             xaxis: { title: "Seconds" },
