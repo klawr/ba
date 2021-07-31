@@ -1,5 +1,5 @@
 
-function regressionLine(pts) {
+function regressionLine(pts, g) {
     let max = 0;
     let p1;
     let p2;
@@ -40,6 +40,13 @@ function regressionLine(pts) {
 
     let m = swap ? counter / denominator : denominator / counter;
     let b = (sy - m * sx) / n;
+
+    g?.lin({
+        x1: 0,
+        x2: globalTestVariables.cnv_width,
+        y1: b,
+        y2: m * globalTestVariables.cnv_width + b
+    });
 
     return { m, b };
 }

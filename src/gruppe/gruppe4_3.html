@@ -55,16 +55,7 @@
             const groups = k_means_clustering(k, filtered, g);
 
             if (groups.filter(g => g.length).length === k) {
-                const lines = groups.map(g => regressionLine(g));
-                lines.forEach(line => {
-                    g.lin({
-                        x1: 0,
-                        x2: cnv_width,
-                        y1: line.b,
-                        y2: line.m * cnv_width + line.b
-                    });
-                });
-
+                groups.forEach(e => regressionLine(e, g));
             }
             g.exe(ctx2);
         }

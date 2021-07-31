@@ -51,7 +51,7 @@
 
             if (!filtered.length) return;
 
-            const { m, b } = regressionLine(filtered);
+            const { m, b } = regressionLine(filtered, g);
 
             if (!gnd.confident) {
                 gpv.lines.push({ m, b });
@@ -93,9 +93,6 @@
                     g.cir({ x: e.x, y: e.y, r: 0.5 });
                 });
 
-                g.lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b });
-
-                g.lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b });
             } else {
                 for (let i = 0, max = 0; i < result.length; ++i) {
                     const r = result[i];
