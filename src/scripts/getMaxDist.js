@@ -1,23 +1,9 @@
 
-function getMaxDist(result) {
-    let p1;
-    let p2;
-    let max = 0;
-    result.forEach(r => {
-        result.forEach(s => {
-            const hy = Math.hypot(r.y - s.y, r.x - s.x);
-            if (hy > max) {
-                max = hy;
-                p1 = s;
-                p2 = r;
-            };
-        });
-    });
-
-    return [p1, p2, max];
+function getMaxDist(result, g) {
+    return getMaxDistCoG(result, 1, g);
 }
 
-function getMaxDistCoG(result, number) {
+function getMaxDistCoG(result, number, g) {
     let copy = [...result];
 
     const p1s = [];
@@ -76,6 +62,8 @@ function getMaxDistCoG(result, number) {
     const p1 = cog(p1s);
     const p2 = cog(p2s);
     const max = Math.hypot(p1.y - p2.y, p1.x - p2.x);
+
+    g?.cir({...p1, r: 5, fs: 'red'}).cir({...p2, r: 5, fs: 'red'});
 
     return [p1, p2, max];
 }

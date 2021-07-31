@@ -22,6 +22,7 @@
     <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/regressionLine.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/getMaxDist.js"></script>
     <script src="momentanpol.js"></script>
 
     <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
@@ -44,6 +45,8 @@
             const g = g2().clr();
 
             const line = regressionLine(result, g);
+            const [p1, p2] = getMaxDist(result, g);
+
 
 
             result.forEach(r => {

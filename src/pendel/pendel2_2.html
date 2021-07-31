@@ -50,7 +50,7 @@
 
             const g = g2().clr();
 
-            const [p1, p2] = getMaxDistCoG(result, 5);
+            const [p1, p2] = getMaxDistCoG(result, 5, g);
 
             if (!p1 || !p2) {
                 return;
@@ -61,8 +61,6 @@
 
             if (!gnd.confident) {
                 result.forEach(e => g.cir({ ...e, r: 1 }));
-                g.cir({ ...p1, r: 4, fs: 'green' })
-                    .cir({ ...p2, r: 4, fs: 'red' });
 
                 lines.push({ m, b });
 
