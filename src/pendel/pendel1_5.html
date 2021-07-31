@@ -27,7 +27,7 @@
     Die Linie ist tatsächlich sehr treffend, der entsprechende Winkel ist allerdings inkorrekt, da sowohl das Pendel vor, als auch das im Bild danach betrachtet wird. Dieser Fehler verschwindet jedoch, sobald man eine unbeschleunigte Bewegung nimmt.</p>
 
     <script>
-        const model = {
+        globalTestVariables.model = {
             id: 'pendulum',
             gravity: true,
             nodes: [
@@ -132,7 +132,7 @@
             g.exe(ctx2);
         };
 
-        register(model, () => stepCompareImages(fn));
+        register(() => stepCompareImages(fn));
     </script>
 </body>
 

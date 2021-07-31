@@ -29,7 +29,7 @@
     </p>
 
     <script>
-        const model = {
+        globalTestVariables.model = {
             "nodes": [
                 { "id": "A0", "x": 60, "y": 60, "base": true },
                 { "id": "A", "x": 60, "y": 110 },
@@ -69,7 +69,7 @@
             g.exe(ctx2);
         }
 
-        register(model, () => stepCompareImages(fn));
+        register(() => stepCompareImages(fn));
     </script>
 </body>
 

@@ -134,7 +134,7 @@ function createElements() {
 function run(step) {
     const gtv = globalTestVariables;
     gtv.g.exe(gtv.ctx1);
-    model.tick(1 / 60);
+    gtv.model?.tick(1 / 60);
     step();
     gtv.updateTimesChart().exe(gtv.ctx_times);
 
@@ -146,23 +146,42 @@ function run(step) {
     }
 }
 
-function simulation(model, step) {
+function initModel() {
+    const gtv = globalTestVariables;
+
+    mec.model.extend(gtv.model);
+
+    const base = gtv.model.nodes.find(e => e.id === 'A0');
+    gtv.gnd1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
+
+    gtv.model.init();
+}
+
+function resetModel() {
+    const gtv = globalTestVariables;
+
+    gtv.model.reset();
+    gtv.model.draw(gtv.g);
+
+    gtv.g.cir({
+        ...gtv.model.nodeById("A0"),
+        r: () => cover.value,
+        fs: 'red',
+        ls: '@fs'
+    });
+}
+
+function simulation(step) {
     const gtv = globalTestVariables;
 
     createElements();
 
-    mec.model.extend(model);                    // extend the model
-
-    const base = model.nodes.find(e => e.id === 'A0');
-    gtv.gnd1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
+    gtv.model && initModel();
 
     gtv.startstopBtn.addEventListener('click', () => {
         gtv.running = !gtv.running;
         gtv.running && run(step);  // kick-off the simulation
     });
-
-    model.init();                               // initialize it
-
     resetSimulation();
     run(step);
 }
@@ -177,24 +196,18 @@ function resetSimulation() {
     gtv.last_time = undefined;
     gtv.times = [];
 
+    gtv.g = g2().clr().view({ cartesian: true });
+
     gtv.reset && gtv.reset();
-    model.reset();
+    gtv.model && resetModel();
+
     cancelAnimationFrame(gtv.rafId);
 
     g2().clr().exe(gtv.ctx1).exe(gtv.ctx2).exe(gtv.ctx3).exe(gtv.ctx_times);
 
-    gtv.g = g2().clr().view({ cartesian: true });
-    model.draw(gtv.g);
-
-    gtv.g.cir({
-        ...model.nodeById("A0"),
-        r: () => cover.value,
-        fs: 'red',
-        ls: '@fs'
-    });
 }
 
-function register(model, fn) {
+function register(fn) {
     const btn = createElement({
         tag: "input",
         type: "button",
@@ -205,7 +218,7 @@ function register(model, fn) {
         },
     });
     btn.addEventListener('click', () => {
-        simulation(model, fn);
+        simulation(fn);
         document.body.removeChild(btn);
     });
     document.body.appendChild(btn);

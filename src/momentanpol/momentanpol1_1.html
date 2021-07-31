@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +21,7 @@
     <script src="../scripts/smallestEnclosingCircle.js"></script>
     <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
-    <script src="pendel1.js"></script>
+    <script src="momentanpol.js"></script>
 
     <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
         Wie man sieht, ist das Ergebnis mit einem sehr großen Fehler behaftet.
@@ -34,14 +32,18 @@
     </p>
 
     <script>
-        const model = {
-        };
+        let i = 0;
 
+        const gtv = globalTestVariables;
         const fn = (result) => {
-          
+            const { ctx1 } = gtv;
+
+            const g = g2().cir({x: i, y: 40, r: 20});
+
+            g.exe(ctx1);
         };
 
-        register(model, () => stepCompareImages(fn));
+        register(() => fn);
     </script>
 </body>
 

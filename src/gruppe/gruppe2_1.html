@@ -30,7 +30,7 @@
     </p>
 
     <script>
-        const model = {
+        globalTestVariables.model = {
             "nodes": [
                 { "id": "A0", "x": 60, "y": 60, "base": true },
                 { "id": "A", "x": 60, "y": 110 },
@@ -47,7 +47,7 @@
         const fn = (result) => {
         }
 
-        register(model, () => step_opencv_farneback(fn));
+        register(() => step_opencv_farneback(fn));
     </script>
 </body>
 

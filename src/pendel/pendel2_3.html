@@ -24,7 +24,7 @@
     <p>Hier soll durch die Lösung der Methode der kleinsten Quadrate die am besten passende Linie definiert werden. Da hier scheinbar ein starker Fokus auf das Ende des Pendels entsteht, wird der Drehpunkt falsch vorhergesagt.
     </p>
     <script>
-        const model = {
+        globalTestVariables.model = {
             id: 'pendulum',
             gravity: true,
             nodes: [
@@ -78,7 +78,7 @@
             g.lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
         };
 
-        register(model, () => stepCompareImages(fn));
+        register(() => stepCompareImages(fn));
     </script>
 </body>
 

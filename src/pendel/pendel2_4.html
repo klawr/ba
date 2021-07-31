@@ -25,7 +25,7 @@
     </p>
 
     <script>
-        const model = {
+        globalTestVariables.model = {
             id: 'pendulum',
             gravity: true,
             nodes: [
@@ -95,7 +95,7 @@
             g.lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
         };
 
-        register(model, () => stepCompareImages(fn));
+        register(() => stepCompareImages(fn));
     </script>
 </body>
 

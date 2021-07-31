@@ -30,7 +30,7 @@
     <script src="pendel2.js"></script>
 
     <script>
-        const model = {
+        globalTestVariables.model = {
             id: 'pendulum',
             gravity: true,
             nodes: [
@@ -119,7 +119,7 @@
             g.exe(ctx2);
         };
 
-        register(model, () => stepCompareImages(fn));
+        register(() => stepCompareImages(fn));
     </script>
 </body>
 
