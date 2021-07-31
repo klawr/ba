@@ -2,12 +2,21 @@ class Data {
     dataX = {};
     dataY = {};
 
+    reset() {
+        this.dataX = {};
+        this.dataY = {};
+    }
+
     addDataPoint(a) {
         if (!a) return;
         const x = Math.round(a.x);
         const y = Math.round(a.y);
-        this.dataX[x] = this.dataX[x] ? this.dataX[x] + 1 : 1;
-        this.dataY[y] = this.dataY[y] ? this.dataY[y] + 1 : 1;
+        if (Number.isSafeInteger(x)) {
+            this.dataX[x] = this.dataX[x] ? this.dataX[x] + 1 : 1;
+        }
+        if (Number.isSafeInteger(y)) {
+            this.dataY[y] = this.dataY[y] ? this.dataY[y] + 1 : 1;
+        }
     };
 
     getChart(showX = true, showY = true) {
@@ -41,7 +50,7 @@ class Data {
             arr.reduce((pre, cur) => pre + cur) / arr.length :
             Object.entries(arg).reduce((pre, cur) => {
                 length += cur[1];
-                return pre + cur[0] * cur[1];
+                return pre + +cur[0] * cur[1];
             }, 0) / length;
     }
 }

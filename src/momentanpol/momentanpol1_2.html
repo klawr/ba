@@ -27,10 +27,22 @@
     <script src="../scripts/line.js"></script>
     <script src="momentanpol.js"></script>
 
-    <p>Test mit Bestimmung des Momentanpols nach Euler mit dem Pendel.
+    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren soll um die Drehung zu zeigen.
     </p>
 
     <script>
+        globalTestVariables.model = {
+            id: 'pendulum',
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 150, y: 120, base: true },
+                { id: 'A1', x: 230, y: 90 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
+            ]
+        };
+
         const gtv = globalTestVariables;
         const gmv = globalMomentanpol1Variables;
 
@@ -43,8 +55,6 @@
 
         const fn = (result) => {
             const { ctx2, ctx3 } = gtv;
-
-            roll();
 
             const g = g2().clr();
 
@@ -92,20 +102,15 @@
                 gmv.poles.push(rp);
             }
 
-            gmv.poles.forEach(p => g.cir({ ...p, r: 1, fs: 'orange' }));
+            gmv.poles.forEach(p => g.cir({ ...p, r: 1, ls: 'orange' }));
 
-            gmv.data.getChart(false).exe(ctx3);
+            gmv.data.getChart().exe(ctx3);
 
-            g.cir({
-                x: (p1.x + p2.x) / 2,
-                y: (p1.y + p2.y) / 2,
-                r: Math.hypot(p2.x - p1.x, p2.y - p1.y) / 2 - 2.5
-            });
+            regressionLine(gmv.poles, g);
 
             g.exe(ctx2);
 
-            gtv.gnd1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
-            gtv.gnd2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.muY)}`;
+            gtv.gnd2.innerHTML = `Vermutet: x: ${Math.round(gmv.data.muX)}, y: ${Math.round(gtv.cnv_height - gmv.data.muY)}`;
         };
 
         register(() => stepCompareImages(fn));

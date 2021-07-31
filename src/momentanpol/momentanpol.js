@@ -13,6 +13,7 @@ globalTestVariables.reset = function () {
     globalMomentanpol1Variables.lines = [];
     globalMomentanpol1Variables.poles = [];
     globalMomentanpol1Variables.i = 0;
+    globalMomentanpol1Variables.data.reset();
 }
 
 function roll() {
