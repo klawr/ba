@@ -93,13 +93,13 @@
                     y: l.y + va.x / dw,
                 };
 
-                gmv.addDataPoint(rp);
+                gmv.data.addDataPoint(rp);
                 gmv.poles.push(rp);
             }
 
             gmv.poles.forEach(p => g.cir({ ...p, r: 1, fs: 'orange' }));
 
-            gmv.getChart(false).exe(ctx3);
+            gmv.data.getChart(false).exe(ctx3);
 
             regressionLine(gmv.poles, g);
 
@@ -110,6 +110,9 @@
             });
 
             g.exe(ctx2);
+
+            gtv.gnd1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
+            gtv.gnd2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.muY)}`;
         };
 
         register(() => stepCompareImages(fn));

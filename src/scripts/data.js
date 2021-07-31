@@ -26,4 +26,22 @@ class Data {
             yaxis: {},
         });
     };
+
+    get muY() {
+        return Data.mu(this.dataY);
+    }
+
+    get muX() {
+        return Data.mu(this.dataX);
+    }
+
+    static mu(arg) {
+        let length = 0;
+        return Array.isArray(arg) ?
+            arr.reduce((pre, cur) => pre + cur) / arr.length :
+            Object.entries(arg).reduce((pre, cur) => {
+                length += cur[1];
+                return pre + cur[0] * cur[1];
+            }, 0) / length;
+    }
 }

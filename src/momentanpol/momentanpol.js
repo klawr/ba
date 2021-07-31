@@ -1,9 +1,5 @@
-const data = new Data();
-
 const globalMomentanpol1Variables = {
-    ...data,
-    getChart: data.getChart,
-    addDataPoint: data.getChart,
+    data: new Data(),
     lines: [],
     poles: [],
     i: 0,
