@@ -15,8 +15,7 @@
 
 <body>
     <b id="title"></b>
-    <p>Hier wird eine Linie definiert durch den Schwerpunkt der 5 am weitesten voneinander entfernten Pixel bei denen
-        eine Veränderung
+    <p>Hier wird eine Linie definiert durch die am weitesten voneinander entfernten Pixel bei denen eine Veränderung
         gemessen wurde.
         Alle Schnittpunkte dieser Linien bestimmen dann einen Schwerpunkt, von dem ausgegangen wird, dass dieser in der
         nähe des Drehpunktes sein muss.
@@ -24,7 +23,6 @@
 
     <script src="../third_party/g2.full.js"></script>
     <script src="../scripts/data.js"></script>
-<script src="../scripts/gnd.js"></script>
     <script src="../third_party/mec2.min.js"></script>
     <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
@@ -44,10 +42,12 @@
             ]
         };
 
+        const { data } = globalPendel2Variables;
+
         const fn = (result) => {
-            const { ctx2, ctx3, gnd } = globalTestVariables;
-            const { data, lines } = globalPendel2Variables;
+            const { lines } = globalPendel2Variables;
             const gpv = globalPendel2Variables;
+            const { ctx2, ctx3, txt2 } = globalTestVariables;
 
             const g = g2().clr();
 
@@ -60,61 +60,54 @@
             const m = (p2.y - p1.y) / (p2.x - p1.x);
             const b = p1.y - m * p1.x;
 
-            if (!gnd.confident) {
-                result.forEach(e => g.cir({ ...e, r: 1 }));
+            result.forEach(e => g.cir({ ...e, r: 1 }));
 
-                lines.push({ m, b });
+            lines.push({ m, b });
 
-                if (lines.length > 1) {
-                    const pts = [];
-                    for (let i = 0; i < lines.length; ++i) {
-                        for (let j = 1; j < lines.length; ++j) {
-                            const m1 = lines[i].m;
-                            const b1 = lines[i].b;
-                            const m2 = lines[j].m;
-                            const b2 = lines[j].b;
+            if (lines.length > 1) {
+                for (let i = 0; i < lines.length; ++i) {
+                    for (let j = 1; j < lines.length; ++j) {
+                        const m1 = lines[i].m;
+                        const b1 = lines[i].b;
+                        const m2 = lines[j].m;
+                        const b2 = lines[j].b;
 
-                            const x = (b1 - b2) / (m2 - m1);
-                            const y = m1 * x + b1;
+                        const x = (b1 - b2) / (m2 - m1);
+                        const y = m1 * x + b1;
 
-                            if (Number.isFinite(x) && Number.isFinite(y)) {
-                                pts.push({ x, y });
-                            }
+                        if (Number.isFinite(x) && Number.isFinite(y)) {
+                            data.add({ x, y });
                         }
                     }
-                    const pre_gnd = pts.reduce((pre, cur) => ({
-                        x: pre.x + cur.x,
-                        y: pre.y + cur.y
-                    }), { x: 0, y: 0 });
-
-                    pre_gnd.x /= pts.length;
-                    pre_gnd.y /= pts.length;
-
-                    gnd2.innerHTML = `Erstmal: x: ${pre_gnd.x}, y: ${cnv1.height - pre_gnd.y}`;
-
-                    g.cir({ ...pre_gnd, r: 5 });
-
-                    gnd.add(pre_gnd, 0.5);
-                    gnd.getChart().exe(ctx3);
                 }
+                const gnd = { x: data.muX, y: data.muY };
 
-                g.lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b });
-            } else {
+                txt2.innerHTML = `Erstmal: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+
+                g.cir({ ...gnd, r: 5 });
+
+                data.add(gnd);
+                data.getChart().exe(ctx3);
+            }
+
+            g.lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b });
+
+            if (false && pre_gnd) {
                 for (let i = 0, max = 0; i < result.length; ++i) {
                     const r = result[i];
                     if (r.x === 0 && r.y === 0) {
                         continue;
                     }
-                    const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
+                    const hy = Math.hypot(r.y - pre_gnd.y, r.x - pre_gnd.x);
 
                     if (hy > max) {
                         gpv.nod = r;
                     }
-                }
 
-                g.lin({ p1: gnd, p2: gpv.nod })
-                    .gnd({ ...gnd })
-                    .nod(gpv.nod);
+                    gpv.nod && g.lin({ p1: pre_gnd, p2: gpv.nod })
+                        // .gnd({ ...pre_gnd })
+                        .nod(gpv.nod);
+                }
             }
 
             g.exe(ctx2);

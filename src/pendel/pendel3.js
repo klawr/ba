@@ -1,7 +1,7 @@
 
 const globalPendel3Variables = {
-    ground1: new Gnd(),
-    ground2: new Gnd(),
+    ground1: new Data(),
+    ground2: new Data(),
 }
 
 globalTestVariables.reset = function() {

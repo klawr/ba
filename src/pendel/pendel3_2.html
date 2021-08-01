@@ -16,7 +16,6 @@
 <body>
     <b id="title"></b>
     <script src="../scripts/data.js"></script>
-<script src="../scripts/gnd.js"></script>
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
     <script src="../scripts/smallestEnclosingCircle.js"></script>
@@ -25,8 +24,8 @@
     <script src="../scripts/getMaxDist.js"></script>
     <script src="pendel3.js"></script>
 
-    <p>Test mit Ermittlung zweier Kreise von denen einer Richtig ist. Als Vergleichsausgangspunkte werden die
-        Schwerpunkte der 5 am größten distanzierten Punkte genommen.
+    <p>Test mit Ermittlung zweier Kreise von denen einer Richtig ist. Durch die Überprüfung der Bewegung der
+        Mittelpunktes kann dann geschaut werden welcher Kreis wahrscheinlicher der Richtige ist.
     </p>
 
     <script>
@@ -44,10 +43,10 @@
 
         const threshold = 10;
 
-        // simulation
+        const { ground1, ground2 } = globalPendel3Variables;
+
         const fn = (result) => {
-            const { ctx2, ctx3, gnd } = globalTestVariables;
-            const { ground1, ground2 } = globalPendel3Variables;
+            const { ctx2, ctx3, txt2 } = globalTestVariables;
 
             const [p1, p2, hy] = getMaxDistCoG(result, 5);
 
@@ -61,7 +60,7 @@
             let sp1;
             let sp2;
 
-            if (ground1.past.length && ground2.past.length) {
+            if (ground1.dataX.length) {
                 sp1 = ground1.past.reduce(cog, { x: 0, y: 0 });
                 sp1.x /= (ground1.past.length || 1);
                 sp1.y /= (ground1.past.length || 1);
@@ -80,27 +79,22 @@
                 ground1.add(p1, threshold);
                 ground2.add(p2, threshold);
             }
+            ground1.getChart().exe(ctx3);
 
-            if (!(ground1.confident || ground2.confident)) {
-                g.cir({ ...sp1, r: 10, fs: 'blue' })
-                    .cir({ ...sp2, r: 10, fs: 'cyan' })
-                    .cir({ ...p1, r: 5, fs: 'red' })
-                    .nod({ ...p2, r: 5, fs: 'green' })
-                    .cir({ ...p1, r: hy }).cir({ ...p2, r: hy });
-            } else {
-                if (ground1.confident) {
-                    gnd.setRef(ground1);
-                    g.lin({ p1: ground1, p2: ground2.last_estimate })
-                        .gnd({ ...ground1 })
-                        .nod({ ...ground2.last_estimate });
-                }
-                else if (ground2.confident) {
-                    gnd.setRef(ground2);
-                    g.lin({ p1: ground2, p2: ground1.last_estimate })
-                        .gnd({ ...ground2 })
-                        .nod({ ...ground1.last_estimate });
-                }
-            }
+            // g.cir({ ...sp1, r: 10, fs: 'blue' })
+            //     .cir({ ...sp2, r: 10, fs: 'cyan' })
+            g.cir({ ...p1, r: 5, fs: 'red' })
+                .nod({ ...p2, r: 5, fs: 'green' })
+                .cir({ ...p1, r: hy }).cir({ ...p2, r: hy });
+
+            // g.lin({ p1: ground1, p2: ground2.last_estimate })
+            //     .gnd({ ...ground1 })
+            //     .nod({ ...ground2.last_estimate });
+
+            // g.lin({ p1: ground2, p2: ground1.last_estimate })
+            //     .gnd({ ...ground2 })
+            //     .nod({ ...ground1.last_estimate });
+
             g.exe(ctx2);
         }
 

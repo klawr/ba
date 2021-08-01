@@ -5,9 +5,8 @@ document.getElementById('title').innerHTML =
 const globalTestVariables = {
     cnv_width: 320,
     cnv_height: 180,
-    gnd1: undefined,
-    gnd2: undefined,
-    gnd: new Gnd(),
+    txt1: undefined,
+    txt2: undefined,
 
     startstopBtn: undefined,
     reset: undefined, // filled by tests
@@ -86,14 +85,14 @@ function createElements() {
         max: 100,
         value: 0,
     });
-    gtv.gnd1 = createElement({
+    gtv.txt1 = createElement({
         type: "div",
-        id: "gnd1",
+        id: "txt1",
         style: "display:inline;"
     });
-    gtv.gnd2 = createElement({
+    gtv.txt2 = createElement({
         type: "div",
-        id: "gnd2",
+        id: "txt2",
         style: "display:inline"
     });
     createElement({ tag: "br" });
@@ -152,7 +151,7 @@ function initModel() {
     mec.model.extend(gtv.model);
 
     const base = gtv.model.nodes.find(e => e.id === 'A0');
-    gtv.gnd1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
+    gtv.txt1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
 
     gtv.model.init();
 }
@@ -190,8 +189,7 @@ function resetSimulation() {
     const gtv = globalTestVariables;
 
     gtv.running = false;
-    gtv.gnd = new Gnd();
-    gtv.gnd2.innerHTML = "";
+    gtv.txt2.innerHTML = "";
     gtv.temp_image = undefined;
     gtv.last_time = undefined;
     gtv.times = [];

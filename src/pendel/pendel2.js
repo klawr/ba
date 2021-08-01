@@ -1,7 +1,7 @@
 
 const globalPendel2Variables = {
     nod: undefined,
-    data: [],
+    data: new Data(),
     lines: [],
 }
 

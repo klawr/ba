@@ -17,7 +17,6 @@
     <b id="title"></b>
     <script src="../third_party/g2.full.js"></script>
     <script src="../scripts/data.js"></script>
-<script src="../scripts/gnd.js"></script>
     <script src="../third_party/mec2.min.js"></script>
     <script src="../scripts/smallestEnclosingCircle.js"></script>
     <script src="../scripts/compareImages.js"></script>
@@ -44,15 +43,20 @@
             ]
         };
 
+        const { data } = globalPendel1Variables;
+
         const fn = (result) => {
             const gpv = globalPendel1Variables;
-            const { ctx2, ctx3, gnd } = globalTestVariables;
+            const { ctx2, ctx3, txt2 } = globalTestVariables;
 
             const g = g2().clr();
 
             const cir = addPointsForCircle(result, g);
-            cir && gpv.trail.push(cir);
-            
+
+            if (cir) {
+                data.add(cir);
+                gpv.trail.push(cir);
+            }
 
             const limit = 20;
             if (gpv.trail.length > limit) {
@@ -86,36 +90,33 @@
                     ls: 'blue'
                 });
 
-                gpv.ply.length && gnd.add(p2);
-                gnd.x = p2.x;
-                gnd.y = p2.y;
-                gnd.confident = true;
-                gnd.getChart().exe(ctx3);
+                gpv.ply.length && data.add(p2);
+                data.x = p2.x;
+                data.y = p2.y;
+                data.getChart().exe(ctx3);
             }
 
             g.ply({ pts: gpv.trail })
-                .cir({ ...gnd.past[gnd.past.length - 1] })
+                .cir(cir)
                 .beg({ cartesian: true })
                 .end();
 
-            if (gnd.confident) {
-                for (let i = 0, max = 0; i < result.length; ++i) {
-                    const r = result[i];
-                    if (r.x === 0 && r.y === 0) {
-                        continue;
-                    }
-                    const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
-
-                    if (hy > max) {
-                        gpv.nod = r;
-                    }
+            for (let i = 0, max = 0; i < result.length; ++i) {
+                const r = result[i];
+                if (r.x === 0 && r.y === 0) {
+                    continue;
                 }
+                const hy = Math.hypot(r.y - data.y, r.x - data.x);
 
-                g.lin({ x1: gnd.x, y1: gnd.y, x2: gpv.nod.x, y2: gpv.nod.y })
-                    .gnd({ ...gnd })
-                    .nod(gpv.nod);
-                gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+                if (hy > max) {
+                    gpv.nod = r;
+                }
             }
+
+            g.gnd({ ...data });
+            gpv.nod &&
+                g.lin({ x1: data.x, y1: data.y, x2: gpv.nod.x, y2: gpv.nod.y }).nod(gpv.nod);
+            txt2.innerHTML = `Vermutet: x: ${data.x}, y: ${cnv1.height - data.y}`;
 
             g.exe(ctx2);
         };

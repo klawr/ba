@@ -2,13 +2,24 @@ class Data {
     dataX = {};
     dataY = {};
 
+    setRef(ref) {
+        Object.keys(ref).forEach(key => {
+            this[key] = ref[key];
+        })
+    }
+
     reset() {
         this.dataX = {};
         this.dataY = {};
     }
 
+    add(a) {
+        return this.addDataPoint(a);
+    }
+
     addDataPoint(a) {
         if (!a) return;
+
         const x = Math.round(a.x);
         const y = Math.round(a.y);
         if (Number.isSafeInteger(x) &&

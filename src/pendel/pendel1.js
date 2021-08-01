@@ -3,9 +3,10 @@ const globalPendel1Variables = {
     ply: [], // Alle Punkte
     trail: [], // Genutzt ab pendel1_4
     nod: undefined,
+    data: new Data(),
 }
 
-globalTestVariables.reset = function() {
+globalTestVariables.reset = function () {
     globalPendel1Variables.ply = [];
     globalPendel1Variables.trail = [];
 }
@@ -14,12 +15,10 @@ function addPointsForCircle(result, g, args = { nofilter: false, nomemory: false
     const gtv = globalTestVariables;
     const gpv = globalPendel1Variables;
 
-    if (g && !args.nomemory && !gtv.gnd.confident) {
+    if (g && !args.nomemory) {
         gpv.ply.forEach(r => {
-            if (!gtv.gnd.confident) {
-                // Draw a circle for every found change
-                g.cir({ ...r, r: 1, ls: 'red' });
-            }
+            // Draw a circle for every found change
+            g.cir({ ...r, r: 1, ls: 'red' });
         });
     }
 
@@ -31,14 +30,14 @@ function addPointsForCircle(result, g, args = { nofilter: false, nomemory: false
     if (args.nofilter) {
         gpv.ply.push(...result);
     }
-    
+
     if (!args.nomemory) {
         gpv.ply.push(...pts);
     }
 
-    gpv.ply.length && gtv.gnd.add(cir);
+    gpv.ply.length && gpv.data.add(cir);
 
-    g && g.cir({ ...gtv.gnd.past[gtv.gnd.past.length - 1] });
+    g && g.cir(cir);
 
     return cir;
 }

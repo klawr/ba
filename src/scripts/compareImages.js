@@ -23,17 +23,13 @@ function compareImages(image1, image2, width, height) {
 }
 
 function stepCompareImages(fn) {
-    const { cnv1, gnd, gnd2 } = globalTestVariables;
+    const { cnv1 } = globalTestVariables;
     const gtv = globalTestVariables;
     const new_image = cnv1.getContext('2d').getImageData(0, 0, cnv1.width, cnv1.height).data;
     if (gtv.temp_image) {
         const result = compareImages(gtv.temp_image, new_image, cnv1.width, cnv1.height);
 
         fn?.call(undefined, result);
-
-        if (gnd.confident) {
-            gnd2.innerHTML = `Vermutet: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
-        }
     }
 
     gtv.temp_image = new_image;

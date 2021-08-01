@@ -17,7 +17,6 @@
     <b id="title"></b>
     <script src="../third_party/g2.full.js"></script>
     <script src="../scripts/data.js"></script>
-<script src="../scripts/gnd.js"></script>
     <script src="../third_party/mec2.min.js"></script>
     <script src="../scripts/smallestEnclosingCircle.js"></script>
     <script src="../scripts/compareImages.js"></script>
@@ -45,47 +44,42 @@
             ]
         };
 
+        const { cnv_height } = globalTestVariables;
+        const { data } = globalPendel1Variables;
+
         const fn = (result) => {
             const gpv = globalPendel1Variables;
-            const { ctx2, ctx3, gnd } = globalTestVariables;
+            const { ctx2, ctx3, txt2 } = globalTestVariables;
 
             const g = g2().clr();
-
             result.forEach(r => {
-                if (!gnd.confident) {
-                    // Draw a circle for every found change
-                    g.cir({ ...r, r: 1 });
-                }
+                // Draw a circle for every found change
+                g.cir({ ...r, r: 1 });
             });
 
+            const cir = addPointsForCircle(result, g);
 
-            addPointsForCircle(result, g);
+            data.add(cir);
+            data.getChart().exe(ctx3);
 
-            gnd.getChart().exe(ctx3);
-
-            g.cir({ ...gnd.past[gnd.past.length - 1] });
-
-            if (gnd.confident) {
-                for (let i = 0, max = 0; i < result.length; ++i) {
-                    const r = result[i];
-                    if (r.x === 0 && r.y === 0) {
-                        continue;
-                    }
-                    const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
-
-                    if (hy > max) {
-                        gpv.nod = r;
-                    }
+            for (let i = 0, max = 0; i < result.length; ++i) {
+                const r = result[i];
+                if (r.x === 0 && r.y === 0) {
+                    continue;
                 }
+                const hy = Math.hypot(r.y - cir.y, r.x - cir.x);
 
-                g.lin({
-                    x1: gnd.x, y1: gnd.y,
-                    x2: gpv.nod.x,
-                    y2: gpv.nod.y
-                }).gnd({ ...gnd })
-                    .nod(gpv.nod)
-                    .exe(ctx2);
+                if (hy > max) {
+                    gpv.nod = r;
+                }
             }
+
+            g.gnd({ ...cir });
+            gpv.nod && g
+                .lin({ x1: cir.x, y1: cir.y, x2: gpv.nod.x, y2: gpv.nod.y })
+                .nod(gpv.nod);
+
+            txt2.innerHTML = `Vermutet: x: ${cir.x}, y: ${cnv_height - cir.y}`;
 
             g.exe(ctx2);
         }
