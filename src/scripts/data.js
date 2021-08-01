@@ -43,10 +43,36 @@ class Data {
     static mu(arg) {
         let length = 0;
         return Array.isArray(arg) ?
-            arr.reduce((pre, cur) => pre + cur) / arr.length :
+            arg.reduce((pre, cur) => pre + cur, 0) / arg.length :
             Object.entries(arg).reduce((pre, cur) => {
                 length += cur[1];
                 return pre + +cur[0] * cur[1];
             }, 0) / length;
+    }
+
+    static variance(arg) {
+        let length = 0;
+        const mu = Array.isArray(arg) ?
+            arg.reduce((pre, cur) => pre + cur, 0) / arg.length :
+            Object.entries(arg).reduce((pre, cur) => {
+                length += cur[1];
+                return pre + +cur[0] * cur[1];
+            }, 0) / length;
+
+        return Array.isArray(arg) ?
+            arg.reduce((pre, cur) => pre + (cur - mu) ** 2 / arg.length) :
+            Object.entries(arg).reduce((pre, cur) => pre + (((+cur[0] - mu) ** 2) * (+cur[1])), 0) / (length - 1);
+    }
+
+    static deviation(arg) {
+        return Math.sqrt(Data.variance(arg));
+    }
+
+    get varianceX() {
+        return Data.variance(this.dataX);
+    }
+
+    get varianceY() {
+        return Data.variance(this.dataY);
     }
 }

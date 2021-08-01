@@ -110,7 +110,7 @@
 
             g.exe(ctx2);
 
-            gtv.gnd2.innerHTML = `Vermutet: x: ${Math.round(gmv.data.muX)}, y: ${Math.round(gtv.cnv_height - gmv.data.muY)}`;
+            gtv.gnd2.innerHTML = `Vermutet: x: ${Math.round(gmv.data.muX)} / Varianz: ${gmv.data.varianceX}, y: ${Math.round(gtv.cnv_height - gmv.data.muY)} / Varianz: ${gmv.data.varianceY}`;
         };
 
         register(() => stepCompareImages(fn));
