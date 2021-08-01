@@ -125,6 +125,13 @@ function createElements() {
         height: gtv.cnv_height,
     }).getContext('2d');
 
+    createElement({ tag: "br" });
+    createElement({
+        tag: "input",
+        type: "button",
+        value: "reload",
+    }).addEventListener('click', () => window.location.reload());
+
     resetBtn.addEventListener('click', resetSimulation);
 
     cover.addEventListener('input', resetSimulation);
