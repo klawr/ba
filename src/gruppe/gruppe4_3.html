@@ -22,7 +22,7 @@
     <script src="../scripts/smallestEnclosingCircle.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/removeOverlaps.js"></script>
-    <script src="../scripts/regressionLine.js"></script>
+    <script src="../scripts/line.js"></script>
     <script src="../scripts/compareImages.js"></script>
     <script src="gruppe4.js"></script>
 
@@ -56,7 +56,7 @@
             const groups = k_means_clustering(k, filtered, g);
 
             if (groups.filter(g => g.length).length === k) {
-                groups.forEach(e => regressionLine(e, g));
+                groups.forEach(e => Line.fromRegressionLine(e, g));
             }
             g.exe(ctx2);
         }

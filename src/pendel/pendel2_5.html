@@ -18,7 +18,7 @@
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
     <script src="../scripts/data.js"></script>
-    <script src="../scripts/regressionLine.js"></script>
+    <script src="../scripts/line.js"></script>
     <script src="../scripts/removeOverlaps.js"></script>
     <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
@@ -53,7 +53,7 @@
 
             if (!filtered.length) return;
 
-            const { m, b } = regressionLine(filtered, g);
+            const { m, b } = Line.fromRegressionLine(filtered, g);
 
             gpv.lines.push({ m, b });
 
