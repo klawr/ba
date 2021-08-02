@@ -25,7 +25,8 @@
     <script src="../scripts/getMaxDist.js"></script>
     <script src="momentanpol.js"></script>
 
-    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren soll um die Drehung zu zeigen.
+    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
+        soll um die Drehung zu zeigen.
     </p>
 
     <script>
@@ -34,6 +35,8 @@
 
         const p1s = [];
         const p2s = [];
+
+        const lines = [];
 
         function hypot(p1, p2) {
             return Math.hypot(p2.y - p1.y, p2.x - p1.x);
@@ -50,6 +53,8 @@
 
             const lp1 = p1s[p1s.length - 1];
             const lp2 = p2s[p2s.length - 1];
+
+            lines.push(Line.fromRegressionLine(result, g));
 
             if (!p1.x || !p1.y || !p2.x || !p2.y) return;
 
@@ -75,8 +80,9 @@
                     x: l.x - b.x,
                     y: l.y - b.y,
                 }
-                const l1 = new Line({ p1: l, p2: p2s[p2s.length - 1] });
-                const l2 = new Line({ p1: b, p2: p2s[p2s.length - threshold] });
+
+                const l1 = lines[lines.length - 1];
+                const l2 = lines[lines.length - threshold];
 
                 const dw = (Math.atan(l1.m) - Math.atan(l2.m) + Math.PI) % Math.PI;
 

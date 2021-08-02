@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <b id="title"></b>
+    <a id="title"></a>
     <script src="../third_party/g2.full.js"></script>
     <script src="../scripts/data.js"></script>
     <script src="../third_party/mec2.min.js"></script>
@@ -23,8 +23,7 @@
     <script src="../scripts/line.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/getMaxDist.js"></script>
-    <script src="../scripts/line.js"></script>
-    <script src="momentanpol1.js"></script>
+    <script src="momentanpol.js"></script>
 
     <p>Test mit Bestimmung des Momentanpols nach Euler mit dem Pendel.
     </p>
@@ -38,7 +37,7 @@
                 { id: 'A1', x: 230, y: 120 }
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: -2000, Dt: 1000 } }
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: - Math.PI * 2, Dt: 3 } }
             ]
         };
 

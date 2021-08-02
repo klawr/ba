@@ -1,7 +1,4 @@
 
-document.getElementById('title').innerHTML =
-    document.location.pathname.split('/').pop();
-
 const globalTestVariables = {
     cnv_width: 320,
     cnv_height: 180,
@@ -213,6 +210,12 @@ function resetSimulation() {
 }
 
 function register(fn) {
+    const title = document.getElementById('title');
+    const path = document.location.pathname;
+    title.innerHTML = path.split('/').pop();
+    title.href = path;
+
+
     const btn = createElement({
         tag: "input",
         type: "button",
