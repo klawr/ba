@@ -40,194 +40,175 @@ const globalTestVariables = {
     g: g2().clr().view({ cartesian: true }),
 
     running: false,
-}
 
-function createElement({ tag }) {
-    const elm = document.createElement(tag);
+    createElement({ tag }) {
+        const elm = document.createElement(tag);
 
-    Object.entries(arguments[0]).forEach(e => {
-        elm[e[0]] = e[1];
-    });
-
-    document.body.appendChild(elm);
-
-    return elm;
-}
-
-function createElements() {
-    const gtv = globalTestVariables;
-
-    gtv.startstopBtn = createElement({
-        tag: "input",
-        id: "startstop",
-        type: "button",
-        value: "Start/Stop"
-    });
-    resetBtn = createElement({
-        tag: "input",
-        id: "reset",
-        type: "button",
-        value: "Reset"
-    });
-    createElement({
-        tag: "div",
-        innerHTML: "cover",
-        style: "display:inline;"
-    })
-    cover = createElement({
-        tag: "input",
-        id: "slider",
-        type: "range",
-        min: 0,
-        max: 100,
-        value: 0,
-    });
-    gtv.txt1 = createElement({
-        type: "div",
-        id: "txt1",
-        style: "display:inline;"
-    });
-    gtv.txt2 = createElement({
-        type: "div",
-        id: "txt2",
-        style: "display:inline"
-    });
-    createElement({ tag: "br" });
-    createElement({ tag: "br" });
-
-    gtv.cnv1 = createElement({
-        tag: "canvas",
-        id: "cnv1",
-        width: gtv.cnv_width,
-        height: gtv.cnv_height
-    })
-
-    gtv.ctx1 = gtv.cnv1.getContext('2d');
-    gtv.ctx2 = createElement({
-        tag: "canvas",
-        id: "cnv2",
-        width: gtv.cnv_width,
-        height: gtv.cnv_height,
-    }).getContext('2d');
-    gtv.ctx3 = createElement({
-        tag: "canvas",
-        id: "cnv3",
-        width: gtv.cnv_width,
-        height: gtv.cnv_height,
-    }).getContext('2d');
-    gtv.ctx_times = createElement({
-        tag: "canvas",
-        id: "cnv4",
-        width: gtv.cnv_width,
-        height: gtv.cnv_height,
-    }).getContext('2d');
-
-    createElement({ tag: "br" });
-    createElement({
-        tag: "input",
-        type: "button",
-        value: "reload",
-    }).addEventListener('click', () => window.location.reload());
-
-    resetBtn.addEventListener('click', resetSimulation);
-
-    cover.addEventListener('input', resetSimulation);
-}
-
-function run(step) {
-    const gtv = globalTestVariables;
-    gtv.g.exe(gtv.ctx1);
-    gtv.model?.tick(1 / 60);
-    step();
-    gtv.updateTimesChart().exe(gtv.ctx_times);
-
-    if (gtv.running) {
-        gtv.rafId = requestAnimationFrame(() => {
-            gtv.time_reset = performance.now();
-            run(step)
+        Object.entries(arguments[0]).forEach(e => {
+            elm[e[0]] = e[1];
         });
+
+        document.body.appendChild(elm);
+
+        return elm;
+    },
+
+    createElements() {
+        this.startstopBtn = this.createElement({
+            tag: "input",
+            id: "startstop",
+            type: "button",
+            value: "Start/Stop"
+        });
+        resetBtn = this.createElement({
+            tag: "input",
+            id: "reset",
+            type: "button",
+            value: "Reset"
+        });
+        this.createElement({
+            tag: "div",
+            innerHTML: "cover",
+            style: "display:inline;"
+        })
+        cover = this.createElement({
+            tag: "input",
+            id: "slider",
+            type: "range",
+            min: 0,
+            max: 100,
+            value: 0,
+        });
+        this.txt1 = this.createElement({
+            type: "div",
+            id: "txt1",
+            style: "display:inline;"
+        });
+        this.txt2 = this.createElement({
+            type: "div",
+            id: "txt2",
+            style: "display:inline"
+        });
+        this.createElement({ tag: "br" });
+        this.createElement({ tag: "br" });
+
+        this.cnv1 = this.createElement({
+            tag: "canvas",
+            id: "cnv1",
+            width: this.cnv_width,
+            height: this.cnv_height
+        })
+
+        this.ctx1 = this.cnv1.getContext('2d');
+        this.ctx2 = this.createElement({
+            tag: "canvas",
+            id: "cnv2",
+            width: this.cnv_width,
+            height: this.cnv_height,
+        }).getContext('2d');
+        this.ctx3 = this.createElement({
+            tag: "canvas",
+            id: "cnv3",
+            width: this.cnv_width,
+            height: this.cnv_height,
+        }).getContext('2d');
+        this.ctx_times = this.createElement({
+            tag: "canvas",
+            id: "cnv4",
+            width: this.cnv_width,
+            height: this.cnv_height,
+        }).getContext('2d');
+
+        this.createElement({ tag: "br" });
+        this.createElement({
+            tag: "input",
+            type: "button",
+            value: "reload",
+        }).addEventListener('click', () => window.location.reload());
+
+        resetBtn.addEventListener('click', () => this.resetSimulation());
+
+        cover.addEventListener('input', () => this.resetSimulation());
+    },
+
+    run(step) {
+        this.model?.tick(1 / 60);
+        this.g.exe(this.ctx1);
+        step();
+        this.updateTimesChart().exe(this.ctx_times);
+
+        if (this.running) {
+            this.rafId = requestAnimationFrame(() => {
+                this.time_reset = performance.now();
+                this.run(step)
+            });
+        }
+    },
+
+    resetSimulation() {
+        this.running = false;
+        if (this.txt2) this.txt2.innerHTML = "";
+        this.temp_image = undefined;
+        this.last_time = undefined;
+        this.times = [];
+
+        this.g = g2().clr().view({ cartesian: true });
+
+        this?.reset();
+        if (this.model) {
+            this.model.reset();
+            this.model.draw(this.g);
+
+            this.g.cir({
+                ...this.model.nodeById("A0"),
+                r: () => cover.value,
+                fs: 'red',
+                ls: '@fs'
+            });
+        }
+
+        cancelAnimationFrame(this.rafId);
+
+        g2().clr().exe(this.ctx1).exe(this.ctx2).exe(this.ctx3).exe(this.ctx_times);
+
+    },
+    register(fn) {
+        const title = document.getElementById('title');
+        const path = document.location.pathname;
+        title.innerHTML = path.split('/').pop();
+        title.href = path;
+
+
+        const btn = this.createElement({
+            tag: "input",
+            type: "button",
+            value: "Click to load test",
+            style: {
+                height: 200,
+                width: 400,
+            },
+        });
+        btn.addEventListener('click', () => {
+            this.createElements();
+
+            if (this.model) {
+                mec.model.extend(this.model);
+
+                // TODO das sollte hier weg.
+                const base = this.model.nodes.find(e => e.id === 'A0');
+                this.txt1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
+
+                this.model.init();
+            }
+
+            this.startstopBtn.addEventListener('click', () => {
+                this.running = !this.running;
+                this.run(fn);  // kick-off the simulation
+            });
+            this.resetSimulation();
+            this.run(fn);
+            document.body.removeChild(btn);
+        });
+        document.body.appendChild(btn);
     }
-}
-
-function initModel() {
-    const gtv = globalTestVariables;
-
-    mec.model.extend(gtv.model);
-
-    const base = gtv.model.nodes.find(e => e.id === 'A0');
-    gtv.txt1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
-
-    gtv.model.init();
-}
-
-function resetModel() {
-    const gtv = globalTestVariables;
-
-    gtv.model.reset();
-    gtv.model.draw(gtv.g);
-
-    gtv.g.cir({
-        ...gtv.model.nodeById("A0"),
-        r: () => cover.value,
-        fs: 'red',
-        ls: '@fs'
-    });
-}
-
-function simulation(step) {
-    const gtv = globalTestVariables;
-
-    createElements();
-
-    gtv.model && initModel();
-
-    gtv.startstopBtn.addEventListener('click', () => {
-        gtv.running = !gtv.running;
-        gtv.running && run(step);  // kick-off the simulation
-    });
-    resetSimulation();
-    run(step);
-}
-
-function resetSimulation() {
-    const gtv = globalTestVariables;
-
-    gtv.running = false;
-    gtv.txt2.innerHTML = "";
-    gtv.temp_image = undefined;
-    gtv.last_time = undefined;
-    gtv.times = [];
-
-    gtv.g = g2().clr().view({ cartesian: true });
-
-    gtv.reset && gtv.reset();
-    gtv.model && resetModel();
-
-    cancelAnimationFrame(gtv.rafId);
-
-    g2().clr().exe(gtv.ctx1).exe(gtv.ctx2).exe(gtv.ctx3).exe(gtv.ctx_times);
-
-}
-
-function register(fn) {
-    const title = document.getElementById('title');
-    const path = document.location.pathname;
-    title.innerHTML = path.split('/').pop();
-    title.href = path;
-
-
-    const btn = createElement({
-        tag: "input",
-        type: "button",
-        value: "Click to load test",
-        style: {
-            height: 200,
-            width: 400,
-        },
-    });
-    btn.addEventListener('click', () => {
-        simulation(fn);
-        document.body.removeChild(btn);
-    });
-    document.body.appendChild(btn);
-}
+};

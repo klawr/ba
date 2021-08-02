@@ -111,7 +111,7 @@
             gtv.txt2.innerHTML = `Vermutet: x: ${Math.round(gmv.data.muX)} / Varianz: ${gmv.data.varianceX}, y: ${Math.round(gtv.cnv_height - gmv.data.muY)} / Varianz: ${gmv.data.varianceY}`;
         };
 
-        register(() => stepCompareImages(fn));
+        globalTestVariables.register(() => stepCompareImages(fn));
     </script>
 </body>
 
