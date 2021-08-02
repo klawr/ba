@@ -176,7 +176,15 @@ const globalTestVariables = {
         const title = document.getElementById('title');
         const path = document.location.pathname;
         title.innerHTML = path.split('/').pop();
+        title.target="_blank";
         title.href = path;
+
+        this.createElement({
+            tag: "a",
+            innerHTML: "index.html",
+            href: "../../index.html",
+            style: "position: absolute; top: 5px; right: 5px",
+        });
 
 
         const btn = this.createElement({
