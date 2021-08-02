@@ -135,8 +135,8 @@ const model = {
 };
 \end{lstlisting}
 
-Das Pendel besteht entsprechend aus zwei \code{nodes}, welche die Gelenkpunkte darstellen.
-Eine dieser beiden Gelenkpunkte wird als \code{base} deklariert, was bedeutet sie ist unbeweglich und damit stellt sie den Punkt dar um welchen das Pendel schwingt.
+Das Pendel besteht entsprechend aus zwei \lstinline{nodes}, welche die Gelenkpunkte darstellen.
+Eine dieser beiden Gelenkpunkte wird als \lstinline{base} deklariert, was bedeutet sie ist unbeweglich und damit stellt sie den Punkt dar um welchen das Pendel schwingt.
 
 % TODO subsection simulation auf die Simulation eingehen.
 
@@ -148,7 +148,7 @@ Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden zunächst zwei Bi
 Die Frequenz von \name{requestAnimationFrame} beträgt im Optimalfall\footnote{Das bedeutet das keine Berechnungen länger als 16,7 Millisekunden benötigen, welche die Animation entsprechend verlangsamen würde.} 60 Hertz.
 
 Da sich in der modellierten Videosequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel aufzuzeichnen.
-Hierfür wurde die \code{simulate} Function, welche in Listing~\ref{lst:pendel} gezeigt wurde mit dem Programmcode aus Listing~\ref{lst:simulate_compare_images} versehen.
+Hierfür wurde die \lstinline{simulate} Function, welche in Listing~\ref{lst:pendel} gezeigt wurde mit dem Programmcode aus Listing~\ref{lst:simulate_compare_images} versehen.
 
 \begin{lstlisting}[language=JavaScript, caption={TODO caption....}\label{lst:simulate_compare_images}]
 const simulate = () => {
@@ -174,10 +174,10 @@ const simulate = () => {
 };
 \end{lstlisting}
 
-Wobei \code{ctx1} und \code{ctx2} den \code{RenderingContext} des jeweiligen HTML-Canvas Elementes repräsentieren.
-\code{compareImages} wird in Listing~\ref{lst:compareImages} gezeigt.
+Wobei \lstinline{ctx1} und \lstinline{ctx2} den \lstinline{RenderingContext} des jeweiligen HTML-Canvas Elementes repräsentieren.
+\lstinline{compareImages} wird in Listing~\ref{lst:compareImages} gezeigt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \code{compareImages} Function}\label{lst:compareImages}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{compareImages} Function}\label{lst:compareImages}]
 function compareImages(image1, image2, width, height) {
 const difference = [];
 
