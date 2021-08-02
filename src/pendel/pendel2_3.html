@@ -43,13 +43,13 @@
             let p1;
             let p2;
 
-            const sum = result.points.reduce((pre, cur) => ({
+            const sum = result.reduce((pre, cur) => ({
                 x: pre.x + cur.x,
                 y: pre.y + cur.y,
             }), { x: 0, y: 0 });
 
-            const X = sum.x / result.points.length;
-            const Y = sum.y / result.points.length;
+            const X = sum.x / result.length;
+            const Y = sum.y / result.length;
 
             let m;
             let b;
@@ -58,10 +58,10 @@
                 m = Number.MAX_SAFE_INTEGER;
                 b = 0;
             } else {
-                const counter = result.points.reduce((pre, cur) =>
+                const counter = result.reduce((pre, cur) =>
                     pre + (cur.x - X) * (cur.y - Y), 0
                 );
-                const denominator = result.points.reduce((pre, cur) =>
+                const denominator = result.reduce((pre, cur) =>
                     pre + (cur.x - X) ** 2, 0
                 );
 
