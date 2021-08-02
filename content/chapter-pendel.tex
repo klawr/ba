@@ -11,7 +11,7 @@ Zunächst wird die Erkennung des Drehpols als vereinfachtes Ziel genommen um her
 Für die Bestimmung des Endpunktes wird zunächst der Punkt genommen, der am weitesten vom Drehpunkt ist.
 Diese Annahme ist für den Anfang hinreichend und wird im Zuge der Zusammensetzung mehrerer Glieder hinfällig. % TODO wieso? ja weil man dann die Schnittpunkt der Glieder, bzw. die Relativpole nimmt. Aber das soll erstmal geschrieben werden bevor ich hier schon rumposaune dass das geht.
 
-\section{Erstellung einer einheitlichen HTML-Seite}
+\section{Erstellung der Tests}
 
 \subsection{Die index.html}
 
@@ -21,18 +21,18 @@ Für diese Gruppierung wurde in der \name{index.html} ein \lstinline{tests} Obje
 
 Dieses Testobjekt wird in Listing~\ref{lst:tests_objekt}
 
-\begin{lstlisting}[language=JavaScript, caption={Definition des tests Objekt in der index.html.}\label{lst:tests_objekt}]
+\begin{lstlisting}[language=JavaScript, caption={Definition des \lstinline{tests} Objekts in der \name{index.html} mit etwas gekürztem \lstinline{title}.}\label{lst:tests_objekt}]
 const tests = {
     pendel: {
-        title: "Tests zum Finden des Drehpunkts bei einem gegebenen Glied.",
+        title: "Tests zum Finden des Drehpunkts...",
         indices: [5, 5, 2]
     },
     momentanpol: {
-        title: "Tests zur Ermittlung des Momentanpols bei einem gegebenen Glied",
+        title: "Tests zur Ermittlung des Momentanpols...",
         indices: [3, 2]
 },
     gruppe: {
-        title: "Tests zum Segmentieren der Datenpunkte in mehrere Glieder.",
+        title: "Tests zum Segmentieren der Datenpunkte ...",
         indices: [2, 1, 1, 3]
     },
 }
@@ -84,8 +84,86 @@ Damit die Seite eine anständige Formatierung besitzt wurden die entsprechenden 
 
 Die Anforderungen an die Tests ist grundlegend gleich.
 Aus dem Grund hat sich schnell gezeigt, dass es sinnvoll ist den meisten Code in einer zentralen Datei abzulegen, welche großteils von jedem Test genutzt werden soll.
-
 Aus diesem Grund referenziert jede der einzelnen HTML-Seiten die \name{simulation.js} Datei.
+
+Hier wird das \lstinline{globalTestVariables} Objekt definiert.
+Dieses Objekt soll dazu dienen die genutzten globalen Variablen zu begrenzen.
+Es beinhaltet alle Referenzen zu den HTML-Elementen auf welche im Zuge der Tests zugegriffen werden könnten, sowie den Referenzen zu den einzelnen \name{CanvasRenderingContext2D} Objekten welche von \name{g2} genutzt werden um auf die entsprechenden HTML-Canvas Elemente zu zeichnen.
+Außerdem werden globale Konstanten wie unter Anderem die Höhe und Breite der HTML-Canvas Elemente hier zentral bestimmt.
+
+Des Weiteren werden im \lstinline{globalTestVariables} Objekt mehrere Funktionen definiert, welche von allen Tests geteilt werden.
+Auf diese Funktionen soll im nachfolgenden noch etwas eingegangen werden um zu verstehen wie sich die Testseiten zusammensetzen.
+Alle nachfolgenden Funktionen sind als Eigenschaften des \lstinline{globalTestVariables} Objektes zu verstehen.
+
+\subsubsection{createElements}
+
+Die HTML-Elemente welche innerhalb der Testseiten verwendet werden sind grundsätzlich stets die gleichen.
+Aus dem Grund beschreibt die \lstinline{createElements} Funktion die Befüllung der Testseiten mit den entsprechenden HTML-Elementen.
+So muss bei entsprechendem Wunsch zur Änderung nur an dieser zentralen Stelle beispielsweise der Inhalt eines Knopfes geändert werden.
+Außerdem werden in dieser Funktion die entsprechenden Eigenschaften der \lstinline{globalTestVariables} auf die HTML-Elemente und \name{CanvasRenderingContext2D} gesetzt.
+
+\subsubsection{run}
+
+Die \lstinline{run} Funktion trägt sorge dafür, dass alle Tests unter den selben Konditionen aufgerufen werden.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{globalTestVariables.run} Funktion.}\label{lst:gtv_run}]
+run(step) {
+    this.g.exe(this.ctx1);
+    this.model?.tick(1 / 60);
+    step();
+    this.updateTimesChart().exe(this.ctx_times);
+
+    if (this.running) {
+        this.rafId = requestAnimationFrame(() => {
+            this.time_reset = performance.now();
+            this.run(step)
+        });
+    }
+},
+\end{lstlisting}
+
+Sollte ein \name{mec2} Modell definiert sein, dann soll dieses an dieser Stelle seine \lstinline{tick} Funktion anwenden, damit es um einen Zeitschritt weiter iteriert wird.
+Es wird an dieser Stelle davon ausgegangen, dass wenn ein \name{mec2} Modell definiert ist, dieses zur Animation verwendet werden soll.
+Innerhalb der Testfunktionen soll dieses jedoch nicht modifiziert werden.
+
+Anschließend wird der \name{CanvasRenderingContext2D} des ersten der vier HTML-Canavs Elemente \lstinline{ctx1} beschrieben.
+Dieser sollte ausschließlich hier beschrieben werden, damit der Test nicht versehentlich Einfluss auf die Zeichnung nimmt.
+Es soll eine grundlegende Prämisse sein, dass die gesuchte Funktion zur Bestimmung des Mechanismus ausschließlich Anhand der Bildsequenzen funktionieren soll und selbst keinen Einfluss auf diese hat.
+Das soll hierdurch sichergestellt werden.
+
+Nachdem der HTML-Canvas gerendert wurde, wird eine an \lstinline{run} übergebene Funktion ausgeführt.
+Diese Funktion ist durch den Test selber definiert und führt alle Vergleiche und Berechnungen aus welche durchgeführt werden sollen.
+Über diese Funktionen wird anschließend in den einzelnen Tests geschrieben.
+
+Abschließend wird hier noch die Zeit welche seit dem letzten \lstinline{run} Aufruf verstrichen ist aufgezeichnet, indem \lstinline{updateTimesChart} aufgerufen wird.
+In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now()} % TODO MDN Link oder besser erklären.
+ermittelt und in einer Liste hinzugefügt welche die Historie der Geschwindigkeiten der einzelnen \lstinline{run} festhält.
+Es wird außerdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist.
+Dieser Graph wird anschließend auf dem vierten HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
+
+Nachdem anschließend geprüft wurde ob der Test weiter laufen soll \footnote{\lstinline{running} kann beispielsweise durch einen Start/Stop Knopf umgeschaltet werden.} wird die Zeit für die nächste Runde erneut auf den aktuellen Zeitpunkt gesetzt um die Zeit die es gedauert hat um den Graphen zu zeichnen auszuschließen und die \lstinline{run} Funktion wird erneut durch \lstinline{requestAnimationFrame} aufgerufen.
+
+\subsubsection{register}
+
+\lstinline{register} ist die Funktion, welche von den einzelnen Tests aufgerufen wird um die HTML-Seite zu befüllen und den Test zu injizieren.
+
+Hier wird zunächst der Titel festgelegt, welcher dem Namen der HTML-Datei entspricht.
+Dieser Titel wird in ein HTML-Anker % MDN Link platziert,
+platziert, so dass diese einfacher in der \name{index.html} unterschieden werden können.
+Es dient außerdem als Hyperlink, der genutzt werden kann um isoliert auf den Test zuzugreifen, wenn man sich auf der \name{index.html} befindet.
+
+An dieser Stelle wird außerdem ein Knopf erzeugt, welcher das Laden des Tests ermöglicht und \lstinline{createElement} ausführt.
+Sollte ein \name{mec2} Modell definiert sein, so wird hier die \lstinline{mec.model.extend} Funktion mit diesem aufgerufen und dann dessen \lstinline{init} Funktion bemüht um dieses zu instanzieren. % TODO mec2 Link?
+
+Wenn der Test geladen wird, wird die Simulation vorbereitet und es wird einmalig die \lstinline{run} Funktion aufgerufen um das erste Bild zu zeigen\footnote{Da \lstinline{globalTestVariables.running} initial \lstinline{false} ruft die \lstinline{run} Funktion kein \lstinline{requestAnimationFrame} auf.}.
+
+Hier wird außerdem noch der Knopf zum Starten und Pausieren des Tests definiert.
+Die Betätigung dieses Knopfes resultiert in einem Umschalten der \lstinline{globalTestVariables.running} Variable und dem Ausführen von \lstinline{run}.
+
+Eine vollständige Betrachtung des \lstinline{globalTestVariables} Objektes kann unter % TODO Link
+nachgesehen werden.
+
+% TODO irgendwo erklären wieso diese one-definition rule sinnvoll ist. Besser noch die odr selber erklären.
 
 \subsection{Aufbau der Testseiten}
 
