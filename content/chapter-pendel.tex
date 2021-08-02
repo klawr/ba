@@ -109,19 +109,19 @@ Außerdem werden in dieser Funktion die Eigenschaften von \lstinline{globalTestV
 Die \lstinline{run} Funktion trägt Sorge dafür, dass alle Tests unter den selben Konditionen aufgerufen werden.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{globalTestVariables.run} Funktion.}\label{lst:gtv_run}]
-run(step) {
-    this.g.exe(this.ctx1);
-    this.model?.tick(1 / 60);
-    step();
-    this.updateTimesChart().exe(this.ctx_times);
-
-    if (this.running) {
-        this.rafId = requestAnimationFrame(() => {
-            this.time_reset = performance.now();
-            this.run(step)
-        });
-    }
-},
+    run(step) {
+        this.model?.tick(1 / 60);
+        this.g.exe(this.ctx1);
+        this.time_reset = performance.now();
+        step();
+        this.updateTimesChart().exe(this.ctx_times);
+    
+        if (this.running) {
+            this.rafId = requestAnimationFrame(() => {
+                this.run(step)
+            });
+        }
+    },
 \end{lstlisting}
 
 Sollte ein \name{mec2} Modell definiert sein, dann soll dieses an dieser Stelle seine \lstinline{tick} Funktion anwenden, damit es um einen Zeitschritt weiter iteriert wird.
@@ -132,17 +132,17 @@ Anschließend wird der \name{CanvasRenderingContext2D} des ersten der vier HTML-
 Dieser sollte ausschließlich hier beschrieben werden, damit der Test nicht versehentlich Einfluss auf die Zeichnung nimmt.
 Es soll eine grundlegende Prämisse sein, dass die gesuchte Funktion zur Bestimmung des Mechanismus ausschließlich Anhand der Bildsequenzen funktioniert und selbst keinen Einfluss auf diese hat.
 
-Nachdem der HTML-Canvas gerendert wurde, wird eine an \lstinline{run} übergebene Funktion, welche hier als \lstinline{step} step deklariert ist, ausgeführt.
+Nachdem der HTML-Canvas gezeichnet wurde, wird eine an \lstinline{run} übergebene Funktion, welche hier als \lstinline{step} step deklariert ist, ausgeführt.
 Diese Funktion ist durch den Test selber definiert und führt alle Vergleiche und Berechnungen aus welche durchgeführt werden sollen.
 Diese an die an \lstinline{run} übergebenen Funktionen werden in den entsprechenden Kapiteln für die Tests beschrieben.
 
-Abschließend wird hier noch die Zeit welche seit dem letzten \lstinline{run} Aufruf verstrichen ist aufgezeichnet, indem \lstinline{updateTimesChart} aufgerufen wird.
+Abschließend wird hier noch die Zeit welche diese \lstinline{step} benötigt vermerkt, indem \lstinline{updateTimesChart} aufgerufen wird.
 In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now()} % TODO MDN Link oder besser erklären.
-ermittelt und in einer Liste hinzugefügt welche die Historie der Geschwindigkeiten der einzelnen \lstinline{run} Aufrufe festhält.
-Es wird außerdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist.
-Dieser Graph wird anschließend auf dem vierten HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
+ermittelt und in einer Liste hinzugefügt welche die Historie der Geschwindigkeiten der einzelnen \lstinline{step} Aufrufe festhält.
+Es wird außerdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist, sodass eine sinnvolle Bezeichnung der Achsen der Graphen möglich sind.
+Dieser Graph wird anschließend auf einem HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
 
-Nachdem anschließend geprüft wurde ob der Test weiter laufen soll \footnote{\lstinline{running} kann beispielsweise durch einen Start/Stop Knopf umgeschaltet werden.} wird die Zeit für die nächste Runde erneut auf den aktuellen Zeitpunkt gesetzt um die Zeit die es gedauert hat \lstinline{updateTimesChart} auszuführen auszuschließen und die \lstinline{run} Funktion wird erneut durch \lstinline{requestAnimationFrame} aufgerufen.
+Nachdem anschließend geprüft wurde ob der Test weiter laufen soll \footnote{\lstinline{running} kann beispielsweise durch einen Start/Stop Knopf umgeschaltet werden.} wird die \lstinline{run} Funktion wird erneut durch \lstinline{requestAnimationFrame} aufgerufen.
 
 \subsubsection{register}\label{ch:gtv_register}
 
@@ -157,6 +157,8 @@ An dieser Stelle wird außerdem ein Knopf erzeugt, welcher das Laden des Tests e
 Sollte ein \name{mec2} Modell definiert sein, so wird hier die \lstinline{mec.model.extend} Funktion mit diesem aufgerufen und dann dessen \lstinline{init} Funktion bemüht um dieses zu instanzieren. % TODO mec2 Link?
 
 Wenn der Test geladen wird, wird die Simulation vorbereitet und es wird einmalig die \lstinline{run} Funktion aufgerufen um das erste Bild zu zeigen\footnote{Da \lstinline{globalTestVariables.running} initial den Wert \lstinline{false} hat wird innerhalb des \lstinline{run} Aufrufs \lstinline{requestAnimationFrame} nicht bemüht.}.
+Die \lstinline{register} Funktion erwartet die Funktion welche an \lstinline{run} als Argument übergeben wurde selbst als Argument.
+Damit wird diese Funktion von \lstinline{register} lediglich an \lstinline{run} weitergegeben.
 
 Hier wird außerdem noch die Erstellung des Knopfes zum Starten und Pausieren der Tests definiert.
 Die Betätigung dieses Knopfes resultiert in einem Umschalten der \lstinline{globalTestVariables.running} Variable und dem Ausführen von \lstinline{run}.
@@ -170,15 +172,23 @@ hingewiesen.
 \subsection{Aufbau der Testseiten}
 
 Die HTML-Seiten wurden einheitlich gestaltet, sodass an diesen nicht viel geändert werden muss um weitere Tests zu definieren.
-Für die Visualisierung der Versuche wurde die \lstinline{globalTestVariables.createElements} Funktion definiert, welche die HTML-Seiten befüllt, welche in Kapitel~\ref{ch:gtv_createElements}.
+Sie unterscheiden sich untereinander vorallem durch die unterschiedlichen Dateien welche eingebunden werden um die Tests auszuführen.
+Die eingebundenen Dateien beinhalten unter anderem in jedem Test die \name{g2.full.js}, \name{mec2.min.js} und die \name{simulation.js}.
+
+Neben diesen wurden jedoch viele Skripte geschrieben welche sich einzelne Tests teilen.
+Zum Beispiel jene zum definieren von Linien oder Punktwolken, welche auf diese Weise einheitlich mit solchen umgehen können.
+
+Des weiteren enthalten Gruppen an Tests weitere geteilte globale Variablen, welche \lstinline{globalTestVariables} für diese Tests erweitern sollen.
 
 Diese HTML-Seiten enthalten außerdem noch jeweils ein HTML-Paragraph Element % TODO Link, 
 in welchem beschrieben wird was in dem entsprechenden Versuch untersucht wird.
 
-Die vier HTML-Canvas Elemente sollen in jedem Versuch in etwa die selbe Rolle übernehmen.
+Für die weitere Strukturierung der Testseiten wurde die \lstinline{globalTestVariables.createElements} Funktion definiert, welche die HTML-Seiten befüllt.
+Diese Funktion wurde in Kapitel~\ref{ch:gtv_createElements} beschrieben, es soll hier noch darauf eingegangen werden was für Elemente von ihr erstellt werden.
 
-Das erste dieser Elemente enthält eine Abbildung des \name{mec2} Modells, welche durch die \lstinline{run} Funktion gezeichnet wird.
-Dieses HTML-Canvas Element wird dazu verwendet den getesteten Algorithmus mit Bildern zu versorgen mit denen dieser dann den entsprechenden Mechanismus rekonstruieren soll.
+Die vier erstellten HTML-Canvas Elemente sollen in jedem Versuch jeweils vergleichbare Rollen übernehmen.
+
+Das erste dieser Elemente dazu verwendet den getesteten Algorithmus mit Bildern zu versorgen auf dessen Basis dieser dann den entsprechenden Mechanismus rekonstruieren soll.
 
 Das zweite HTML-Canvas Element soll genutzt werden um zu visualisieren was in einem Versuch getestet wird.
 Diese Visualisierung soll dazu dienen einen besseren Eindruck davon zu bekommen ob die darunterliegenden Funktionen funktionieren und ob Erkenntnisse daraus gezogen werden können.
@@ -186,7 +196,7 @@ Diese Visualisierung soll dazu dienen einen besseren Eindruck davon zu bekommen 
 Das dritte HTML-Canvas Element dient zur Auswertung der ermittelten Daten.
 In den meisten Tests wird dieses Element dazu genutzt um die ermittelten Koordinaten in einem Graphen darzustellen und diesen dann nach weiteren Erkenntnissen zu untersuchen.
 
-Die Aufgabe das zweite und dritte HTML-Canvas Element zu befüllen liegt wird durch die Funktionen welche getestet werden selbst durchgeführt.
+Die Aufgabe das zweite und dritte HTML-Canvas Element zu befüllen wird durch die Funktionenen welche jeweils getestet werden selbst durchgeführt.
 Sie dienen entsprechend lediglich der Untersuchung der Ansätze und spielen für die Entwicklung eines abschließenden Verfahrens keine Rolle.
 
 Das befüllen des vierten HTML-Canvas Elementes wurde bereits in Kapitel~\ref{ch:gtv_run} ausführlich beschrieben.
@@ -194,9 +204,9 @@ Das befüllen des vierten HTML-Canvas Elementes wurde bereits in Kapitel~\ref{ch
 \subsection{Definition eines \name{mec2} Modells}
 
 In vielen der im Nachfolgenden beschriebenen Tests werden \name{mec2} Modelle verwendet.
-Aus diesem Grund soll hier einmal die Definition eines einfach Pendels beschrieben werden, welches für die ersten Tests durchaus relevant ist.
-Es wird lediglich durch den Drehpunkt, den Endpunkt und dessen konstante Länge zueinander definiert.
-Bewegt wird das Pendel lediglich durch das Gewicht des Endpunktes, da durch die Annahme von geschwichtslosen Gliedern diese keinen Einfluss haben.
+Aus diesem Grund soll hier die Definition eines einfach Pendels beschrieben werden, welches für die ersten Tests so oder leicht abgewandelt verwendet wird.
+Es wird durch den Drehpunkt, den Endpunkt und dessen konstante Länge zueinander definiert.
+Bewegt wird das Pendel, sofern es keinen Antrieb hat, lediglich durch das Gewicht des Endpunktes, da durch die Annahme von geschwichtslosen Gliedern diese keinen Einfluss haben.
 Entsprechend wird in den \name{mec2} Simulationen Gravitation simuliert.
 Auf einen Antrieb wurde in den ersten Tests zunächst verzichtet, weil dieser für die Erkennung der Bewegung nicht notwendig ist.
 
@@ -218,80 +228,66 @@ globalTestVariables.model = {
 Das \name{mec2} Modell wird in der entsprechenden Testdatei  auf dem \lstinline{globalTestVariables} Objekt definiert, damit dieses in den in Kapitel~\ref{ch:simulation_js} beschriebenen Funktionen korrekt referenziert werden kann.
 Es ist also notwendig die \name{simulation.js} vor dieser Definition einzubinden, da dies sonst undefiniert ist.
 
-Das Pendel besteht entsprechend aus zwei \lstinline{nodes}, welche die Gelenke darstellen.
-Eines dieser beiden Gelenke wird als \lstinline{base} deklariert.
-Das hat zur Folge, dass es unbeweglich ist und stellt damit den Drehpunkt und Absolutpol des Pendels dar.
+Das Pendel besteht entsprechend aus zwei \lstinline{nodes}, welche die Endpunkte des Pendels darstellen.
+Einer dieser beiden Punkte wird als \lstinline{base} deklariert.
+Das hat zur Folge, dass es unbeweglich ist, womit es den Drehpunkt, beziehungsweise Absolutpol des Pendels darstellt.
 Aus diesem regulären JavaScript Objekt wird ein \name{mec2} Modell, indem es durch \lstinline{mec.model.extend} erweitert wird.
-Diese Vorgang wurde bereits in Kapitel~\ref{ch:register} beschrieben.
-Die Animation wird durch die \lstinline{globalTestVariables.run} Funktion gesteuert, welche in Kapitel~\ref{ch:gtv_run} beschrieben wurde.
+Dieser Vorgang wurde bereits in Kapitel~\ref{ch:gtv_register} beschrieben.
+Die Animation wird durch die \lstinline{globalTestVariables.run} Funktion gesteuert, welche ebenfalls in Kapitel~\ref{ch:gtv_run} beschrieben wurde.
 
-\section{Erkennung von Änderungen}\label{ch:erkennung_von_änderungen}
+\section{Erkennung von Änderungen} \label{ch:erkennung_von_änderungen}
 
-Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden zunächst zwei Bilder miteinander verglichen, welche zeitlich etwa 16,7 Millisekunden auseinanderliegen.
-Die Frequenz von \name{requestAnimationFrame} beträgt im Optimalfall\footnote{Das bedeutet das keine Berechnungen länger als 16,7 Millisekunden benötigen, welche die Animation entsprechend verlangsamen würde.} 60 Hertz.
+Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden hier stets zwei Bilder miteinander verglichen, welche zeitlich etwa 16,7 Millisekunden auseinanderliegen.
+Die Frequenz von \name{requestAnimationFrame} beträgt im Optimalfall 60 Hertz.
+Dieser Optimalfall sei dadurch definiert, dass die \lstinline{step} Funktion aus \lstinline{run} (s. Listing~\ref{lst:gtv_run}) weniger als 16,7 Millisekunden benötigt\footnote{Neben der an \lstinline{run} übergebenen \lstinline{step} Funktion werden natürlich noch andere Funktionen wie \lstinline{model.tick} und \lstinline{updateTimesChart} ausgeführt, diese sollen hier jedoch nicht betrachtet werden. Sie werden daher auch für die Zeitmessung innerhalb von \lstinline{run} ausgeschlossen.}.
+
+\subsection{compareImages}
 
 Da sich in der modellierten Videosequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel aufzuzeichnen.
-Hierfür wurde die \lstinline{simulate} Function, welche in Listing~\ref{lst:pendel} gezeigt wurde mit dem Programmcode aus Listing~\ref{lst:simulate_compare_images} versehen.
+Hierfür wurde eine Funktion \lstinline{stepCompareImages} definiert, welche durch eine an die \lstinline{register} Funktion übergebene Funktion aufgerufen wird.
 
-\begin{lstlisting}[language=JavaScript, caption={TODO caption....}\label{lst:simulate_compare_images}]
-const simulate = () => {
-    model.tick(1 / 60); // solve model with fixed stepping
-    g.exe(ctx1);        // render its pose on the canvas
+Diese Funktion ruft den aktuellen Inhalt des ersten HTML-Canvas Elementes durch \lstinline{cnv1.getContext('2d').getImageData(0, 0, cnv1.width, cnv1.height).data} auf und vergleicht diesen mit dem Bild vom letzten Aufruf.
+Da der erste Aufruf dieser Funktion keinen Vergleich mit einem vorangegangen Bild zulässt, wird geprüft ob ein solches existiert.
 
-    const image1 = ctx1.getImageData(
-        0, 0, cnv1.width, cnv1.height).data;
+Die \lstinline{compareImages} Funktion vergleicht dann zwei Bilder auf unterschiede indem die beiden Bilder auf Unterschiede untersucht werden.
 
-    window.setTimeout(() => {
-        const image2 = ctx1.getImageData(
-            0, 0, cnv1.width, cnv1.height).data;
-        const result = compare_images(
-            image1, image2, cnv1.width, cnv1.height);
-    }
-
-    g2().clr().exe(ctx2);
-    for (let i = 0; i < result.length; ++i) {
-        const zone = result[i];
-
-        g2().clr().cir({x: zone.x, y: zone.y, r: 1}).exe(ctx2);
-    }
-};
-\end{lstlisting}
-
-Wobei \lstinline{ctx1} und \lstinline{ctx2} den \lstinline{RenderingContext} des jeweiligen HTML-Canvas Elementes repräsentieren.
-\lstinline{compareImages} wird in Listing~\ref{lst:compareImages} gezeigt.
-
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{compareImages} Function}\label{lst:compareImages}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{compareImages} Funktion.}\label{lst:pendel}]
 function compareImages(image1, image2, width, height) {
-const difference = [];
+    const difference = [];
 
-for (let y = 0; y < height; ++y) {
-    for (let x = 0; x < width; ++x) {
-        const i = y * width + x;
-        if (image1[i * 4] !== image2[i * 4]) {
-            difference.push({x, y});
-        };
+    for (let y = 0; y < height; ++y) {
+        for (let x = 0; x < width; ++x) {
+            const i = y * width + x;
+            if (image1[i * 4] !== image2[i * 4]) {
+                difference.push({ x, y });
+            };
+        }
     }
-}
 
-return difference;
+    return difference;
 }
 \end{lstlisting}
 
-Eine Momentaufnahme dieser Konstruktion kann in Abbildung~\ref{fig:compareImages} gesehen werden.
+Diese Funktion speichert eine \lstinline{difference} Liste, welche jeweils Objekte mit den Koordinaten von gefundenen Unterschieden speichert.
 
-\begin{figure}[htb]
-    \includegraphics[width=\textwidth]{gfx/compare_images_1.png}
-    \caption{Darstellung des Pendels und die dazugehörige erkannte Änderung innerhalb des Bildes.}
-    \label{fig:compareImages}
-\end{figure}
+Dieser Ansatz zeichnet sich durch seine Einfachheit aus, hat aber offensichtliche Nachteile.
 
-Zu beachten ist, dass das Pendel zwei mal gezeigt wird.
+So würden Änderungen durch Objekte welche trotz Bewegung auf dem Bild für einen Pixel keine Farbänderung verursachen dort keine Änderungen erkannt werden.
+Es werden also nur dort Änderungen erkannt, wo sich die Farbe des entsprechenden Pixels ändert.
+
+Es ist außerdem zu beachten, dass dadurch das die reine Änderung der Pixel betrachtet wird jedes sich bewegende Objekt zwei mal dargestellt wird.
 Das liegt daran, dass wenn die beiden Bilder verglichen werden, genau jene Pixel unterschiedlich sind an denen das Pendel im ersten Bild ist und im zweiten nicht mehr ist und genau dort wo das Pendel im zweiten Bild ist und im ersten nicht.
 Ohne weitere Analyse lässt sich jedoch nicht so einfach bestimmen in welche Richtung sich das Pendel bewegt.
-Für die anschließende Untersuchung kann das jedoch ignoriert werden, allerdings ist es wichtig solche Besonderheiten zu betrachten um mögliche Fehlerquellen schneller zu finden.
 
+Außerdem ist mit dieser Methode nicht von einer exakten Abmessung auzugehen, sondern die ermittelten Koordinaten ergeben eher eine Art Punktwolke bei der von einem hohen Maß an Unregelmäßigkeit auszugehen ist.
 
-Insgesamt wurden drei verschiedene Ansätze untersucht, welche im Folgenden betrachtet werden sollen.
+Es sei an dieser Stelle jedoch lediglich auf diese Nachteile hingewiesen, sodass diese bei Betrachtungen der Ergebnisse berücksichtigt werden können.
+
+An die \lstinline{stepCompareImages} Funktion kann widerrum eine Funktion übergeben werden, welche dann mit den gesammelten Koordinaten der \lstinline{compareImages} Funktion aufgerufen werden kann.
+
+Diese Sammlung an Koordinaten wird verwendet um sie auf Regelmäßigkeiten zu untersuchen.
+Wie bereits angemerkt, wird als erstes versucht ein Pendel zu rekonstruieren.
+Im nachfolgenden wurden unterschiedliche Ansätze darauf untersucht, mit welcher Performanz und Genauigkeit sie dies machen.
 
 \section{Betrachtung unterschiedlicher Ansätze}
 
@@ -300,10 +296,10 @@ Insgesamt wurden drei verschiedene Ansätze untersucht, welche im Folgenden betr
 Wie bereits vorher angemerkt, werden die Koordinaten aller Pixel aufgezeichnet für die bei einer Bewegung eine Änderung bemerkt wurde.
 Diese Pixel sollten bei der Drehung eines Gliedes um einen festen Punkt einen Bogen definieren, der Aufschluss über die Position dieses Drehpunktes gibt.
 
-Die genaue Bestimmung eines solchen Bogens anhand der Punktwolke zu ermitteln erscheint kein Problem zu sein für welches eine offensichtliche Lösung existiert.
-Stattdessen wird beim ersten untersuchten Ansatz dieser Thesis der kleinste Kreis bestimmt, welcher alle gesammelten Datenpunkte umfasst.
+Die genaue Bestimmung eines solchen Bogens durch Mittelpunkt, Radius und eingeschlossenem Winkel anhand der Punktwolke zu ermitteln erscheint zunächst schwierig.
+Stattdessen wird beim ersten untersuchten Ansatz der kleinste Kreis bestimmt, welcher alle bisher gesammelten Datenpunkte umfasst.
 Diesen Kreis zu ermitteln ist ein Problem für das ein Algorithmus existiert welcher in linearer Zeit\footnote{Das heißt die Dauer des Algorithmus steht in linearem Verhältnis zur Menge der Datenpunkte} durchgeführt werden kann.
-Der entsprechende Algorithmus wurde von Nimrod Megido~\cite[Megiddo1983] entwickelt und die Implementation wird von \aka{https://github.com/nayuki/Nayuki-web-published-code/blob/master/smallest-enclosing-circle/smallest-enclosing-circle-demo.js} bezogen.
+Der entsprechende Algorithmus wurde von Nimrod Megido~\cite{Megiddo1983} entwickelt und die Implementation wird von \aka{https://github.com/nayuki/Nayuki-web-published-code/blob/master/smallest-enclosing-circle/smallest-enclosing-circle-demo.js} bezogen.
 % TODO hier könnte noch etwas vom Algorithmus erzählt werden.
 % TODO ein Hinweis auf die Demo von Nayuki ist vielleicht auch noch sinnvoll: https://www.nayuki.io/page/smallest-enclosing-circle
 

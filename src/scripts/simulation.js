@@ -18,7 +18,7 @@ const globalTestVariables = {
     time_first: undefined,
     times: [],
     updateTimesChart() {
-        if (!this.time_reset) {
+        if (!this.time_first) {
             this.time_first = performance.now();
             return g2();
         }
@@ -134,12 +134,12 @@ const globalTestVariables = {
     run(step) {
         this.model?.tick(1 / 60);
         this.g.exe(this.ctx1);
+        this.time_reset = performance.now();
         step();
         this.updateTimesChart().exe(this.ctx_times);
 
         if (this.running) {
             this.rafId = requestAnimationFrame(() => {
-                this.time_reset = performance.now();
                 this.run(step)
             });
         }
