@@ -42,7 +42,7 @@ class Data {
             return Object.entries(arg)
                 .filter(e => limit ? (+e[0] > 0 && +e[0] < limit) : true)
                 .sort((a, b) => +a[0] > +b[0])
-                .flatMap(e => [+e[0], e[1] / length / 2])
+                .flatMap(e => [+e[0], e[1] / length])
         };
 
 

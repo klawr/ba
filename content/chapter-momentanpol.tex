@@ -1,0 +1,66 @@
+\chapter{Ermittlung des Momentanpols}
+
+Im vorangegangenem Kapitel wurde die Ermittlung eines Drehpunktes von sich einem rotierendem Glied beschrieben.
+Diese Bewegung stellt einen häufigen Fall in Mechanismen dar, jedoch ist der feste Drehpunkt ein Spezialfall für die Bestimmung des Momentanpols eines Gliedes.
+
+Der Momentanpol ist definiert als der Punkt, welcher sich bei Bewegung eines Elementes nicht bewegt.
+Das kann auch interpretiert werden als der Punkt um den sich ein Element in dieser Momentbetrachtung dreht.
+Dieser kann im Bezug zum Koordinatensystem konstant sein, was einen Drehpunkt definiert.
+Ein translatives Elemtent würde sich um keinen Punkt drehen, was entsprechend einen Momentanpol entspricht welcher eine unendliche Distanz zum betrachteten Element hat.
+
+Der Momentanpol eines Gliedes befindet sich in einem Mechanismus stets im Schnittpunkt der anliegenden Glieder.
+Diese Gesetzmäßigkeit wird \name{Satz der konjugierten Krümmungsmittelpunkte} % TODO \cite{Gössner2017}
+Für ein Viergelenk würde dies Bedeuten, dass der Momentanpol der Koppel sich stets im Schnittpunkt der (virtuell verlängerten) Kurbel und Schwinge befindet.
+
+Bei einer Parallelkurbel bei welcher sich die Koppel nicht bewegt, würde der Momentanpol stets im Unendlichen liegen.
+Entsprechend findet bei dieser auch keine Drehung statt.
+
+Eine weitere Möglichkeit der Ermittlung des Momentanpols ist die Ermittlung der Bewegung durch den \name{ersten Satz von Euler}. % TODO \cite{Gössner2017}
+Die Bewegung eines Körpers berechnet sich nach diesem durch
+
+\begin{equation}
+    \vec{v}_A = \vec{v}_P + \omega \tilde{\vec{r}}_{PA}
+    \label{eq:satz_von_euler}
+\end{equation} 
+
+Hier ist $\vec{v}_A$ die momentane Geschwindigkeit eines Körperpunktes $A$.
+$\vec{v}_P$ ist die Geschwindigkeit des Körperpunktes $P$.
+$\omega\tilde{\vec{r}}_{PA}$ entspricht der Geschwindigkeit des Punktes $P$ nach $A$ durch % TODO \cite{Gössner2017, p.75}
+
+\begin{equation}
+    \vec{v}_{AB} = \dot{\vec{r}}_{AB} = \omega \tilde{\vec{r}}_{AB}.
+    \label{eq:absolut_zu_winkel}
+\end{equation}
+
+Wird für Gleichung~\ref{eq:satz_von_euler} der Punkt $P$ nun als der Momentanpol festgelegt, kann die Geschwindigkeit $\vec{P} = 0$ gesetzt werden,
+sodass sich Gleichung~\ref{eq:satz_von_euler} zu
+
+\begin{equation}
+    \vec{v}_A = \omega \tilde{\vec{r}}_{PA}
+    \label{eq:satz_von_euler_momentanpol}
+\end{equation}
+
+vereinfacht. 
+Diese kann dann nach $r_{AP}$ umgestellt werden,
+
+\begin{equation}
+    \vec{r}_{AP} = \frac{\tilde{\vec{v}_A}}{\omega}
+\end{equation}
+
+sodass der Momentanpol $P$ über die Beziehung $\vec{r}_P = \vec{r}_A + \vec{r}_{AP}$ ermittelt werden kann.
+
+Diese Formel soll nun angewendet werden um den Momentanpol von Elementen zu bestimmen dessen Bewegung in Videos nachvollzogen wird.
+
+\section{Das drehende Rad}
+
+Als erster Test soll der Momentanpol eines sich drehenden Rades bestimmt werden.
+Von diesem Rad soll eine Speiche sichtbar sein, welche es erlaubt die Drehung zu erkennen.
+Bekannt ist, dass die Drehung eines Rades im Wälzpunkt liegt, damit dieses Schlupffrei rollen kann.
+Es wird also erwartet, dass die über die Zeit ermittelten Momentanpole eine Linie bilden, welche sich auf genau der Höhe befindet, auf welcher das Rad rollt.
+
+Für die Animation des Rades wurde eine \name{g2} Animation erstellt.
+
+
+
+Wenn diese Drehung korrekt ermittelt wird, sollte nach Gleichung~\ref{eq:satz_von_euler_momentanpol} der Momentanpol ermittelt werden können.
+

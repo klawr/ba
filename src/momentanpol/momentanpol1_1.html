@@ -29,8 +29,6 @@
     </p>
 
     <script>
-        const gtv = globalTestVariables;
-        const gmv = globalMomentanpol1Variables;
 
         const p1s = [];
         const p2s = [];
@@ -40,7 +38,8 @@
         }
 
         const fn = (result) => {
-            const { ctx2, ctx3, txt1, txt2 } = gtv;
+            const { cnv1, ctx2, ctx3, txt1, txt2, cnv_height } = globalTestVariables;
+            const { poles, data, r } = globalMomentanpolVariables;
 
             roll();
 
@@ -85,13 +84,12 @@
                     y: l.y + va.x / dw,
                 };
 
-                gmv.data.addDataPoint(rp);
-                gmv.poles.push(rp);
+                data.addDataPoint(rp);
+                poles.push(rp);
             }
 
-            gmv.poles.forEach(p => g.cir({ ...p, r: 1, fs: 'orange' }));
-
-            gmv.data.getChart(false).exe(ctx3);
+            poles.forEach(p => g.cir({ ...p, r: 1, fs: 'orange' }));
+            data.getChart(false).exe(ctx3);
 
             g.cir({
                 x: (p1.x + p2.x) / 2,
@@ -101,8 +99,8 @@
 
             g.exe(ctx2);
 
-            gtv.txt1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
-            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.muY)}. Varianz: ${gmv.data.varianceY}`;
+            txt1.innerHTML = `Tatsächlicher Y Wert: ${cnv_height / 2 + r}.`;
+            txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(data.muY)}. Varianz: ${data.varianceY}`;
         };
 
         register(() => stepCompareImages(fn));
