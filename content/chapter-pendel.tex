@@ -298,20 +298,20 @@ Diese Pixel sollten bei der Drehung eines Gliedes um einen festen Punkt einen Bo
 
 Die genaue Bestimmung eines solchen Bogens durch Mittelpunkt, Radius und eingeschlossenem Winkel anhand der Punktwolke zu ermitteln erscheint zunächst schwierig.
 Stattdessen wird beim ersten untersuchten Ansatz der kleinste Kreis bestimmt, welcher alle bisher gesammelten Datenpunkte umfasst.
-Diesen Kreis zu ermitteln ist ein Problem für das ein Algorithmus existiert welcher in linearer Zeit\footnote{Das heißt die Dauer des Algorithmus steht in linearem Verhältnis zur Menge der Datenpunkte} durchgeführt werden kann.
+
+Den kleinsten umfassenden Kreis zu ermitteln ist ein Problem für das ein Algorithmus existiert welcher in linearer Zeit\footnote{Das heißt die Dauer des Algorithmus steht in linearem Verhältnis zur Menge der Datenpunkte} durchgeführt werden kann.
 Der entsprechende Algorithmus wurde von Nimrod Megido~\cite{Megiddo1983} entwickelt und die Implementation wird von \aka{https://github.com/nayuki/Nayuki-web-published-code/blob/master/smallest-enclosing-circle/smallest-enclosing-circle-demo.js} bezogen.
 % TODO hier könnte noch etwas vom Algorithmus erzählt werden.
 % TODO ein Hinweis auf die Demo von Nayuki ist vielleicht auch noch sinnvoll: https://www.nayuki.io/page/smallest-enclosing-circle
 
+\subsubsection{pendel1\_1.html}
 
 Um einen solchen Kreis zu bestimmen müssen zunächst alle Koordinaten für die eine Änderung erkannt wurde in einer Liste festgehalten werden.
 
 Da zu Beginn der Aufnahme die Region welche durch die Punkte gefüllt wird sehr schnell an Fläche zunimmt, ändern sich die Koordinaten und der Radius des Mittelpunktes des kleinsten umfassenden Kreises.
 Sobald sich das drehende Glied einer halben Umdrehung nähert verändert sich die Definition des kleinsten umfassenden Kreises augenscheinlich garnicht mehr und dessen Mittelpunkt scheint mit einer sehr kleinen Abweichung dem tatsächlichen Drehpunkt zu entsprechen.
 
-% TODO Abändern auf Standard-Abweichung.
-Um die Bestimmung zu automatisieren wird als Metrik die Änderung des Mittelpunktes die letzten zehn Iterationen gewählt.
-Ist die akkumulierte Änderung null, also haben die letzten zehn vorhergesagten Drehpunkte die selben Koordinaten, wird davon ausgegangen, dass dieser Punkt korrekt ist und die Prognose wird abgegeben.
+Entsprechend wird bei diesem Versuch 
 
 Das andere Ende des Pendels wird vorerst durch den Punkt definiert dessen Distanz die größte zum prognostizierten Drehpunkt ist.
 Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für die eigentliche Aufgabe vorerst irrelevant, da ein Pendel noch keinen Mechanismus darstellt.

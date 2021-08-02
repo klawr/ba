@@ -154,7 +154,7 @@ const globalTestVariables = {
 
         this.g = g2().clr().view({ cartesian: true });
 
-        this?.reset();
+        this.reset?.call();
         if (this.model) {
             this.model.reset();
             this.model.draw(this.g);

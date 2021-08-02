@@ -16,12 +16,11 @@
 <body>
     <a id="title"></a>
     <script src="../third_party/g2.full.js"></script>
-    <script src="../scripts/data.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallestEnclosingCircle.js"></script>
-    <script src="../scripts/compareImages.js"></script>
+    <script src="../third_party/opencv.js"></script>
     <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/getMaxDist.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
     <script src="../scripts/line.js"></script>
     <script src="momentanpol.js"></script>
 
@@ -41,7 +40,7 @@
         };
 
         const gtv = globalTestVariables;
-        const gmv = globalMomentanpol1Variables;
+        const gmv = globalMomentanpolVariables;
 
         const p1s = [];
         const p2s = [];
@@ -58,7 +57,7 @@
             const g = g2().clr();
 
             lines.push(Line.fromRegressionLine(result, g));
-            const [p1, p2] = getMaxDist(result, g);
+            const [p1, p2] = result.getMaxDist(g);
 
             const lp1 = p1s[p1s.length - 1];
             const lp2 = p2s[p2s.length - 1];
@@ -74,9 +73,7 @@
                 p2s.push(p1);
             }
 
-            result.forEach(r => {
-                g.cir({ ...r, r: 1 });
-            });
+            result.draw(g);
 
             const threshold = 5;
 

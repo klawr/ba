@@ -17,11 +17,12 @@ globalTestVariables.reset = function () {
 }
 
 function roll() {
-    const { r, draw } = globalMomentanpolVariables;
+    const gmv = globalMomentanpolVariables;
     const { cnv_height, g } = globalTestVariables;
 
     const w = globalMomentanpolVariables.i / 180 * Math.PI;
     g.del().clr()
-        .use({ x: r * 2 + r * w, y: cnv_height / 2, grp: draw(), w });
-    ++globalMomentanpolVariables.i;
+        .use({ x: gmv.r * 2 + gmv.r * w, y: cnv_height / 2,
+            grp: gmv.draw(), w });
+    ++gmv.i;
 }

@@ -16,11 +16,11 @@
 <body>
     <a id="title"></a>
     <script src="../third_party/g2.full.js"></script>
-    <script src="../scripts/data.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallestEnclosingCircle.js"></script>
-    <script src="../scripts/compareImages.js"></script>
+    <script src="../third_party/smallestEnclosingCircle.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
+    <script src="../scripts/data.js"></script>
     <script src="pendel1.js"></script>
 
     <p>Test mit Pendel durch kleinsten ummantelnden Kreis, wenn das Glied sich um weit weniger als 180° dreht.
@@ -51,18 +51,15 @@
             const { ctx2, ctx3, txt2 } = globalTestVariables;
 
             const g = g2().clr();
-            result.forEach(r => {
-                // Draw a circle for every found change
-                g.cir({ ...r, r: 1 });
-            });
+            result.draw(g);
 
             const cir = addPointsForCircle(result, g);
 
             data.add(cir);
             data.getChart().exe(ctx3);
 
-            for (let i = 0, max = 0; i < result.length; ++i) {
-                const r = result[i];
+            for (let i = 0, max = 0; i < result.points.length; ++i) {
+                const r = result.points[i];
                 if (r.x === 0 && r.y === 0) {
                     continue;
                 }

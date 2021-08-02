@@ -15,14 +15,12 @@
 
 <body>
     <a id="title"></a>
-    <script src="../scripts/data.js"></script>
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallestEnclosingCircle.js"></script>
-    <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/removeOverlaps.js"></script>
-    <script src="../scripts/groupUp.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="../scripts/line.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
     <script src="gruppe1.js"></script>
 
     <p>Test zur Unterscheidung mehrerer Pendel.</p>
@@ -48,13 +46,13 @@
 
             const g = g2().clr();
 
-            const filtered = removeOverlaps(result);
+            const filtered = result.removeOverlaps();
 
-            const groups = groupUp(filtered, g);
+            const groups = filtered.groupUp(g);
 
-            filtered.forEach(r => {
-                // Draw a circle for every found change
-                g.cir({ ...r, r: 1 });
+            filtered.draw(g);
+
+            filtered.points.forEach(r => {
                 ply.push({ ...r });
             });
 

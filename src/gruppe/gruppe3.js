@@ -42,7 +42,7 @@ globalTestVariables.reset = function () {
     globalGruppe3Variables.init();
 }
 
-function step_opencv_lucas_kanade(fn) {
+function stepOpenCVLucasKanade(fn) {
     const olk = globalGruppe3Variables;
     const { ctx2 } = globalTestVariables;
 

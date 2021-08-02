@@ -25,7 +25,7 @@ globalGruppe2Variables.hsvVec.push_back(globalGruppe2Variables.hsv1);
 globalGruppe2Variables.hsvVec.push_back(globalGruppe2Variables.hsv2);
 
 
-function step_opencv_farneback(fn) {
+function stepOpenCVFarneback(fn) {
     const { cnv1, ctx2 } = globalTestVariables;
     const { prvs, next, flow, flowVec, ang, hsv, hsv0, hsv2, mag, magLimit, hsvVec, rgb } = globalGruppe2Variables;
 

@@ -15,14 +15,10 @@
 
 <body>
     <a id="title"></a>
-    <script src="../scripts/data.js"></script>
-
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallestEnclosingCircle.js"></script>
-    <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/removeOverlaps.js"></script>
     <script src="../third_party/opencv.js"></script>
+    <script src="../scripts/simulation.js"></script>
     <script src="gruppe3.js"></script>
 
     <p>Test zur Lucas_Kanade
@@ -47,7 +43,7 @@
         const fn = (result) => {
         }
 
-        globalTestVariables.register(() => step_opencv_lucas_kanade(fn));
+        globalTestVariables.register(() => stepOpenCVLucasKanade(fn));
     </script>
 </body>
 

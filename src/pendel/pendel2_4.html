@@ -17,9 +17,10 @@
     <a id="title"></a>
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/data.js"></script>
-    <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
+    <script src="pendel2.js"></script>
 
     <p>Hier soll durch die Lösung der Methode der kleinsten Quadrate die am besten passende Linie definiert werden. Durch das Entfernen von Punkten in einem bestimmten Umkreis soll die Dichte homogen gehalten werden, was diesen Fehler korrigiert.
     </p>
@@ -36,37 +37,22 @@
             ]
         };
 
-
-        function removeOverlaps(boxes) {
-            const mostAccurate = [];
-            while (boxes.length) {
-                const max = boxes.pop();
-                mostAccurate.push(max);
-                boxes = boxes.filter(
-                    (rec) =>
-                        Math.abs(rec.x - max.x) >= 10 ||
-                        Math.abs(rec.y - max.y) >= 10
-                );
-            }
-            return mostAccurate;
-        }
-
         const fn = (result) => {
             const { ctx2, ctx3, gnd } = globalTestVariables;
 
-            const filtered = removeOverlaps(result);
+            const filtered = result.removeOverlaps();
 
             let max = 0;
             let p1;
             let p2;
 
-            const sum = filtered.reduce((pre, cur) => ({
+            const sum = filtered.points.reduce((pre, cur) => ({
                 x: pre.x + cur.x,
                 y: pre.y + cur.y,
             }), { x: 0, y: 0 });
 
-            const X = sum.x / filtered.length;
-            const Y = sum.y / filtered.length;
+            const X = sum.x / filtered.points.length;
+            const Y = sum.y / filtered.points.length;
 
             let m;
             let b;
@@ -75,10 +61,10 @@
                 m = Number.MAX_SAFE_INTEGER;
                 b = 0;
             } else {
-                const counter = filtered.reduce((pre, cur) =>
+                const counter = filtered.points.reduce((pre, cur) =>
                     pre + (cur.x - X) * (cur.y - Y), 0
                 );
-                const denominator = filtered.reduce((pre, cur) =>
+                const denominator = filtered.points.reduce((pre, cur) =>
                     pre + (cur.x - X) ** 2, 0
                 );
 
@@ -87,9 +73,7 @@
             }
 
             const g = g2().clr();
-            filtered.forEach(e => {
-                g.cir({ x: e.x, y: e.y, r: 0.5 });
-            });
+            filtered.draw(g);
 
             g.lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
         };

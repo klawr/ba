@@ -22,11 +22,10 @@
     </p>
 
     <script src="../third_party/g2.full.js"></script>
-    <script src="../scripts/data.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/compareImages.js"></script>
     <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/getMaxDist.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
     <script src="pendel2.js"></script>
 
     <script>
@@ -50,7 +49,7 @@
 
             const g = g2().clr();
 
-            const [p1, p2] = getMaxDistCoG(result, 5, g);
+            const [p1, p2] = result.getMaxDist(g, 5);
 
             if (!p1 || !p2) {
                 return;
@@ -59,7 +58,7 @@
             const m = (p2.y - p1.y) / (p2.x - p1.x);
             const b = p1.y - m * p1.x;
 
-            result.forEach(e => g.cir({ ...e, r: 1 }));
+            result.draw(g);
 
             lines.push({ m, b });
 
@@ -90,24 +89,6 @@
             }
 
             g.lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b });
-
-            if (false && pre_gnd) {
-                for (let i = 0, max = 0; i < result.length; ++i) {
-                    const r = result[i];
-                    if (r.x === 0 && r.y === 0) {
-                        continue;
-                    }
-                    const hy = Math.hypot(r.y - pre_gnd.y, r.x - pre_gnd.x);
-
-                    if (hy > max) {
-                        gpv.nod = r;
-                    }
-
-                    gpv.nod && g.lin({ p1: pre_gnd, p2: gpv.nod })
-                        // .gnd({ ...pre_gnd })
-                        .nod(gpv.nod);
-                }
-            }
 
             g.exe(ctx2);
         };

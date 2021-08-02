@@ -15,14 +15,10 @@
 
 <body>
     <a id="title"></a>
-    <script src="../scripts/data.js"></script>
-
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallestEnclosingCircle.js"></script>
-    <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/removeOverlaps.js"></script>
     <script src="../third_party/opencv.js"></script>
+    <script src="../scripts/simulation.js"></script>
     <script src="gruppe2.js"></script>
 
     <p>Test zu Farneback
@@ -46,7 +42,7 @@
         const fn = (result) => {
         }
 
-        globalTestVariables.register(() => step_opencv_farneback(fn));
+        globalTestVariables.register(() => stepOpenCVFarneback(fn));
     </script>
 </body>
 

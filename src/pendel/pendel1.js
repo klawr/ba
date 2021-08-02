@@ -11,9 +11,10 @@ globalTestVariables.reset = function () {
     globalPendel1Variables.trail = [];
 }
 
-function addPointsForCircle(result, g, args = { nofilter: false, nomemory: false }) {
-    const gtv = globalTestVariables;
+function addPointsForCircle(cloud, g, args = { nofilter: false, nomemory: false }) {
     const gpv = globalPendel1Variables;
+
+    const points = cloud.points;
 
     if (g && !args.nomemory) {
         gpv.ply.forEach(r => {
@@ -22,13 +23,13 @@ function addPointsForCircle(result, g, args = { nofilter: false, nomemory: false
         });
     }
 
-    if (!result) return;
+    if (!points) return;
 
     const ply = args.nomemory ? [] : gpv.ply;
 
-    const [cir, pts] = makeCircle(result, ply);
+    const [cir, pts] = makeCircle(points, ply);
     if (args.nofilter) {
-        gpv.ply.push(...result);
+        gpv.ply.push(...points);
     }
 
     if (!args.nomemory) {

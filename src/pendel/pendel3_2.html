@@ -15,13 +15,13 @@
 
 <body>
     <a id="title"></a>
-    <script src="../scripts/data.js"></script>
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallestEnclosingCircle.js"></script>
-    <script src="../scripts/compareImages.js"></script>
+    <script src="../third_party/smallestEnclosingCircle.js"></script>
     <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/getMaxDist.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="../scripts/line.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
     <script src="pendel3.js"></script>
 
     <p>Test mit Ermittlung zweier Kreise von denen einer Richtig ist. Durch die Überprüfung der Bewegung der
@@ -47,9 +47,9 @@
         const fn = (result) => {
             const { ctx2, ctx3, txt2 } = globalTestVariables;
 
-            const [p1, p2, hy] = getMaxDistCoG(result, 5);
-
             const g = g2().clr();
+
+            const [p1, p2, hy] = result.getMaxDist(g, 5);
 
             const cog = (pre, cur) => ({
                 x: pre.x + cur.x,
@@ -80,19 +80,9 @@
             }
             ground1.getChart().exe(ctx3);
 
-            // g.cir({ ...sp1, r: 10, fs: 'blue' })
-            //     .cir({ ...sp2, r: 10, fs: 'cyan' })
             g.cir({ ...p1, r: 5, fs: 'red' })
                 .nod({ ...p2, r: 5, fs: 'green' })
                 .cir({ ...p1, r: hy }).cir({ ...p2, r: hy });
-
-            // g.lin({ p1: ground1, p2: ground2.last_estimate })
-            //     .gnd({ ...ground1 })
-            //     .nod({ ...ground2.last_estimate });
-
-            // g.lin({ p1: ground2, p2: ground1.last_estimate })
-            //     .gnd({ ...ground2 })
-            //     .nod({ ...ground1.last_estimate });
 
             g.exe(ctx2);
         }

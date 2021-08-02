@@ -15,14 +15,11 @@
 
 <body>
     <a id="title"></a>
-    <script src="../scripts/data.js"></script>
-
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/smallestEnclosingCircle.js"></script>
+    <script src="../third_party/opencv.js"></script>
     <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/removeOverlaps.js"></script>
-    <script src="../scripts/compareImages.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
     <script src="gruppe4.js"></script>
 
     <p>Hier wird eine Gruppierung durch K-Nearest Neighbours versucht.
@@ -43,15 +40,14 @@
             ]
         }
 
-        // simulation
         const fn = (result) => {
             const { ctx2 } = globalTestVariables;
 
-            const filtered = removeOverlaps(result);
+            const filtered = result.removeOverlaps();
 
             const g = g2().clr();
 
-            k_means_clustering(3, filtered, g);
+            filtered.kMeansClustering(3, g);
 
             g.exe(ctx2);
         }
