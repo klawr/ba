@@ -56,14 +56,17 @@
                 data.add(cir);
                 gpv.trail.push(cir);
             }
+            
+            cir.pts.forEach(c => {
+                g.cir({...c, r: 8});
+            });
 
-            const limit = 20;
-            if (gpv.trail.length > limit) {
+            if (cir.pts.length > 2) {
                 const t0 = gpv.trail[0];
 
                 const m =
-                    (gpv.trail[limit - 1].y - t0.y) /
-                    (gpv.trail[limit - 1].x - t0.x);
+                    (gpv.trail[gpv.trail.length - 1].y - t0.y) /
+                    (gpv.trail[gpv.trail.length - 1].x - t0.x);
                 const b = t0.y - t0.x * m;
                 const w = Math.atan(- 1 / m);
 
