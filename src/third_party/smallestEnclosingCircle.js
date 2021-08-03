@@ -57,7 +57,9 @@ function makeCircle(points, known) {
             [c, pts] = makeCircleOnePoint(shuffled.slice(0, i + 1), p);
     });
 
-    return [c, pts.filter(e => !known.includes(e))];
+    c.pts = pts;
+
+    return c;
 }
 // One boundary point known
 function makeCircleOnePoint(points, p) {

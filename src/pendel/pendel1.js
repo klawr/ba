@@ -27,13 +27,13 @@ function addPointsForCircle(cloud, g, args = { nofilter: false, nomemory: false 
 
     const ply = args.nomemory ? [] : gpv.ply;
 
-    const [cir, pts] = makeCircle(points, ply);
+    const cir = makeCircle(points, ply);
     if (args.nofilter) {
         gpv.ply.push(...points);
     }
 
     if (!args.nomemory) {
-        gpv.ply.push(...pts);
+        gpv.ply.push(...cir.pts.filter(e => !ply.includes(e)));
     }
 
     gpv.ply.length && gpv.data.add(cir);
