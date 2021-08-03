@@ -3,12 +3,13 @@ const globalPendel1Variables = {
     ply: [], // Alle Punkte
     trail: [], // Genutzt ab pendel1_4
     nod: undefined,
-    data: new Data(),
+    data: new DataXY(),
 }
 
 globalTestVariables.reset = function () {
     globalPendel1Variables.ply = [];
     globalPendel1Variables.trail = [];
+    globalPendel1Variables.data.reset();
 }
 
 function addPointsForCircle(cloud, g, args = { nofilter: false, nomemory: false }) {

@@ -28,7 +28,6 @@
     </p>
 
     <script>
-
         const p1s = [];
         const p2s = [];
 
@@ -81,12 +80,12 @@
                     y: l.y + va.x / dw,
                 };
 
-                data.addDataPoint(rp);
+                data.add(rp.y);
                 poles.push(rp);
             }
 
             poles.forEach(p => g.cir({ ...p, r: 1, fs: 'orange' }));
-            data.getChart(false).exe(ctx3);
+            data.getChart().exe(ctx3);
 
             g.cir({
                 x: (p1.x + p2.x) / 2,

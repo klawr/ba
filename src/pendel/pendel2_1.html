@@ -73,18 +73,15 @@
                         const x = (b1 - b2) / (m2 - m1);
                         const y = m1 * x + b1;
 
-                        if (Number.isFinite(x) && Number.isFinite(y)) {
-                            data.add({ x, y });
-                        }
+                        data.add({ x, y });
                     }
                 }
-                const gnd = { x: data.muX, y: data.muY };
+                const gnd = { x: data.x.mu, y: data.y.mu };
 
                 txt2.innerHTML = `Erstmal: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
 
                 g.cir({ ...gnd, r: 5 });
 
-                data.add(gnd);
                 data.getChart().exe(ctx3);
             }
 

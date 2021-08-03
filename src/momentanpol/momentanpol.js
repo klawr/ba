@@ -7,6 +7,7 @@ const globalMomentanpolVariables = {
     draw() {
         return g2().cir({ x: 0, y: 0, r: this.r, ld: [3, 0, 3] }).bar({ x1: -this.r, x2: this.r, y1: 0, y2: 0 })
     },
+    dataXY: new DataXY(),
 }
 
 globalTestVariables.reset = function () {

@@ -95,26 +95,26 @@
                     y: l.y + va.x / dw,
                 };
 
-                gmv.data.addDataPoint(rp);
+                gmv.dataXY.add(rp);
                 gmv.poles.push(rp);
             }
 
             gmv.poles.forEach(p => g.cir({ ...p, r: 1, ls: 'orange' }));
 
-            gmv.data.getChart().exe(ctx3);
+            gmv.dataXY.getChart().exe(ctx3);
 
-            gmv.data.drawDeviation(g);
+            gmv.dataXY.drawDeviation(g);
 
             Line.fromRegressionLine(gmv.poles, g);
 
             g.exe(ctx2);
 
             gtv.txt2.innerHTML = `Vermutet:
-            x: ${Math.round(gmv.data.muX)} /
-            Varianz: ${gmv.data.varianceX},
-            y: ${Math.round(gtv.cnv_height - gmv.data.muY)} /
-            Varianz: ${gmv.data.varianceY}.
-            Werte: ${Data.getNumberOfInputs(gmv.data.dataX)}`;
+            x: ${Math.round(gmv.dataXY.x.mu)} /
+            Varianz: ${gmv.dataXY.x.variance},
+            y: ${Math.round(gtv.cnv_height - gmv.dataXY.y.mu)} /
+            Varianz: ${gmv.dataXY.y.variance}.
+            Werte: ${gmv.dataXY.x.length}`;
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));

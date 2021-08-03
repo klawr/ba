@@ -20,6 +20,7 @@
     <script src="../third_party/smallestEnclosingCircle.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/pointCloud.js"></script>
+    <script src="../scripts/line.js"></script>
     <script src="../scripts/data.js"></script>
     <script src="pendel1.js"></script>
 
@@ -43,6 +44,7 @@
         };
 
         const { data } = globalPendel1Variables;
+        let p2;
 
         const fn = (result) => {
             const gpv = globalPendel1Variables;
@@ -56,69 +58,56 @@
                 data.add(cir);
                 gpv.trail.push(cir);
             }
-            
+
             cir.pts.forEach(c => {
-                g.cir({...c, r: 8});
+                g.cir({ ...c, r: 8 });
             });
 
             if (cir.pts.length > 2) {
                 const t0 = gpv.trail[0];
+                const tl = gpv.trail[gpv.trail.length - 1];
 
-                const m =
-                    (gpv.trail[gpv.trail.length - 1].y - t0.y) /
-                    (gpv.trail[gpv.trail.length - 1].x - t0.x);
-                const b = t0.y - t0.x * m;
-                const w = Math.atan(- 1 / m);
+                const l = new Line({ p1: t0, p2: tl });
+                const o = l.orthogonal(t0);
+                p2 = o.getPointWithDistance(t0, t0.r);
 
-                const c = t0.y + t0.x / m;
-
-                const p2 = {
-                    x: t0.x - t0.r * Math.cos(w),
-                    y: t0.y - t0.r * Math.sin(w)
-                }
-
+                l.draw(g);
+                o.draw(g);
                 g.lin({
-                    p1: { x: 0, y: b },
-                    p2: { x: cnv1.width, y: m * cnv1.width + b },
-                }).lin({
-                    p1: { x: 0, y: c },
-                    p2: { x: cnv1.width, y: - 1 / m * cnv1.width + c },
-                    lw: 2,
-                    ls: 'green',
-                }).lin({
                     p1: t0,
                     p2,
                     lw: 3,
                     ls: 'blue'
                 });
+            }
+
+            if (p2) {
 
                 gpv.ply.length && data.add(p2);
-                data.x = p2.x;
-                data.y = p2.y;
                 data.getChart().exe(ctx3);
+
+                for (let i = 0, max = 0; i < result.length; ++i) {
+                    const r = result.points[i];
+                    if (r.x === 0 && r.y === 0) {
+                        continue;
+                    }
+                    const hy = Math.hypot(r.y - p2.y, r.x - p2.x);
+
+                    if (hy > max) {
+                        gpv.nod = r;
+                    }
+                }
+
+                g.gnd({ ...p2 });
+                gpv.nod &&
+                    g.lin({ x1: p2.x, y1: p2.y, x2: gpv.nod.x, y2: gpv.nod.y }).nod(gpv.nod);
+                txt2.innerHTML = `Vermutet: x: ${p2.x}, y: ${cnv1.height - p2.y}`;
             }
 
             g.ply({ pts: gpv.trail })
                 .cir(cir)
                 .beg({ cartesian: true })
                 .end();
-
-            for (let i = 0, max = 0; i < result.length; ++i) {
-                const r = result.points[i];
-                if (r.x === 0 && r.y === 0) {
-                    continue;
-                }
-                const hy = Math.hypot(r.y - data.y, r.x - data.x);
-
-                if (hy > max) {
-                    gpv.nod = r;
-                }
-            }
-
-            g.gnd({ ...data });
-            gpv.nod &&
-                g.lin({ x1: data.x, y1: data.y, x2: gpv.nod.x, y2: gpv.nod.y }).nod(gpv.nod);
-            txt2.innerHTML = `Vermutet: x: ${data.x}, y: ${cnv1.height - data.y}`;
 
             g.exe(ctx2);
         };

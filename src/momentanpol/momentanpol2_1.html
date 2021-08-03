@@ -88,7 +88,7 @@
                     y: l.y + va.x / dw,
                 };
 
-                gmv.data.addDataPoint(rp);
+                gmv.data.add(rp.y);
                 gmv.poles.push(rp);
             }
 
@@ -105,7 +105,7 @@
             g.exe(ctx2);
 
             gtv.txt1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
-            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.muY)}. Varianz: ${gmv.data.varianceY}`;
+            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.mu)}. Varianz: ${gmv.data.variance}`;
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));
