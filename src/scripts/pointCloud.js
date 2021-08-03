@@ -122,7 +122,7 @@ class PointCloud {
 
         g?.cir({ ...p1, r: 5, fs: 'red' }).cir({ ...p2, r: 5, fs: 'red' });
 
-        return [p1, p2, max];
+        return { p1, p2, max };
     };
 
 
@@ -134,18 +134,18 @@ class PointCloud {
      */
     removeOverlaps(dist = 5) {
         let copy = [...this.points];
-        const mostAccurate = [];
+        const survivor = [];
 
         while (copy.length) {
-            const max = copy.pop();
-            mostAccurate.push(max);
+            const pt = copy.pop();
+            survivor.push(pt);
             copy = copy.filter(
                 (rec) =>
-                    Math.abs(rec.x - max.x) >= dist ||
-                    Math.abs(rec.y - max.y) >= dist
+                    Math.abs(rec.x - pt.x) >= dist ||
+                    Math.abs(rec.y - pt.y) >= dist
             );
         }
-        return new PointCloud(mostAccurate);
+        return new PointCloud(survivor);
     };
 
     /**

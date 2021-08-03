@@ -25,6 +25,7 @@
     <script src="../third_party/mec2.min.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/data.js"></script>
+    <script src="../scripts/line.js"></script>
     <script src="../scripts/pointCloud.js"></script>
     <script src="pendel2.js"></script>
 
@@ -49,43 +50,30 @@
 
             const g = g2().clr();
 
-            const [p1, p2] = result.getMaxDist(g, 5);
+            const l = new Line(result.getMaxDist(g, 20));
 
-            if (!p1 || !p2) {
+            if (!l.m) {
                 return;
             }
 
-            const m = (p2.y - p1.y) / (p2.x - p1.x);
-            const b = p1.y - m * p1.x;
-
             result.draw(g);
 
-            lines.push({ m, b });
+            lines.push(l);
 
             if (lines.length > 1) {
-                for (let i = 0; i < lines.length; ++i) {
-                    for (let j = 1; j < lines.length; ++j) {
-                        const m1 = lines[i].m;
-                        const b1 = lines[i].b;
-                        const m2 = lines[j].m;
-                        const b2 = lines[j].b;
-
-                        const x = (b1 - b2) / (m2 - m1);
-                        const y = m1 * x + b1;
-
-                        data.add({ x, y });
-                    }
+                for (let i = 0; i < lines.length - 1; ++i) {
+                        data.add(l.intersection(lines[i]));
                 }
                 const gnd = { x: data.x.mu, y: data.y.mu };
-
-                txt2.innerHTML = `Erstmal: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+                
+                data.fillText(txt2, txt3);
 
                 g.cir({ ...gnd, r: 5 });
 
                 data.getChart().exe(ctx3);
             }
 
-            g.lin({ x1: 0, y1: b, x2: cnv1.width, y2: m * cnv1.width + b });
+            g.lin({ x1: 0, y1: l.b, x2: cnv1.width, y2: l.m * cnv1.width + l.b });
 
             g.exe(ctx2);
         };

@@ -1,4 +1,3 @@
-
 \chapter{Rekonstruktion eines Pendels}
 
 \cleanchapterquote{Was kann ich wissen?\\Was soll ich tun?\\Was darf ich hoffen?}{Immanuel Kant}{Kritik der reinen Vernunft}
@@ -33,7 +32,7 @@ Für solche Vergleiche wurde eine Klasse \lstinline{PointCloud} definiert.
 Diese Klasse beinhaltet alle Funktionen welche auf und mit Punktwolken in dieser Arbeit benötigt werden.
 Unter anderem wird hier eine \lstinline{fromImages} Funktion bereitgestellt, welche zwei Bilder auf Unterschiede untersucht und anhand derer eine Punktwolke zurückgibt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{fromImages} Funktion, welche eine statische Funktion der \lstinline{PointCloud} Klasse darstellt..}\label{lst:pendel}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{fromImages} Funktion, welche eine statische Funktion der \lstinline{PointCloud} Klasse darstellt.}\label{lst:pendel}]
 fromImages(image1, image2, width, height) {
     const difference = [];
 
@@ -139,8 +138,8 @@ Die Steigung und der y-Achsenabschnitt berechnen sich durch
 
 \begin{equation}
     \begin{split}
-    m &= \frac{p2_y - p1_y}{p2_x - p1_x} \\
-    b &= p_y - p.x \times m
+        m &= \frac{p2_y - p1_y}{p2_x - p1_x} \\
+        b &= p_y - p.x \times m
     \end{split}
     \label{eq:m_steigung}
 \end{equation}
@@ -155,10 +154,10 @@ Der Abstand in der X-Koordinate des gesuchten Punktes zu $p1$ findet sich durch 
 
 \begin{equation}
     \begin{split}
-    r^2 &= dx^2 + dx^2 \times m^2 \\
-    \frac{r^2}{dx^2} &= 1 + m^2 \\
-    dx^2 &= \frac{r^2}{1+m^2} \\
-    dx &= \frac{r}{\sqrt{1 + m^2}}
+        r^2 &= dx^2 + dx^2 \times m^2 \\
+        \frac{r^2}{dx^2} &= 1 + m^2 \\
+        dx^2 &= \frac{r^2}{1+m^2} \\
+        dx &= \frac{r}{\sqrt{1 + m^2}}
     \end{split}
     \label{eq:steigungsdreieck}
 \end{equation}
@@ -170,8 +169,8 @@ So kann der entsprechende Punkt durch
 
 \begin{equation}
     \begin{split}
-    p_{0x} &= p_{1x} - \frac{r}{\sqrt{1 + m^{-2}}} \\
-    p_{0y} &= - \frac{p_0x}{m} + p_{1y} + \frac{p_{1x}}{m}
+        p_{0x} &= p_{1x} - \frac{r}{\sqrt{1 + m^{-2}}} \\
+        p_{0y} &= - \frac{p_0x}{m} + p_{1y} + \frac{p_{1x}}{m}
     \end{split}
 \end{equation}
 
@@ -199,61 +198,202 @@ Eine Annahme die hierbei implizit getroffen wird, ist dass die Glieder länger s
 
 Die am weitest voneinander entfernten Punkte lassen sich durch eine auf der \lstinline{PointCloud} definierten Funktion \lstinline{getMaxDist} finden.
 In dieser Funktion wird für jeden Punkt der Punkt gesucht, welcher den größten Abstand zu diesem hat. Es wird außerdem festgehalten welches Paar den größten Abstand hatte.
-Die Definition der Linie entspricht dann der in Gleichung~\ref{eq:m_steigung} gezeigten Formel.
+Mit dieser Funktion wird dann ein Objekt der Klasse \lstinline{Line} zurückgegeben, welches anhand der beiden ermittelten Punkte eine Gerade gemäß der in Gleichung~\ref{eq:m_steigung} gezeigten Formel erstellt..
 
 Eine auf diese Weise definierte Linie wird dann in einer Liste gespeichert und die nächste Iteration folgt.
-Bereits ab der zweiten Iteration können dann die Schnittpunkte aller Linien genutzt werden um den Drehpunkt zu bestimmen.
+Bereits ab der zweiten Iteration können dann die Schnittpunkte dieser Linien genutzt werden um den Drehpunkt zu bestimmen.
 
-% TODO Koordinaten der einzelnen Schnittpunkte betrachten. X und Y sollten im Grunde eine Normalverteilung aufweisen. Dann muss auch nicht der Schwerpunkt genommen werden... Ist aber vermutlich weniger Rechenintensiv.
+Der Schnittpunkt zweier Linien ist ebenfalls eine auf der \lstinline{Line} definierten Funktion \lstinline{intersection} definiert.
+Der Schnittpunkt zweier Linien berechnet sich durch
+\begin{equation}
+    \begin{split}
+        p_x &= \frac{b_2 - b_1}{m_1 - m_2} \\
+        p_y &= m p_x + b
+    \end{split}
+    \label{eq:schnittpunkt}
+\end{equation}
 
-Idealerweise sollten alle Schnittpunkte die selben Koordinaten haben.
-Da dies jedoch nicht der Fall ist, wird der Schwerpunkt aller Schnittpunkte ermittelt und dieser soll dann als Prognose benutzt werden.
+Wobei für die Berechnung von $p_y$ entweder die Parameter der ersten, oder zweiten Linie genommen werden können.
 
-Diese Methode liefert schnell Ergebnisse auch für Mittelpunktswinkel von weit unter 180°.
+\subsubsection{Der Umgang mit Ungenauigkeit}
 
-% /subsection{Ermittlung mehrerer am weitesten auseinander liegenden Punkte}.
+Für die Verarbeitung der berechneten Punkte wurden zwei weitere Klassen erstellt, welche die Daten verwalten die zur Bestimmung der Pole erforderlich sind.
+Die \lstinline{Data} Klasse wird genutzt um einzelne Datenpunkte zu halten, dessen Erwartungswert, Varianz, Standardabweichung und die Gauß'sche Normalverteilung zu berechnen.
+Außerdem bietet sie Funktionen zur Vorbereitung der Daten für den \lstinline{g2.chart} Befehl an.
 
-Nachteilig ist jedoch, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da wie in Abschnitt~\ref{ch:erkennung_von_änderungen} bereits erwähnt, bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
+Die zweite Klasse ist die \lstinline{DataXY} Klasse.
+Sie bietet die Möglichkeit Punkte direkt zu verwalten.
+Punkte sind in diesem Fall definiert als Objekte welche die Eigenschaften \lstinline{x} und \lstinline{y} haben.
+Ein \lstinline{DataXY} Objekt hat jeweils die Eigenschaften \lstinline{x} und \lstinline{y} als \lstinline{Data} Objekt und bietet dazu Funktionen an, welche diese gemeinsam auf einem \lstinline{g2.chart} zeichnen können.
+
+In der \lstinline{Data} Klasse ist ein \lstinline{data} Objekt definiert, welches dazu dient die gesammelten Daten zu verwalten.
+Statt einer Liste dienen die Schlüssel dieses Objektes als Wert welcher gemessen wurde und der dazugehörige Wert als der Anzahl wie oft dieser gemessen wurde.
+Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert, welche wie folgt aussieht:
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}\label{lst:data_add}]
+add(a) {
+if (!a) return;
+
+const r = Math.round(a);
+if (Number.isSafeInteger(r)) {
+    this.data[r] = this.data[r] ? this.data[r] + 1 : 1;
+}
+};
+\end{lstlisting}
+
+Diese Schreibweise gibt einen besseren Überblick über die Verteilung der Daten.
+Außerdem sind weniger Iterationen notwendig um über die Daten zu iterieren.
+Das Iterieren über das Objekt wird durch Funktionen wie \lstinline{Objekt.entries} ermöglicht, wie in Listing~\ref{lst:data_mu} gesehen werden kann.
+
+Die Vorhersage eines gesuchten Punktes wird hier stets durch den Erwartungswert aller vorangegangen Messungen bestimmt.
+
+Der Erwartungswert $\mu$ berechnet sich durch
+
+\begin{equation}
+    \mu = \frac{1}{n} \sum_{i=1}^n{x_i}
+\end{equation}
+
+Die entsprechende Funktion der \lstinline{Data} Klasse ist in Listing~\ref{lst:data_mu} definiert.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{mu} Funktion, welche den Erwartungswert der Daten in \lstinline{Data} berechnet}\label{lst:data_mu}]
+get mu() {
+    return Object.entries(this.data)
+        .reduce((pre, cur) => pre + cur[0] * cur[1], 0)
+        / this.length;
+}
+\end{lstlisting}
+
+Um verschiedene Ansätze miteinander Vergleichen zu können, soll außerdem noch die Varianz berechnet werden.
+Die Varianz berechnet sich durch
+
+\begin{equation}
+    \sigma^2 = \frac{1}{n} \sum_{i=1}^n(x_i - \mu)^2
+\end{equation}
+
+Die entsprechende Implementation ist durch Listing~\ref{lst:data_variance} gegeben.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{variance} Funktion, welche die Varianz der Daten in \lstinline{Data} berechnet}\label{lst:data_variance}]
+get variance() {
+    const mu = this.mu;
+
+    return Object.entries(this.data)
+        .reduce((pre, cur) =>
+            pre + (((+cur[0] - mu) ** 2) * (+cur[1])), 0)
+        / (this.length - 1);
+}
+\end{lstlisting}
+
+\lstinline{mu} wird hier zwischengespeichert, damit dieser nicht für jede Iteration innerhalb des \lstinline{reduce} aufrufes erneut ausgerechnet werden muss.
+
+Die Standardabweichung $\sigma$ ist entspechend die Quadratwurzel der Varianz.
+
+Um die entsprechenden Ergebnisse mit der Gauß'schen Normalverteilung zu Vergleichen wurde eine Funktion geschrieben, welche vom \lstinline{g2.chart} genutzt werden kann um diese neben die gesammelten Daten zu zeichnen.
+
+Die Funktion für die Gauß'sche Normalverteilung berechnet sich durch
+
+\begin{equation}
+    f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+\end{equation}
+
+Die entsprechende Implementation ist gegeben durch Listing~\ref{lst:data_gauss}.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{gaussianDistribution} Funktion, welche die Normalverteilung für die gegebene Varianz und den Erwartungswert formt.}\label{lst:data_gauss}]
+gaussianDistribution(x) {
+    const mu = this.mu;
+    const variance = this.variance;
+    const nominator = Math.exp(-((x - mu) ** 2) / (2 * variance));
+    const denominator = Math.sqrt(2 * Math.PI * variance);
+    return nominator / denominator;
+}
+\end{lstlisting}
+
+Diese Funktion kann dann vom \lstinline{g2.chart} aufgerufen werden um den entsprechenden Graphen zu zeichnen.
+Die Implementation eines solchen Aufrufs wird in Listing~\ref{lst:data_getChart} gezeigt.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{getChart} Funktion der \lstinline{Data} Klasse.}\label{lst:data_getChart}]
+getChart(limit) {
+    const gtv = globalTestVariables;
+    const data = this.alignForChart(limit);
+    const fn = (i) => this.gaussianDistribution(i);
+
+    return g2().clr().view({ cartesian: true }).chart({
+        x: 20, y: 20, b: 280, h: 150,
+        funcs: [{ data }, { fn, dx: 1 },],
+        xaxis: {}, yaxis: {},
+    });
+};
+\end{lstlisting}
+
+Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung des \lstinline{data} Objektes um durch \lstinline{g2.chart} dargestellt werden zu können.
+
+\subsubsection{Füllen des \lstinline{Data} Objektes}
+
+Idealerweise sollten alle Schnittpunkte der berechneten Geraden die selben Koordinaten haben.
+Wäre dies der Fall, dann wäre die Varianz gleich null und bereits nach zwei Iterationen hätte man ein ideales Ergebnis.
+Da dies jedoch nicht der Fall ist, wird für jede neue Gerade jeder Schnittpunkt mit den vorangegangen Geraden dem \lstinline{Data} Objekt übergeben.
+
+Diese Methode liefert schnell einen Erwartungswert der nah an dem tatsächlichen Wert auch für Schwungwinkel weit unter 180°.
+
+Nachteilig erscheint es, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da wie in Abschnitt~\ref{ch:erkennung_von_änderungen} bereits erwähnt, bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
 Um dieses Problem zu Umgehen sollen nun mehrere am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden.
 
+Es zeigt sich jedoch, dass die Varianz für die selbe Menge an Iterationen selbst bei der Nutzung des Schwerpunktes der 20 am weitesten auseinanderliegenden Punkt in etwa die gleiche ist.
+
 % TODO hier sollte ein Bild vorher zu nachher eingefügt werden um diese Aussage zu untermauern.
-Durch diese Änderung entspricht der jeweilige Winkel der definierten Linien eher dem tatsächlichen Winkel und der entsprechend resultierende Fehler wird hierdurch kleiner.
-Damit reduziert sich auch die Abweichung zum daraus errechneten Drehpunkt.
 
-\subsection{Methode der kleinsten Quadrate}
+\subsection{Bestimmung der Regressionsgeraden}
 
-Eine weitere Methode jene Linie zu bestimmen welche genutzt werden soll um mit dessen Schnittpunkte den Drehpunkt zu ermitteln ist durch die \name{Methode der kleisten Quadrate}.
-Die Linie die aus der Lösung dieser Methode resultiert entspricht der Linie welche den kleinsten Fehler gegenüber allen Punkten besitzt und wird auch als Ausgleichsgerade bezeichnet. % TODO Ist von Wiki sollte aber zitiert werden...
+Die Gerade welche den geringsten Fehler gegenüber einer Menge an Punkten darstellt wird als Regressionsgerade bezeichnet.
 
+Die Berechnung der Regressionsgeraden nach der Gauß'schen Methode der kleinsten Quadrate wird durch % Zitat Papula 3 S. 696
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TODO Writing
+\begin{equation}
+    \begin{split}
+    \bar{x} &= \sum_{i=1}^n x_i, \quad \bar{y} = \sum_{i=1}^n y_i \\
+    m &= \left(\sum_{i=1}^n (x_i y_i) - n \bar{x} \bar{y}\right) \left(\sum_{i=1}^n x_i^2 - n \bar{x}\right)^{-1} \\
+    b &= \bar{y} - m\bar{x}
+    \end{split}
+    \label{eq:regression_gauss}
+\end{equation}
 
-Jedoch entsteht auch mit dieser Methode wieder ein weiteres Problem.
+unterstellt jedoch einen vernachlässigbar kleinen Fehler auf der X-Achse.
+Dies resultiert in einer falschen Regressionsgerade wenn sie vertikal sein sollte.
+Dies soll in Kapitel~\ref{ch:orthogonale_regression} behoben werden.
+
+Diese Regressionsgerade hat jedoch ein weiteres Problem aufgezeigt.
 Wenn zwei Bilder die eine Drehung darstellen miteinander verglichen werden, indem jene Pixel behalten werden in denen eine Änderung zu erkennen ist, dann werden typischerweise mehr Änderungen erkannt, je weiter man sich radial von Drehpunkt entfernt.
-Diese Beobachtung ist nicht überraschend, denn die absolute Geschwindigkeit eines Gelenkes nimmt mit länge des Gliedes zu, allerdings verzerrt es die Beobachtung ein wenig.
+Diese Beobachtung ist nicht überraschend, denn die absolute Geschwindigkeit eines Punktes nimmt mit Abstand zum Drehpunkt zu.
+Diese tatsache sorgt jedoch dafür, dass je weiter Regionen vom Drehpunkt entfernt sind, umso größer wird ihr Einfluss auf die Regressionsgerade.
 Hier kann jedoch eine Funktion abhilfe schaffen, die auch in der Bilderkennung durch neurale Netzwerke genutzt wird.
-Diese als Non-Max Suppression % TODO writing...
-bezeichnete Funktion wird eigentlich dafür genutzt, dass erkannte Objekte die im Bild direkt nebeneinander liegen gefiltert werden für das Bild, dass den höchsten Konfidenzwert besitzt.
-Da den Pixeln hier kein Konfidenzwert zugeordnet werden kann, kann allerdings eine Funktion genutzt werden welche ähnlich wie die Non-Max Suppression Funktion %TODO oh mann...
-die sich überlappenden Pixel in einem bestimmten Umkreis entfernt.
+Diese als Non-Max Suppression % TODO Cite...
+bezeichnete Funktion wird eigentlich dafür genutzt, dass durch Bilderkennung klassifizierte Objekte auf Bildern direkt nebeneinander liegen gefiltert werden für das Bild, dass den höchsten Konfidenzwert besitzt.
+Da den Pixeln hier kein Konfidenzwert zugeordnet werden kann, kann allerdings eine Funktion genutzt werden welche durch diesen Ansatz inspiriert die Dichte der Punkte filtert.
 Dadurch wird die Dichte der erkannten Pixel quasi homogen und der Drehpunkt liegt etwas näher an dem tatsächlich erkannten, ohne viel Präzision bei der Bestimmung der Steigung in Kauf zu nehmen.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Hierfür wurde der \lstinline{PointCloud} Klasse die \lstinline{removeOverlaps} Funktion definiert, welche für ein \lstinline{PointCloud} Objekt ein neues gefiltertes Objekt zurückgibt.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{removeOverlaps} Funktion der \lstinline{PointCloud} Klasse.}\label{lst:pointcloud_removeOverlaps}]
+removeOverlaps(dist = 5) {
+    let copy = [...this.points];
+    const survivor = [];
+    while (copy.length) {
+        const pt = copy.pop();
+        survivor.push(pt);
+        copy = copy.filter(
+            (rec) =>
+                Math.abs(rec.x - pt.x) >= dist ||
+                Math.abs(rec.y - pt.y) >= dist
+        );
+    }
+    return new PointCloud(survivor);
+};
+\end{lstlisting}
+
+\subsubsection{Orthogonale Regression}\label{ch:orthogonale_regression}
+
+Während die vorher angesprochene Regressionsgerade den Abstand der Punkte in Y-Richtung zu minimieren versucht, ist der nachfolgende Ansatz dazu gedacht den Fehler der Punkte orthogonal zur gesuchten Gerade zu minimieren.
 
 
-Auch die Ausgleichsgerade basiert auf der Annahme, dass das betrachtete Glied länger ist als es breit ist.
-
-Sie berechnet sich durch... % TODO
-% TODO Formel.
-
-Die vorgeschlagene Formel funktioniert nicht gut für nahezu senkrechte Steigungen.
-Dies liegt an... % TODO
-Deshalb wurde die Formel für alle Winkel über 45° angepasst, sodass die im Nenner die jeweilige Differenz zum Durchschnitt der Y-Achse berechnet wird.
-Zum Spiegeln der Achsen werden außerdem der Zähler und Nenner zur Bestimmung der Steigung vertauscht.
-
-% TODO Formel.
-
-Wie bei den vorangegangen Methoden sollen dann die Schnittpunkte der so errechneten Linien genutzt werden um den Drehpunkt zu bestimmen.
 
 \subsection{Vergleich zweier Kreise}
 

@@ -22,7 +22,9 @@
     <script src="../scripts/pointCloud.js"></script>
     <script src="pendel2.js"></script>
 
-    <p>Hier soll durch die Lösung der Methode der kleinsten Quadrate die am besten passende Linie definiert werden. Durch das Entfernen von Punkten in einem bestimmten Umkreis soll die Dichte homogen gehalten werden, was diesen Fehler korrigiert.
+    <p>Hier soll durch die Lösung der Methode der kleinsten Quadrate die am besten passende Linie definiert werden.
+        Durch das Entfernen von Punkten in einem bestimmten Umkreis soll die Dichte homogen gehalten werden, was diesen
+        Fehler korrigiert.
     </p>
 
     <script>
@@ -42,35 +44,17 @@
 
             const filtered = result.removeOverlaps();
 
-            let max = 0;
-            let p1;
-            let p2;
+            const { x: X, y: Y  } = new DataXY(result).mu;
 
-            const sum = filtered.points.reduce((pre, cur) => ({
-                x: pre.x + cur.x,
-                y: pre.y + cur.y,
-            }), { x: 0, y: 0 });
+            const counter = filtered.reduce((pre, cur) =>
+                pre + (cur.x - X) * (cur.y - Y), 0
+            );
+            const denominator = filtered.reduce((pre, cur) =>
+                pre + (cur.x - X) ** 2, 0
+            );
 
-            const X = sum.x / filtered.points.length;
-            const Y = sum.y / filtered.points.length;
-
-            let m;
-            let b;
-
-            if (!X || !Y) {
-                m = Number.MAX_SAFE_INTEGER;
-                b = 0;
-            } else {
-                const counter = filtered.points.reduce((pre, cur) =>
-                    pre + (cur.x - X) * (cur.y - Y), 0
-                );
-                const denominator = filtered.points.reduce((pre, cur) =>
-                    pre + (cur.x - X) ** 2, 0
-                );
-
-                m = counter / denominator;
-                b = Y - m * X;
-            }
+            const m = counter / denominator;
+            const b = Y - m * X;
 
             const g = g2().clr();
             filtered.draw(g);

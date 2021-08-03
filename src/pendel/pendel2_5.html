@@ -80,7 +80,7 @@
                 gnd.x /= pts.length;
                 gnd.y /= pts.length;
 
-                txt2.innerHTML = `Erstmal: x: ${gnd.x}, y: ${cnv1.height - gnd.y}`;
+                data.fillText(txt2, txt3);
 
                 g.cir({ ...gnd, r: 5 });
 

@@ -4,6 +4,7 @@ const globalTestVariables = {
     cnv_height: 180,
     txt1: undefined,
     txt2: undefined,
+    txt3: undefined,
 
     startstopBtn: undefined,
     reset: undefined, // filled by tests
@@ -80,14 +81,17 @@ const globalTestVariables = {
             value: 0,
         });
         this.txt1 = this.createElement({
-            type: "div",
+            tag: "p",
             id: "txt1",
             style: "display:inline;"
         });
         this.txt2 = this.createElement({
-            type: "div",
+            tag: "p",
             id: "txt2",
-            style: "display:inline"
+        });
+        this.txt3 = this.createElement({
+            tag: "p",
+            id: "txt3",
         });
         this.createElement({ tag: "br" });
         this.createElement({ tag: "br" });
@@ -148,6 +152,7 @@ const globalTestVariables = {
     resetSimulation() {
         this.running = false;
         if (this.txt2) this.txt2.innerHTML = "";
+        if (this.txt3) this.txt3.innerHTML = "";
         this.temp_image = undefined;
         this.last_time = undefined;
         this.times = [];

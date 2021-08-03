@@ -22,7 +22,8 @@
     <script src="../scripts/pointCloud.js"></script>
     <script src="pendel2.js"></script>
 
-    <p>Hier soll durch die Lösung der Methode der kleinsten Quadrate die am besten passende Linie definiert werden. Da hier scheinbar ein starker Fokus auf das Ende des Pendels entsteht, wird der Drehpunkt falsch vorhergesagt.
+    <p>Hier soll durch die Lösung der Methode der kleinsten Quadrate die am besten passende Linie definiert werden. Da
+        hier scheinbar ein starker Fokus auf das Ende des Pendels entsteht, wird der Drehpunkt falsch vorhergesagt.
     </p>
     <script>
         globalTestVariables.model = {
@@ -38,36 +39,18 @@
 
         const fn = (result) => {
             const { ctx2, ctx3, gnd } = globalTestVariables;
-            
-            let max = 0;
-            let p1;
-            let p2;
 
-            const sum = result.reduce((pre, cur) => ({
-                x: pre.x + cur.x,
-                y: pre.y + cur.y,
-            }), { x: 0, y: 0 });
+            const { x: X, y: Y  } = new DataXY(result).mu;
 
-            const X = sum.x / result.length;
-            const Y = sum.y / result.length;
+            const nominator = result.reduce((pre, cur) =>
+                pre + (cur.x - X) * (cur.y - Y), 0
+            );
+            const denominator = result.reduce((pre, cur) =>
+                pre + (cur.x - X) ** 2, 0
+            );
 
-            let m;
-            let b;
-
-            if (!X || !Y) {
-                m = Number.MAX_SAFE_INTEGER;
-                b = 0;
-            } else {
-                const counter = result.reduce((pre, cur) =>
-                    pre + (cur.x - X) * (cur.y - Y), 0
-                );
-                const denominator = result.reduce((pre, cur) =>
-                    pre + (cur.x - X) ** 2, 0
-                );
-
-                m = counter / denominator;
-                b = Y - m * X;
-            }
+            const m = nominator / denominator;
+            const b = Y - m * X;
 
             const g = g2().clr();
             result.draw(g);
