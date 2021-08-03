@@ -267,7 +267,7 @@ Um verschiedene Ansätze miteinander Vergleichen zu können, soll außerdem noch
 Die Varianz berechnet sich durch
 
 \begin{equation}
-    \sigma^2 = \frac{1}{n} \sum_{i=1}^n(x_i - \mu)^2
+    \sigma^2 = \frac{1}{n - 1} \sum_{i=1}^n(x_i - \mu)^2
 \end{equation}
 
 Die entsprechende Implementation ist durch Listing~\ref{lst:data_variance} gegeben.
@@ -349,18 +349,17 @@ Die Berechnung der Regressionsgeraden nach der Gauß'schen Methode der kleinsten
 
 \begin{equation}
     \begin{split}
-    \bar{x} &= \sum_{i=1}^n x_i, \quad \bar{y} = \sum_{i=1}^n y_i \\
-    m &= \left(\sum_{i=1}^n (x_i y_i) - n \bar{x} \bar{y}\right) \left(\sum_{i=1}^n x_i^2 - n \bar{x}\right)^{-1} \\
-    b &= \bar{y} - m\bar{x}
+        \bar{x} &= \sum_{i=1}^n x_i, \quad \bar{y} = \sum_{i=1}^n y_i \\
+        m &= \left(\sum_{i=1}^n (x_i y_i) - n \bar{x} \bar{y}\right) \left(\sum_{i=1}^n x_i^2 - n \bar{x}\right)^{-1} \\
+        b &= \bar{y} - m\bar{x}
     \end{split}
     \label{eq:regression_gauss}
 \end{equation}
 
 unterstellt jedoch einen vernachlässigbar kleinen Fehler auf der X-Achse.
 Dies resultiert in einer falschen Regressionsgerade wenn sie vertikal sein sollte.
-Dies soll in Kapitel~\ref{ch:orthogonale_regression} behoben werden.
 
-Diese Regressionsgerade hat jedoch ein weiteres Problem aufgezeigt.
+Diese Regressionsgerade hat jedoch ein anderes Problem aufgezeigt.
 Wenn zwei Bilder die eine Drehung darstellen miteinander verglichen werden, indem jene Pixel behalten werden in denen eine Änderung zu erkennen ist, dann werden typischerweise mehr Änderungen erkannt, je weiter man sich radial von Drehpunkt entfernt.
 Diese Beobachtung ist nicht überraschend, denn die absolute Geschwindigkeit eines Punktes nimmt mit Abstand zum Drehpunkt zu.
 Diese tatsache sorgt jedoch dafür, dass je weiter Regionen vom Drehpunkt entfernt sind, umso größer wird ihr Einfluss auf die Regressionsgerade.
@@ -389,11 +388,55 @@ removeOverlaps(dist = 5) {
 };
 \end{lstlisting}
 
+Um jedoch die Regressionsgerade an sich zu korrigieren wird auf eine andere Methode zur Ermittlung der am besten passenden Linie zurückgegriffen.
+
 \subsubsection{Orthogonale Regression}\label{ch:orthogonale_regression}
 
 Während die vorher angesprochene Regressionsgerade den Abstand der Punkte in Y-Richtung zu minimieren versucht, ist der nachfolgende Ansatz dazu gedacht den Fehler der Punkte orthogonal zur gesuchten Gerade zu minimieren.
 
+\begin{equation}
+    \begin{split}
+        m &= \frac{\sigma_y^2 - \sigma_x^2 + \sqrt{(\sigma_y^2 - \sigma_x^2)^2 + 4\sigma_{xy}^2}}{2\sigma_{xy}} \\
+        b &= \bar{y} - m \bar{x}
+    \end{split}
+    \label{eq:orthogonal_regression}
+\end{equation}
 
+Diese Gleichung nutzt die Varianz der einzelnen Datensammlungen um damit die entsprechende Steigung zu verwenden.
+Unter berücksichtigung das diese bereits Implementationen haben, welche in Listing~\ref{lst:data_variance} nachgesehen werden können, muss hierfür also nurnoch die Kovarianz $\sigma_{xy}^2$ berechnet werden.
+Diese kann entsprechend in der \lstinline{DataXY} Klasse definiert werden, welche für die Tests die entsprechenden Punkte vorhalten kann.
+
+\begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{covariance} Funktion in der \lstinline{DataXY} Klasse}.\label{lst:dataxy_covariance}]
+get() covariance() {
+    const xmu = this.x.mu;
+    const ymu = this.y.mu;
+
+    return this.pts.reduce((pre, cur) =>
+        pre + (cur.x - xmu)(cur.y - ymu), 0)
+        / (this.pts.length - 1);
+}
+\end{lstlisting}
+
+Hier werden die entsprechenden Erwartungswerte analog zu Listing~\ref{lst:data_variance} festgehalten, damit diese nicht öfters ermittelt werden müssen.
+
+Die erzeugung der Regressionsgerade kann dann auf der \lstinline{List} Klasse defniert werden.
+Die Implementation kann in Listing~\ref{lst:line_fromRegressionLine} nachvollzogen werden.
+
+\begin{lstlisting}[language=JavaScript, caption={Erstellung von \lstinline{Line} Objekten durch die orthogonale Regressionsgerade für Datenpunkte} \label{lst:line_fromRegressionLine}]
+static fromRegressionLine(pts, g) {
+    const data = new DataXY(pts);
+
+    const sy = data.y.variance;
+    const sx = data.x.variance;
+    const sxy = data.covariance;
+
+    const m = (sy - sx + Math.sqrt((sy - sx) ** 2 + 4 * sxy**2)) 
+        / (2 * sxy);
+    const b = data.y.mu - m * data.x.mu;
+
+    return new Line({m, b});
+}
+\end{lstlisting}
 
 \subsection{Vergleich zweier Kreise}
 

@@ -71,7 +71,8 @@ class Line {
         const sx = data.x.variance;
         const sxy = data.covariance;
 
-        const m = (sy - sx + Math.sqrt((sy - sx) ** 2 + 4 * sxy**2)) / (2 * sxy);
+        const m = (sy - sx + Math.sqrt((sy - sx) ** 2 + 4 * sxy ** 2))
+            / (2 * sxy);
         const b = data.y.mu - m * data.x.mu;
 
         g?.lin({
@@ -81,7 +82,7 @@ class Line {
             y2: m * globalTestVariables.cnv_width + b
         });
 
-        return new Line({m, b});
+        return new Line({ m, b });
     }
 
     static fromBisector(p1, p2, g) {
