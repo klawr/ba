@@ -3,241 +3,16 @@
 
 \cleanchapterquote{Was kann ich wissen?\\Was soll ich tun?\\Was darf ich hoffen?}{Immanuel Kant}{Kritik der reinen Vernunft}
 
-Das erste Problem das hier gelöst werden soll ist herauszufinden welche Information aus dem Abgleich von Bildern in Bildsequenzen gewonnen werden kann und wie man diese Erkenntnisse auf mechanismentechnische Strukturen zurückführen kann.
-Deshalb wird statt der vollständigen Rekonstruktion eines Mechansimus, soll zunächst mit einem einfachen Pendel begonnen werden.
+Das erste Problem das hier untersucht werden soll ist welche Information aus dem Abgleich von Bildern in Bildsequenzen gewonnen werden kann und wie man daraus gewonnene Erkenntnisse auf die zugrundeliegenden mechanismentechnische Strukturen zurückführen kann.
+Deshalb wird statt der vollständigen Rekonstruktion eines Mechansimus zunächst mit einem einfachen Pendel begonnen.
 Dieses stellt im Grunde ein einzelnes Glied eines beliebigen Mechanismus dar.
 Die korrekte Erkennung eines Pendels ist also eine notwendige Bedingung für einen Ansatz der die Glieder des Mechanismus einzeln betrachtet\footnote{Das gilt im Grunde für alle Mechanismen welche rotierende Elemente beinhalten. Für alle Glieder welche keine Absolutpole besitzen sei die Relativbewegung gegenüber solchen heranziehbar}.
 
-Als zentrales Ziel dieses Kapitels wird die korrekte Bestimmung des Drehpunkts eines Pendels gesetzt; es sei jedoch angemerkt, dass ein Drehpunkt lediglich einen Sonderfall der Bestimmung des Momentanpols darstellt, auf dessen Bestimmung in % TODO
-näher eingegangen wird.
+Als zentrales Ziel dieses Kapitels wird die korrekte Bestimmung des Drehpunkts eines Pendels gesetzt; es sei jedoch angemerkt, dass ein Drehpunkt lediglich einen Sonderfall der Bestimmung des Momentanpols darstellt, auf dessen Bestimmung in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen wird.
 Zunächst wird die Erkennung des Drehpols als vereinfachtes Ziel genommen um herauszufinden, welche Information man durch die Beobachtung eines sich bewegenden Elementes gewinnen kann.
 
 Für die Bestimmung des Endpunktes wird zunächst der Punkt genommen, der am weitesten vom Drehpunkt ist.
-Diese Annahme ist für den Anfang hinreichend und wird im Zuge der Zusammensetzung mehrerer Glieder hinfällig. % TODO wieso? ja weil man dann die Schnittpunkt der Glieder, bzw. die Relativpole nimmt. Aber das soll erstmal geschrieben werden bevor ich hier schon rumposaune dass das geht.
-
-\section{Erstellung der Tests}
-
-\subsection{Die index.html}
-
-Die Testseiten sind jeweils eigenständige HTML-Seiten welche über das HTML-Iframe Element in einer zentralen Testseite nebeneinander untersucht werden können.
-Die Tests sind widerrum gruppiert in einzelne zu untersuchende Fragmente.
-Für diese Gruppierung wurde in der \name{index.html} ein \lstinline{tests} Objekt definiert welches Information über die entsprechenden Gruppen bereithält.
-
-Dieses Testobjekt wird in Listing~\ref{lst:tests_objekt}
-
-\begin{lstlisting}[language=JavaScript, caption={Definition des \lstinline{tests} Objekts in der \name{index.html} mit etwas gekürztem \lstinline{title}.}\label{lst:tests_objekt}]
-const tests = {
-    pendel: {
-        title: "Tests zum Finden des Drehpunkts...",
-        indices: [5, 5, 2]
-    },
-    momentanpol: {
-        title: "Tests zur Ermittlung des Momentanpols...",
-        indices: [3, 2]
-},
-    gruppe: {
-        title: "Tests zum Segmentieren der Datenpunkte ...",
-        indices: [2, 1, 1, 3]
-    },
-}
-\end{lstlisting}
-
-In diesem \lstinline{tests} Objekt ist die festgehalten, welche Gruppen es gibt, wie diese betitelt werden und die \lstinline{indices} Eigenschaft der einzelnen Eigenschaften bezeichnen wie viele Tests diese Gruppe jeweils bereitstellt.
-
-Für diese \lstinline{indices} ist die Ordnerstruktur des Projektes von Bedeutung.
-Jede Eigenschaft des \lstinline{tests} Objekts hat im \name{src} Ordner relativ zum Root-Verzeichnis einen entsprechenden Ordner.
-Dieser enthält die einzelnen HTML-Testseiten welche ebenfalls nach einem festen Schema benannt sind.
-So ist der relative Pfad zum Root-Verzeichnis eines Tests \name{src/[Gruppe]/[Gruppe][Index1]\_[Index2].html}.
-Der erste Test ist also unter dem Relativpfad \name{src/pendel/pendel1\_1.html} zu finden.
-
-Dieser zunächst komplex wirkende Aufbau erlaubt es allerdings alle Tests durch Listing~\ref{lst:tests_objekt_reason} in die \name{index.html} einbauen.
-
-\begin{lstlisting}[language=JavaScript, caption={Iteration über das tests Objekt zur Population der index.html.}\label{lst:tests_objekt_reason}]
-Object.entries(tests).forEach((kv, i) => {
-    const title = document.createElement('h2');
-    title.innerHTML = kv[1].title;
-    const summary = document.createElement('summary');
-    const details = document.createElement('details');
-
-    kv[1].indices.forEach((e, j) => {
-        const innerSummary = document.createElement('summary');
-        const innerDetails = document.createElement('details');
-        innerSummary.innerHTML = `${kv[0] + (j + 1)}`;
-        innerDetails.appendChild(innerSummary);
-        details.appendChild(innerDetails);
-
-        for (let m = 1; m <= e; ++m) {
-            const iframe = document.createElement('iframe');
-            iframe.src = `src/${kv[0]}/${kv[0]+(j + 1)}_${m}.html`;
-            innerDetails.appendChild(iframe);
-        }
-    });
-    summary.innerHTML = kv[1].title;
-    details.appendChild(summary);
-    document.body.appendChild(details);
-});
-\end{lstlisting}
-
-Hier wird für jeden Eintrag im \lstinline{tests} Objekt ein neues HTML-Details Element erstellt. % TODO MDN link?
-Über die \lstinline{indices} Eigenschaft der einzelnen Einträge wird dann iteriert um die einzelnen Gruppen gemeinsam in ein weiteres HTML-Details Element zu platzieren.
-Über den Wert der einzelnen Elemente der \lstinline{indices} Liste wird dann festgestellt wie viele HTML-Iframe Elemente erstellt werden sollen und welchen Pfad diese als Quelle (\lstinline{src}) nehmen sollen.
-
-Damit die Seite eine anständige Formatierung besitzt wurden die entsprechenden Elemente durch CSS gestaltet, worauf hier jedoch nicht weiter eingegangen werden soll.
-
-\subsection{simulation.js}\label{ch:simulation_js}
-
-Die Anforderungen an die Tests ist grundlegend gleich.
-Deshalb ist es sinnvoll den meisten Programmcode in einer zentralen Datei abzulegen, welche dann durch jede Testdatei eingebunden werden soll.
-Diese Datei wurde als \name{simulation.js} bezeichnet.
-
-In \name{simulation.js} wird das \lstinline{globalTestVariables} Objekt definiert.
-Dieses Objekt soll dazu dienen die genutzten globalen Variablen zu begrenzen.
-Es beinhaltet alle Referenzen zu den HTML-Elementen auf welche im Zuge der Tests zugegriffen werden könnten, sowie den Referenzen zu den einzelnen \name{CanvasRenderingContext2D} Objekten welche von \name{g2} genutzt werden um auf die entsprechenden HTML-Canvas Elemente zu zeichnen.
-Außerdem werden globale Konstanten wie unter Anderem die Höhe und Breite der HTML-Canvas Elemente hier zentral bestimmt.
-
-Des Weiteren werden im \lstinline{globalTestVariables} Objekt mehrere wichtige Funktionen definiert.
-Auf diese Funktionen soll im nachfolgenden näher eingegangen werden um zu verstehen wie sie die Testseiten zusammensetzen.
-Alle nachfolgenden Funktionen sind als Eigenschaften des \lstinline{globalTestVariables} Objektes zu verstehen.
-
-\subsubsection{createElements}\label{ch:gtv_createElements}
-
-Die HTML-Elemente welche innerhalb der Testseiten verwendet werden sind grundsätzlich stets die gleichen.
-Aus dem Grund beschreibt die \lstinline{createElements} Funktion die Befüllung der Testseiten mit den entsprechenden HTML-Elementen.
-So muss bei entsprechendem Wunsch zur Änderung nur an dieser zentralen Stelle beispielsweise das \lstinline{innerHTML} eines Elementes geändert werden.
-Außerdem werden in dieser Funktion die Eigenschaften von \lstinline{globalTestVariables} gesetzt, welche zunächst undefiniert sind.
-
-% TODO wie sieht denn jetzt die Seite aus?
-
-\subsubsection{run}\label{ch:gtv_run}
-
-Die \lstinline{run} Funktion trägt Sorge dafür, dass alle Tests unter den selben Konditionen aufgerufen werden.
-
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{globalTestVariables.run} Funktion.}\label{lst:gtv_run}]
-    run(step) {
-        this.model?.tick(1 / 60);
-        this.g.exe(this.ctx1);
-        this.time_reset = performance.now();
-        step();
-        this.updateTimesChart().exe(this.ctx_times);
-    
-        if (this.running) {
-            this.rafId = requestAnimationFrame(() => {
-                this.run(step)
-            });
-        }
-    },
-\end{lstlisting}
-
-Sollte ein \name{mec2} Modell definiert sein, dann soll dieses an dieser Stelle seine \lstinline{tick} Funktion anwenden, damit es um einen Zeitschritt weiter iteriert wird.
-Hierbei wird davon ausgegangen, dass wenn ein \name{mec2} Modell auf dem \lstinline{globalTestVariables} Objekt definiert ist, dieses zur Animation verwendet werden soll.
-Innerhalb der Testfunktionen sollte dieses Modell jedoch nicht modifiziert werden, da es als Quelle für die Bildsequenzen dient.
-
-Anschließend wird der \name{CanvasRenderingContext2D} des ersten der vier HTML-Canavs Elemente \lstinline{ctx1} beschrieben.
-Dieser sollte ausschließlich hier beschrieben werden, damit der Test nicht versehentlich Einfluss auf die Zeichnung nimmt.
-Es soll eine grundlegende Prämisse sein, dass die gesuchte Funktion zur Bestimmung des Mechanismus ausschließlich Anhand der Bildsequenzen funktioniert und selbst keinen Einfluss auf diese hat.
-
-Nachdem der HTML-Canvas gezeichnet wurde, wird eine an \lstinline{run} übergebene Funktion, welche hier als \lstinline{step} step deklariert ist, ausgeführt.
-Diese Funktion ist durch den Test selber definiert und führt alle Vergleiche und Berechnungen aus welche durchgeführt werden sollen.
-Diese an die an \lstinline{run} übergebenen Funktionen werden in den entsprechenden Kapiteln für die Tests beschrieben.
-
-Abschließend wird hier noch die Zeit welche diese \lstinline{step} benötigt vermerkt, indem \lstinline{updateTimesChart} aufgerufen wird.
-In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now()} % TODO MDN Link oder besser erklären.
-ermittelt und in einer Liste hinzugefügt welche die Historie der Geschwindigkeiten der einzelnen \lstinline{step} Aufrufe festhält.
-Es wird außerdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist, sodass eine sinnvolle Bezeichnung der Achsen der Graphen möglich sind.
-Dieser Graph wird anschließend auf einem HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
-
-Nachdem anschließend geprüft wurde ob der Test weiter laufen soll \footnote{\lstinline{running} kann beispielsweise durch einen Start/Stop Knopf umgeschaltet werden.} wird die \lstinline{run} Funktion wird erneut durch \lstinline{requestAnimationFrame} aufgerufen.
-
-\subsubsection{register}\label{ch:gtv_register}
-
-\lstinline{register} ist die Funktion, welche von den einzelnen Tests aufgerufen wird um die HTML-Seite zu befüllen und den Test zu injizieren.
-
-Hier wird zunächst der Titel festgelegt, welcher dem Namen der HTML-Datei entspricht.
-Dieser Titel wird in einem HTML-Anker Element % MDN Link
-platziert, damit diese in der \name{index.html} einfacher zugeordnet werden können.
-Es dient außerdem als Hyperlink, der genutzt werden kann um isoliert auf den Test zuzugreifen.
-
-An dieser Stelle wird außerdem ein Knopf erzeugt, welcher das Laden des Tests ermöglicht und \lstinline{createElement} ausführt.
-Sollte ein \name{mec2} Modell definiert sein, so wird hier die \lstinline{mec.model.extend} Funktion mit diesem aufgerufen und dann dessen \lstinline{init} Funktion bemüht um dieses zu instanzieren. % TODO mec2 Link?
-
-Wenn der Test geladen wird, wird die Simulation vorbereitet und es wird einmalig die \lstinline{run} Funktion aufgerufen um das erste Bild zu zeigen\footnote{Da \lstinline{globalTestVariables.running} initial den Wert \lstinline{false} hat wird innerhalb des \lstinline{run} Aufrufs \lstinline{requestAnimationFrame} nicht bemüht.}.
-Die \lstinline{register} Funktion erwartet die Funktion welche an \lstinline{run} als Argument übergeben wurde selbst als Argument.
-Damit wird diese Funktion von \lstinline{register} lediglich an \lstinline{run} weitergegeben.
-
-Hier wird außerdem noch die Erstellung des Knopfes zum Starten und Pausieren der Tests definiert.
-Die Betätigung dieses Knopfes resultiert in einem Umschalten der \lstinline{globalTestVariables.running} Variable und dem Ausführen von \lstinline{run}.
-
-Das \lstinline{globalTestVariables} Objekt enthält noch weitere Variablen und Funktionen welche Einfluss auf den Ablauf der Tests haben.
-Um die Beschreibung hier jedoch auf das wesentliche zu reduzieren, sei hier auf die Definition des kompletten Objektes im Quellcode %TODO Link
-hingewiesen.
-
-% TODO irgendwo erklären wieso diese one-definition rule sinnvoll ist. Besser noch die odr selber erklären.
-
-\subsection{Aufbau der Testseiten}
-
-Die HTML-Seiten wurden einheitlich gestaltet, sodass an diesen nicht viel geändert werden muss um weitere Tests zu definieren.
-Sie unterscheiden sich untereinander vorallem durch die unterschiedlichen Dateien welche eingebunden werden um die Tests auszuführen.
-Die eingebundenen Dateien beinhalten unter anderem in jedem Test die \name{g2.full.js}, \name{mec2.min.js} und die \name{simulation.js}.
-
-Neben diesen wurden jedoch viele Skripte geschrieben welche sich einzelne Tests teilen.
-Zum Beispiel jene zum definieren von Linien oder Punktwolken, welche auf diese Weise einheitlich mit solchen umgehen können.
-
-Des weiteren enthalten Gruppen an Tests weitere geteilte globale Variablen, welche \lstinline{globalTestVariables} für diese Tests erweitern sollen.
-
-Diese HTML-Seiten enthalten außerdem noch jeweils ein HTML-Paragraph Element % TODO Link, 
-in welchem beschrieben wird was in dem entsprechenden Versuch untersucht wird.
-
-Für die weitere Strukturierung der Testseiten wurde die \lstinline{globalTestVariables.createElements} Funktion definiert, welche die HTML-Seiten befüllt.
-Diese Funktion wurde in Kapitel~\ref{ch:gtv_createElements} beschrieben, es soll hier noch darauf eingegangen werden was für Elemente von ihr erstellt werden.
-
-Die vier erstellten HTML-Canvas Elemente sollen in jedem Versuch jeweils vergleichbare Rollen übernehmen.
-
-Das erste dieser Elemente dazu verwendet den getesteten Algorithmus mit Bildern zu versorgen auf dessen Basis dieser dann den entsprechenden Mechanismus rekonstruieren soll.
-
-Das zweite HTML-Canvas Element soll genutzt werden um zu visualisieren was in einem Versuch getestet wird.
-Diese Visualisierung soll dazu dienen einen besseren Eindruck davon zu bekommen ob die darunterliegenden Funktionen funktionieren und ob Erkenntnisse daraus gezogen werden können.
-
-Das dritte HTML-Canvas Element dient zur Auswertung der ermittelten Daten.
-In den meisten Tests wird dieses Element dazu genutzt um die ermittelten Koordinaten in einem Graphen darzustellen und diesen dann nach weiteren Erkenntnissen zu untersuchen.
-
-Die Aufgabe das zweite und dritte HTML-Canvas Element zu befüllen wird durch die Funktionenen welche jeweils getestet werden selbst durchgeführt.
-Sie dienen entsprechend lediglich der Untersuchung der Ansätze und spielen für die Entwicklung eines abschließenden Verfahrens keine Rolle.
-
-Das befüllen des vierten HTML-Canvas Elementes wurde bereits in Kapitel~\ref{ch:gtv_run} ausführlich beschrieben.
-
-\subsection{Definition eines \name{mec2} Modells}
-
-In vielen der im Nachfolgenden beschriebenen Tests werden \name{mec2} Modelle verwendet.
-Aus diesem Grund soll hier die Definition eines einfach Pendels beschrieben werden, welches für die ersten Tests so oder leicht abgewandelt verwendet wird.
-Es wird durch den Drehpunkt, den Endpunkt und dessen konstante Länge zueinander definiert.
-Bewegt wird das Pendel, sofern es keinen Antrieb hat, lediglich durch das Gewicht des Endpunktes, da durch die Annahme von geschwichtslosen Gliedern diese keinen Einfluss haben.
-Entsprechend wird in den \name{mec2} Simulationen Gravitation simuliert.
-Auf einen Antrieb wurde in den ersten Tests zunächst verzichtet, weil dieser für die Erkennung der Bewegung nicht notwendig ist.
-
-Ein Beispiel für die Definition eines solchen Modells für \name{mec2} wird in Listing~\ref{lst:pendel} gezeigt.
-
-\begin{lstlisting}[language=JavaScript, caption={Definition eines einfachen Pendels in \name{mec2}, inklusive animation.}\label{lst:pendel}]
-globalTestVariables.model = {
-    gravity: true,
-    nodes: [
-        { id: 'A0', x: 150, y: 100, base: true },
-        { id: 'A1', x: 230, y: 130 }
-    ],
-    constraints: [
-        { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } }
-    ]
-};
-\end{lstlisting}
-
-Das \name{mec2} Modell wird in der entsprechenden Testdatei  auf dem \lstinline{globalTestVariables} Objekt definiert, damit dieses in den in Kapitel~\ref{ch:simulation_js} beschriebenen Funktionen korrekt referenziert werden kann.
-Es ist also notwendig die \name{simulation.js} vor dieser Definition einzubinden, da dies sonst undefiniert ist.
-
-Das Pendel besteht entsprechend aus zwei \lstinline{nodes}, welche die Endpunkte des Pendels darstellen.
-Einer dieser beiden Punkte wird als \lstinline{base} deklariert.
-Das hat zur Folge, dass es unbeweglich ist, womit es den Drehpunkt, beziehungsweise Absolutpol des Pendels darstellt.
-Aus diesem regulären JavaScript Objekt wird ein \name{mec2} Modell, indem es durch \lstinline{mec.model.extend} erweitert wird.
-Dieser Vorgang wurde bereits in Kapitel~\ref{ch:gtv_register} beschrieben.
-Die Animation wird durch die \lstinline{globalTestVariables.run} Funktion gesteuert, welche ebenfalls in Kapitel~\ref{ch:gtv_run} beschrieben wurde.
+Diese Annahme ist für den Anfang hinreichend und wird im Zuge der Zusammensetzung mehrerer Glieder hinfällig, da Gelenke dann zwingend durch die Schnittpunkte entsprechender Glieder definiert sein müssen.
 
 \section{Betrachtung verschiedener Ansätze zur Erkennung von Bewegung} \label{ch:erkennung_von_änderungen}
 
@@ -248,7 +23,7 @@ Dieser Optimalfall sei dadurch definiert, dass die \lstinline{step} Funktion aus
 \subsection{compareImages}
 
 Da sich in der modellierten Videosequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel aufzuzeichnen.
-Hierfür wurde eine Funktion \lstinline{stepCompareImages} definiert, welche durch eine an die \lstinline{register} Funktion übergebene Funktion aufgerufen wird.
+Hierfür wurde eine Funktion \lstinline{stepCompareImages} definiert, welche durch die an die \lstinline{register} Funktion übergebene Funktion aufgerufen wird.
 
 Diese Funktion ruft den aktuellen Inhalt des ersten HTML-Canvas Elementes durch \lstinline{cnv1.getContext('2d').getImageData(0, 0, cnv1.width, cnv1.height).data} auf und speichert diesen.
 Dieses Bild soll dann mit vorher gespeichertem Bild verglichen werden.
@@ -303,8 +78,8 @@ Die Versuchsgruppe \name{pendel1} beschäftigt sich mit der Untersuchung des kle
 
 \subsection{Bestimmung des kleinsten umfassenden Kreises}
 
-Wie bereits vorher angemerkt, werden die Koordinaten aller Pixel aufgezeichnet für die bei einer Bewegung eine Änderung bemerkt wurde.
-Diese Pixel sollten bei der Drehung eines Gliedes um einen festen Punkt einen Bogen definieren, der Aufschluss über die Position dieses Drehpunktes gibt.
+Die Koordinaten von Pixeln für die in zwei Bildern ein unterschied gemessen wird, werden in einem Objekt der dafür erstellten \lstinline{PointCloud} Klasse festgehalten.
+Diese Koordinaten sollten bei der Drehung eines Gliedes um einen festen Punkt einen Bogen definierbar machen, der Aufschluss über die Position dieses Drehpunktes gibt.
 
 Die genaue Bestimmung eines solchen Bogens durch Mittelpunkt, Radius und eingeschlossenem Winkel anhand der Punktwolke zu ermitteln erscheint zunächst schwierig.
 Stattdessen wird beim ersten untersuchten Ansatz der kleinste Kreis bestimmt, welcher alle bisher gesammelten Datenpunkte umfasst.
@@ -317,21 +92,20 @@ Der entsprechende Algorithmus wurde von Nimrod Megido~\cite{Megiddo1983} entwick
 
 Um einen solchen Kreis zu bestimmen müssen zunächst alle Koordinaten für die eine Änderung erkannt wurde in einer Liste festgehalten werden.
 
-Da zu Beginn der Aufnahme die Region welche durch die Punkte gefüllt wird sehr schnell an Fläche zunimmt, ändern sich die Koordinaten und der Radius des Mittelpunktes des kleinsten umfassenden Kreises.
+Da zu Beginn der Aufnahme die Region welche durch die Punkte gefüllt wird sehr schnell an Fläche zunimmt, ändern sich die Koordinaten und der Radius des Mittelpunktes des kleinsten umfassenden Kreises relativ schnell.
 Sobald sich das drehende Glied einer halben Umdrehung nähert verändert sich die Definition des kleinsten umfassenden Kreises augenscheinlich garnicht mehr und dessen Mittelpunkt scheint mit einer sehr kleinen Abweichung dem tatsächlichen Drehpunkt zu entsprechen.
-
 Entsprechend wird bei diesem Versuch der Drehpunkt als der letzte ermittelte Mittelpunkt des Kreises angenommen.
 
 Das andere Ende des Pendels wird vorerst durch den Punkt definiert dessen Distanz die größte zum prognostizierten Drehpunkt ist.
-Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für die eigentliche Aufgabe vorerst irrelevant, da ein Pendel noch keinen Mechanismus darstellt.
+Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für die eigentliche Aufgabe vorerst irrelevant, da ein Pendel keinen Mechanismus darstellt.
 
-Im ersten Test zeigt sich jedoch, dass die Speicherung aller erfassten Punkte sehr schnell ein Problem in Bezug auf die Performanz wird.
+Im ersten Test zeigt sich jedoch, dass die Menge aller erfassten Punkte zu speichern sehr schnell ein Problem in Bezug auf die Performanz wird.
 Es ist jedoch nicht notwendig alle Punkte zu behalten.
 Für jeden Kreis welcher über den zeitlichen Verlauf gebildet werden können alle Punkte verworfen werden, welche nicht zur Erstellung dieses genutzt wurden.
-Dies sind je nach Verteilung der Punktwolke entweder drei oder auch nur zwei Punkte.
+Dies sind je nach Verteilung der Punktwolke entweder drei oder auch nur zwei Punkte, da ein Kreis sich genau durch mindestens zwei, aber maximal durch bereits drei Punkte bestimmen lässt.
 
-Dafür wurde der genutzte Algorithmus angepasst, sodass er nicht mehr nur den Kreis, sondern auch die entsprechenden Koordinaten zurückgibt, welche für die Erstellung des entsprechenden Kreises genutzt wurden\footnote{Die entsprechende Änderung kann auf \aka{https://github.com/klawr/ba/commit/7209dfee5ab0a70470e22862f26f7c45046cd98f} nachvollzogen werden}.
-Außerdem wird bei der Ermittlung des Kreises zwischen den bereits bekannten und der aktuell ermittelten Punktwolke unterschieden, sodass bei der Erweiterung der Liste der bekannten Punkte diese nicht mehrfach hinzugefügt werden.
+Dafür wurde die Funktion des genutzten Algorithmus angepasst, sodass er nicht mehr nur den Kreis, sondern auch die entsprechenden Koordinaten zurückgibt, welche für die Erstellung des entsprechenden Kreises genutzt wurden\footnote{Die entsprechende Änderung kann auf \aka{https://github.com/klawr/ba/commit/7209dfee5ab0a70470e22862f26f7c45046cd98f} nachvollzogen werden}.
+Außerdem wird nach der Ermittlung des Kreises zwischen den bereits bekannten und der aktuell ermittelten Punktwolke unterschieden, sodass die Liste der bekannten Punkte keine Duplikate enthält.
 
 Diese Anpassung reduziert die Menge der Punkte die im ersten Test in einer Sekunde ermittelt werden von 19880 auf 294 Datenpunkte.
 Von diesen 294 Datenpunkten sind lediglich 69 den bekannten Datenpunkten zuzuordnen.
@@ -345,8 +119,68 @@ Ohne diesen Filter würde die Menge der Datenpunkte linear zunehmen, und die Dau
 Dieser Ansatz erkennt für ein Glied das sich mindestens 180° um den definierten Punkt dreht ein sehr nahe am tatsächlichen Wert gelegenen Drehpunkt.
 Der offensichtliche Nachteil besteht jedoch darin, dass alle Glieder die sich um weit weniger als 180° drehen mit Sicherheit kein gutes Ergebnis liefern, wie im zweiten Test nachvollzogen werden kann.
 
-Die Veränderung des Mittelpunktes des Kreises für den Bogen mit kleinerem Mittelpunktswinkel kann jedoch Aufschluss darüber geben, wo sich der tatsächliche Drehpunkt womöglich befinden könnte.
-Diese Möglichkeit soll als nächstes untersucht werden.
+Nähere Untersuchungen zum kleinsten umfassenden Kreis können jedoch weitere Erkenntnisse bringen.
+Zunächst ist der Pfad welcher vom Mittelpunkt des über die Zeit wachsenden kleinsten umfassenden Kreis interessant.
+Für die ersten 90° die sich das Glied dreht bewegt sich der Mittelpunkt auf einer Geraden, die exakt Orthogonal zum Drehpunkt steht.
+Der Abstand zum Drehpunkt ist ebenfalls bekannt, da bekannt ist dass er exakt dem Radius des zuerst gemessenen kleinsten umfassenden Kreises entspricht\footnote{Das ist Äquivalent zur hälfte der Gliedlänge}.
+Die weiterfolgenden 90° durch auf einem Kreisbogen mit dem ersten Mittelpunkt des eben beschriebenen Pfades als Mittelpunkt beschrieben, wobei der Winkel dem des Gliedes entspricht (abzüglich der ersten 90°).
+Abschließend landet der Mittelpunkt des kleinsten umfassenden Kreises im Drehpunkt des betrachteten Gliedes.
+
+Es kann außerdem beobachtet werden, dass der kleinste umfassende Kreis, solange er eine Gerade bildet durch drei Punkte definiert wird\footnote{Mit Ausnahme der ersten Iterationen, wo er allein durch die Endpunkte des Gliedes beschrieben werden kann.}.
+Sobald das Glied jedoch eine Drehung von über 90° vollführt, wird der Kreis nurnoch durch zwei Punkte beschrieben.
+Diese drei Punkte sind die beiden Punkte welche für die erste Iteration\footnote{In der Realität ist es mehr als eine Iteration die der Kreis durch nur zwei Punkte definiert wird, dass kann jedoch auf die Ungenauigkeit der Daten zurückgeführt werden mit denen hier gearbeitet wird.} und dem letzten erfassten Endpunkt des Pendels.
+Sobald eine Drehung von über 90° vollführt wurde, ist der Kreis der durch den ersten sowie den letzten Drehpunkt definiert wird jedoch größer, weshalb der Drehpunkt selber nicht mehr zum kleinsten umfassenden Kreis beiträgt.
+
+% TODO Zeige dass das 1. wirklich eine Gerade ist und 2. sie wirklich Orthogonal zum Drehpunkt steht.
+
+Aus diesen Erkenntnissen lässt sich jedoch eine Algorithmus bilden, welcher auch für Bewegungen weit unter 90° eine hinreichend gute Vorhersage über die Position des Drehpunktes bringt.
+Hierfür wird, solange die Anzahl der Punkte die den zuletzt gebildeten Kreises bei über zwei liegt, die Steigung vom ersten zum letzten Punkt im Pfad des Mittelpunktes des kleinsten umfassenden Kreises gemessen.
+Die Steigung und der y-Achsenabschnitt berechnen sich durch
+
+\begin{equation}
+    \begin{split}
+    m &= \frac{p2_y - p1_y}{p2_x - p1_x} \\
+    b &= p_y - p.x \times m
+    \end{split}
+    \label{eq:m_steigung}
+\end{equation}
+
+wobei hier $p2$ entsprechend der letzte und $p1$ der erste Punkt dieser Liste ist.
+Für die Berechnung von $b$ kann für $p$ entweder $p1$ oder $p2$ gewählt werden.
+
+Der Drehpunkt befindet sich nun auf der Orthogonalen zu dieser Linie mit $p1$ als Schnittpunkt.
+Es ist außerdem bekannt, dass der Abstand des Drehpunktes zu $p1$ genau dem Radius des ersten ermittelten kleinsten umfassenden Kreis entsprechen sollte.
+
+Der Abstand in der X-Koordinate des gesuchten Punktes zu $p1$ findet sich durch umstellen des Steigungsdreiecks nach $dx$
+
+\begin{equation}
+    \begin{split}
+    r^2 &= dx^2 + dx^2 \times m^2 \\
+    \frac{r^2}{dx^2} &= 1 + m^2 \\
+    dx^2 &= \frac{r^2}{1+m^2} \\
+    dx &= \frac{r}{\sqrt{1 + m^2}}
+    \end{split}
+    \label{eq:steigungsdreieck}
+\end{equation}
+
+Wird das $m$ entsprechend durch $\frac{-1}{m}$ getauscht, erhält man den Abstand des gesuchten Punktes von $p_1$ auf der X-Achse.
+
+Um den entsprechenden Wert für die Y-Achse zu finden kann die Berechnung für das $b$ aus Gleichung~\ref{eq:m_steigung} verwendet werden, indem auch dort das $m$ durch $\frac{-1}{m}$ ersetzt wird.
+So kann der entsprechende Punkt durch
+
+\begin{equation}
+    \begin{split}
+    p_{0x} &= p_{1x} - \frac{r}{\sqrt{1 + m^{-2}}} \\
+    p_{0y} &= - \frac{p_0x}{m} + p_{1y} + \frac{p_{1x}}{m}
+    \end{split}
+\end{equation}
+
+gefunden werden.
+Es sei darauf hingewiesen, dass $p_{0y}$ sich auch direkt mithilfe von Gleichgung~\ref{eq:steigungsdreieck} berechnen ließe, indem das ursprüngliche $m$ genutzt wird, gemäß des Orthogonaloperators auf diesem Vektor.
+
+Dieser Ansatz basiert auf der Annahme, dass die Steigung die berechnet wird hinreichend genau ist.
+Da der kleinste umfassende Kreis mit Sicherheit durch die außenliegensten Punkte definiert wird, ist es jedoch unwahrscheinlich das exakt der Drehpunkt getroffen wird, da der Radius des Drehgelenkes nicht berücksichtigt werden kann.
+
 
 % TODO Gerade Linie und dann Kreis.
 % TODO Abhängigkeit von Bedeckter Fläche
@@ -356,12 +190,16 @@ Diese Möglichkeit soll als nächstes untersucht werden.
 
 \subsection{Schnittpunkte von Linien}
 
-Als ein weiterer Ansatz soll untersucht werden, ob der Drehpunkt durch die Schnittpunkte von ermittelten Linien gefunden werden kann.
+Als ein weiterer Ansatz soll nun untersucht werden, ob der Drehpunkt durch die Schnittpunkte von durch die Punktwolke definierten Linien ermittelt werden kann.
 Diese Linie soll durch die Momentaufnahmen bestimmt werden.
 
-Als erster Ansatz soll die Linie genutzt werden, welche durch die am weitesten voneinander entfernten Punkte definiert wird.
+Zunächst soll die Linie genutzt werden, welche durch die am weitesten voneinander entfernten Punkte der Punktwolke definiert wird.
 Diese Linie sollte in etwa den selben Winkel haben wie der Winkel des tatsächlichen Gelenkes.
-Eine Annahme die hierbe implizit getroffen wird, ist dass die Glieder länger sind als sie breit sind, wobei die Länge durch den Abstand der Gelenke definiert ist und die Breite entsprechend durch die Punkte welche normal zu der Längenlinie stehen.
+Eine Annahme die hierbei implizit getroffen wird, ist dass die Glieder länger sind als sie breit sind, wobei die Länge durch den Abstand der Gelenke definiert ist und die Breite entsprechend durch die Punkte welche normal zu der Längenlinie stehen.
+
+Die am weitest voneinander entfernten Punkte lassen sich durch eine auf der \lstinline{PointCloud} definierten Funktion \lstinline{getMaxDist} finden.
+In dieser Funktion wird für jeden Punkt der Punkt gesucht, welcher den größten Abstand zu diesem hat. Es wird außerdem festgehalten welches Paar den größten Abstand hatte.
+Die Definition der Linie entspricht dann der in Gleichung~\ref{eq:m_steigung} gezeigten Formel.
 
 Eine auf diese Weise definierte Linie wird dann in einer Liste gespeichert und die nächste Iteration folgt.
 Bereits ab der zweiten Iteration können dann die Schnittpunkte aller Linien genutzt werden um den Drehpunkt zu bestimmen.
