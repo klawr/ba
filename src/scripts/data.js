@@ -80,6 +80,7 @@ class Data {
 class DataXY {
     x = new Data();
     y = new Data();
+    pts = [];
 
     constructor(pts) {
         if (pts) {
@@ -101,7 +102,7 @@ class DataXY {
         if (!a) return;
 
         const gtv = globalTestVariables;
-
+        this.pts.push(a);
         if (a.x > 0 && a.y > 0 &&
             a.x < gtv.cnv_width &&
             a.y < gtv.cnv_height) {
@@ -146,5 +147,14 @@ class DataXY {
         for (let i = 0; i < 6; ++i) {
             g.ell({ x, y, rx: sigmaX * i, ry: sigmaY * i });
         }
+    }
+
+    get covariance() {
+        const xmu = this.x.mu;
+        const ymu = this.y.mu;
+
+        return this.pts.reduce((pre, cur) =>
+            pre + (cur.x - xmu)*(cur.y - ymu), 0)
+            / (this.pts.length - 1);
     }
 }
