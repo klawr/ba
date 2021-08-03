@@ -23,12 +23,13 @@ class PointCloud {
     }
 
     /**
-     *
+     * 
      * @param {*} image1 The first image
      * @param {*} image2 The second image
-     * @param {*} width Width of the images (have to be equal)
-     * @param {*} height Height of the images (have to be equal)
-     * @returns 
+     * @param {number} width Width of the images (have to be equal)
+     * @param {number} height Height of the images (have to be equal)
+     * @returns { PointCloud } PointCloud of coordinates with different
+     * pixelvalues in both images
      */
     static fromImages(image1, image2, width, height) {
         const difference = [];
@@ -52,6 +53,13 @@ class PointCloud {
         });
     }
 
+    /**
+     * 
+     * @param {g2} g is a g2 command-queue used for rendering
+     * @param {*} number of how many points the cog should be calculated to act
+     * as a mean for multiple points
+     * @returns 
+     */
     getMaxDist(g, number = 1) {
         let copy = [...this.points];
 
@@ -117,6 +125,13 @@ class PointCloud {
         return [p1, p2, max];
     };
 
+
+    /**
+     * 
+     * @param {number} dist is the distance of how big the distance should be to
+     * the next point
+     * @returns a less dense PointCloud
+     */
     removeOverlaps(dist = 5) {
         let copy = [...this.points];
         const mostAccurate = [];
@@ -133,6 +148,12 @@ class PointCloud {
         return new PointCloud(mostAccurate);
     };
 
+    /**
+     * 
+     * @param { g2 } g is a g2 command-queue used for rendering
+     * @returns this PointCloud grouped up into multiple
+     * TODO add more info how this works...
+     */
     groupUp(g) {
         const groups = [];
         let ungrouped = [...this.points];
@@ -214,6 +235,12 @@ class PointCloud {
         return groups;
     };
 
+    /**
+     * 
+     * @param {number} K is the number of clusters to be created
+     * @param {g2} g is a g2 command-queue used for rendering
+     * @returns The mean of the points corresponding to a centroid.
+     */
     kMeansClustering(K, g) {
         function findNearestCentroid(point, centroids) {
             return centroids.indexOf(centroids.reduce((pre, cur) =>

@@ -10,9 +10,31 @@ class Line {
         }
 
         if (p1 && p2) {
-            this.m = 1 / ((p1.y - p2.y) / (p2.x - p1.x));
+            this.m = (p2.y - p1.y) / (p2.x - p1.x);
             this.b = p1.y - this.m * p1.x;
         }
+    }
+
+    /**
+     * 
+     * @param {Object} p - Point with x and y Values which is used as Reference
+     * for the orthogonal 
+     * @returns Line which is orthogonal to this line crossing p.
+     */
+    orthogonal(p) {
+        const b = p.y + p.x / this.m;
+        return new Line({b, m: - 1 / this.m})
+    }
+
+    /**
+     *
+     * @param {Object} p - Point with x and y Values. Must be on this Line. 
+     * @param {number} d - Distance to p.
+     * @returns Object with x and y having a distance of d to p on this Line
+     */
+    getPointWithDistance(p, d) {
+        const x = p.x - d / Math.sqrt(1 + (this.m ** 2));
+        return { x, y: x * this.m + this.b }
     }
 
     draw(g) {
@@ -24,6 +46,11 @@ class Line {
         });
     }
 
+    /**
+     * 
+     * @param {Line} otherLine is just another Line
+     * @returns the intersection of this Line and otherLine
+     */
     intersection(otherLine) {
         const x = (this.b - otherLine.b) / (otherLine.m - this.m);
         const y = this.m * x + this.b;
@@ -31,6 +58,12 @@ class Line {
         return { x, y };
     }
 
+    /**
+     * 
+     * @param {PointCloud} pts is a PointCloud
+     * @param {g2} g is a g2 command-queue used for rendering
+     * @returns a new Line
+     */
     static fromRegressionLine(pts, g) {
         let max = 0;
         let p1;
