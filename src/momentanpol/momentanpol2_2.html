@@ -24,7 +24,8 @@
     <script src="../scripts/line.js"></script>
     <script src="momentanpol.js"></script>
 
-    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren soll um die Drehung zu zeigen.
+    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
+        soll um die Drehung zu zeigen.
     </p>
 
     <script>
@@ -57,7 +58,7 @@
             const g = g2().clr();
 
             lines.push(Line.fromRegressionLine(result, g));
-            const [p1, p2] = result.getMaxDist(g);
+            const { p1, p2 } = result.getMaxDist(g);
 
             const lp1 = p1s[p1s.length - 1];
             const lp2 = p2s[p2s.length - 1];

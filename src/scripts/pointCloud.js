@@ -81,7 +81,7 @@ class PointCloud {
             const getDist = p => (a, b) =>
                 Math.hypot(p.y - a.y, p.x - a.x) -
                 Math.hypot(p.y - b.y, p.x - b.x);
-            const cog = (pre, cur) => ({y: pre.y + cur.y, x: pre.x + cur.x});
+            const cog = (pre, cur) => ({ y: pre.y + cur.y, x: pre.x + cur.x });
             console.log()
             p1 = [...this.points]
                 .sort(getDist(p1))
@@ -98,8 +98,7 @@ class PointCloud {
         }
         g?.cir({ ...p1, r: 5, fs: 'red' }).cir({ ...p2, r: 5, fs: 'red' });
 
-        // TODO wird max je genutzt?
-        return {p1, p2, max};
+        return { p1, p2 };
     };
 
 
