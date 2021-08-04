@@ -1,4 +1,4 @@
-\chapter{Rekonstruktion eines Pendels}
+\chapter{Informationserhalt aus dem Abgleich zweier Bilder}
 
 \cleanchapterquote{Was kann ich wissen?\\Was soll ich tun?\\Was darf ich hoffen?}{Immanuel Kant}{Kritik der reinen Vernunft}
 
@@ -13,13 +13,11 @@ Zunächst wird die Erkennung des Drehpols als vereinfachtes Ziel genommen um her
 Für die Bestimmung des Endpunktes wird zunächst der Punkt genommen, der am weitesten vom Drehpunkt ist.
 Diese Annahme ist für den Anfang hinreichend und wird im Zuge der Zusammensetzung mehrerer Glieder hinfällig, da Gelenke dann zwingend durch die Schnittpunkte entsprechender Glieder definiert sein müssen.
 
-\section{Betrachtung verschiedener Ansätze zur Erkennung von Bewegung} \label{ch:erkennung_von_änderungen}
-
 Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden hier stets zwei Bilder miteinander verglichen, welche zeitlich etwa 16,7 Millisekunden auseinanderliegen.
 Die Frequenz von \name{requestAnimationFrame} beträgt im Optimalfall 60 Hertz.
 Dieser Optimalfall sei dadurch definiert, dass die \lstinline{step} Funktion aus \lstinline{run} (s. Listing~\ref{lst:gtv_run}) weniger als 16,7 Millisekunden benötigt\footnote{Neben der an \lstinline{run} übergebenen \lstinline{step} Funktion werden natürlich noch andere Funktionen wie \lstinline{model.tick} und \lstinline{updateTimesChart} ausgeführt, diese sollen hier jedoch nicht betrachtet werden. Sie werden daher auch für die Zeitmessung innerhalb von \lstinline{run} ausgeschlossen.}.
 
-\subsection{compareImages}
+\section{compareImages}
 
 Da sich in der modellierten Videosequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel aufzuzeichnen.
 Hierfür wurde eine Funktion \lstinline{stepCompareImages} definiert, welche durch die an die \lstinline{register} Funktion übergebene Funktion aufgerufen wird.
@@ -75,7 +73,7 @@ Alle Versuche die mit dem Pendel gemacht werden befinden sich im Verzeichnis \ls
 
 Die Versuchsgruppe \name{pendel1} beschäftigt sich mit der Untersuchung des kleinsten umfassenden Kreises. % TODO hier anmerken wie man die toll mit der index.html oder so folgen kann.
 
-\subsection{Bestimmung des kleinsten umfassenden Kreises}
+\section{Bestimmung des kleinsten umfassenden Kreises}
 
 Die Koordinaten von Pixeln für die in zwei Bildern ein unterschied gemessen wird, werden in einem Objekt der dafür erstellten \lstinline{PointCloud} Klasse festgehalten.
 Diese Koordinaten sollten bei der Drehung eines Gliedes um einen festen Punkt einen Bogen definierbar machen, der Aufschluss über die Position dieses Drehpunktes gibt.
@@ -187,7 +185,7 @@ Da der kleinste umfassende Kreis mit Sicherheit durch die außenliegensten Punkt
 % TODO Kathetensatz nach Euklid, welcher über h und q das b ermitteln kann, welches durch den Satz von Thales auf das a schließen kann welches mit q einen Schnittpunkt in B haben muss, wobei B bekanntenmaßen der Drehpunkt ist.
 % TODO Das sollte bei steigendem h und q eine immer genauere Prognose von B geben können.
 
-\subsection{Schnittpunkte von Geraden}\label{ch:schnittpunkt_gerade}
+\section{Schnittpunkte von Geraden}\label{ch:schnittpunkt_gerade}
 
 Als ein weiterer Ansatz soll nun untersucht werden, ob der Drehpunkt durch die Schnittpunkte von durch die Punktwolke definierten Geraden ermittelt werden kann.
 Diese Gerade soll durch die Momentaufnahmen bestimmt werden.
@@ -217,7 +215,7 @@ Der Schnittpunkt zweier Geraden berechnet sich durch
 
 Wobei für die Berechnung von $p_y$ entweder die Parameter der ersten, oder zweiten Gerade genommen werden können.
 
-\subsubsection{Der Umgang mit Ungenauigkeit}
+\subsection{Der Umgang mit Ungenauigkeit}
 
 Für die Verarbeitung der berechneten Punkte wurden zwei weitere Klassen erstellt, welche die Daten verwalten die zur Bestimmung der Pole erforderlich sind.
 Die \lstinline{Data} Klasse wird genutzt um einzelne Datenpunkte zu halten, dessen Erwartungswert, Varianz, Standardabweichung und die Gauß'sche Normalverteilung zu berechnen.
@@ -328,7 +326,7 @@ getChart(limit) {
 
 Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung des \lstinline{data} Objektes um durch \lstinline{g2.chart} dargestellt werden zu können.
 
-\subsubsection{Nutzung des Schwerpunktes mehrerer Datenpunkte}\label{ch:nutzung_des_schwerpunktes}
+\subsection{Nutzung des Schwerpunktes mehrerer Datenpunkte}\label{ch:nutzung_des_schwerpunktes}
 
 Idealerweise sollten alle Schnittpunkte der berechneten Geraden die selben Koordinaten haben.
 Wäre dies der Fall, dann wäre die Varianz gleich null und bereits nach zwei Iterationen hätte man ein ideales Ergebnis.
@@ -336,14 +334,14 @@ Da dies jedoch nicht der Fall ist, wird für jede neue Gerade jeder Schnittpunkt
 
 Diese Methode liefert schnell einen Erwartungswert der nah an dem tatsächlichen Wert auch für Schwungwinkel weit unter 180°.
 
-Nachteilig erscheint es, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da wie in Abschnitt~\ref{ch:erkennung_von_änderungen} bereits erwähnt, bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
+Nachteilig erscheint es, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
 Um dieses Problem zu Umgehen sollen nun mehrere am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden.
 
 Es zeigt sich, dass die Standardabweichung für die selbe Menge an Iterationen bei der Nutzung des Schwerpunktes der 5 am weitesten auseinanderliegenden Punkte sich leicht reduziert.
 
 % TODO hier sollte ein Bild vorher zu nachher eingefügt werden um diese Aussage zu untermauern.
 
-\subsection{Bestimmung der Regressionsgeraden}\label{ch:bestimmung_regressionsgerade}
+\section{Bestimmung der Regressionsgeraden}\label{ch:bestimmung_regressionsgerade}
 
 Die Gerade welche den geringsten Fehler gegenüber einer Menge an Punkten darstellt wird als Regressionsgerade bezeichnet.
 
@@ -392,7 +390,7 @@ removeOverlaps(dist = 5) {
 
 Um jedoch die Regressionsgerade an sich zu korrigieren wird auf eine andere Methode zur Ermittlung der am besten passenden Gerade zurückgegriffen.
 
-\subsubsection{Orthogonale Regression}\label{ch:orthogonale_regression}
+\subsection{Orthogonale Regression}\label{ch:orthogonale_regression}
 
 Während die vorher angesprochene Regressionsgerade den Abstand der Punkte in Y-Richtung zu minimieren versucht, ist der nachfolgende Ansatz dazu gedacht den Fehler der Punkte orthogonal zur gesuchten Gerade zu minimieren~\cite{JuergenHedderich2020}.% TODO[S. 140]
 
@@ -440,7 +438,7 @@ static fromRegressionLine(pts, g) {
 }
 \end{lstlisting}
 
-\subsection{Vergleich des Verlaufes von Randpunkten}
+\section{Vergleich des Verlaufes von Randpunkten}
 
 Die letzte Versuchsreihe die gemacht werden soll ist der Abgleich zweier durch die Punktwolke entstandener Pfade von Punkten.
 Die ausgewählten Punkte bestehen jeweils aus dem Punktepaar mit größter Distanz pro Abgleich.
@@ -460,7 +458,7 @@ Das hat zur Folge das die Fluktuationen erheblich zur Länge des Pfades der Bewe
 Wird dieser Umstand versucht mit dem Schwerpunkt der Endpunkte zu behandeln, wie es in Kapitel~\ref{ch:nutzung_des_schwerpunktes}, scheint es diesen Umstand jedoch erheblich schlimmer zu machen.
 Beheben lässt sich dieser indem der kleinte umfassende Kreis um die beiden gesammelten Gruppen gebildet wird und derjeniger mit dem kleinerem Radius den Mittelpunkt darstellt.
 
-\subsection{Auswertung der Beobachtungen}
+\section{Auswertung der Beobachtungen}
 
 Die hier besprochenen Ansätze haben viele Erkenntnisse eingebracht welche Information aus dem Abgleich zweier Bilder gewonnen werden kann.
 Es wurden für die Struktur der Versuche vier Klassen erstellt welche sicherlich auch bei weiteren Versuchen helfen werden.
