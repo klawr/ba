@@ -17,6 +17,7 @@
     <a id="title"></a>
     <script src="../third_party/g2.full.js"></script>
     <script src="../third_party/mec2.min.js"></script>
+    <script src="../third_party/smallestEnclosingCircle.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/data.js"></script>
     <script src="../scripts/line.js"></script>
@@ -54,23 +55,16 @@
 
             group.draw(g);
 
-            let min = Infinity;
-            const gnd = group.pts.reduce((p, c) => {
-                let len = 0;
-                for (let i = 1; i < c.length; ++i) {
-                    len += Math.hypot(c[i].y - c[i - 1].y, c[i].x - c[i - 1].x);
-                }
+            console.log(group);
+            const c1 = makeCircle(group.pts[0]);
+            const c2 = makeCircle(group.pts[1]);
 
-                if (min > len) {
-                    min = len;
-                    return c;
-                } else {
-                    return p;
-                }
-            }, 0);
+            const c = c1.r < c2.r ? c1 : c2;
 
             g.lin({ p1, p2 })
-                .gnd({ ...gnd[gnd.length - 1] });
+                .gnd({ ...c });
+            
+            txt2.innerHTML = `Gemessen x: ${c.x}, y: ${globalTestVariables.cnv_height - c.y}`;
 
             g.exe(ctx2);
         }

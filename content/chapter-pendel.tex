@@ -265,7 +265,7 @@ get mu() {
 }
 \end{lstlisting}
 
-Um verschiedene Ansätze miteinander Vergleichen zu können, soll außerdem noch die Varianz berechnet werden.
+Um verschiedene Ansätze miteinander Vergleichen zu können, soll außerdem noch die Standardabweichung berechnet werden.
 Die Varianz berechnet sich durch
 
 \begin{equation}
@@ -328,7 +328,7 @@ getChart(limit) {
 
 Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung des \lstinline{data} Objektes um durch \lstinline{g2.chart} dargestellt werden zu können.
 
-\subsubsection{Füllen des \lstinline{Data} Objektes}
+\subsubsection{Nutzung des Schwerpunktes mehrerer Datenpunkte}\label{ch:nutzung_des_schwerpunktes}
 
 Idealerweise sollten alle Schnittpunkte der berechneten Geraden die selben Koordinaten haben.
 Wäre dies der Fall, dann wäre die Varianz gleich null und bereits nach zwei Iterationen hätte man ein ideales Ergebnis.
@@ -339,11 +339,11 @@ Diese Methode liefert schnell einen Erwartungswert der nah an dem tatsächlichen
 Nachteilig erscheint es, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da wie in Abschnitt~\ref{ch:erkennung_von_änderungen} bereits erwähnt, bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
 Um dieses Problem zu Umgehen sollen nun mehrere am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden.
 
-Es zeigt sich jedoch, dass die Varianz für die selbe Menge an Iterationen selbst bei der Nutzung des Schwerpunktes der 20 am weitesten auseinanderliegenden Punkt in etwa die gleiche ist.
+Es zeigt sich, dass die Standardabweichung für die selbe Menge an Iterationen bei der Nutzung des Schwerpunktes der 5 am weitesten auseinanderliegenden Punkte sich leicht reduziert.
 
 % TODO hier sollte ein Bild vorher zu nachher eingefügt werden um diese Aussage zu untermauern.
 
-\subsection{Bestimmung der Regressionsgeraden}
+\subsection{Bestimmung der Regressionsgeraden}\label{ch:bestimmung_regressionsgerade}
 
 Die Gerade welche den geringsten Fehler gegenüber einer Menge an Punkten darstellt wird als Regressionsgerade bezeichnet.
 
@@ -445,16 +445,27 @@ static fromRegressionLine(pts, g) {
 Die letzte Versuchsreihe die gemacht werden soll ist der Abgleich zweier durch die Punktwolke entstandener Pfade von Punkten.
 Die ausgewählten Punkte bestehen jeweils aus dem Punktepaar mit größter Distanz pro Abgleich.
 Hierfür wird zur Ermittlung zunächst die selbe Methodik verwendet wie in Kapitel~\ref{ch:schnittpunkt_gerade}.
-Die beiden Punkte werden dann in einer Liste festgehalten.
-Über den Verlauf der nächsten Iterationen wird dieser Prozess wiederholt und die Listen weiter gefüllt.
+
 Allerdings muss hier sichergestellt werden, dass jeweils der korrekte Nachfolger für einen Pfad der dazu gehörigen Liste hinzugefügt wird.
-Hierfür wird...
+Der bisherige Ansatz beinhaltet keine Information über die zugehörigkeit von einzelnen Punkten in aufeinander folgenden Bildabgleichen.
+Um den Verlauf von solchen Messdaten über Zeit nutzbar zu machen wurde die \lstinline{Groups} Klasse erstellt.
+Bei diesem Abgleich von Randpunkten ist diese lediglich für die zuordnung dieser in die entsprechenden Messungen der letzten Iterationen verantwortlich.
+Entsprechend wird bei jeder Iteration der Abstand des Punktpaares mit dem letzten Eintrag der entsprechenden Listen verglichen und können so entsprechend zugeordnet werden.
+
+Um mit dieser Information den Drehpunkt des Pendels zu ermitteln reicht es dann aus die Länge des gesamten Pfades zu messen, da der gesamtweg des Mittelpunktes erheblich kürzer sein sollte, als der des Enpunktes.
+Diese Beobachtung hält jedoch dem Test nicht zwingend statt.
+Das liegt vorallem darin, dass die in Kapitel~\ref{ch:bestimmung_regressionsgerade} gemacht Beobachtung, dass je weiter der Abgleich zweier Bilder vom tatsächlichen Drehpunkt entfernt ist die absolute Geschwindigkeit höher und die Dichte der Punktwolke entsprechend in solchen Regionen höher ist.
+Das hat zur Folge das die Fluktuationen erheblich zur Länge des Pfades der Bewegung des ermittelten Mittelpunktes beiträgt.
+
+Wird dieser Umstand versucht mit dem Schwerpunkt der Endpunkte zu behandeln, wie es in Kapitel~\ref{ch:nutzung_des_schwerpunktes}, scheint es diesen Umstand jedoch erheblich schlimmer zu machen.
+Beheben lässt sich dieser indem der kleinte umfassende Kreis um die beiden gesammelten Gruppen gebildet wird und derjeniger mit dem kleinerem Radius den Mittelpunkt darstellt.
 
 \subsection{Auswertung der Beobachtungen}
 
-% TODO Statistik Gedöhns und Beschreibung der unterschiedlichen Vor- und Nachteile
+Die hier besprochenen Ansätze haben viele Erkenntnisse eingebracht welche Information aus dem Abgleich zweier Bilder gewonnen werden kann.
+Es wurden für die Struktur der Versuche vier Klassen erstellt welche sicherlich auch bei weiteren Versuchen helfen werden.
+Als besonders wichtig hat sich die statistische Analyse der Beobachtungen gezeigt.
+Der Erwartungswert ist der intuitive Ansatz für die Ermittlung der Koordinaten gesuchter Punkte.
+Die Standardabweichung ermöglicht es die unterschiedlichen Ansätze qualitativ zu vergleichen.
 
-Die hier besprochenen Ansätze teilen die Annahme, das alle Punkte welche durch die Änderung betrachtet wurden zu dem selben Glied gehören.
-Des weiteren wird davon ausgegangen, dass alle Glieder einen Drehpunkt haben.
-Da die Definition eines Mechanismus mindestens 3 bewegliche Glieder benötigt, muss hierfür eine Lösung gefunden werden, die im folgenden Abschnitt untersucht wird.
-
+Im Nachfolgenden soll noch eine weitere Möglichtkeit untersucht werden nutzbare Information aus Veränderungen in Bildern zu ermitteln.

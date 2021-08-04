@@ -17,8 +17,8 @@ class Group {
             const s = Math.hypot(n1.y - o.y, n1.x - o.x) <
                 Math.hypot(n2.y - o.y, n2.x - o.x);
 
-            this.pts[0].push(pts[+!s]);
-            this.pts[1].push(pts[+s]);
+            this.pts[0].push(pts[+s]);
+            this.pts[1].push(pts[+!s]);
         }
         // This is used by LucasKanade, which is sorted anyway
         else {

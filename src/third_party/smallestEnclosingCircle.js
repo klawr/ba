@@ -41,7 +41,7 @@ var Circle = /** @class */ (function () {
 // Initially: No boundary points known
 function makeCircle(points, known) {
     // Clone list to preserve the caller's data, do Durstenfeld shuffle
-    const shuffled = [...points, ...known];
+    const shuffled = [...points, ...known || []];
     for (var i = points.length - 1; i >= 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
         j = Math.max(Math.min(j, i), 0);
