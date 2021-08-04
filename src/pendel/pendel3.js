@@ -1,8 +1,9 @@
 
 const globalPendel3Variables = {
-    ground1: new DataXY(),
-    ground2: new DataXY(),
+    group: new Group(),
 }
 
 globalTestVariables.reset = function() {
+    globalPendel3Variables.group = new Group();
+
 }

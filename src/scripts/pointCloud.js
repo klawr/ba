@@ -122,6 +122,7 @@ class PointCloud {
 
         g?.cir({ ...p1, r: 5, fs: 'red' }).cir({ ...p2, r: 5, fs: 'red' });
 
+        // TODO wird max je genutzt?
         return { p1, p2, max };
     };
 
