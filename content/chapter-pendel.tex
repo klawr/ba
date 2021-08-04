@@ -32,7 +32,7 @@ Für solche Vergleiche wurde eine Klasse \lstinline{PointCloud} definiert.
 Diese Klasse beinhaltet alle Funktionen welche auf und mit Punktwolken in dieser Arbeit benötigt werden.
 Unter anderem wird hier eine \lstinline{fromImages} Funktion bereitgestellt, welche zwei Bilder auf Unterschiede untersucht und anhand derer eine Punktwolke zurückgibt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{fromImages} Funktion, welche eine statische Funktion der \lstinline{PointCloud} Klasse darstellt.}\label{lst:pendel}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{fromImages} Funktion, welche eine statische Funktion der \lstinline{PointCloud} Klasse darstellt.}\label{lst:PointCloud}]
 fromImages(image1, image2, width, height) {
     const difference = [];
 
@@ -147,7 +147,7 @@ Die Steigung und der y-Achsenabschnitt berechnen sich durch
 wobei hier $p2$ entsprechend der letzte und $p1$ der erste Punkt dieser Liste ist.
 Für die Berechnung von $b$ kann für $p$ entweder $p1$ oder $p2$ gewählt werden.
 
-Der Drehpunkt befindet sich nun auf der Orthogonalen zu dieser Linie mit $p1$ als Schnittpunkt.
+Der Drehpunkt befindet sich nun auf der Orthogonalen zu dieser Gerade mit $p1$ als Schnittpunkt.
 Es ist außerdem bekannt, dass der Abstand des Drehpunktes zu $p1$ genau dem Radius des ersten ermittelten kleinsten umfassenden Kreis entsprechen sollte.
 
 Der Abstand in der X-Koordinate des gesuchten Punktes zu $p1$ findet sich durch umstellen des Steigungsdreiecks nach $dx$
@@ -187,24 +187,24 @@ Da der kleinste umfassende Kreis mit Sicherheit durch die außenliegensten Punkt
 % TODO Kathetensatz nach Euklid, welcher über h und q das b ermitteln kann, welches durch den Satz von Thales auf das a schließen kann welches mit q einen Schnittpunkt in B haben muss, wobei B bekanntenmaßen der Drehpunkt ist.
 % TODO Das sollte bei steigendem h und q eine immer genauere Prognose von B geben können.
 
-\subsection{Schnittpunkte von Linien}
+\subsection{Schnittpunkte von Geraden}\label{ch:schnittpunkt_gerade}
 
-Als ein weiterer Ansatz soll nun untersucht werden, ob der Drehpunkt durch die Schnittpunkte von durch die Punktwolke definierten Linien ermittelt werden kann.
-Diese Linie soll durch die Momentaufnahmen bestimmt werden.
+Als ein weiterer Ansatz soll nun untersucht werden, ob der Drehpunkt durch die Schnittpunkte von durch die Punktwolke definierten Geraden ermittelt werden kann.
+Diese Gerade soll durch die Momentaufnahmen bestimmt werden.
 
-Zunächst soll die Linie genutzt werden, welche durch die am weitesten voneinander entfernten Punkte der Punktwolke definiert wird.
-Diese Linie sollte in etwa den selben Winkel haben wie der Winkel des tatsächlichen Gelenkes.
+Zunächst soll die Gerade genutzt werden, welche durch die am weitesten voneinander entfernten Punkte der Punktwolke definiert wird.
+Diese Gerade sollte in etwa den selben Winkel haben wie der Winkel des tatsächlichen Gelenkes.
 Eine Annahme die hierbei implizit getroffen wird, ist dass die Glieder länger sind als sie breit sind, wobei die Länge durch den Abstand der Gelenke definiert ist und die Breite entsprechend durch die Punkte welche normal zu der Längenlinie stehen.
 
-Die am weitest voneinander entfernten Punkte lassen sich durch eine auf der \lstinline{PointCloud} definierten Funktion \lstinline{getMaxDist} finden.
+Die am weitest voneinander entfernten Punkte lassen sich durch eine auf der \lstinline{PointCloud} definierten Funktion \lstinline{getMaxDist} finden. % TODO lst:getmaxdist fehlt?
 In dieser Funktion wird für jeden Punkt der Punkt gesucht, welcher den größten Abstand zu diesem hat. Es wird außerdem festgehalten welches Paar den größten Abstand hatte.
 Mit dieser Funktion wird dann ein Objekt der Klasse \lstinline{Line} zurückgegeben, welches anhand der beiden ermittelten Punkte eine Gerade gemäß der in Gleichung~\ref{eq:m_steigung} gezeigten Formel erstellt..
 
-Eine auf diese Weise definierte Linie wird dann in einer Liste gespeichert und die nächste Iteration folgt.
-Bereits ab der zweiten Iteration können dann die Schnittpunkte dieser Linien genutzt werden um den Drehpunkt zu bestimmen.
+Eine auf diese Weise definierte Gerade wird dann in einer Liste gespeichert und die nächste Iteration folgt.
+Bereits ab der zweiten Iteration können dann die Schnittpunkte dieser Geraden genutzt werden um den Drehpunkt zu bestimmen.
 
-Der Schnittpunkt zweier Linien ist ebenfalls eine auf der \lstinline{Line} definierten Funktion \lstinline{intersection} definiert.
-Der Schnittpunkt zweier Linien berechnet sich durch
+Der Schnittpunkt zweier Geraden ist ebenfalls eine auf der \lstinline{Line} definierten Funktion \lstinline{intersection} definiert.
+Der Schnittpunkt zweier Geraden berechnet sich durch
 \begin{equation}
     \begin{split}
         p_x &= \frac{b_2 - b_1}{m_1 - m_2} \\
@@ -213,7 +213,9 @@ Der Schnittpunkt zweier Linien berechnet sich durch
     \label{eq:schnittpunkt}
 \end{equation}
 
-Wobei für die Berechnung von $p_y$ entweder die Parameter der ersten, oder zweiten Linie genommen werden können.
+% TODO Implementation
+
+Wobei für die Berechnung von $p_y$ entweder die Parameter der ersten, oder zweiten Gerade genommen werden können.
 
 \subsubsection{Der Umgang mit Ungenauigkeit}
 
@@ -388,11 +390,11 @@ removeOverlaps(dist = 5) {
 };
 \end{lstlisting}
 
-Um jedoch die Regressionsgerade an sich zu korrigieren wird auf eine andere Methode zur Ermittlung der am besten passenden Linie zurückgegriffen.
+Um jedoch die Regressionsgerade an sich zu korrigieren wird auf eine andere Methode zur Ermittlung der am besten passenden Gerade zurückgegriffen.
 
 \subsubsection{Orthogonale Regression}\label{ch:orthogonale_regression}
 
-Während die vorher angesprochene Regressionsgerade den Abstand der Punkte in Y-Richtung zu minimieren versucht, ist der nachfolgende Ansatz dazu gedacht den Fehler der Punkte orthogonal zur gesuchten Gerade zu minimieren.
+Während die vorher angesprochene Regressionsgerade den Abstand der Punkte in Y-Richtung zu minimieren versucht, ist der nachfolgende Ansatz dazu gedacht den Fehler der Punkte orthogonal zur gesuchten Gerade zu minimieren~\cite{JuergenHedderich2020}.% TODO[S. 140]
 
 \begin{equation}
     \begin{split}
@@ -438,9 +440,15 @@ static fromRegressionLine(pts, g) {
 }
 \end{lstlisting}
 
-\subsection{Vergleich zweier Kreise}
+\subsection{Vergleich des Verlaufes von Randpunkten}
 
-Die letzte Methode die untersucht werden soll ist\dots
+Die letzte Versuchsreihe die gemacht werden soll ist der Abgleich zweier durch die Punktwolke entstandener Pfade von Punkten.
+Die ausgewählten Punkte bestehen jeweils aus dem Punktepaar mit größter Distanz pro Abgleich.
+Hierfür wird zur Ermittlung zunächst die selbe Methodik verwendet wie in Kapitel~\ref{ch:schnittpunkt_gerade}.
+Die beiden Punkte werden dann in einer Liste festgehalten.
+Über den Verlauf der nächsten Iterationen wird dieser Prozess wiederholt und die Listen weiter gefüllt.
+Allerdings muss hier sichergestellt werden, dass jeweils der korrekte Nachfolger für einen Pfad der dazu gehörigen Liste hinzugefügt wird.
+Hierfür wird...
 
 \subsection{Auswertung der Beobachtungen}
 
