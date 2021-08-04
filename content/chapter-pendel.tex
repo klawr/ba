@@ -402,9 +402,9 @@ Während die vorher angesprochene Regressionsgerade den Abstand der Punkte in Y-
     \label{eq:orthogonal_regression}
 \end{equation}
 
-Diese Gleichung nutzt die Varianz der einzelnen Datensammlungen um damit die entsprechende Steigung zu verwenden.
-Unter berücksichtigung das diese bereits Implementationen haben, welche in Listing~\ref{lst:data_variance} nachgesehen werden können, muss hierfür also nurnoch die Kovarianz $\sigma_{xy}^2$ berechnet werden.
-Diese kann entsprechend in der \lstinline{DataXY} Klasse definiert werden, welche für die Tests die entsprechenden Punkte vorhalten kann.
+Diese Gleichung nutzt die Varianz der einzelnen Datensammlungen um damit die entsprechende Steigung der Geraden zu ermitteln.
+Unter der Berücksichtigung, dass diese bereits Implementationen haben, welche in Listing~\ref{lst:data_variance} nachgesehen werden können, muss hierfür also nurnoch die Ermittlung der Kovarianz $\sigma_{xy}^2$ implementiert werden.
+Diese kann passend der \lstinline{DataXY} Klasse hinzugefügt werden, welche für die Tests die entsprechenden Punkte bereithält.
 
 \begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{covariance} Funktion in der \lstinline{DataXY} Klasse}.\label{lst:dataxy_covariance}]
 get() covariance() {

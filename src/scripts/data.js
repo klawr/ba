@@ -11,7 +11,7 @@ class Data {
 
     fillText(p, name, off = 0) {
         const r = (i) => Math.abs(Math.round(i * 10) / 10);
-        p.innerHTML = `${name}: Erwartungswert: ${r(this.mu - off)}, Varianz: ${r(this.variance)}, Anzahl: ${this.length}`;
+        p.innerHTML = `${name}: Erwartungswert: ${r(off - this.mu)}, Varianz: ${r(this.variance)}, Anzahl: ${this.length}`;
     }
 
     add(a) {
