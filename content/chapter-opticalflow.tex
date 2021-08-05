@@ -2,21 +2,152 @@
 
 \chapter{Ermittlung des optischen Flusses}
 
-Die wahrgenommene Bewegung hervorgerufen durch zwei Bilder in welcher die enthaltenen Objekte sich relativ zu einander Bewegen zu scheinen wird als \name{optischer Fluss}(zu engl. \name{Optical Flow}) bezeichnet. // TODO Zitat aus Modern AI, S. 939 unten.
+Die wahrgenommene Bewegung hervorgerufen durch zwei Bilder in welcher die enthaltenen Objekte sich relativ zu einander Bewegen zu scheinen wird als \name{optischer Fluss}(zu engl. \name{Optical Flow}) bezeichnet. % TODO Zitat aus Modern AI, S. 939 unten.
+Der optische Fluss kann durch ein Vektorfeld betrachtet werden, wobei die Vektoren jeweils die relative Bewegung des betrachteten Punktes darstellen.
+Es lässt sich mathematisch durch
+
+\begin{equation}
+% TODO
+\label{eq:optical_flow}
+\end{equation}
+
+darstellen.
+
+% TODO Erwähne, dass dieses Vektorfeld analog zum Gössner S.119 beschriebenen Vektorfeld steht.
+
 Inspiriert durch diesen Ansatz scheint es naheliegend ihn auf planare Mechanismen anzuwenden um so aus einer Videoaufnahme, oder mehrerer Bildaufnahmen eines Mechanismus diesen synthetisieren zu können.
 
 % Hier ein Bild von Thomas Brox scheint angebracht. (Modern AI S. 941)
 
-\name{Optical Flow} Methoden können genutzt werden um ein Vektorfeld mit Position, Richtung und Geschwindigkeit der sich bewegenden Pixel zu identifizieren.
+\section{Optischer Fluss nach Lucas-Kanade}
 
-Innerhalb der sich bewegenden Pixel sollen nun die Gruppen ermittelt werden, welche sich trotz absoluter Bewegung sich nicht relativ zueinander bewegen.
-Ebenso sind Vektoren zu gruppieren, dessen Bewegungen sich homogen zueinander zu verhalten scheinen, es also davon ausgegangen werden kann, dass diese zu einem Glied gehören.
+Einen Vorschlag einer nutzbaren Implementation wurde von Lucas und Kanade bereits 1981 vorgeschlagen. % TODO cite
 
-Bei einem stationärem Schwungpendel wäre es zu erwarten, dass die absolute Geschwindigkeit der Pixel um den Drehpunkt gering ist und linear zum Abstand des Drehpunktes zunimmt.
-Ein Vergleich der Richtungsvektoren sollte allerdings mit entsprechender Skalierung gleich sein, sodass eine Gruppierung hier eindeutig ist.
+Der vorgeschlagene Ansatz trifft im vorherein jedoch mehrere Annahmen.
+Diese sind zunächst, dass die Bewegung nicht sehr groß ist.
+Zu schnelle Bewegungen können durch diesen Ansatz unwahrscheinlich erkannt werden.
+Eine andere Annahme ist, dass die zu untersuchende Bildsequenz in Graustufen immernoch nutzbar ist.
+Es werden in dieser Methode die Helligkeitswerte der Pixel untersucht, sodass eine Szene welche in einer solchen Darstellung keine zu erkennende Bewegung hat entsprechend keine sinnvollen Ergebnisse verspricht.
 
-Diese Gruppen können dann weiter daraufhin untersucht werden ob sie sich innerhalb bestimmter Rahmenbedingungen zueinander bewegen.
-Das bedeutet, ob sie umeinander rotieren, oder gegebenenfalls die Gruppe selber sich in ihrer Länge ändert, was einer translatorischen Bewegung zugeordnet werden kann.
+Die Überlegung die in diesem Algorithmus betrachtet wird ist, dass wenn für einen Pixel sich die Helligkeit verändert hat, wird sich das diesem Pixel zugrunde liegende Objekt bewegt haben.
 
-% NOTES:
-% Performance increase through "superpixels", superpixels klingt nach etwas, was ich auch haben will. Siehe: Contour Detection and Hierarchical Image Segmentation
+Beschreibt man das erste Bild für die entsprechenden Pixelwerte als eine Funktion $F(x)$ und die Pixelwerte des zweiten Bildes entsprechend als $G(x)$, so wird der Vektor gesucht, welcher den Fehler zwischen diesen beiden Bildern minimiert.
+Wird für $F(x)$ und $G(x)$ eine Region festgelegt, so kann der Vektor gesucht werden, welcher für die Bewegung dieser Regionen innerhalb der Bilder den geringsten Fehler ausschreibt.
+
+Die größe der Regionen unbekannt, deshalb soll hier ein pyramidischer Ansatz genutzt werden.
+Das bedeuted, dass um eine Region von Interesse mehrere Regionen festgelegt werden, für welche der Fehler entsprechend berechnet wird.
+Diese Fehler können dann verglichen werden und die passende Region wird genutzt um die Verschiebung des Punktes innerhalb des Bildes zu beschreiben.
+Anhand dieses Ansatzes kann die ungefähre Größe des sich bewegenden Objektes untersucht werden.
+
+Was für eine Implementation nun noch fehlt ist die Festlegung der Regionen von Interesse.
+Hierfür wird der Kantenerkennungsalgorithmus von Shi-Tomasi verwendet.
+% TODO erkläre Shi-Tomasi hier ein bisschen, so muss später nurnoch die reine Implementation beschrieben werden.
+
+\subsection{Implementation des Lucas-Kanade Algorithmus}
+
+Um diesen Algorithmus in die nun bestehende Struktur zu implementieren, wird für die \lstinline{Group} Klasse eine weitere Eigenschaft definiert.
+Diese Eigenschaft verweist auf ein Objekt der \lstinline{LucasKanade} Klasse.
+Objekte der \lstinline{LucasKanade} Klasse enthalten wiederrum alle Parameter welche für die Implementation der Algorithmen notwendig sind.
+
+Die Funktionen zur Bestimmung interessanter Punkte und dessen Verfolgung wird von \name{opencv.js} bezogen. % TODO cite
+\name{opencv}\footnote{\name{opencv} ist eine Abkürzung für Open Computer Vision.} ist eine Sammlung optimierter Funktionen im Bereich der Bildverarbeitung und des Maschniellen sehens.
+Implementiert ist \name{opencv} in \name{C++}.
+Es gibt jedoch Unterstüzung für eine Vielzahl von anderen Programmiersprachen, wie zum Beispiel \name{Python}, \name{Java} und \name{JavaScript}.
+
+Für \name{JavaScript} wird das globale \lstinline{cv} Objekt genutzt um auf dessen Funktionen zuzugreifen.
+Für die Bestimmung von vermeintlich sinnvollen Regionen zur Verfolgung wird die \lstinline{cv.goodFeaturesToTrack} Funktion verwendet.
+Diese implementiert den Shi-Tomasi Algorithmus.
+Als Parameter übergeben werden hier ein Bild (in Graustufen), eine \lstinline{cv.Mat} Objekt in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte welche zur Verfolgung gesucht werden, dessen Qualität, % TODO wie Qualität?
+der minimale euklidische Abstand der Punkte zueinander. % none und blocksize? Hä?
+
+Die darauf folgende Berechnung von \lstinline{cv.calcOpticalFlowPyrLK} gibt dann nach dem Vergleich zweier Bilder die prognostizierte neue Position der durch \lstinline{goodFeaturesToTrack} bestimmten Punkte.
+Die \lstinline{calcOpticalFlowPyrLK} Funktion benötigt als Parameter zunächst die beiden Bilder in zeitlicher Abfolge.
+Der dritte Parameter sind die Punkte welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt welcher die berechnet Punkte enthalten wird.
+Alles weitere sind Parameter zum Einstellen des Algorithmus, wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Größe der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung größer werdenen Regionen.
+Abschließend wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben. % TODO den man nochmal angucken sollte was genau der nochmal macht...
+
+Die in der \lstinline{LucasKanade} Klasse definierte \lstinline{step} Funktion ist in Listing~\ref{lst:LucasKanade_step} abgebildet.
+
+\begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{step} Funktion der \lstinline{LucasKanade} Klasse}\label{lst:LucasKanade_step}]
+step(frame) {
+    if (!this.first_indicator) {
+        this.goodFeaturesToTrack(frame);
+        this.first_indicator = true;
+    }
+
+    cv.cvtColor(frame, this.frameGray, cv.COLOR_RGBA2GRAY);
+    this.calcOpticalFlowPyrLK();
+    const points = this.getPoints();
+
+    this.frameGray.copyTo(this.oldGray);
+    this.p0 = new cv.Mat(points.length, 1, cv.CV_32FC2);
+    for (let i = 0; i < points.length; i++) {
+        this.p0.data32F[i * 2] = points[i].x;
+        this.p0.data32F[i * 2 + 1] = points[i].y;
+    }
+
+    return points;
+}
+\end{lstlisting}
+
+Hier wird mittels der \lstinline{first_indicator} Eigenschaft geprüft, ob es sich um den ersten Aufruf handelt.
+Wenn dies der Fall ist müssen die Regionen definiert werden, welche im Anschluss auf Bewegung untersucht werden sollen.
+Dies soll jedoch nur einmal am Anfang geschehen, damit die Reihenfolge der gefundenen Punkte konsistenz bleibt.
+Außerdem ist nicht sichergestellt, dass die vorgeschlagenen Regionen bei Veränderungen im Bild die selben bleiben.
+Die gefundenen Punkte werden im \lstinline{LucasKanade} Objekt entsprechend gespeichert.
+Nachdem das Bild in Graustufen übersetzt wurde wird es in der \lstinline{calcOpticalOpticalFlowPyLK} Funktion genutzt um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
+Diese Punkte werden dann in einer \lstinline{points} Liste gespeichert, welche die zuletzt ermittelten Koordinaten enthält.
+Daraufhin wird das \lstinline{oldGray} Bild überschrieben, damit es bei der nächsten Iteration entsprechend als erstes Bild dienen kann.
+Ebenso wird \lstinline{p0} für die nächste Iteration auf die zuletzt ermittelten Koordinaten gesetzt.
+
+Der Rückgabewert dieser Funktion ist die \lstinline{points} Liste.
+Aufgerufen wird diese Funktion durch die \lstinline{lucasKanade} Funktion des \lstinline{group} Objektes.
+Dieses ermittelt die Bildinformation von \lstinline{cnv1} durch \lstinline{cv.imread}, welches ein \lstinline{cv.Mat} Objekt zurückgibt.
+Daraufhin wird die in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} bereits angedeutete Funktion \lstinline{addPoints} genutzt um die nun für die nächste Iteration ermittelten Koordinaten der Punkte der Liste an Punkten hinzuzufügen.
+
+\subsection{Zuordnung der gefundenen Punkte}
+
+Der Shi-Tomasi Algorithmus erkennt für die von \name{mec2} gezeichneten Mechanismen für die selben Gelenke mehrere Punkte, sofern der Parameter der als \lstinline{minDistance} übergeben wird nicht zu groß ist.
+Um hier keine Annahme treffen zu müssen welcher Wert für den vorliegenden Mechanismus optimal ist, sollen jetzt Überlegungen getroffen werden wie diese Punkte auf einen gemeinsamen Punkt reduziert werden können.
+
+Hierfür könnten die Pfade der Punkte miteinander verglichen werden, sodass Punkte dessen Pfade besonders ähnlich sind wieder gruppiert werden.
+Diese Pfade bilden dann für jede Iteration widerrum den Erwartungswert und ein gemeinsamer Pfad gebildet werden.
+
+% TODO ich könnte hier k-means einbauen.
+% TODO k-means über die Pfade vielleicht? 
+
+\section{Andere Methoden}
+
+\subsection{Optischer Fluss nach Farneback}
+
+Bei der Ermittlung des optischen Flusses wird zwischen dichtem und spärlichen optischen Fluss unterschieden.
+Während der spärliche optische Fluss einzelne Regionen von Interesse im Bild verfolgt und entsprechend dessen Bewegung nachvollzieht, ist der Anspruch von Algorithmen zur Berechnung von dichten optischem Fluss die Berechnung der Bewegung zu jedem einzelnen Pixel.
+Während ich auf die Implementation nicht weiter eingehen möchte, da dieser Ansatz wegen augenscheinlich zu großen Varianzen nicht weiter verfolgt wurde, verdient dieser dennoch eine Erwähnung.
+Die Implementation wurde wenig optimiert, der entsprechende Test kann jedoch eingesehen werden.
+
+Zu erwarten wäre für ein sich um einen festen Punkt drehendes Glied, dass alle Vektoren zur Bestimmung der Bewegung den selben Einheitsvektor haben.
+Die entsprechende länge sollte linear mit Abstand zum Drehpunkt zunehmen.
+Diese Information sollte dann genutzt werden können um die Pole der ebenen Bewegung zu ermitteln.
+
+Des Weiteren hätten die Glieder durch den Verlauf der gemessenen Geschwindigkeiten leicht unterscheidbar gewesen sein sollen.
+Da jedoch die Ungenauigkeiten hier zu groß zu sein scheinen soll hier nicht weiter drauf eingegangen werden.
+
+% TODO dieses Kapitel muss neu geschrieben werden, wenn farneback vielleicht doch noch genutzt wird.
+
+\subsection{Ermittlung von Bewegung durch maschinelles Lernen.}
+
+Eine weitere Erwähnung verdienen modernere Ansätze zur Ermittlung des optischen Flusses.
+Diese Methoden basieren zumeist auf den Grundsätzen des maschinellen Lernens.
+
+% TODO hier kann natürlich noch etwas mehr Text hin
+
+\section{Betrachtung der Ergebnisse}
+
+Die Bestimmung des optischen Flusses war zunächst die zugrundeliegende Überlegung zur Lösung dieser Arbeit.
+Es hat sich jedoch schnell gezeigt, dass es sehr schwierig sein könnte die Ungenauigkeiten unter Kontrolle zu bringen.
+Ansätze des maschinellen Lernens sind vielversprechend doch deren Implementation übersteigen den Rahmen dieser Arbeit und wurden deshalb nicht untersucht.
+
+Die Implementation des Algorithmus nach Lucas-Kanade scheint jedoch eine stabile Methode zu sein Bewegung einzelner Punkte zu verfolgen.
+
+% TODO ich brauche noch Tests welche die des Pendels nachahmen nur halt mit Lucas Kanade. Ich sollte mal das Pendel damit nachbauen...
+

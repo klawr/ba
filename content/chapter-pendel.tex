@@ -440,7 +440,7 @@ static fromRegressionLine(pts, g) {
 }
 \end{lstlisting}
 
-\section{Vergleich des Verlaufes von Randpunkten}
+\section{Vergleich des Verlaufes von Randpunkten}\label{ch:vergleich_verlauf_randpunkte}
 
 Die letzte Versuchsreihe die gemacht werden soll ist der Abgleich zweier durch die Punktwolke entstandener Pfade von Punkten.
 Die ausgewählten Punkte bestehen jeweils aus dem Punktepaar mit größter Distanz pro Abgleich.
@@ -451,6 +451,7 @@ Der bisherige Ansatz beinhaltet keine Information über die zugehörigkeit von e
 Um den Verlauf von solchen Messdaten über Zeit nutzbar zu machen wurde die \lstinline{Groups} Klasse erstellt.
 Bei diesem Abgleich von Randpunkten ist diese lediglich für die zuordnung dieser in die entsprechenden Messungen der letzten Iterationen verantwortlich.
 Entsprechend wird bei jeder Iteration der Abstand des Punktpaares mit dem letzten Eintrag der entsprechenden Listen verglichen und können so entsprechend zugeordnet werden.
+Zuständig für diesen Abgleich ist die \lstinline{addPoints} Funktion.
 
 Um mit dieser Information den Drehpunkt des Pendels zu ermitteln reicht es dann aus die Länge des gesamten Pfades zu messen, da der gesamtweg des Mittelpunktes erheblich kürzer sein sollte, als der des Enpunktes.
 Diese Beobachtung hält jedoch dem Test nicht zwingend statt.

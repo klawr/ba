@@ -100,10 +100,10 @@ class OpenCVLucasKanade {
         this.first_indicator = false;
 
         ["oldGray", "p0", "none", "frameGray", "p1", "st", "err"]
-        .forEach(k => {
-            this[k] && this[k].delete();
-            this[k] = new cv.Mat();
-        });
+            .forEach(k => {
+                this[k]?.delete();
+                this[k] = new cv.Mat();
+            });
     }
 
     goodFeaturesToTrack(frame) {
@@ -144,8 +144,7 @@ class OpenCVLucasKanade {
         return points;
     }
 
-    step() {
-        const frame = cv.imread(cnv1);
+    step(frame) {
         if (!this.first_indicator) {
             this.goodFeaturesToTrack(frame);
             this.first_indicator = true;
