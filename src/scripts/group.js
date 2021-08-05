@@ -43,21 +43,28 @@ class Group {
         }
     }
 
-    draw(g) {
-        const l = this.lines[this.lines.length - 1];
+    draw(g, history) {
+        const width = globalTestVariables.cnv_width;
+
+        const line = this.lines[this.lines.length - 1];
         const pts = this.pts.map(p => p[p.length - 1]);
         const colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
 
-        if (g) {
-
-            l && g.lin({
-                x1: 0,
-                x2: globalTestVariables.cnv_width,
-                y1: l.b,
-                y2: l.m * globalTestVariables.cnv_width + l.b,
-            });
-            pts.forEach((p, i) => g.cir({ ...p, r: 5, fs: colors[i % 6], ls: "@fs" }));
+        if (history) {
+            line && this.lines.forEach(l => g.lin({
+                x1: 0, x2: width,
+                y1: l.b, y2: l.m * width,
+                ls: '#fff8',
+            }))
+            this.pts.forEach((pt, i) => pt.forEach(p =>
+                g.cir({ ...p, r: 1, fs: colors[i % 6], ls: "@fs" })));
         }
+
+        line && g.lin({
+            x1: 0, x2: width,
+            y1: line.b, y2: line.m * width + line.b,
+        });
+        pts.forEach((p, i) => g.cir({ ...p, r: 5, fs: colors[i % 6], ls: "@fs" }));
     }
 }
 
@@ -75,7 +82,6 @@ class OpenCVLucasKanade {
 
     first_indicator = false;
 
-    prvs = undefined;
     oldGray = undefined;
     p0 = undefined;
     p1 = undefined;
@@ -83,7 +89,6 @@ class OpenCVLucasKanade {
     frameGray = undefined;
     st = undefined;
     err = undefined;
-    // mask = undefined;
     colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
 
 
@@ -94,7 +99,8 @@ class OpenCVLucasKanade {
     init() {
         this.first_indicator = false;
 
-        ["prvs", "oldGray", "p0", "none", "frameGray", "p1", "st", "err"].forEach(k => {
+        ["oldGray", "p0", "none", "frameGray", "p1", "st", "err"]
+        .forEach(k => {
             this[k] && this[k].delete();
             this[k] = new cv.Mat();
         });
