@@ -1,7 +1,7 @@
 const globalGruppe3Variables = {
-    lk: new OpenCVLucasKanade(),
+    group: new Group({lk: true}),
 }
 
 globalTestVariables.reset = function () {
-    globalGruppe3Variables.lk.init();
+    globalGruppe3Variables.group.reset();
 }

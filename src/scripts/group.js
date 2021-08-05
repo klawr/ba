@@ -3,6 +3,23 @@ class Group {
     lines = [];
     pts = undefined;
 
+    lk = undefined;
+
+    constructor({ lk }) {
+        if (lk) this.lk = new OpenCVLucasKanade();
+    }
+
+    lucasKanade(fn) {
+        this.addPoints(this.lk.step());
+        fn?.call();
+    }
+
+    reset() {
+        this.lines = [];
+        this.pts = undefined;
+        this.lk.init();
+    }
+
     addPoints(pts) {
         if (!this.pts) {
             this.pts = pts.map(p => [p]);
@@ -29,7 +46,7 @@ class Group {
     draw(g) {
         const l = this.lines[this.lines.length - 1];
         const pts = this.pts.map(p => p[p.length - 1]);
-        const fs = pts.length === 2 ? ['#00f', '#0f0'] : undefined;
+        const colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
 
         if (g) {
 
@@ -39,7 +56,7 @@ class Group {
                 y1: l.b,
                 y2: l.m * globalTestVariables.cnv_width + l.b,
             });
-            pts.forEach((p, i) => g.cir({ ...p, r: 5, fs: fs[i], ls: "@fs" }));
+            pts.forEach((p, i) => g.cir({ ...p, r: 5, fs: colors[i % 6], ls: "@fs" }));
         }
     }
 }
@@ -57,7 +74,7 @@ class OpenCVLucasKanade {
     criteria = new cv.TermCriteria(cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03);
 
     first_indicator = false;
-    
+
     prvs = undefined;
     oldGray = undefined;
     p0 = undefined;
@@ -66,87 +83,79 @@ class OpenCVLucasKanade {
     frameGray = undefined;
     st = undefined;
     err = undefined;
-    mask = undefined;
+    // mask = undefined;
+    colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
+
 
     constructor() {
         this.init();
     }
-    
-    init() {
-        const gtv = globalTestVariables;
 
+    init() {
         this.first_indicator = false;
 
         ["prvs", "oldGray", "p0", "none", "frameGray", "p1", "st", "err"].forEach(k => {
             this[k] && this[k].delete();
             this[k] = new cv.Mat();
         });
-
-        // Create a mask image for drawing purposes
-        this.mask?.delete();
-        this.mask = new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC4, new cv.Scalar(0, 0, 0, 255));
-
-
-        this.color = []
-        // create some random colors
-        for (let i = 0; i < this.ShiTomasi.maxCorners; i++) {
-            this.color.push(new cv.Scalar(parseInt(Math.random() * 255), parseInt(Math.random() * 255),
-                parseInt(Math.random() * 255), 255));
-        }
     }
 
-    // Change drawing to g2
-    step(fn) {
-        const { ctx2 } = globalTestVariables;
-    
-        const frame = cv.imread(cnv1);
-        if (!this.first_indicator) {
-            // take first frame and find corners in it
-            cv.cvtColor(frame, this.oldGray, cv.COLOR_RGB2GRAY);
-            cv.goodFeaturesToTrack(
-                this.oldGray,
-                this.p0,
-                this.ShiTomasi.maxCorners,
-                this.ShiTomasi.qualityLevel,
-                this.ShiTomasi.minDistance,
-                this.none,
-                this.ShiTomasi.blockSize);
-            this.first_indicator = true;
-        }
-    
-        cv.cvtColor(frame, this.frameGray, cv.COLOR_RGBA2GRAY);
-    
-        // calculate optical flow
-        cv.calcOpticalFlowPyrLK(this.oldGray, this.frameGray, this.p0, this.p1, this.st, this.err, this.winSize, this.maxLevel, this.criteria);
-    
-        // select good points
-        const goodNew = [];
-        const goodOld = [];
+    goodFeaturesToTrack(frame) {
+        cv.cvtColor(frame, this.oldGray, cv.COLOR_RGB2GRAY);
+        cv.goodFeaturesToTrack(
+            this.oldGray,
+            this.p0,
+            this.ShiTomasi.maxCorners,
+            this.ShiTomasi.qualityLevel,
+            this.ShiTomasi.minDistance,
+            this.none,
+            this.ShiTomasi.blockSize);
+    }
+
+    calcOpticalFlowPyrLK() {
+        cv.calcOpticalFlowPyrLK(
+            this.oldGray,
+            this.frameGray,
+            this.p0,
+            this.p1,
+            this.st,
+            this.err,
+            this.winSize,
+            this.maxLevel,
+            this.criteria);
+    }
+
+    getPoints() {
+        const points = [];
         for (let i = 0; i < this.st.rows; i++) {
             if (this.st.data[i] === 1) {
-                goodNew.push(new cv.Point(this.p1.data32F[i * 2], this.p1.data32F[i * 2 + 1]));
-                goodOld.push(new cv.Point(this.p0.data32F[i * 2], this.p0.data32F[i * 2 + 1]));
+                points.push(new cv.Point(
+                    this.p1.data32F[i * 2],
+                    this.p1.data32F[i * 2 + 1]));
             }
         }
-    
-        // draw the tracks
-        for (let i = 0; i < goodNew.length; i++) {
-            cv.line(this.mask, goodNew[i], goodOld[i], this.color[i], 2);
-            cv.circle(frame, goodNew[i], 5, this.color[i], -1);
-        }
-        cv.add(frame, this.mask, frame);
-        cv.imshow(ctx2.canvas, frame);
-    
-        // now update the previous frame and previous points
-        this.frameGray.copyTo(this.oldGray);
-        this.p0 = new cv.Mat(goodNew.length, 1, cv.CV_32FC2);
-        for (let i = 0; i < goodNew.length; i++) {
-            this.p0.data32F[i * 2] = goodNew[i].x;
-            this.p0.data32F[i * 2 + 1] = goodNew[i].y;
-        }
-    
-        fn?.call();
 
-        return goodNew;
+        return points;
+    }
+
+    step() {
+        const frame = cv.imread(cnv1);
+        if (!this.first_indicator) {
+            this.goodFeaturesToTrack(frame);
+            this.first_indicator = true;
+        }
+
+        cv.cvtColor(frame, this.frameGray, cv.COLOR_RGBA2GRAY);
+        this.calcOpticalFlowPyrLK();
+        const points = this.getPoints();
+
+        this.frameGray.copyTo(this.oldGray);
+        this.p0 = new cv.Mat(points.length, 1, cv.CV_32FC2);
+        for (let i = 0; i < points.length; i++) {
+            this.p0.data32F[i * 2] = points[i].x;
+            this.p0.data32F[i * 2 + 1] = points[i].y;
+        }
+
+        return points;
     }
 }
