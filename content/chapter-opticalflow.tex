@@ -105,13 +105,20 @@ Aufgerufen wird diese Funktion durch die \lstinline{lucasKanade} Funktion des \l
 Dieses ermittelt die Bildinformation von \lstinline{cnv1} durch \lstinline{cv.imread}, welches ein \lstinline{cv.Mat} Objekt zurückgibt.
 Daraufhin wird die in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} bereits angedeutete Funktion \lstinline{addPoints} genutzt um die nun für die nächste Iteration ermittelten Koordinaten der Punkte der Liste an Punkten hinzuzufügen.
 
-\subsection{Zuordnung der gefundenen Punkte}
+Diese Punkte haben augenscheinlich eine sehr viel geringere Varianz als die Ansätze aus Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder}.
+Allerdings wird hier zunächst nicht näher darauf eingegangen ob diese Punkte nun dazu genutzt werden können um auf die Drehpunkte zu schließen.
+Darauf wird stattdessen in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen.
 
-Der Shi-Tomasi Algorithmus erkennt für die von \name{mec2} gezeichneten Mechanismen für die selben Gelenke mehrere Punkte, sofern der Parameter der als \lstinline{minDistance} übergeben wird nicht zu groß ist.
-Um hier keine Annahme treffen zu müssen welcher Wert für den vorliegenden Mechanismus optimal ist, sollen jetzt Überlegungen getroffen werden wie diese Punkte auf einen gemeinsamen Punkt reduziert werden können.
+% TODO das kommt eher in gruppierung am ende.
+% TODO Ich sollte am Ende einen Annähernd sinnvollen Wert für die Abstände haben durch die Standardabweichung?... Vllt?
 
-Hierfür könnten die Pfade der Punkte miteinander verglichen werden, sodass Punkte dessen Pfade besonders ähnlich sind wieder gruppiert werden.
-Diese Pfade bilden dann für jede Iteration widerrum den Erwartungswert und ein gemeinsamer Pfad gebildet werden.
+% \subsection{Zuordnung der gefundenen Punkte}
+
+% Der Shi-Tomasi Algorithmus erkennt für die von \name{mec2} gezeichneten Mechanismen für die selben Gelenke mehrere Punkte, sofern der Parameter der als \lstinline{minDistance} übergeben wird nicht zu groß ist.
+% Um hier keine Annahme treffen zu müssen welcher Wert für den vorliegenden Mechanismus optimal ist, sollen jetzt Überlegungen getroffen werden wie diese Punkte auf einen gemeinsamen Punkt reduziert werden können.
+
+% Hierfür könnten die Pfade der Punkte miteinander verglichen werden, sodass Punkte dessen Pfade besonders ähnlich sind wieder gruppiert werden.
+% Diese Pfade bilden dann für jede Iteration widerrum den Erwartungswert und ein gemeinsamer Pfad gebildet werden.
 
 % TODO ich könnte hier k-means einbauen.
 % TODO k-means über die Pfade vielleicht? 

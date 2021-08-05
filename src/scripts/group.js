@@ -10,7 +10,8 @@ class Group {
     }
 
     lucasKanade(fn) {
-        this.addPoints(this.lk.step());
+        const frame = cv.imread(globalTestVariables.cnv1);
+        this.addPoints(this.lk.step(frame));
         fn?.call();
     }
 
