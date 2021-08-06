@@ -91,6 +91,7 @@ class DataXY {
     reset() {
         this.x.reset();
         this.y.reset();
+        this.pts = [];
     }
 
     fillText(el1, el2) {
@@ -137,6 +138,10 @@ class DataXY {
         return { x: this.x.mu, y: this.y.mu };
     }
 
+    draw(g) {
+        this.pts.forEach(p => g.cir({ ...p, r: 1, fs: '#f80', ls: '@fs' }));
+    }
+
     drawDeviation(g) {
         const sigmaX = this.x.deviation;
         const sigmaY = this.y.deviation;
@@ -154,7 +159,7 @@ class DataXY {
         const ymu = this.y.mu;
 
         return this.pts.reduce((pre, cur) =>
-            pre + (cur.x - xmu)*(cur.y - ymu), 0)
+            pre + (cur.x - xmu) * (cur.y - ymu), 0)
             / (this.pts.length - 1);
     }
 }

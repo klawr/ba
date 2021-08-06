@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../third_party/opencv.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
+    <script src="../scripts/group.js"></script>
+    <script src="../scripts/line.js"></script>
+    <script src="momentanpol3.js"></script>
+
+    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
+        soll um die Drehung zu zeigen.
+    </p>
+
+    <script>
+        const gtv = globalTestVariables;
+        const gmv = globalMomentanpolVariables;
+
+        const fn = (result) => {
+            const { ctx2, ctx3 } = gtv;
+
+            roll();
+
+            const g = g2().clr();
+
+            result?.draw(g);
+            gmv.group.draw(g, true);
+            gmv.data.add(gmv.group.momentanpol(5));
+            gmv.data.draw(g);
+
+            gmv.data.getChart(false).exe(ctx3);
+
+            g.exe(ctx2);
+
+            gtv.txt1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
+            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.y.mu)}. Standardabweichung: ${gmv.data.y.deviation}`;
+        };
+
+        globalTestVariables.register(() =>
+            globalMomentanpolVariables.group.step(fn));
+    </script>
+</body>
+
+</html>

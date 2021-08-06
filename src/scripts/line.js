@@ -67,7 +67,7 @@ class Line {
     static fromRegressionLine(pts, g) {
         const data = new DataXY(pts);
 
-        const s = data.y.variance - data.x.variance;
+        const sy = data.y.variance;
         const sx = data.x.variance;
         const sxy = data.covariance;
 

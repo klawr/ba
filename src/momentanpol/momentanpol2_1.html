@@ -22,7 +22,7 @@
     <script src="../scripts/data.js"></script>
     <script src="../scripts/pointCloud.js"></script>
     <script src="../scripts/line.js"></script>
-    <script src="momentanpol.js"></script>
+    <script src="momentanpol2.js"></script>
 
     <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
         soll um die Drehung zu zeigen.
@@ -55,7 +55,7 @@
 
             lines.push(Line.fromRegressionLine(result, g));
 
-            if (!p1.x || !p1.y || !p2.x || !p2.y) return;
+            if (!p1?.x || !p1?.y || !p2?.x || !p2?.y) return;
 
             if (!p1s.length || hypot(lp1, p1) < hypot(lp2, p1)) {
                 p1s.push(p1);
@@ -88,13 +88,11 @@
                     y: l.y + va.x / dw,
                 };
 
-                gmv.data.add(rp.y);
-                gmv.poles.push(rp);
+                gmv.data.add(rp);
             }
 
-            gmv.poles.forEach(p => g.cir({ ...p, r: 1, fs: 'orange' }));
-
             gmv.data.getChart(false).exe(ctx3);
+            gmv.data.draw(g);
 
             g.cir({
                 x: (p1.x + p2.x) / 2,
@@ -105,7 +103,7 @@
             g.exe(ctx2);
 
             gtv.txt1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
-            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.mu)}. Varianz: ${gmv.data.variance}`;
+            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.y.mu)}. Standardabweichung: ${gmv.data.y.deviation}`;
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));

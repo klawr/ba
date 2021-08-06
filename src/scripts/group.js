@@ -1,12 +1,75 @@
 
 class Group {
     lines = [];
-    pts = undefined;
+    pts = [];
 
     lk = undefined;
 
     constructor({ lk }) {
         if (lk) this.lk = new OpenCVLucasKanade();
+    }
+
+    step(fn) {
+        this.lucasKanade();
+        const pts = this.regressionLine();
+
+        fn?.call(undefined, pts);
+    }
+
+    regressionLine() {
+        const { cnv1 } = globalTestVariables;
+        const gtv = globalTestVariables;
+        const new_image = cnv1.getContext('2d')
+            .getImageData(0, 0, cnv1.width, cnv1.height).data;
+        let pts;
+        if (gtv.temp_image) {
+            pts = PointCloud.fromImages(
+                gtv.temp_image, new_image, cnv1.width, cnv1.height);
+            this.lines.push(Line.fromRegressionLine(pts));
+        }
+
+        gtv.temp_image = new_image;
+
+        return pts;
+    }
+
+    momentanpol(th = 1) {
+        if (!(this.pts.length > 0) ||
+            !(this.pts[0].length > th) ||
+            !(this.lines.length > th)) {
+            return;
+        }
+
+        const mu = (i) => {
+            const pt = this.pts.map(p => p[p.length - i])
+                .reduce((pre, cur) => ({
+                    x: pre.x + cur.x,
+                    y: pre.y + cur.y,
+                }), { x: 0, y: 0 });
+            return {
+                x: pt.x / this.pts.length,
+                y: pt.y / this.pts.length,
+            };
+        }
+
+        const p1 = mu(1);
+        const p2 = mu(th + 1);
+
+        const v = {
+            x: p1.x - p2.x,
+            y: p1.y - p2.y
+        };
+
+        const dw =
+            Math.atan(this.lines[this.lines.length - 1].m) -
+            Math.atan(this.lines[this.lines.length - (th + 1)].m);
+
+        const pol = {
+            x: (p1.x + p2.x) / 2 + -v.y / dw,
+            y: (p1.y + p2.y) / 2 + v.x / dw,
+        }
+
+        return pol;
     }
 
     lucasKanade(fn) {
@@ -17,12 +80,15 @@ class Group {
 
     reset() {
         this.lines = [];
-        this.pts = undefined;
-        this.lk.init();
+        this.pts = [];
+        this.lk?.init();
     }
 
     addPoints(pts) {
-        if (!this.pts) {
+        if (!pts?.length) {
+            return;
+        }
+        else if (!this.pts.length) {
             this.pts = pts.map(p => [p]);
         } else if (pts.length !== this.pts.length) {
             throw "nope";
@@ -48,10 +114,10 @@ class Group {
         const width = globalTestVariables.cnv_width;
 
         const line = this.lines[this.lines.length - 1];
-        const pts = this.pts.map(p => p[p.length - 1]);
+        const pts = this.pts?.map(p => p[p.length - 1]);
         const colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
 
-        if (history) {
+        if (this.pts && history) {
             line && this.lines.forEach(l => g.lin({
                 x1: 0, x2: width,
                 y1: l.b, y2: l.m * width,
@@ -65,13 +131,13 @@ class Group {
             x1: 0, x2: width,
             y1: line.b, y2: line.m * width + line.b,
         });
-        pts.forEach((p, i) => g.cir({ ...p, r: 5, fs: colors[i % 6], ls: "@fs" }));
+        pts?.forEach((p, i) => g.cir({ ...p, r: 5, fs: colors[i % 6], ls: "@fs" }));
     }
 }
 
 class OpenCVLucasKanade {
     ShiTomasi = {
-        maxCorners: 30,
+        maxCorners: 1,
         qualityLevel: 0.3,
         minDistance: 7,
         blockSize: 7,
@@ -145,7 +211,13 @@ class OpenCVLucasKanade {
         return points;
     }
 
+    very_first = true; // TODO
+
     step(frame) {
+        if (this.very_first) {
+            this.very_first = false;
+            return;
+        }
         if (!this.first_indicator) {
             this.goodFeaturesToTrack(frame);
             this.first_indicator = true;
