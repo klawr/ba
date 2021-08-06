@@ -23,24 +23,32 @@
     <script src="../scripts/pointCloud.js"></script>
     <script src="../scripts/group.js"></script>
     <script src="../scripts/line.js"></script>
-    <script src="momentanpol3.js"></script>
+    <script src="momentanpol4.js"></script>
 
     <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
         soll um die Drehung zu zeigen.
     </p>
 
     <script>
+        globalTestVariables.model = {
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 150, y: 90, base: true },
+                { id: 'A1', x: 230, y: 120 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: - Math.PI * 2, Dt: 3 } }
+            ]
+        };
+
         const gtv = globalTestVariables;
         const gmv = globalMomentanpolVariables;
 
         const fn = (result) => {
             const { ctx2, ctx3 } = gtv;
 
-            roll();
-
             const g = g2().clr();
 
-            result?.draw(g);
             gmv.group.draw(g, true);
             gmv.data.add(gmv.group.momentanpol());
             gmv.data.draw(g);
@@ -54,7 +62,7 @@
         };
 
         globalTestVariables.register(() =>
-            globalMomentanpolVariables.group.stepRegression(fn));
+            globalMomentanpolVariables.group.stepBisector(fn));
     </script>
 </body>
 

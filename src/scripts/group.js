@@ -9,11 +9,26 @@ class Group {
         if (lk) this.lk = new OpenCVLucasKanade(lk);
     }
 
-    step(fn) {
+    stepRegression(fn) {
         this.lucasKanade();
         const pts = this.regressionLine();
 
         fn?.call(undefined, pts);
+    }
+
+    stepBisector(fn) {
+        const frame = cv.imread(globalTestVariables.cnv1);
+        this.addPoints(this.lk.step(frame));
+
+        const len = this.pts[0]?.length;
+        if (len > 1) {
+            // this.pts.forEach(p => this.lines.push(
+            // Line.fromBisector(p[len - 1], p[len - 2])));
+            const p = this.pts[0];
+            this.lines.push(Line.fromBisector(p[len - 1], p[len - 2]));
+        }
+
+        fn?.call();
     }
 
     regressionLine() {

@@ -1,6 +1,6 @@
 const globalMomentanpolVariables = {
     data: new DataXY(),
-    group: new Group({ lk: true }),
+    group: new Group({ lk: { maxCorners: 1 } }),
     i: 0,
     r: 20,
     draw() {
