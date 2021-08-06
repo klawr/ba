@@ -6,7 +6,7 @@ class Group {
     lk = undefined;
 
     constructor({ lk }) {
-        if (lk) this.lk = new OpenCVLucasKanade();
+        if (lk) this.lk = new OpenCVLucasKanade(lk);
     }
 
     step(fn) {
@@ -64,12 +64,10 @@ class Group {
             Math.atan(this.lines[this.lines.length - 1].m) -
             Math.atan(this.lines[this.lines.length - (th + 1)].m);
 
-        const pol = {
+        return {
             x: (p1.x + p2.x) / 2 + -v.y / dw,
             y: (p1.y + p2.y) / 2 + v.x / dw,
         }
-
-        return pol;
     }
 
     lucasKanade(fn) {
@@ -136,12 +134,11 @@ class Group {
 }
 
 class OpenCVLucasKanade {
-    ShiTomasi = {
-        maxCorners: 1,
-        qualityLevel: 0.3,
-        minDistance: 7,
-        blockSize: 7,
-    }
+    // ShiTomasi Parameter
+    maxCorners = 30;
+    qualityLevel = 0.3;
+    minDistance = 7;
+    blockSize = 7;
 
     winSize = new cv.Size(15, 15);
     maxLevel = 2;
@@ -159,7 +156,8 @@ class OpenCVLucasKanade {
     colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
 
 
-    constructor() {
+    constructor(options) {
+        options && Object.assign(this, options);
         this.init();
     }
 
@@ -178,11 +176,11 @@ class OpenCVLucasKanade {
         cv.goodFeaturesToTrack(
             this.oldGray,
             this.p0,
-            this.ShiTomasi.maxCorners,
-            this.ShiTomasi.qualityLevel,
-            this.ShiTomasi.minDistance,
+            this.maxCorners,
+            this.qualityLevel,
+            this.minDistance,
             this.none,
-            this.ShiTomasi.blockSize);
+            this.blockSize);
     }
 
     calcOpticalFlowPyrLK() {

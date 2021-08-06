@@ -12,9 +12,10 @@ Das kann auch interpretiert werden als der Punkt um den sich ein Element in dies
 Dieser kann im Bezug zum Koordinatensystem konstant sein, was einen Drehpunkt definiert.
 Ein translatives Elemtent würde sich um keinen Punkt drehen, was entsprechend einen Momentanpol entspricht welcher eine unendliche Distanz zum betrachteten Element hat.
 
-Der Momentanpol eines Gliedes befindet sich in einem Mechanismus stets im Schnittpunkt der anliegenden Glieder.
-Diese Gesetzmäßigkeit wird \name{Satz der konjugierten Krümmungsmittelpunkte} % TODO \cite{Gössner2017}
-Für ein Viergelenk würde dies Bedeuten, dass der Momentanpol der Koppel sich stets im Schnittpunkt der (virtuell verlängerten) Kurbel und Schwinge befindet.
+Der Momentanpol eines Gliedes befindet sich in einem Mechanismus stets im Schnittpunkt der anliegenden (virtuell verlängerten) Glieder.
+Diese Gesetzmäßigkeit wird als \name{Satz der konjugierten Krümmungsmittelpunkte} % TODO \cite{Gössner2017}
+bezeichnet.
+Für ein Viergelenk würde dies Bedeuten, dass der Momentanpol der Koppel sich stets im Schnittpunkt der Kurbel und Schwinge befindet.
 
 Bei einer Parallelkurbel bei welcher sich die Koppel nicht bewegt, würde der Momentanpol stets im Unendlichen liegen.
 Entsprechend findet bei dieser auch keine Drehung statt.
@@ -49,22 +50,99 @@ Diese kann dann nach $r_{AP}$ umgestellt werden,
 
 \begin{equation}
     \vec{r}_{AP} = \frac{\tilde{\vec{v}}_A}{\omega}
+    \label{eq:euler_rAP}
 \end{equation}
 
 sodass der Momentanpol $P$ über die Beziehung $\vec{r}_P = \vec{r}_A + \vec{r}_{AP}$ ermittelt werden kann.
 
 Diese Formel soll nun angewendet werden um den Momentanpol von Elementen zu bestimmen dessen Bewegung in Videos nachvollzogen wird.
 
-\section{Das drehende Rad}
+\section{Das drehende Rad}\label{ch:drehendesRad}
 
 Als erster Test soll der Momentanpol eines sich drehenden Rades bestimmt werden.
-Von diesem Rad soll eine Speiche sichtbar sein, welche es erlaubt die Drehung zu erkennen.
-Bekannt ist, dass die Drehung eines Rades im Wälzpunkt liegt, damit dieses Schlupffrei rollen kann.
+Von diesem Rad soll eine Speiche sichtbar sein, welche es erlaubt die Drehung zu erkennen, da der Momentanpol für die Bewegung jedes starren Körpers im Raum definiert ist und nicht auf Glieder von Mechanismen beschränkt ist.
+Bekannt ist, dass die Drehung eines Rades im Wälzpunkt liegt.
+Andererseits würde dieses Schlupffrei nicht schlupffrei rollen können\footnote{Bei einem rutschendem Rad würde sich auch die genannte Speiche nicht drehen und der Momentanpol wäre entsprechend nicht im Wälzpunkt des Rades.}.
 Es wird also erwartet, dass die über die Zeit ermittelten Momentanpole eine Linie bilden, welche sich auf genau der Höhe befindet, auf welcher das Rad rollt.
 
-Für die Animation des Rades wurde eine \name{g2} Animation erstellt.
+Für die Animation des Rades wurde eine \name{g2} Animation erstellt,
+da sich dieses Modell so leichter darstellen lässt als mit \name{mec2}.
+Das Rad wird durch eine Linie und einen Kreis definiert.
+Das Rollen wird durch den \lstinline{g2.use} Befehl simuliert, indem die Rotation durch eine Laufvariable bestimmt wird und die Position in X-Richtung durch $x = x_0 + r * i * \pi$, wobei $x_0$ entsprechend der Startwert ist, $r$ der Radius des Kreises und $i$ die Laufvariable, welche hier den Radianten bestimmt.
+Die Animation wird dann an \lstinline{globalTestVariables.g} übergeben.
+Da kein \name{mec2} Modell definiert ist werden dessen Befehle, wie in Kapitel~\ref{ch:simulation_js} beschrieben, ignoriert.
 
+Zur Ermittlung des Momentanpols ist es nun notwendig die absolute Geschwindigkeit eines Punktes auf dem Glied, sowie die Rotationsgeschwindigkeit des Gliedes selbst zu ermitteln.
+Die absolute Geschwindigkeit soll zunächst ermittelt werden, indem wie in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} beschrieben die Bewegung der äußersten Randpunkte gemessen wird.
+Unter der Vorrausetzung, dass diese in etwa den selben Punkt auf dem Glied bezeichnen, sollten diese eine Approximation darstellen.
+Die \lstinline{Group} Klasse speichert hierbei den Pfad der gemessenen Punkte und ordnet diese entsprechend zu.
+Durch den Gradienten zweier Punkte in dieser Liste kann so eine absolute Geschwindigkeit berechnet werden.
+Die Rotationsgeschwindigkeit wird ähnlich gemessen.
+Hierfür hat die \lstinline{Group} Klasse die Eigenschaft \lstinline{lines} bekommen, welche in etwa die selbe Aufgabe wie die \lstinline{pts} Eigenschaft erfüllen soll.
+Wird der Gradient über die selbe Anzahl an Iterationen für die Winkelgeschwindigkeit wie für die absolute Geschwidkeit berechnet, so kann Gleichung~\ref{eq:euler_rAP} genutzt werden um die Position des Momentanpols zu ermitteln.
 
+Dieser stellt hier wieder eine Schätzung dar, da die Eingangsparameter mit einer Ungenauigkeit behaftet sind.
+Des Weiteren ist anzumerken, dass die Anzahl der Iterationen zwischen den beiden zu vergleichenden Bildern im vorhinein festgelegt werden muss.
+Ist diese Zahl zu klein, oder zu groß, so folgt daraus eine größere Standardabweichung.
+Diese optimale Anzahl ist jedoch je nach Geschwindigkeit des sich bewegenden Gliedes unterschiedlich, sodass zur Ermittlung dieses weitere Untersuchung notwendig sein dürften.
+Der Momentanpol wird über seinen Erwartungswert definiert.
+Für den Versuch des Rades wird hier lediglich die Y-Koordinate betrachtet.
+Tatsächlich befindet sich der Erwartungswert des Momentanpols, unter Berücksichtigung der Standardabweichung, in etwa im Wälzpunkt des Rades.
 
-Wenn diese Drehung korrekt ermittelt wird, sollte nach Gleichung~\ref{eq:satz_von_euler_momentanpol} der Momentanpol ermittelt werden können.
+\section{Gestellglieder}
 
+Diese herangehensweise soll nun für die Ermittlung des Drehpunktes eines wie in Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder} betrachteten Pendels genutzt werden.
+Der Momentanpol eines Gliedes welches mit dem Gestell verbunden ist sollte sich im Momentanpol befinden.
+Die vorgeschlagene herangehensweise bestätigt diese Annahme, wieder unter Berücksichtigung der Standardabweichung.
+
+Für ein sich translativ bewegendes Glied ist entsprechend zu Erwarten, dass der Momentanpol sich im unendlichen befindet.
+Die vorgeschlagenene Berechnungen lassen vermuten, dass wenn ein translatives Glied vorliegt dieses keine einheitlichen Ergebnisse zulässt.
+Stattdessen wäre eine sehr Hohe Standardabweichung zu erwarten, da kleinste Abweichungen des gemessenen Winkels zu großen Unterschieden in der Prognose der Position des Momentanpols führen.
+Auch diese Beobachtung scheint sich zu bestätigen.
+
+\section{Nutzung des Lucas-Kanade Algorithmus}
+
+Es ist davon auszugehen, dass die vorangegangene Methode eine gewisse Ungenauigkeit mit sich bringt, da die Eingangsparameter bereits mit einer signifikanten Streuung eingehen.
+Hierbei ist zu vermuten, dass die Nutzung der Punkte mit größter Distanz die größere Fehlerquelle darstellt.
+Aus diesem Grund soll die Absolutgeschwindigkeit nicht über diese, sondern über die Punkte gemessen werden, welche durch den in Kapitel~\ref{ch:lucas_kanade} eingeührten Algorithmus ermittelt werden.
+
+Diese herangehensweise benötigt nun jedoch eine Mischung der Funktionen welche vorher für die Berechnung der unterschiedlichen Bilder genutzt wurde.
+Für die Bestimmung der Regressionsgerade wird die Punktwolke genommen welche durch die \lstinline{PointCloud.fromImages} ermittelt wird.
+Die \lstinline{LucasKanade.step} Funktion benötigt jedoch ein \lstinline{cv.Mat} Objekt des Bildes.
+Deshalb wurde auf der \lstinline{Group} Klasse eine \lstinline{step} Funktion definiert.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{step} Funktion der \lstinline{Group} Klasse} \label{lst:group_step}]
+step(fn) {
+    this.lucasKanade();
+    const pts = this.regressionLine();
+
+    fn?.call(undefined, pts);
+}
+\end{lstlisting}
+
+In Listing~\ref{lst:group_step} wird beschrieben wie der Lucas-Kanade Ansatz zusammen mit der Regressionsgerade genutzt wird.
+In der \lstinline{lucasKanade} Funktion wird entsprechend das Bild von \lstinline{cnv1} als ein \lstinline{cv.Mat} Objekt ausgelesen und die \lstinline{LucasKanade.step} Funktion aufgerufen.
+Für diesen Test wird zunächst der \lstinline{maxCorners} für den \name{Shi-Tomasi} Algorithmus auf eins gesetzt, damit nur ein Punkt verfolgt wird.
+Der Speiche des Rades wurden ebensfalls zwei Punkte hinzugefügt, damit diese als eine Ecke von diesem erkannt werden können.
+Der dann verfolgte Punkt wird dem \lstinline{Group} Objekt hinzugefügt.
+
+Die weitergehende Berechnung ist die gleiche wie in Kapitel~\ref{ch:drehendesRad}.
+Die Standardabweichung des hier ermittelten Momentanpols ist hier viel kleiner.
+Dies ist auch dann der Fall, wenn direkt aufeinanderfolgende Iterationen genutzt werden.
+Erhöht man die Anzahl dieser, so reduziert sich die Standardabweichung weiter.
+Für das sich drehende Rad ist anzumerken, dass wenn der verfolgte Punkt sich im höchsten Punkt des von ihm gezeichneten Zykloiden befindet der Momentanpol dort falsch vorhergesagt wird.
+Das kann jedoch mit entsprechenden Maßnahmen in einer Nachbearbeitung entfernt werden.
+
+Für die Ermittlung des Momentanpols des Pendels sind die Ergebnisse sehr viel besser.
+Dort wird der Momentanpol mit einer Standardabweichung von unter eins korrekt vorhergesagt.
+Für das sich translativ bewegende Glied steigt die Standardabweichung Erwartungsgemäß in extrem Hohe werte, sodass auch diese als eine vielversprechende Beobachtung bezeichnet werden kann.
+
+% TODO es kann noch mit den Mittelsenkrechten von den Punkte gearbeitet werden statt den Regressionsgeraden. Vielleicht sind die ja genauer.
+
+\section{Beobachtungen}
+Es hat sich gezeigt, dass die naive herangehensweise von den am weitest entfernten Punkten in Verbindung mit der Regressionsgerade durchaus Erwartungswerte liefert welche dem tatsächlichen Momentanpol entsprechen.
+Werden jedoch lediglich Momentaufnahmen betrachtet, so diese diese wahrscheinlich nicht als gute Bezugspunkte für weitere Prognosen zur Zusammenstellung des Mechanismus.
+Die Kombination aus der Ermittlung der Regressionsgeraden und der Verfolgung von Punkten durch den Lucas-Kanade Algorithmus haben jedoch eine sehr geringe Standardabweichung, sodass davon auszugehen ist, dass mit Hilfe auf diese Weise ermittelter Momentanpole weitere Schlüsse gezogen werden können.
+
+Bisher wurde die Ermuttlung des Momentanpols eines isolierten Gliedes betrachtet.
+Da ein Mechanismus zwangsläufig aus mehreren Gliedern besteht soll nun betrachtet werden wie ein mehrgliedriges Modell in seine Komponenten geteilt werden kann.

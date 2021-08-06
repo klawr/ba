@@ -99,17 +99,18 @@ class DataXY {
         this.y.fillText(el2, "y", globalTestVariables.cnv_height);
     }
 
-    add(a) {
+    add(a, save = false) {
         if (!a) return;
 
+        // TODO make this comment an option with save
         const gtv = globalTestVariables;
         this.pts.push(a);
-        if (a.x > 0 && a.y > 0 &&
-            a.x < gtv.cnv_width &&
-            a.y < gtv.cnv_height) {
+        // if (a.x > 0 && a.y > 0 &&
+        //     a.x < gtv.cnv_width &&
+        //     a.y < gtv.cnv_height) {
             this.x.add(a.x);
             this.y.add(a.y);
-        }
+        // }
     };
 
     getChart(showX = true, showY = true) {

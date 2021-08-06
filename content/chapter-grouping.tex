@@ -4,7 +4,7 @@
 
 \cleanchapterquote{Eine Kinematische Kette ist die Aneinanderreihung wenigstens dreier durch Elementenpaare beweglich miteinander verbundener Glieder}{VDI2127}{Getriebetechnische Grundlagen}
 
-Im vorangegangen Abschnitt wurde die Erkennung von einzelnen Gliedern durch ihre Drehung behandelt.
+Im vorangegangen Abschnitt wurde die Erkennung von Polen ebener Glider durch ihre Bewegung betrachtet.
 Alle Methoden gingen jedoch davon aus, dass sich alle Datenpunkte einem Glied zuordnen lassen.
 Es ist entsprechend notwendig bevor man die bereits besprochenen Methoden vornimmt eine Zuordnung der Punkte in entsprechende Gruppen zu unternehmen, welche dann an die bekannten Methoden weiter gegeben werden können.
 
@@ -13,10 +13,21 @@ Für eine solche Gruppierung können verschiedene Ansätze herangezogen werden.
 \section{Zuordnung von Linien an Punkte}
 
 Der erste Ansatz welcher untersucht wird geht von der Annahme aus, dass sich alle Punkte in etwa um sich auf Linien zurückzuführende Glieder herum befinden.
-Diese Annahme ist ähnlich wie bei den vorangegangen Methoden, dass die Glieder immer länger sind als sie breit sind.
+Diese Annahme ist ähnlich wie bei den vorangegangen Methoden, dass die Glieder immer länger sind als sie breit sind (s. Kapitel~\ref{ch:schnittpunkt_gerade}).
 
 Hierfür wird ein Punkt aus den Datenpunkten genommen und dann eine Linie definiert welche am ehesten dem Glied entspricht welche diesem Punkt zugeordnet werden kann.
 Dann werden alle Punkte genommen dessen Abstand zu dieser Linie kleiner ist als ein Schwellenwert, welcher vorher definiert werden muss.
 
 Alle Punkte dessen Abstand unter diesem Schwellenwert sind werden dann der ersten Gruppen zugeordnet und der Prozess wird mit allen ungruppierten Punkten wiederholt.
+Hierfür soll die Linie ähnlich zur Regressionsgerade bestimmt werden.
+Als problematisch stellt sich jedoch heraus, dass die Regressionsgerade nicht zwischen Punkten unterscheiden kann welche vermutlich zu einem Glied des gewählten Punktes gehören und welche nicht.
+Daher kann die Regressionsgerade in der Form nicht genutzt werden.
+Ein naiver Ansatz an dieser Stelle wäre die Berechnung des Fehlers der entsteht wenn eine Linie willkürlich in den Raum gelegt wird.
+Der Fehler berechnet sich entsprechend durch die Summe der orthogonalen Abstände aller Punktes zu dieser Linie.
+Damit Punkte welche weit von der Linie entfernt werden einen geringeren Einfluss auf den Fehler haben kann stattdessen die Quadratwurzel dessen genommen werden.
+Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf diese Weise misst, kann die am besten passende gewählt werden.
 
+% \begin{equation}
+%     r = \left(\left(\sum_{i=1}^n x_i y_i\right) - n \bar{x} \bar{y}\right) \div \sqrt{\left(\sum_{i=1}^n x_i^2 - n\bar{x}^2\right)\left(\sum_{i=1}^n y_i^2 - n \bar{y}^2\right)}
+%     \label{eq:korrelationskoeffizient}
+% \end{equation}
