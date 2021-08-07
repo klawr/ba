@@ -16,16 +16,14 @@ class Group {
         fn?.call(undefined, pts);
     }
 
-    stepBisector(fn) {
+    stepBisector(fn, frames = 1) {
         const frame = cv.imread(globalTestVariables.cnv1);
         this.addPoints(this.lk.step(frame));
 
         const len = this.pts[0]?.length;
-        if (len > 1) {
-            // this.pts.forEach(p => this.lines.push(
-            // Line.fromBisector(p[len - 1], p[len - 2])));
+        if (len > frames) {
             const p = this.pts[0];
-            this.lines.push(Line.fromBisector(p[len - 1], p[len - 2]));
+            this.lines.push(Line.fromBisector(p[len - 1], p[len - frames -1]));
         }
 
         fn?.call();
