@@ -25,9 +25,15 @@ Daher kann die Regressionsgerade in der Form nicht genutzt werden.
 Ein naiver Ansatz an dieser Stelle wäre die Berechnung des Fehlers der entsteht wenn eine Linie willkürlich in den Raum gelegt wird.
 Der Fehler berechnet sich entsprechend durch die Summe der orthogonalen Abstände aller Punktes zu dieser Linie.
 Damit Punkte welche weit von der Linie entfernt werden einen geringeren Einfluss auf den Fehler haben kann stattdessen die Quadratwurzel dessen genommen werden.
-Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf diese Weise misst, kann die am besten passende gewählt werden.
+Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf diese Weise misst, kann die am besten passende Gerade gewählt werden.
 
-% \begin{equation}
-%     r = \left(\left(\sum_{i=1}^n x_i y_i\right) - n \bar{x} \bar{y}\right) \div \sqrt{\left(\sum_{i=1}^n x_i^2 - n\bar{x}^2\right)\left(\sum_{i=1}^n y_i^2 - n \bar{y}^2\right)}
-%     \label{eq:korrelationskoeffizient}
-% \end{equation}
+Um dann festzulegen in welchem Abstand zur Linie alle Punkte jeweils der entsprechenden Gerade hinzugefügt werden kann der Korrelationskoeffizient gewählt werden.
+So kann der Abstand der hinzuzufügenden Punkte solange erhöht werden wie der Korrelationskoeffizient über einem bestimmten Schwellenwert ist.
+Der Korrelationskoeffizient berechnet sich durch
+
+\begin{equation}
+    r = \left(\left(\sum_{i=1}^n x_i y_i\right) - n \bar{x} \bar{y}\right) \div \sqrt{\left(\sum_{i=1}^n x_i^2 - n\bar{x}^2\right)\left(\sum_{i=1}^n y_i^2 - n \bar{y}^2\right)}
+    \label{eq:korrelationskoeffizient}
+\end{equation}
+
+
