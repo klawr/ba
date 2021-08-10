@@ -22,7 +22,11 @@
     <script src="../scripts/line.js"></script>
     <script src="gruppe2.js"></script>
 
-    <p>Ermittlung von Gelenken über die Relativpole.</p>
+    <p>
+        Ermittlung von Gelenken über die Relativpole.
+        2 der 3 Punkte auf jeder Gerade werden durch die vorangegangen Methoden zu ermitteln.
+        Der andere ist dann der gesucht Gelenkpunkt.
+    </p>
 
     <script>
         globalTestVariables.model = {
@@ -70,7 +74,7 @@
 
             lines.forEach(l => l.draw(g));
             g.gnd(A0).gnd(B0)
-            Relativpole.forEach(p => g.nod({...p}));
+            Relativpole.forEach(p => g.nod({ ...p }));
 
             g.exe(globalTestVariables.ctx2);
         }
