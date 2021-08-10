@@ -82,7 +82,6 @@ class PointCloud {
                 Math.hypot(p.y - a.y, p.x - a.x) -
                 Math.hypot(p.y - b.y, p.x - b.x);
             const cog = (pre, cur) => ({ y: pre.y + cur.y, x: pre.x + cur.x });
-            console.log()
             p1 = [...this.points]
                 .sort(getDist(p1))
                 .slice(0, number)

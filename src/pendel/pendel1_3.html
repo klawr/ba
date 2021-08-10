@@ -45,15 +45,10 @@
             ]
         };
 
-        const { cnv_height } = globalTestVariables;
         const { data, trail } = globalPendel1Variables;
-
+        let { nod } = globalPendel1Variables;
         const fn = (result) => {
-            let { nod } = globalPendel1Variables;
-            const { ctx2, ctx3, txt2 } = globalTestVariables;
-
             const g = g2().clr();
-
             const cir = addPointsForCircle(result);
 
             if (cir) {
@@ -61,11 +56,8 @@
                 trail.push(cir);
             }
 
-            data.getChart().exe(ctx3);
-
-            g.ply({ pts: trail })
-                .cir(cir)
-                .exe(ctx2);
+            data.getChart().exe(globalTestVariables.ctx3);
+            g.ply({ pts: trail }).cir(cir);
 
             for (let i = 0, max = 0; i < result.length; ++i) {
                 const r = result.points[i];
@@ -84,11 +76,8 @@
 
             const last = trail[trail.length - 1];
 
-            txt2.innerHTML = `Vermutet: x: ${last.x}, y: ${cnv_height - last.y}`;
-
             g.gnd({ ...last });
-            g.exe(ctx2);
-
+            g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));

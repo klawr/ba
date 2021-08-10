@@ -42,14 +42,11 @@
         };
 
         const { data, trail, ply } = globalPendel1Variables;
+        let { nod } = globalPendel1Variables;
         let p2;
 
         const fn = (result) => {
-            let { nod } = globalPendel1Variables;
-            const { ctx2, ctx3, txt2 } = globalTestVariables;
-
             const g = g2().clr();
-
             const cir = addPointsForCircle(result, g);
 
             if (cir) {
@@ -81,7 +78,7 @@
 
             if (p2) {
                 ply.length && data.add(p2);
-                data.getChart().exe(ctx3);
+                data.getChart().exe(globalTestVariables.ctx3);
 
                 for (let i = 0, max = 0; i < result.length; ++i) {
                     const r = result.points[i];
@@ -106,7 +103,7 @@
                 .beg({ cartesian: true })
                 .end();
 
-            g.exe(ctx2);
+            g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));

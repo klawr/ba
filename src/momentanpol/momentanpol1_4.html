@@ -25,34 +25,27 @@
     <script src="../scripts/line.js"></script>
     <script src="momentanpol1.js"></script>
 
-    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren soll um die Drehung zu zeigen.
+    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
+        soll um die Drehung zu zeigen.
         Hier wird die Geschwindigkeit über die Verfolgung von Punkte nach Lucas-Kanade ermittelt.
         Die Winkelgeschwindigkeit über Regression.
         Zwischen den Messungen werden 5 Iterationen übersprungen um die Genauigkeit zu erhöhen.
     </p>
 
     <script>
-        const gtv = globalTestVariables;
-        const gmv = globalMomentanpol1Variables;
+        const { group, data } = globalMomentanpol1Variables;
 
         const fn = (result) => {
-            const { ctx2, ctx3 } = gtv;
-
             roll(5);
 
             const g = g2().clr();
-
             result?.draw(g);
-            gmv.group.draw(g, true);
-            gmv.data.add(gmv.group.momentanpol(5));
-            gmv.data.draw(g);
+            group.draw(g, true);
+            data.add(group.momentanpol(5));
+            data.draw(g);
+            data.getChart(false).exe(globalTestVariables.ctx3);
 
-            gmv.data.getChart(false).exe(ctx3);
-
-            g.exe(ctx2);
-
-            gtv.txt1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
-            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.y.mu)}. Standardabweichung: ${gmv.data.y.deviation}`;
+            g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() =>

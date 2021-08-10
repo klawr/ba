@@ -39,16 +39,11 @@
             ]
         }
 
-        // simulation
+        const { group } = globalGruppe3Variables;
         const fn = (result) => {
-            const { g, ctx2 } = globalTestVariables;
-            const { group } = globalGruppe3Variables;
-
-            const h = g2().use({ grp: g });
-
-            group.draw(h);
-
-            h.exe(ctx2);
+            const g = g2().use({ grp: globalTestVariables.g });
+            group.draw(g);
+            g.exe(globalTestVariables.ctx2);
         }
 
         globalTestVariables.register(() =>

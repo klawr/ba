@@ -42,11 +42,8 @@
             ]
         };
 
-
+        const { group } = globalPendel3Variables;
         const fn = (result) => {
-            const { group } = globalPendel3Variables;
-            const { ctx2, ctx3, txt2 } = globalTestVariables;
-
             const g = g2().clr();
 
             const { p1, p2 } = result.getMaxDist();
@@ -64,9 +61,7 @@
             g.lin({ p1, p2 })
                 .gnd({ ...c });
             
-            txt2.innerHTML = `Gemessen x: ${c.x}, y: ${globalTestVariables.cnv_height - c.y}`;
-
-            g.exe(ctx2);
+            g.exe(globalTestVariables.ctx2);
         }
 
         globalTestVariables.register(() => stepCompareImages(fn));

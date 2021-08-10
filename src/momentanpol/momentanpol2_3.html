@@ -42,25 +42,18 @@
             ]
         };
 
-        const gtv = globalTestVariables;
-        const gmv = globalMomentanpol2Variables;
+        const { group, data } = globalMomentanpol2Variables;
 
         const fn = (result) => {
-            const { ctx2, ctx3 } = gtv;
-
             const g = g2().clr();
 
             result?.draw(g);
-            gmv.group.draw(g, true);
-            gmv.data.add(gmv.group.momentanpol());
-            gmv.data.draw(g);
+            group.draw(g, true);
+            data.add(group.momentanpol());
+            data.draw(g);
+            data.getChart(false).exe(globalTestVariables.ctx3);
 
-            gmv.data.getChart(false).exe(ctx3);
-
-            g.exe(ctx2);
-
-            gtv.txt1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
-            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.y.mu)}. Standardabweichung: ${gmv.data.y.deviation}`;
+            g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() =>

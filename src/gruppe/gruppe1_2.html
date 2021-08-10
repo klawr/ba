@@ -40,23 +40,17 @@
             ]
         };
 
-        // simulation
-        const fn = (result) => {
-            const { ctx2, gnd } = globalTestVariables;
-            const { ply } = globalGruppe1Variables;
+        const { ply } = globalGruppe1Variables;
 
+        const fn = (result) => {
             const filtered = result.removeOverlaps();
 
             const g = g2().clr();
-
             const groups = filtered.groupUp(g);
-
             filtered.draw(g);
-            filtered.points.forEach(r => {
-                ply.push({ ...r });
-            });
+            filtered.points.forEach(r => ply.push({ ...r }));
 
-            g.exe(ctx2);
+            g.exe(globalTestVariables.ctx2);
         }
 
         globalTestVariables.register(() => stepCompareImages(fn));

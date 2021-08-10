@@ -43,19 +43,13 @@
             ]
         };
 
-        const { cnv_height } = globalTestVariables;
         const { data } = globalPendel1Variables;
-
+        let { nod } = globalPendel1Variables;
         const fn = (result) => {
-            let { nod } = globalPendel1Variables;
-            const { ctx2, ctx3, txt2 } = globalTestVariables;
-
             const g = g2().clr();
             result.draw(g);
-
             const cir = addPointsForCircle(result, g);
-
-            data.getChart().exe(ctx3);
+            data.getChart().exe(globalTestVariables.ctx3);
 
             for (let i = 0, max = 0; i < result.length; ++i) {
                 const r = result.points[i];
@@ -74,9 +68,7 @@
                 .lin({ x1: cir.x, y1: cir.y, x2: nod.x, y2: nod.y })
                 .nod(nod);
 
-            txt2.innerHTML = `Vermutet: x: ${cir.x}, y: ${cnv_height - cir.y}`;
-
-            g.exe(ctx2);
+            g.exe(globalTestVariables.ctx2);
         }
 
         globalTestVariables.register(() => stepCompareImages(fn));

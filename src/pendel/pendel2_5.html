@@ -38,13 +38,9 @@
         };
 
         const { data, lines } = globalPendel2Variables;
-
+        let { nod } = globalPendel2Variables;
         const fn = (result) => {
-            let { nod } = globalPendel2Variables;
-            const { ctx2, ctx3, txt2 } = globalTestVariables;
-
             const g = g2().clr();
-
             const filtered = result.removeOverlaps();
 
             if (!filtered.points.length) return;
@@ -72,12 +68,14 @@
                 gnd.x /= pts.length;
                 gnd.y /= pts.length;
 
-                data.fillText(txt2, txt3);
+                data.fillText(
+                    globalTestVariables.txt2,
+                    globalTestVariables.txt3);
 
                 g.cir({ ...gnd, r: 5 });
 
                 data.add(gnd);
-                data.getChart().exe(ctx3);
+                data.getChart().exe(globalTestVariables.ctx3);
 
                 if (gnd) {
                     for (let i = 0, max = 0; i < result.length; ++i) {
@@ -100,7 +98,7 @@
 
             filtered.draw(g);
 
-            g.exe(ctx2);
+            g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));

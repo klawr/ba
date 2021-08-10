@@ -39,8 +39,6 @@
         };
 
         const fn = (result) => {
-            const { ctx2, ctx3, gnd } = globalTestVariables;
-
             const filtered = result.removeOverlaps();
 
             const { x: X, y: Y  } = new DataXY(result).mu;
@@ -58,7 +56,8 @@
             const g = g2().clr();
             filtered.draw(g);
 
-            g.lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b }).exe(ctx2)
+            g.lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b });
+            g.exe(globalTestVariables.ctx2)
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));

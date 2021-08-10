@@ -39,21 +39,16 @@
             ]
         };
 
+        const { ctx2 } = globalTestVariables;
+        const { ply } = globalGruppe1Variables;
+
         const fn = (result) => {
-            const { ctx2 } = globalTestVariables;
-            const { ply } = globalGruppe1Variables;
-
             const g = g2().clr();
-
             const filtered = result.removeOverlaps();
-
             const groups = filtered.groupByCorrelation(g);
 
             filtered.draw(g);
-
-            filtered.points.forEach(r => {
-                ply.push({ ...r });
-            });
+            filtered.points.forEach(r => ply.push({ ...r }));
 
             g.exe(ctx2);
         }

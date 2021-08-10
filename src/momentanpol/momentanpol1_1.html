@@ -25,27 +25,24 @@
     <script src="../scripts/line.js"></script>
     <script src="momentanpol1.js"></script>
 
-    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren soll um die Drehung zu zeigen.
-        Hier wird die Geschwindigkeit und die Winkelgeschwindigkeit durch den Abstand der meisten distanzierten Punkte in verschiedenen Interationen gemessen.
+    <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
+        soll um die Drehung zu zeigen.
+        Hier wird die Geschwindigkeit und die Winkelgeschwindigkeit durch den Abstand der meisten distanzierten Punkte
+        in verschiedenen Interationen gemessen.
     </p>
 
     <script>
+        const { group, r, data } = globalMomentanpol1Variables;
         const fn = (result) => {
-            const { cnv1, ctx2, ctx3, txt1, txt2, cnv_height } = globalTestVariables;
-            const { group, r, data } = globalMomentanpol1Variables;
-
             roll();
 
             const g = g2().clr();
-
             const { p1, p2 } = result.getMaxDist(g);
 
             group.addPoints([p1, p2]);
-
             result.draw(g);
 
             const threshold = 20;
-
             if (group.pts[0].length > threshold) {
                 const l = group.getPoint(0);
                 const b = group.getPoint(0, threshold);
@@ -71,12 +68,9 @@
             }
 
             data.draw(g);
-            data.getChart().exe(ctx3);
+            data.getChart().exe(globalTestVariables.ctx3);
 
-            g.exe(ctx2);
-
-            txt1.innerHTML = `Tatsächlicher Y Wert: ${cnv_height / 2 + r}.`;
-            txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(data.y.mu)}. Varianz: ${data.y.variance}`;
+            g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));

@@ -40,15 +40,10 @@
         }
 
         const fn = (result) => {
-            const { ctx2 } = globalTestVariables;
-
             const filtered = result.removeOverlaps();
-
             const g = g2().clr();
-
             filtered.kMeansClustering(3, g);
-
-            g.exe(ctx2);
+            g.exe(globalTestVariables.ctx2);
         }
 
         globalTestVariables.register(() => stepCompareImages(fn));

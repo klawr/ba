@@ -42,23 +42,17 @@
             ]
         };
 
-        const gtv = globalTestVariables;
-        const gmv = globalMomentanpol2Variables;
-
+        const { group, data } = globalMomentanpol2Variables;
         const fn = (result) => {
-            const { ctx2, ctx3, txt2 } = gtv;
-            const { group, data } = gmv;
 
             const g = g2().clr();
-
             const { p1, p2 } = result.getMaxDist(g);
+
             group.addPoints([p1, p2]);
             group.lines.push(Line.fromRegressionLine(result, g));
-
             result.draw(g);
 
             const threshold = 20;
-
             if (group.pts[0].length > threshold) {
                 const l = group.getPoint(0);
                 const b = group.getPoint(0, threshold);
@@ -81,18 +75,11 @@
                 data.add(rp);
             }
 
-            data.getChart().exe(ctx3);
+            data.getChart().exe(globalTestVariables.ctx3);
             data.draw(g);
             data.drawDeviation(g);
 
-            g.exe(ctx2);
-
-            gtv.txt2.innerHTML = `Vermutet:
-            x: ${Math.round(data.x.mu)} /
-            Varianz: ${data.x.variance},
-            y: ${Math.round(gtv.cnv_height - data.y.mu)} /
-            Varianz: ${data.y.variance}.
-            Werte: ${data.x.length}`;
+            g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));

@@ -31,28 +31,17 @@
     </p>
 
     <script>
-        const gtv = globalTestVariables;
         const { group, data } = globalMomentanpol1Variables;
-
         const fn = (result) => {
-            const { ctx2, ctx3 } = gtv;
-
             roll(5);
 
             const g = g2().clr();
-
             result?.draw(g);
             group.draw(g, true);
             data.add(group.momentanpol());
             data.draw(g);
-
-            data.getChart(false).exe(ctx3);
-
-            g.exe(ctx2);
-
-            gtv.txt1.innerHTML =
-                `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + globalMomentanpol1Variables.r}.`;
-            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(data.y.mu)}. Standardabweichung: ${data.y.deviation}`;
+            data.getChart(false).exe(globalTestVariables.ctx3);
+            g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() =>

@@ -40,13 +40,9 @@
         }
 
         const fn = (result) => {
-            const { ctx2 } = globalTestVariables;
-
             const g = g2().clr();
-
             result.kMeansClustering(3, g);
-
-            g.exe(ctx2);
+            g.exe(globalTestVariables.ctx2);
         }
 
         globalTestVariables.register(() => stepCompareImages(fn));

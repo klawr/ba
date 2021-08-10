@@ -22,7 +22,7 @@
     <script src="../scripts/group.js"></script>
     <script src="gruppe3.js"></script>
 
-    <p>Test zur Lucas_Kanade. Zeigen der Pfade.</p>
+    <p>Test zur Lucas_Kanade.</p>
 
     <script>
         globalTestVariables.model = {
@@ -39,15 +39,11 @@
             ]
         }
 
+        const { group } = globalGruppe3Variables;
         const fn = (result) => {
-            const { g, ctx2 } = globalTestVariables;
-            const { group } = globalGruppe3Variables;
-
-            const h = g2().use({ grp: g });
-
-            group.draw(h, true);
-
-            h.exe(ctx2);
+            const g = g2().use({ grp: globalTestVariables.g });
+            group.draw(g, true);
+            g.exe(globalTestVariables.ctx2);
         }
 
         globalTestVariables.register(() =>

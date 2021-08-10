@@ -42,12 +42,8 @@
             ]
         };
 
-        const gtv = globalTestVariables;
         const { group, data } = globalMomentanpol2Variables;
-
         const fn = (result) => {
-            const { ctx2, ctx3 } = gtv;
-
             const g = g2().clr();
 
             result?.draw(g);
@@ -55,9 +51,9 @@
             data.add(group.momentanpol());
             data.draw(g);
 
-            data.getChart(false).exe(ctx3);
+            data.getChart(false).exe(globalTestVariables.ctx3);
 
-            g.exe(ctx2);
+            g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() =>
