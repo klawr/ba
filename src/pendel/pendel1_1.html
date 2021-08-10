@@ -45,7 +45,7 @@
         const { data } = globalPendel1Variables;
 
         const fn = (result) => {
-            const gpv = globalPendel1Variables;
+            let { nod } = globalPendel1Variables;
             const { ctx2, ctx3, txt2 } = globalTestVariables;
 
             const g = g2().clr();
@@ -63,14 +63,14 @@
                 const hy = Math.hypot(r.y - cir.y, r.x - cir.x);
 
                 if (hy > max) {
-                    gpv.nod = r;
+                    nod = r;
                 }
             }
 
             g.gnd({ ...cir });
-            gpv.nod && g
-                .lin({ x1: cir.x, y1: cir.y, x2: gpv.nod.x, y2: gpv.nod.y })
-                .nod(gpv.nod);
+            nod && g
+                .lin({ x1: cir.x, y1: cir.y, x2: nod.x, y2: nod.y })
+                .nod(nod);
 
             txt2.innerHTML = `Vermutet: x: ${cir.x}, y: ${cnv_height - cir.y}`;
 

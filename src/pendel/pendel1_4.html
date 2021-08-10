@@ -43,11 +43,11 @@
             ]
         };
 
-        const { data } = globalPendel1Variables;
+        const { data, trail, ply } = globalPendel1Variables;
         let p2;
 
         const fn = (result) => {
-            const gpv = globalPendel1Variables;
+            let { nod } = globalPendel1Variables;
             const { ctx2, ctx3, txt2 } = globalTestVariables;
 
             const g = g2().clr();
@@ -56,7 +56,7 @@
 
             if (cir) {
                 data.add(cir);
-                gpv.trail.push(cir);
+                trail.push(cir);
             }
 
             cir.pts.forEach(c => {
@@ -64,8 +64,8 @@
             });
 
             if (cir.pts.length > 2) {
-                const t0 = gpv.trail[0];
-                const tl = gpv.trail[gpv.trail.length - 1];
+                const t0 = trail[0];
+                const tl = trail[trail.length - 1];
 
                 const l = new Line({ p1: t0, p2: tl });
                 const o = l.orthogonal(t0);
@@ -82,8 +82,7 @@
             }
 
             if (p2) {
-
-                gpv.ply.length && data.add(p2);
+                ply.length && data.add(p2);
                 data.getChart().exe(ctx3);
 
                 for (let i = 0, max = 0; i < result.length; ++i) {
@@ -94,17 +93,17 @@
                     const hy = Math.hypot(r.y - p2.y, r.x - p2.x);
 
                     if (hy > max) {
-                        gpv.nod = r;
+                        nod = r;
                     }
                 }
 
                 g.gnd({ ...p2 });
-                gpv.nod &&
-                    g.lin({ x1: p2.x, y1: p2.y, x2: gpv.nod.x, y2: gpv.nod.y }).nod(gpv.nod);
+                nod && g.lin({ x1: p2.x, y1: p2.y, x2: nod.x, y2: nod.y })
+                        .nod(nod);
                 txt2.innerHTML = `Vermutet: x: ${p2.x}, y: ${cnv1.height - p2.y}`;
             }
 
-            g.ply({ pts: gpv.trail })
+            g.ply({ pts: trail })
                 .cir(cir)
                 .beg({ cartesian: true })
                 .end();

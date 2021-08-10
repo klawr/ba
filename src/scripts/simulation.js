@@ -67,6 +67,13 @@ const globalTestVariables = {
             type: "button",
             value: "Reset"
         });
+
+        this.createElement({
+            tag: "input",
+            type: "button",
+            value: "reload",
+        }).addEventListener('click', () => window.location.reload());
+
         this.createElement({
             tag: "div",
             innerHTML: "cover",
@@ -124,11 +131,6 @@ const globalTestVariables = {
         }).getContext('2d');
 
         this.createElement({ tag: "br" });
-        this.createElement({
-            tag: "input",
-            type: "button",
-            value: "reload",
-        }).addEventListener('click', () => window.location.reload());
 
         resetBtn.addEventListener('click', () => this.resetSimulation());
 
@@ -181,7 +183,7 @@ const globalTestVariables = {
         const title = document.getElementById('title');
         const path = document.location.pathname;
         title.innerHTML = path.split('/').pop();
-        title.target="_blank";
+        title.target = "_blank";
         title.href = path;
 
         this.createElement({

@@ -3,13 +3,17 @@ class Group {
     lines = [];
     pts = [];
 
-    getPoint(idx, threshold = 1)  {
+    getPoint(idx, threshold = 1) {
         return this.pts[idx][this.pts[idx].length - threshold];
+    }
+
+    getLine(threshold = 1) {
+        return this.lines[this.lines.length - threshold];
     }
 
     lk = undefined;
 
-    constructor({ lk } = {}) {
+    constructor({ lk } = { lk: undefined }) {
         if (lk) this.lk = new OpenCVLucasKanade(lk);
     }
 
@@ -27,7 +31,7 @@ class Group {
         const len = this.pts[0]?.length;
         if (len > frames) {
             const p = this.pts[0];
-            this.lines.push(Line.fromBisector(p[len - 1], p[len - frames -1]));
+            this.lines.push(Line.fromBisector(p[len - 1], p[len - frames - 1]));
         }
 
         fn?.call();
@@ -82,7 +86,7 @@ class Group {
             Math.atan(this.lines[this.lines.length - (th + 1)].m);
 
         return {
-            x: (p1.x + p2.x) / 2 + -v.y / dw,
+            x: (p1.x + p2.x) / 2 - v.y / dw,
             y: (p1.y + p2.y) / 2 + v.x / dw,
         }
     }

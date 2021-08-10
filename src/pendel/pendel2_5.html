@@ -39,11 +39,11 @@
             ]
         };
 
-        const { data } = globalPendel2Variables;
+        const { data, lines } = globalPendel2Variables;
 
         const fn = (result) => {
+            let { nod } = globalPendel2Variables;
             const { ctx2, ctx3, txt2 } = globalTestVariables;
-            const gpv = globalPendel2Variables;
 
             const g = g2().clr();
 
@@ -53,19 +53,13 @@
 
             const { m, b } = Line.fromRegressionLine(filtered, g);
 
-            gpv.lines.push({ m, b });
+            lines.push(new Line({ m, b }));
 
-            if (gpv.lines.length > 1) {
+            if (lines.length > 1) {
                 const pts = [];
-                for (let i = 0; i < gpv.lines.length; ++i) {
-                    for (let j = 1; j < gpv.lines.length; ++j) {
-                        const m1 = gpv.lines[i].m;
-                        const b1 = gpv.lines[i].b;
-                        const m2 = gpv.lines[j].m;
-                        const b2 = gpv.lines[j].b;
-
-                        const x = (b1 - b2) / (m2 - m1);
-                        const y = m1 * x + b1;
+                for (let i = 0; i < lines.length; ++i) {
+                    for (let j = 1; j < lines.length; ++j) {
+                        const { x, y } = lines[i].intersection(lines[j]);
 
                         if (Number.isFinite(x) && Number.isFinite(y)) {
                             pts.push({ x, y });
@@ -96,13 +90,13 @@
                         const hy = Math.hypot(r.y - gnd.y, r.x - gnd.x);
 
                         if (hy > max) {
-                            gpv.nod = r;
+                            nod = r;
                         }
                     }
 
-                    g.lin({ p1: gnd, p2: gpv.nod })
+                    g.lin({ p1: gnd, p2: nod })
                         .gnd({ ...gnd })
-                        .nod(gpv.nod);
+                        .nod(nod);
                 }
             }
 

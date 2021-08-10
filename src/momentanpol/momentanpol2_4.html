@@ -20,9 +20,10 @@
     <script src="../third_party/opencv.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/data.js"></script>
+    <script src="../scripts/group.js"></script>
     <script src="../scripts/pointCloud.js"></script>
     <script src="../scripts/line.js"></script>
-    <script src="momentanpol.js"></script>
+    <script src="momentanpol2.js"></script>
 
     <p>Test zur Bestimmung des Momentanpols eines sich translativ bewegenden Gliedes.
     </p>
@@ -40,7 +41,6 @@
         };
 
         const gtv = globalTestVariables;
-        const gmv = globalMomentanpolVariables;
 
         const p1s = [];
         const p2s = [];
@@ -51,6 +51,7 @@
 
         const fn = (result) => {
             const { ctx2, ctx3, txt2 } = gtv;
+            const { data } = globalMomentanpol2Variables;
 
             const g = g2().clr();
 
@@ -92,19 +93,13 @@
                     y: l.y + va.x / dw,
                 };
 
-                gmv.dataXY.add(rp);
-                gmv.poles.push(rp);
+                data.add(rp);
             }
 
-            gmv.poles.forEach(p => g.cir({ ...p, r: 1, ls: 'orange' }));
-
-            gmv.dataXY.getChart().exe(ctx3);
-
-            Line.fromRegressionLine(gmv.poles, g);
+            data.draw(g);
+            data.getChart().exe(ctx3);
 
             g.exe(ctx2);
-
-            gtv.txt2.innerHTML = `Vermutet: x: ${Math.round(gmv.dataXY.x.mu)} / Varianz: ${gmv.dataXY.x.variance}, y: ${Math.round(gtv.cnv_height - gmv.dataXY.y.mu)} / Varianz: ${gmv.dataXY.y.variance}`;
         };
 
         globalTestVariables.register(() => stepCompareImages(fn));

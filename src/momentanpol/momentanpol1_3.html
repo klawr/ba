@@ -23,7 +23,7 @@
     <script src="../scripts/pointCloud.js"></script>
     <script src="../scripts/group.js"></script>
     <script src="../scripts/line.js"></script>
-    <script src="momentanpol3.js"></script>
+    <script src="momentanpol1.js"></script>
 
     <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
         soll um die Drehung zu zeigen.
@@ -31,30 +31,31 @@
 
     <script>
         const gtv = globalTestVariables;
-        const gmv = globalMomentanpolVariables;
+        const { group, data } = globalMomentanpol1Variables;
 
         const fn = (result) => {
             const { ctx2, ctx3 } = gtv;
 
-            roll();
+            roll(5);
 
             const g = g2().clr();
 
             result?.draw(g);
-            gmv.group.draw(g, true);
-            gmv.data.add(gmv.group.momentanpol());
-            gmv.data.draw(g);
+            group.draw(g, true);
+            data.add(group.momentanpol());
+            data.draw(g);
 
-            gmv.data.getChart(false).exe(ctx3);
+            data.getChart(false).exe(ctx3);
 
             g.exe(ctx2);
 
-            gtv.txt1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
-            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.y.mu)}. Standardabweichung: ${gmv.data.y.deviation}`;
+            gtv.txt1.innerHTML =
+                `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + globalMomentanpol1Variables.r}.`;
+            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(data.y.mu)}. Standardabweichung: ${data.y.deviation}`;
         };
 
         globalTestVariables.register(() =>
-            globalMomentanpolVariables.group.stepRegression(fn));
+            globalMomentanpol1Variables.group.stepRegression(fn));
     </script>
 </body>
 

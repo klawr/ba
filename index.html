@@ -56,7 +56,9 @@
         }
 
         footer {
-            position: absolute;
+            background-color: #aaa;
+            width: calc(17rem - 1px);
+            position: fixed;
             bottom: 0;
         }
     </style>
@@ -77,58 +79,64 @@
         const tests = {
             pendel: {
                 title: "Drehpunkt bei gegebenem Glied.",
-                indices: [5, 5, 3]
+                test: {
+                    "kleinster umfassender Kreis": 5,
+                    "schnittpunkte": 5,
+                    "vergleich 2er Kreise": 3,
+                }
             },
             momentanpol: {
                 title: "Momentanpol bei gegebenem Glied",
-                indices: [5, 2, 2, 3]
+                test: {
+                    "drehendes Rad": 4,
+                    "modell": 5,
+                    "bisektion": 3,
+                }
             },
             gruppe: {
                 title: "Zuordnung mehrerer Glieder.",
-                indices: [2, 1, 2, 3]
+                test: {
+                    "linker Punkt": 2,
+                    "farneback": 1,
+                    "lucas-kanade?": 2,
+                    "k-means": 3,
+                }
             },
         }
 
-        const initiallyOpen = false;
+        const create = (s, parent) =>
+            parent?.appendChild(document.createElement(s)) ||
+            document.createElement(s);
 
         Object.entries(tests).forEach((kv, i) => {
-            const title = document.createElement('h2');
+            const title = create('h2');
             title.innerHTML = kv[1].title;
-            const summary = document.createElement('summary');
-            const details = document.createElement('details');
+            const details = create('details',
+                document.getElementById('sidenav'));
+            const summary = create('summary', details);
 
-            details.open = initiallyOpen;
-
-            kv[1].indices.forEach((e, j) => {
-                const innerSummary = document.createElement('summary');
-                const innerDetails = document.createElement('details');
+            Object.entries(kv[1].test).forEach((e, j) => {
+                const innerDetails = create('details', details);
+                const innerSummary = create('summary', innerDetails);
                 innerDetails.classList.add('innerDetails');
-                innerSummary.innerHTML = `${kv[0] + (j + 1)}`;
-                innerDetails.appendChild(innerSummary);
+                innerSummary.innerHTML = e[0];
 
-                innerDetails.open = initiallyOpen;
+                const ul = create('ul', innerDetails);
 
-                details.appendChild(innerDetails);
-                const ul = document.createElement('ul');
-                innerDetails.appendChild(ul);
-
-                for (let m = 1; m <= e; ++m) {
-                    const li = document.createElement('li');
-                    li.innerHTML = `${kv[0] + (j + 1)}_${m}`;
+                for (let m = 1; m <= e[1]; ++m) {
+                    const li = create('li', ul);
+                    li.innerHTML = `${kv[0] + (j + 1)}_${m}.html`;
                     li.addEventListener('click', () => {
                         document.getElementById('placeholder').src =
                             `src/${kv[0]}/${kv[0] + (j + 1)}_${m}.html`;
                         for (e of document.getElementsByTagName('li'))
-                            e.style.color = '#000';
-                        li.style.color = '#eee';
+                            e.style.listStyle = 'disc';
+                        li.style.listStyle = 'inside';
 
                     });
-                    ul.appendChild(li);
                 }
             });
             summary.innerHTML = kv[1].title;
-            details.appendChild(summary);
-            document.getElementById('sidenav').appendChild(details);
         });
     </script>
 </body>

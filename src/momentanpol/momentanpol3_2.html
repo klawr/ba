@@ -30,31 +30,34 @@
     </p>
 
     <script>
-        const gtv = globalTestVariables;
-        const gmv = globalMomentanpolVariables;
+        globalTestVariables.model = {
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 0, y: 170, base: true },
+                { id: 'A1', x: 40, y: 150 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', ori: { type: 'const' } }
+            ]
+        };
 
         const fn = (result) => {
-            const { ctx2, ctx3 } = gtv;
-
-            roll();
+            const { ctx2, ctx3 } = globalTestVariables;
+            const { group, data } = globalMomentanpol6Variables;
 
             const g = g2().clr();
 
-            result?.draw(g);
-            gmv.group.draw(g, true);
-            gmv.data.add(gmv.group.momentanpol(5));
-            gmv.data.draw(g);
+            group.draw(g, true);
+            data.add(group.momentanpol());
+            data.draw(g);
 
-            gmv.data.getChart(false).exe(ctx3);
+            data.getChart(false).exe(ctx3);
 
             g.exe(ctx2);
-
-            gtv.txt1.innerHTML = `Tatsächlicher Y Wert: ${gtv.cnv_height / 2 + gmv.r}.`;
-            gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.y.mu)}. Standardabweichung: ${gmv.data.y.deviation}`;
         };
 
         globalTestVariables.register(() =>
-            globalMomentanpolVariables.group.stepRegression(fn));
+            globalMomentanpol6Variables.group.stepBisector(fn));
     </script>
 </body>
 
