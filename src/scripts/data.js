@@ -5,10 +5,6 @@ class Data {
         return Object.values(this.data).reduce((p, c) => c + p, 0);
     }
 
-    reset() {
-        this.data = {};
-    }
-
     fillText(p, name, off = 0) {
         const r = (i) => Math.abs(Math.round(i * 10) / 10);
         p.innerHTML = `${name}: Erwartungswert: ${r(off - this.mu)}, Standardabweichung: ${r(this.deviation)}, Anzahl: ${this.length}`;

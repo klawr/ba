@@ -6,12 +6,6 @@ const globalPendel1Variables = {
     data: new DataXY(),
 }
 
-globalTestVariables.reset = function () {
-    globalPendel1Variables.ply = [];
-    globalPendel1Variables.trail = [];
-    globalPendel1Variables.data.reset();
-}
-
 function addPointsForCircle(cloud, g, args = { nofilter: false, nomemory: false }) {
     const gpv = globalPendel1Variables;
 

@@ -97,12 +97,6 @@ class Group {
         fn?.call();
     }
 
-    reset() {
-        this.lines = [];
-        this.pts = [];
-        this.lk?.init();
-    }
-
     addPoints(pts) {
         if (!pts?.length) {
             return;

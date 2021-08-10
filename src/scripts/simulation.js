@@ -5,9 +5,7 @@ const globalTestVariables = {
     txt1: undefined,
     txt2: undefined,
     txt3: undefined,
-
     startstopBtn: undefined,
-    reset: undefined, // filled by tests
 
     cnv1: undefined,
 
@@ -61,36 +59,16 @@ const globalTestVariables = {
             type: "button",
             value: "Start/Stop"
         });
-        resetBtn = this.createElement({
-            tag: "input",
-            id: "reset",
-            type: "button",
-            value: "Reset"
-        });
 
         this.createElement({
             tag: "input",
             type: "button",
-            value: "reload",
+            value: "Reload test",
         }).addEventListener('click', () => window.location.reload());
 
-        this.createElement({
-            tag: "div",
-            innerHTML: "cover",
-            style: "display:inline;"
-        })
-        cover = this.createElement({
-            tag: "input",
-            id: "slider",
-            type: "range",
-            min: 0,
-            max: 100,
-            value: 0,
-        });
         this.txt1 = this.createElement({
             tag: "p",
             id: "txt1",
-            style: "display:inline;"
         });
         this.txt2 = this.createElement({
             tag: "p",
@@ -131,10 +109,6 @@ const globalTestVariables = {
         }).getContext('2d');
 
         this.createElement({ tag: "br" });
-
-        resetBtn.addEventListener('click', () => this.resetSimulation());
-
-        cover.addEventListener('input', () => this.resetSimulation());
     },
 
     run(step) {
@@ -151,34 +125,6 @@ const globalTestVariables = {
         }
     },
 
-    resetSimulation() {
-        this.running = false;
-        if (this.txt2) this.txt2.innerHTML = "";
-        if (this.txt3) this.txt3.innerHTML = "";
-        this.temp_image = undefined;
-        this.last_time = undefined;
-        this.times = [];
-
-        this.g = g2().clr().view({ cartesian: true });
-
-        this.reset?.call();
-        if (this.model) {
-            this.model.reset();
-            this.model.draw(this.g);
-
-            this.g.cir({
-                ...this.model.nodeById("A0"),
-                r: () => cover.value,
-                fs: 'red',
-                ls: '@fs'
-            });
-        }
-
-        cancelAnimationFrame(this.rafId);
-
-        g2().clr().exe(this.ctx1).exe(this.ctx2).exe(this.ctx3).exe(this.ctx_times);
-
-    },
     register(fn) {
         const title = document.getElementById('title');
         const path = document.location.pathname;
@@ -194,37 +140,25 @@ const globalTestVariables = {
             style: "position: absolute; top: 5px; right: 5px",
         });
 
-
-        const btn = this.createElement({
-            tag: "input",
-            type: "button",
-            value: "Click to load test",
-            style: {
-                height: 200,
-                width: 400,
-            },
-        });
-        btn.addEventListener('click', () => {
+        window.addEventListener('load', () => {
             this.createElements();
 
             if (this.model) {
                 mec.model.extend(this.model);
 
-                // TODO das sollte hier weg.
                 const base = this.model.nodes.find(e => e.id === 'A0');
                 this.txt1.innerHTML = `Tatsächlich: x: ${base.x}, y: ${base.y}`;
 
                 this.model.init();
+                this.model.draw(this.g);
             }
+
+            this.run(fn);
 
             this.startstopBtn.addEventListener('click', () => {
                 this.running = !this.running;
                 this.run(fn);  // kick-off the simulation
             });
-            this.resetSimulation();
-            this.run(fn);
-            document.body.removeChild(btn);
         });
-        document.body.appendChild(btn);
     }
 };

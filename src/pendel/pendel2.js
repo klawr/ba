@@ -4,8 +4,3 @@ const globalPendel2Variables = {
     data: new DataXY(),
     lines: [],
 }
-
-globalTestVariables.reset = function() {
-    globalPendel2Variables.data.reset();
-    globalPendel2Variables.lines = [];
-}

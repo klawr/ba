@@ -11,12 +11,6 @@ const globalMomentanpol1Variables = {
     },
 }
 
-globalTestVariables.reset = function () {
-    globalMomentanpol1Variables.group.reset();
-    globalMomentanpol1Variables.i = 0;
-    globalMomentanpol1Variables.data.reset();
-}
-
 function roll(n = 1) {
     const gmv = globalMomentanpol1Variables;
     const { cnv_height, g } = globalTestVariables;
