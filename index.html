@@ -14,10 +14,10 @@
         }
 
         iframe {
-            width: 75vw;
+            width: calc(100vw - 18rem);
             border: none;
             margin: 0;
-            margin-left: 18em;
+            margin-left: 18rem;
             height: 100%;
         }
 
@@ -38,7 +38,7 @@
         }
 
         nav {
-            width: 18em;
+            width: 18rem;
             height: 100vh;
             flex: 2;
             position: fixed;
@@ -54,13 +54,22 @@
             color: #fff;
             cursor: pointer;
         }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+        }
     </style>
 </head>
 
 <body>
 
     <nav id="sidenav" class="nav">
-        <h1>Tests</h1>
+        <h1 style="margin: 1rem">Tests zur BA</h1>
+        <footer>
+            <a href="https://github.com/klawr/ba">Link zum Repository</a>
+            <p>© Kai Lawrence</p>
+        </footer>
     </nav>
     <iframe id="placeholder"></iframe>
     </div>
@@ -122,8 +131,6 @@
             document.getElementById('sidenav').appendChild(details);
         });
     </script>
-    <a href="https://github.com/klawr/ba">Link zum Repository</a>
-
 </body>
 
 </html>

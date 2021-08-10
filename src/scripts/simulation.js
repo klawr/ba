@@ -186,6 +186,7 @@ const globalTestVariables = {
 
         this.createElement({
             tag: "a",
+            target: "_blank",
             innerHTML: "index.html",
             href: "../../index.html",
             style: "position: absolute; top: 5px; right: 5px",
