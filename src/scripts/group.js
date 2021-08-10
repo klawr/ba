@@ -3,9 +3,13 @@ class Group {
     lines = [];
     pts = [];
 
+    getPoint(idx, threshold = 1)  {
+        return this.pts[idx][this.pts[idx].length - threshold];
+    }
+
     lk = undefined;
 
-    constructor({ lk }) {
+    constructor({ lk } = {}) {
         if (lk) this.lk = new OpenCVLucasKanade(lk);
     }
 

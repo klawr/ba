@@ -19,11 +19,11 @@
     <script src="../third_party/mec2.min.js"></script>
     <script src="../third_party/opencv.js"></script>
     <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/group.js"></script>
     <script src="../scripts/data.js"></script>
     <script src="../scripts/pointCloud.js"></script>
+    <script src="../scripts/group.js"></script>
     <script src="../scripts/line.js"></script>
-    <script src="momentanpol1.js"></script>
+    <script src="momentanpol3.js"></script>
 
     <p>Test zur Bestimmung des Momentanpols in einem Rad, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
         soll um die Drehung zu zeigen.
@@ -31,49 +31,21 @@
 
     <script>
         const gtv = globalTestVariables;
-        const gmv = globalMomentanpol1Variables;
+        const gmv = globalMomentanpolVariables;
 
         const fn = (result) => {
-            const { ctx2, ctx3, txt1, txt2 } = gtv;
-            const { group, data } = globalMomentanpol1Variables;
+            const { ctx2, ctx3 } = gtv;
 
             roll();
 
             const g = g2().clr();
 
-            const { p1, p2 } = result.getMaxDist(g);
+            result?.draw(g);
+            gmv.group.draw(g, true);
+            gmv.data.add(gmv.group.momentanpol(5));
+            gmv.data.draw(g);
 
-            group.addPoints([p1, p2]);
-            group.lines.push(Line.fromRegressionLine(result, g));
-
-            result.draw(g);
-
-            const threshold = 20;
-
-            if (group.pts[0].length > threshold) {
-                const l = group.getPoint(0);
-                const b = group.getPoint(0, threshold);
-
-                const va = {
-                    x: l.x - b.x,
-                    y: l.y - b.y,
-                }
-
-                const l1 = group.lines[group.lines.length - 1];
-                const l2 = group.lines[group.lines.length - threshold];
-
-                const dw = (Math.atan(l1.m) - Math.atan(l2.m) + Math.PI) % Math.PI;
-
-                const rp = {
-                    x: l.x + -va.y / dw,
-                    y: l.y + va.x / dw,
-                };
-
-                data.add(rp);
-            }
-
-            data.draw(g);
-            data.getChart(false).exe(ctx3);
+            gmv.data.getChart(false).exe(ctx3);
 
             g.exe(ctx2);
 
@@ -81,7 +53,8 @@
             gtv.txt2.innerHTML = `Vermuteter Y Wert: ${Math.round(gmv.data.y.mu)}. Standardabweichung: ${gmv.data.y.deviation}`;
         };
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        globalTestVariables.register(() =>
+            globalMomentanpolVariables.group.stepRegression(fn));
     </script>
 </body>
 

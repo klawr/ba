@@ -1,7 +1,6 @@
-const globalMomentanpolVariables = {
-    data: new Data(),
-    lines: [],
-    poles: [],
+const globalMomentanpol1Variables = {
+    data: new DataXY(),
+    group: new Group(),
     i: 0,
     r: 20,
     draw() {
@@ -11,17 +10,17 @@ const globalMomentanpolVariables = {
 }
 
 globalTestVariables.reset = function () {
-    globalMomentanpolVariables.lines = [];
-    globalMomentanpolVariables.poles = [];
-    globalMomentanpolVariables.i = 0;
-    globalMomentanpolVariables.data.reset();
+    globalMomentanpol1Variables.lines = [];
+    globalMomentanpol1Variables.poles = [];
+    globalMomentanpol1Variables.i = 0;
+    globalMomentanpol1Variables.data.reset();
 }
 
 function roll() {
-    const gmv = globalMomentanpolVariables;
+    const gmv = globalMomentanpol1Variables;
     const { cnv_height, g } = globalTestVariables;
 
-    const w = globalMomentanpolVariables.i / 180 * Math.PI;
+    const w = globalMomentanpol1Variables.i / 180 * Math.PI;
     g.del().clr()
         .use({ x: gmv.r * 2 + gmv.r * w, y: cnv_height / 2,
             grp: gmv.draw(), w });
