@@ -24,6 +24,7 @@ class Group {
         fn?.call(undefined, pts);
     }
 
+    // CAREFUL THIS CREATES FALSE POSITIVES FOR ROTATION AND TRANSLATION
     stepBisector(fn, frames = 1) {
         const frame = cv.imread(globalTestVariables.cnv1);
         this.addPoints(this.lk.step(frame));
