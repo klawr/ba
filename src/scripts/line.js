@@ -3,14 +3,19 @@ class Line {
     m = undefined;
     b = undefined;
 
-    constructor({ p1, p2, m, b }) {
-        if (m, b) {
+    constructor({ p1, p2, m, b, w }) {
+        if (m !== undefined && b !== undefined) {
             this.m = m;
             this.b = b;
         }
 
-        if (p1 && p2) {
+        else if (p1 && p2) {
             this.m = (p2.y - p1.y) / (p2.x - p1.x);
+            this.b = p1.y - this.m * p1.x;
+        }
+
+        else if (p1 && w !== undefined) {
+            this.m = Math.tan(w * Math.PI / 180);
             this.b = p1.y - this.m * p1.x;
         }
     }
@@ -56,6 +61,18 @@ class Line {
         const y = this.m * x + this.b;
 
         return { x, y };
+    }
+
+    bisector(otherLine) {
+        const w1 = Math.atan(this.m);
+        const w2 = Math.atan(otherLine.m);
+        const flip = Math.abs((w1 - w2)) > (Math.PI / 2);
+        const w = (w1 + w2) / 2 + (flip ? Math.PI / 2 : 0);
+        const m = Math.tan(w);
+        const p = this.intersection(otherLine);
+        const b = p.y - m * p.x;
+
+        return new Line({ m, b });
     }
 
     /**

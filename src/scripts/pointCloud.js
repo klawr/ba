@@ -137,7 +137,7 @@ class PointCloud {
 
         const nominator = s.xy - s.x * s.y;
         const denominator = Math.sqrt(
-            (s.xs - (s.x ** 2 / len )) *
+            (s.xs - (s.x ** 2 / len)) *
             (s.ys - (s.y ** 2 / len)));
         return nominator / denominator;
     }
@@ -285,6 +285,54 @@ class PointCloud {
 
         return groups;
     };
+
+    getScore(line, pt) {
+        const m = -1 / line.m;
+        return this.points.reduce((pre, cur) => {
+            const b = cur.y - m * cur.x;
+            const x = (b - line.b) / (line.m - m) || cur.x;
+            const y = m * x + b || Infinity;
+
+            const dist = Math.hypot(y - pt.y, x - pt.x);
+
+            return pre + Math.hypot(cur.y - y, cur.x - x) / dist**2;
+        }, 0);
+    }
+
+    groupBinary(pts, g) {
+        const groups = [];
+
+        for (const pt of pts) {
+            for (let i = 0; i < 1; ++i) {
+                let lines = [
+                    new Line({ w: i / 120 + 1, p1: pt }),
+                    new Line({ w: i / 120 + 61, p1: pt }),
+                    new Line({ w: i / 120 - 61, p1: pt })]
+                    .sort((a, b) => this.getScore(a, pt) - this.getScore(b, pt))
+                    .splice(0, 2);
+
+                for (let j = 0; j < 10; ++j) {
+                    const l1 = lines[0];
+                    const l2 = lines[1];
+                    lines = [
+                        this.getScore(l1, pt) < this.getScore(l2, pt) ? l1 : l2,
+                        l1.bisector(l2)
+                    ];
+                }
+
+                const l1 = lines[0];
+                const l2 = lines[1];
+                groups.push(this.getScore(l1, pt) < this.getScore(l2, pt) ? l1 : l2);
+            }
+        }
+
+        if (g) {
+            pts.forEach(p => g.cir({ ...p, r: 4, ls: 'green' }));
+            groups.forEach(l => l.draw(g));
+        }
+
+        return groups;
+    }
 
     /**
      * 
