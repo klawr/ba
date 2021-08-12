@@ -206,15 +206,17 @@ class PointCloud {
         const groups = [];
         let ungrouped = [...this.points];
 
+        // There have to be at least 10% of initial points to continue
         const min = ungrouped.length / 10;
 
         const colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
 
+        // points to consider for respective line
         const bounds = 10;
 
-        let last = 0;
-        while (ungrouped.length > min && ungrouped.length != last) {
-            last = ungrouped.length;
+        for (let last = 0, len = ungrouped.length;
+            ungrouped.length > min && ungrouped.length != last;
+            last = len, len = ungrouped.length) {
             // Get left most ungrouped point.
             const pt = ungrouped.reduce((pre, cur) =>
                 pre.x < cur.x ? pre : cur);
@@ -295,7 +297,7 @@ class PointCloud {
 
             const dist = Math.hypot(y - pt.y, x - pt.x);
 
-            return pre + Math.hypot(cur.y - y, cur.x - x) / dist**2;
+            return pre + Math.hypot(cur.y - y, cur.x - x) / dist ** 2;
         }, 0);
     }
 
