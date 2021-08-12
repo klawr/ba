@@ -32,9 +32,13 @@
             nodes: [
                 { id: 'A0', x: 80, y: 120, base: true },
                 { id: 'A1', x: 80, y: 50 },
+                { id: 'B0', x: 240, y: 120, base: true },
+                { id: 'B1', x: 160, y: 90 }
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: {type: 'drive', Dw: 100, Dt: 100, w0: -0.5} },
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: {type: 'drive', Dw: 100, Dt: 100} },
+                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
+                { id: 'c', p1: 'B1', p2: 'A1', len: { type: 'const' } }
             ]
         };
 

@@ -249,7 +249,8 @@ class PointCloud {
 
                     hypos[hypos.length - 1].push(score);
                 });
-                hypos[hypos.length - 1] = hypos[hypos.length - 1].map(e => e / fix ** 3);
+                hypos[hypos.length - 1] = hypos[hypos.length - 1]
+                    .map(score => score / fix ** 3);
 
                 g?.lin({
                     x1: 0, x2: 400,
@@ -288,43 +289,68 @@ class PointCloud {
         return groups;
     };
 
-    getScore(line, pt) {
+    // less is better
+    getScore(line, g) {
         const m = -1 / line.m;
-        return this.points.reduce((pre, cur) => {
+
+        const score = this.points.reduce((pre, cur) => {
             const b = cur.y - m * cur.x;
             const x = (b - line.b) / (line.m - m) || cur.x;
             const y = m * x + b || Infinity;
 
-            const dist = Math.hypot(y - pt.y, x - pt.x);
+            g?.lin({ p1: { x, y }, p2: cur });
 
-            return pre + Math.hypot(cur.y - y, cur.x - x) / dist ** 2;
+            const dist = Math.hypot(y - cur.y, x - cur.x);
+
+            return pre + dist;
         }, 0);
+
+        return score / (1 ** 3);
     }
 
     groupBinary(pts, g) {
         const groups = [];
 
         for (const pt of pts) {
+            const dists = new Dijkstras(this.points, pt, 5).points;
+            const getScore = (line, g) => {
+                const m = -1 / line.m;
+        
+                const score = this.points.reduce((pre, cur, idx) => {
+                    const b = cur.y - m * cur.x;
+                    const x = (b - line.b) / (line.m - m) || cur.x;
+                    const y = m * x + b || Infinity;
+        
+                    g?.lin({ p1: { x, y }, p2: cur });
+        
+                    const dist = Math.hypot(y - cur.y, x - cur.x);
+        
+                    return pre + dist / dists[idx];   
+                }, 0);
+        
+                return score / (1 ** 3);
+            }
+
             for (let i = 0; i < 1; ++i) {
                 let lines = [
-                    new Line({ w: i / 120 + 1, p1: pt }),
-                    new Line({ w: i / 120 + 61, p1: pt }),
-                    new Line({ w: i / 120 - 61, p1: pt })]
-                    .sort((a, b) => this.getScore(a, pt) - this.getScore(b, pt))
+                    new Line({ w: i / 120, p1: pt }),
+                    new Line({ w: i / 120 + 60, p1: pt }),
+                    new Line({ w: i / 120 - 60, p1: pt })]
+                    .sort((a, b) => getScore(a) - getScore(b))
                     .splice(0, 2);
 
                 for (let j = 0; j < 10; ++j) {
                     const l1 = lines[0];
                     const l2 = lines[1];
                     lines = [
-                        this.getScore(l1, pt) < this.getScore(l2, pt) ? l1 : l2,
+                        getScore(l1) < getScore(l2) ? l1 : l2,
                         l1.bisector(l2)
                     ];
                 }
 
                 const l1 = lines[0];
                 const l2 = lines[1];
-                groups.push(this.getScore(l1, pt) < this.getScore(l2, pt) ? l1 : l2);
+                groups.push(getScore(l1, g) < getScore(l2) ? l1 : l2);
             }
         }
 
@@ -398,6 +424,63 @@ class PointCloud {
                 .filter(d => d.n === i));
     }
 
+}
+
+class Dijkstras {
+    points = [];
+    anchor = undefined;
+
+    static euclDistance(p1, p2) {
+        return Math.hypot(p1.x - p2.x, p1.y - p2.y);
+    }
+
+    constructor(points, pt, numEdges = 5) {
+        if (numEdges < 1) {
+            numEdges = points.length - 1;
+        }
+
+        this.anchor = pt;
+
+        const compEdges = (p) => points
+            .map((sp, sidx) => ({
+                target: sidx,
+                weight: Dijkstras.euclDistance(p, sp) ** 2,
+            }))
+            .sort((a, b) => a.weight - b.weight)
+            .slice(1, numEdges + 1);
+
+        const graph = points.map((p, id) => ({
+            id,
+            dist: Infinity,
+            known: false,
+            edges: compEdges(p)
+        }));
+        const unvisited = [...graph];
+        unvisited.unshift({
+            id: -1,
+            dist: 0,
+            known: false,
+            edges: compEdges(pt)
+        });
+
+        while (unvisited.length) {
+            unvisited.sort((a, b) => a.dist - b.dist);
+            const u = unvisited.shift();
+            u.known = true;
+
+            // NOTE: dist is the sum of squared eucl. distances
+            for (const { ldist, o } of u.edges
+                .map(e => ({ ldist: e.weight, o: graph[e.target] }))
+                .filter(({ o }) => !o.known)) {
+                const cdist = u.dist + ldist;
+                if (cdist < o.dist) {
+                    o.dist = cdist;
+                }
+            }
+        }
+
+        this.points = graph.map(n => n.dist);
+    };
 }
 
 function stepCompareImages(fn) {
