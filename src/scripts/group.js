@@ -82,10 +82,12 @@ class Group {
             y: p1.y - p2.y
         };
 
-        const dw = ((
+        let dw = ((
             Math.atan(this.lines[this.lines.length - 1].m) -
             Math.atan(this.lines[this.lines.length - (threshold + 1)].m))
             + Math.PI) % Math.PI;
+
+        dw = dw > Math.PI / 2 ? dw - Math.PI : dw;
 
         return {
             x: (p1.x + p2.x) / 2 - v.y / dw,

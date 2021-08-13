@@ -26,7 +26,7 @@
     <script src="momentanpol2.js"></script>
 
     <p>
-        Test mit Bestimmung des Momentanpols nach Euler mit dem Pendel.
+        Test zur Bestimmung des Momentanpols eines sich translativ bewegenden Gliedes.
         Hier wird die Geschwindigkeit über die Verfolgung von Punkte nach Lucas-Kanade ermittelt.
         Die Winkelgeschwindigkeit über Regression.
     </p>
@@ -35,23 +35,27 @@
         globalTestVariables.model = {
             gravity: true,
             nodes: [
-                { id: 'A0', x: 150, y: 90, base: true },
-                { id: 'A1', x: 230, y: 120 }
+                { id: 'A0', x: 0, y: 170, base: true },
+                { id: 'A1', x: 40, y: 150 }
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: - Math.PI * 2, Dt: 3 } }
+                { id: 'a', p1: 'A0', p2: 'A1', ori: { type: 'const' } }
             ]
         };
 
         const { group, data } = globalMomentanpol2Variables;
-
         const fn = (result) => {
             const g = g2().clr();
 
             result?.draw(g);
             group.draw(g, true);
-            data.add(group.momentanpol(5));
+            const pol = group.momentanpol(5);
+            group.pts.forEach(p => {
+                new Line({p1: pol, p2: p[p.length - 1]}).draw(g);
+            })
+            data.add(pol);
             data.draw(g);
+
             data.getChart(false).exe(globalTestVariables.ctx3);
 
             g.exe(globalTestVariables.ctx2);

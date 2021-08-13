@@ -20,15 +20,15 @@
     <script src="../third_party/opencv.js"></script>
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/data.js"></script>
-    <script src="../scripts/pointCloud.js"></script>
     <script src="../scripts/group.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
     <script src="../scripts/line.js"></script>
     <script src="momentanpol2.js"></script>
 
     <p>
         Test zur Bestimmung des Momentanpols eines sich translativ bewegenden Gliedes.
-        Hier wird die Geschwindigkeit über die Verfolgung von Punkte nach Lucas-Kanade ermittelt.
-        Die Winkelgeschwindigkeit über Regression.
+        Hier wird die Geschwindigkeit durch den Abstand der meisten distanzierten Punkte in verschiedenen Interationen gemessen.
+        Die Winkelgeschwindigkeit wird über die Regressionsgerade bestimmt.
     </p>
 
     <script>
@@ -43,22 +43,43 @@
             ]
         };
 
-        const { group, data } = globalMomentanpol2Variables;
+        const { data, group } = globalMomentanpol2Variables;
         const fn = (result) => {
             const g = g2().clr();
 
-            result?.draw(g);
-            group.draw(g, true);
-            data.add(group.momentanpol());
-            data.draw(g);
+            const line = Line.fromRegressionLine(result, g);
+            const { p1, p2 } = result.getMaxDist(g);
+            group.addPoints([p1, p2]);
+            result.draw(g);
 
-            data.getChart(false).exe(globalTestVariables.ctx3);
+            const threshold = 5;
+            if (group.pts[0].length > threshold) {
+                const l = group.getPoint(0);
+                const b = group.getPoint(0, threshold);
+                const va = {
+                    x: l.x - b.x,
+                    y: l.y - b.y,
+                }
+                const l1 = new Line({ p1: l, p2: group.getPoint(1) });
+                const l2 = new Line({ p1: b, p2: group.getPoint(1, threshold) });
+
+                const dw = (Math.atan(l1.m) - Math.atan(l2.m) + Math.PI) % Math.PI;
+
+                const rp = {
+                    x: l.x - va.y / dw,
+                    y: l.y + va.x / dw,
+                };
+
+                data.add(rp);
+            }
+
+            data.draw(g);
+            data.getChart().exe(globalTestVariables.ctx3);
 
             g.exe(globalTestVariables.ctx2);
         };
 
-        globalTestVariables.register(() =>
-            globalMomentanpol2Variables.group.stepRegression(fn));
+        globalTestVariables.register(() => stepCompareImages(fn));
     </script>
 </body>
 
