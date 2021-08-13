@@ -16,6 +16,23 @@ const globalTestVariables = {
     time_reset: undefined,
     time_first: undefined,
     times: [],
+    hsv2rgb(h, s = 1, v = 1) {
+        const c = s * v;
+        const x = c * (1 - Math.abs(h / 60 % 2 - 1));
+        const cnvrt = (rgb) => '#' + rgb.map(x => {
+            return ("0" + Math.floor(x * 255).toString(16)).slice(-2);
+        }).join('');
+    
+        switch (Math.floor(h / 60)) {
+            case 0: return cnvrt([c, x, 0]);
+            case 1: return cnvrt([x, c, 0]);
+            case 2: return cnvrt([0, c, x]);
+            case 3: return cnvrt([0, x, c]);
+            case 4: return cnvrt([x, 0, c]);
+            case 5: return cnvrt([c, 0, x]);
+            default: return '#000';
+        }
+    },
     updateTimesChart() {
         if (!this.time_first) {
             this.time_first = performance.now();
