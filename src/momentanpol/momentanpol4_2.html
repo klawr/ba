@@ -23,12 +23,11 @@
     <script src="../scripts/pointCloud.js"></script>
     <script src="../scripts/group.js"></script>
     <script src="../scripts/line.js"></script>
-    <script src="momentanpol2.js"></script>
+    <script src="momentanpol4.js"></script>
 
     <p>
-        Test zur Bestimmung des Momentanpols eines sich translativ bewegenden Gliedes.
-        Hier wird die Geschwindigkeit über die Verfolgung von Punkte nach Lucas-Kanade ermittelt.
-        Die Winkelgeschwindigkeit über Regression.
+        Messung der Schnittpunkte der Mittelsenkrechten durch die Bewegung gemessen durch Lucas-Kanade.
+        Das translative Element scheint einen erwartbar großen Fehler zu erzeugen.
     </p>
 
     <script>
@@ -43,22 +42,19 @@
             ]
         };
 
-        const { group, data } = globalMomentanpol2Variables;
+        const { group, data } = globalMomentanpol6Variables;
         const fn = (result) => {
             const g = g2().clr();
 
-            result?.draw(g);
             group.draw(g, true);
             data.add(group.momentanpol());
             data.draw(g);
-
             data.getChart(false).exe(globalTestVariables.ctx3);
-
             g.exe(globalTestVariables.ctx2);
         };
 
         globalTestVariables.register(() =>
-            globalMomentanpol2Variables.group.stepRegression(fn));
+            globalMomentanpol6Variables.group.stepBisector(fn));
     </script>
 </body>
 
