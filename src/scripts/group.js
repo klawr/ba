@@ -55,10 +55,10 @@ class Group {
         return pts;
     }
 
-    momentanpol(th = 1) {
+    momentanpol(threshold = 1) {
         if (!(this.pts.length > 0) ||
-            !(this.pts[0].length > th) ||
-            !(this.lines.length > th)) {
+            !(this.pts[0].length > threshold) ||
+            !(this.lines.length > threshold)) {
             return;
         }
 
@@ -75,16 +75,17 @@ class Group {
         }
 
         const p1 = mu(1);
-        const p2 = mu(th + 1);
+        const p2 = mu(threshold + 1);
 
         const v = {
             x: p1.x - p2.x,
             y: p1.y - p2.y
         };
 
-        const dw =
+        const dw = ((
             Math.atan(this.lines[this.lines.length - 1].m) -
-            Math.atan(this.lines[this.lines.length - (th + 1)].m);
+            Math.atan(this.lines[this.lines.length - (threshold + 1)].m))
+            + Math.PI) % Math.PI;
 
         return {
             x: (p1.x + p2.x) / 2 - v.y / dw,
