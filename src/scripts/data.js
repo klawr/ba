@@ -104,8 +104,8 @@ class DataXY {
         // if (a.x > 0 && a.y > 0 &&
         //     a.x < gtv.cnv_width &&
         //     a.y < gtv.cnv_height) {
-            this.x.add(a.x);
-            this.y.add(a.y);
+        this.x.add(a.x);
+        this.y.add(a.y);
         // }
     };
 

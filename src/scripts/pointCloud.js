@@ -426,25 +426,44 @@ class PointCloud {
 
 }
 
-class Dijkstras {
+class Dijkstra {
     points = [];
+    graph = [];
     anchor = undefined;
+
+    draw(g) {
+        g.cir({ ...this.anchor, r: 5, fs: '#f00', ls: '@fs' });
+        const max = Math.max(...this.graph.map(n => n.dist));
+
+        this.points.forEach((p2, i) => {
+            const c = this.graph[i].dist / max * 300;
+            const pred = this.graph[i].pred;
+            const p1 = pred.id < 0 ? this.anchor : this.points[pred.id];
+
+            if (!p1) {
+                console.log(p1);
+            }
+
+            g.lin({ p1, p2, ls: `${globalTestVariables.hsv2rgb(c)}` });
+        })
+    }
 
     static euclDistance(p1, p2) {
         return Math.hypot(p1.x - p2.x, p1.y - p2.y);
     }
 
-    constructor(points, pt, numEdges = 5) {
+    constructor(points, anchor, warp = 2, numEdges = 0) {
         if (numEdges < 1) {
             numEdges = points.length - 1;
         }
 
-        this.anchor = pt;
+        this.points = points;
+        this.anchor = anchor;
 
         const compEdges = (p) => points
             .map((sp, sidx) => ({
                 target: sidx,
-                weight: Dijkstras.euclDistance(p, sp) ** 2,
+                weight: Dijkstra.euclDistance(p, sp) ** warp,
             }))
             .sort((a, b) => a.weight - b.weight)
             .slice(1, numEdges + 1);
@@ -460,7 +479,7 @@ class Dijkstras {
             id: -1,
             dist: 0,
             known: false,
-            edges: compEdges(pt)
+            edges: compEdges(anchor)
         });
 
         while (unvisited.length) {
@@ -468,18 +487,19 @@ class Dijkstras {
             const u = unvisited.shift();
             u.known = true;
 
-            // NOTE: dist is the sum of squared eucl. distances
+            // NOTE: dist is the sum of warped eucl. distances
             for (const { ldist, o } of u.edges
                 .map(e => ({ ldist: e.weight, o: graph[e.target] }))
                 .filter(({ o }) => !o.known)) {
                 const cdist = u.dist + ldist;
                 if (cdist < o.dist) {
                     o.dist = cdist;
+                    o.pred = u;
                 }
             }
         }
 
-        this.points = graph.map(n => n.dist);
+        this.graph = graph;
     };
 }
 
