@@ -8,45 +8,19 @@
     <title>Document</title>
     <style>
         body {
-            height: 100vh;
-            overflow-y: hidden;
+            display: flex;
+            flex-direction: row;
             margin: 0;
         }
 
         iframe {
-            width: calc(100vw - 18rem);
+            width: 100vw;
+            height: 100vh;
             border: none;
-            margin: 0;
-            margin-left: 18rem;
-            height: 100%;
         }
 
         summary {
-            margin: 2%;
-        }
-
-        .innerDetails {
-            margin-left: 4%;
-        }
-
-        ul {
-            margin: 0;
-        }
-
-        li {
-            margin: 2%;
-        }
-
-        nav {
-            width: 18rem;
-            height: calc(100vh - 4rem);
-            flex: 2;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            background-color: #aaa;
-            overflow-x: hidden;
+            margin-left: 1em;
         }
 
         summary:hover,
@@ -55,67 +29,136 @@
             cursor: pointer;
         }
 
-        footer {
+        .innerDetails {
+            margin-left: 1em;
+        }
+
+        nav {
+            width: 28rem;
+            resize: horizontal;
+            height: 100vh;
             background-color: #aaa;
-            height: 4rem;
-            width: 18rem;
-            position: fixed;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .footer {
+            position: absolute;
             bottom: 0;
+            right: 1em;
         }
     </style>
 </head>
 
 <body>
-
     <nav id="sidenav" class="nav">
         <h1 style="margin: 1rem">Tests zur BA</h1>
-        <footer>
+        <div class="footer">
             <a href="https://github.com/klawr/ba">Link zum Repository</a>
             <p>© Kai Lawrence</p>
-        </footer>
+        </div>
     </nav>
-    <iframe id="placeholder"></iframe>
-    </div>
+    <iframe id="iframe"></iframe>
     <script>
+        const r = document.querySelector(':root');
+
+        function myFunction_get() {
+            const rs = getComputedStyle(r);
+            rs.setProperty('--side',)
+            // Alert the value of the --blue variable
+            alert(rs.getPropertyValue('--blue'));
+        }
+
+
         const tests = {
             pendel: {
                 title: "Drehpunkt bei gegebenem Glied.",
                 test: {
-                    "kleinster umfassender Kreis": 4,
-                    "schnittpunkte": 5,
-                    "vergleich 2er Kreise": 3,
+                    "kleinster umfassender Kreis": [
+                        "Erster Versuch",
+                        "Filtern bekannter Punkte",
+                        "Pfad des Mittelpunktes",
+                        "Drehpunkt via Orthogonale",
+                    ],
+                    "schnittpunkte": [
+                        "Weitest entfernte Punkte",
+                        "5 weiteste Punkte",
+                        "Regressionsgerade",
+                        "Regression, gefiltert",
+                        "Orthogonale Regression",
+                    ],
+                    "vergleich 2er Kreise": [
+                        "Weitest entfernte Punkte",
+                        "5 weiteste Punkte",
+                        "Kleinster Kreis",
+                    ],
                 }
             },
             momentanpol: {
-                title: "Momentanpol bei gegebenem Glied",
+                title: "Momentanpol bei gegebenem Glied.",
                 test: {
-                    "drehendes Rad": 4,
-                    "rotation": 4,
-                    "translation": 3,
-                    "bisektion": 3,
+                    "drehendes Rad": [
+                        "Weitest entfernte Punkte",
+                        "5 weiteste Punkte",
+                        "Lucas-Kanade",
+                        "Lucas-Kanade nach 5 Iter.",
+                    ],
+                    "rotation": [
+                        "weitest entfernte Punkte",
+                        "5 weitest entfernte Punkte",
+                        "Lucas-Kanade",
+                        "Lucas-Kanade nach 5 Iter."
+                    ],
+                    "translation": [
+                        "Weitest entfernte Punkte",
+                        "Lucas-Kanade",
+                        "Lucas-Kanade nach 5 Iter."
+                    ],
+                    "bisektion": [
+                        "Drehendes Rad",
+                        "Rotation",
+                        "Translation",
+                    ],
                 }
             },
             gruppe: {
                 title: "Zuordnung mehrerer Glieder.",
                 test: {
-                    "linker Punkt": 3,
-                    "farneback": 1,
-                    "lucas-kanade": 2,
-                    "k-means": 3,
+                    "linker Punkt": [
+                        "2 Pendel",
+                        "4-Gelenk",
+                        "TODO"
+                    ],
+                    "farneback": [
+                        "Farneback",
+                    ],
+                    "lucas-kanade": [
+                        "Punkte",
+                        "Punkte mit Historie"
+                    ],
+                    "k-means": [
+                        "3 Centroids",
+                        "3 Centroids, gefiltert",
+                        "Regressionsgeraden",
+                    ],
                 }
             },
         }
 
-        const create = (s, parent) =>
-            parent?.appendChild(document.createElement(s)) ||
-            document.createElement(s);
+        function create(s, parent, innerHTML = "") {
+            const el = document.createElement(s);
+            el.innerHTML = innerHTML;
+            return parent?.appendChild(el) || el;
+        }
+
+        function byId(id) {
+            return document.getElementById(id);
+        }
 
         Object.entries(tests).forEach((kv, i) => {
-            const title = create('h2');
-            title.innerHTML = kv[1].title;
-            const details = create('details',
-                document.getElementById('sidenav'));
-            const summary = create('summary', details);
+            const title = create('h2', null, kv[1].title);
+            const details = create('details', byId('sidenav'));
+            const summary = create('summary', details, kv[1].title);
 
             Object.entries(kv[1].test).forEach((e, j) => {
                 const innerDetails = create('details', details);
@@ -125,20 +168,18 @@
 
                 const ul = create('ul', innerDetails);
 
-                for (let m = 1; m <= e[1]; ++m) {
-                    const li = create('li', ul);
-                    li.innerHTML = `${kv[0] + (j + 1)}_${m}.html`;
+                for (let m = 0; m < e[1].length; ++m) {
+                    const name = `${kv[0] + (j + 1)}_${m + 1}.html`;
+                    const li = create('li', ul, e[1][m] || name);
                     li.addEventListener('click', () => {
-                        document.getElementById('placeholder').src =
-                            `src/${kv[0]}/${kv[0] + (j + 1)}_${m}.html`;
-                        for (e of document.getElementsByTagName('li'))
+                        byId('iframe').src = `src/${kv[0]}/${name}`;
+                        for (e of ul.children) {
                             e.style.listStyle = 'disc';
+                        }
                         li.style.listStyle = 'inside';
-
                     });
                 }
             });
-            summary.innerHTML = kv[1].title;
         });
     </script>
 </body>
