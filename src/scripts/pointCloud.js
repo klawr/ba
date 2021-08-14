@@ -312,30 +312,30 @@ class PointCloud {
         const groups = [];
 
         for (const pt of pts) {
-            const dists = new Dijkstras(this.points, pt, 5).points;
+            const dijkstras = new Dijkstra(this.points, pt, 2);
+            dijkstras.draw(g);
+            const dists = dijkstras.graph.map(n => n.dist);
+
             const getScore = (line, g) => {
-                const m = -1 / line.m;
-        
+                const m = - 1 / line.m;
                 const score = this.points.reduce((pre, cur, idx) => {
                     const b = cur.y - m * cur.x;
-                    const x = (b - line.b) / (line.m - m) || cur.x;
-                    const y = m * x + b || Infinity;
-        
+                    const x = (b - line.b) / (line.m - m);
+                    const y = m * x + b;
                     g?.lin({ p1: { x, y }, p2: cur });
-        
                     const dist = Math.hypot(y - cur.y, x - cur.x);
-        
-                    return pre + dist / dists[idx];   
+
+                    return pre + dist / dists[idx] ** 2;
                 }, 0);
-        
-                return score / (1 ** 3);
+
+                return score;
             }
 
             for (let i = 0; i < 1; ++i) {
                 let lines = [
-                    new Line({ w: i / 120, p1: pt }),
-                    new Line({ w: i / 120 + 60, p1: pt }),
-                    new Line({ w: i / 120 - 60, p1: pt })]
+                    new Line({ w: i / 120 + 1, p1: pt }),
+                    new Line({ w: i / 120 + 61, p1: pt }),
+                    new Line({ w: i / 120 - 59, p1: pt })]
                     .sort((a, b) => getScore(a) - getScore(b))
                     .splice(0, 2);
 

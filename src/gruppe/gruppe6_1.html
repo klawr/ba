@@ -38,8 +38,6 @@
             ]
         };
 
-        const { ply } = globalGruppe1Variables;
-
         const fn = (result) => {
             const filtered = result.removeOverlaps();
 
@@ -47,7 +45,6 @@
             // const groups = filtered.groupUp(g);
             const groups = filtered.groupBinary([{x: 80, y: 50}], g);
             filtered.draw(g);
-            filtered.points.forEach(r => ply.push({ ...r }));
 
             g.exe(globalTestVariables.ctx2);
         }

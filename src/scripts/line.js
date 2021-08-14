@@ -63,6 +63,8 @@ class Line {
         return { x, y };
     }
 
+
+    // Get bisector of 2 lines. Favor the one with the smaller enclosing angle.
     bisector(otherLine) {
         const w1 = Math.atan(this.m);
         const w2 = Math.atan(otherLine.m);
@@ -70,7 +72,7 @@ class Line {
         const w = (w1 + w2) / 2 + (flip ? Math.PI / 2 : 0);
         const m = Math.tan(w);
         const p = this.intersection(otherLine);
-        const b = p.y - m * p.x;
+        const b = p.y - m * p.x || 0;
 
         return new Line({ m, b });
     }
