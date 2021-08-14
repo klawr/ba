@@ -5,25 +5,24 @@
 \cleanchapterquote{Was kann ich wissen?\\Was soll ich tun?\\Was darf ich hoffen?}{Immanuel Kant}{Kritik der reinen Vernunft}
 
 Das erste Problem das hier untersucht werden soll ist welche Information aus dem Abgleich von Bildern in Bildsequenzen gewonnen werden kann und wie man daraus gewonnene Erkenntnisse auf die zugrundeliegenden mechanismentechnische Strukturen zurückführen kann.
-Deshalb wird statt der vollständigen Rekonstruktion eines Mechansimus zunächst mit einem einfachen Pendel begonnen.
+Deshalb wird statt der vollständigen Rekonstruktion eines Mechansimus zunächst mit einem einzelnem Glied in Form eines einfachen Pendels begonnen.
 Dieses stellt im Grunde ein einzelnes Glied eines beliebigen Mechanismus dar.
 Die korrekte Erkennung eines Pendels ist also eine notwendige Bedingung für einen Ansatz der die Glieder des Mechanismus einzeln betrachtet\footnote{Das gilt im Grunde für alle Mechanismen welche rotierende Elemente beinhalten. Für alle Glieder welche keine Absolutpole besitzen sei die Relativbewegung gegenüber solchen heranziehbar}.
 
 Als zentrales Ziel dieses Kapitels wird die korrekte Bestimmung des Drehpunkts eines Pendels gesetzt; es sei jedoch angemerkt, dass ein Drehpunkt lediglich einen Sonderfall der Bestimmung des Momentanpols darstellt, auf dessen Bestimmung in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen wird.
 Zunächst wird die Erkennung des Drehpols als vereinfachtes Ziel genommen um herauszufinden, welche Information man durch die Beobachtung eines sich bewegenden Elementes gewinnen kann.
 
-Für die Bestimmung des Endpunktes wird zunächst der Punkt genommen, der am weitesten vom Drehpunkt ist.
+Für die Bestimmung des Endpunktes soll zunächst stets der Punkt genommen werden der am weitesten vom Drehpunkt ist.
 Diese Annahme ist für den Anfang hinreichend und wird im Zuge der Zusammensetzung mehrerer Glieder hinfällig, da Gelenke dann zwingend durch die Schnittpunkte entsprechender Glieder definiert sein müssen.
 
 Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden hier stets zwei Bilder miteinander verglichen, welche zeitlich etwa 16,7 Millisekunden auseinanderliegen.
-Die Frequenz von \name{requestAnimationFrame} beträgt im Optimalfall 60 Hertz.
+Die Frequenz wird vorgegeben durch \name{requestAnimationFrame} und beträgt im Optimalfall 60 Hertz.
 Dieser Optimalfall sei dadurch definiert, dass die \lstinline{step} Funktion aus \lstinline{run} (s. Listing~\ref{lst:gtv_run}) weniger als 16,7 Millisekunden benötigt\footnote{Neben der an \lstinline{run} übergebenen \lstinline{step} Funktion werden natürlich noch andere Funktionen wie \lstinline{model.tick} und \lstinline{updateTimesChart} ausgeführt, diese sollen hier jedoch nicht betrachtet werden. Sie werden daher auch für die Zeitmessung innerhalb von \lstinline{run} ausgeschlossen.}.
 
 \section{compareImages}
 
-Da sich in der modellierten Videosequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel aufzuzeichnen.
+Da sich in der modellierten Bildsequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel aufzuzeichnen.
 Hierfür wurde eine Funktion \lstinline{stepCompareImages} definiert, welche durch die an die \lstinline{register} Funktion übergebene Funktion aufgerufen wird.
-
 Diese Funktion ruft den aktuellen Inhalt des ersten HTML-Canvas Elementes durch \lstinline{cnv1.getContext('2d').getImageData(0, 0, cnv1.width, cnv1.height).data} auf und speichert diesen.
 Dieses Bild soll dann mit vorher gespeichertem Bild verglichen werden.
 Da der erste Aufruf dieser Funktion keinen Vergleich mit einem vorangegangen Bild zulässt, wird geprüft ob ein solches existiert und es wird eine Iteration abgewartet bevor der erste Vergleich stattfindet.
@@ -98,8 +97,22 @@ Entsprechend wird bei diesem Versuch der Drehpunkt als der letzte ermittelte Mit
 Das andere Ende des Pendels wird vorerst durch den Punkt definiert dessen Distanz die größte zum prognostizierten Drehpunkt ist.
 Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für die eigentliche Aufgabe vorerst irrelevant, da ein Pendel keinen Mechanismus darstellt.
 
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/pendel1_1.png}
+        \caption{Bild des ersten Versuchs. Im ersten Canvas wird das Pendel gezeigt. Im zweiten Bild werden die Punkte gezeigt welche gespeichert wurden um daraus den kleinsten umfassenden Kreis dieser Punkte zu ermitteln.}\label{fig:pendel1_1}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/pendel1_2.png}
+        \caption{Bild des zweiten Versuchs. Hier werden die Punkte welche nicht zum jeweils kleinsten umfassenden Kreis beitragen gefiltert. Der eingeschlossene Winkel ist jedoch kleiner, weshalb der Mittelpunkt des Kreises nicht dem Drehpunkt entspricht.}\label{fig:pendel1_2}
+    \end{subfigure}
+    \label{fig:pendel1_1_2}
+\end{figure}
+
 Im ersten Test zeigt sich jedoch, dass die Menge aller erfassten Punkte zu speichern sehr schnell ein Problem in Bezug auf die Performanz wird.
 Es ist jedoch nicht notwendig alle Punkte zu behalten.
+Die Menge der Punkte die hier gesammelt werden kann in Abbildung~\ref{fig:pendel1_1} gezeigt.
 Für jeden Kreis welcher über den zeitlichen Verlauf gebildet werden können alle Punkte verworfen werden, welche nicht zur Erstellung dieses genutzt wurden.
 Dies sind je nach Verteilung der Punktwolke entweder drei oder auch nur zwei Punkte, da ein Kreis sich genau durch mindestens zwei, aber maximal durch bereits drei Punkte bestimmen lässt.
 
@@ -111,8 +124,7 @@ Von diesen 294 Datenpunkten sind lediglich 69 den bekannten Datenpunkten zuzuord
 Die anderen 225 Punkte lassen sich den gemessenen Veränderungen der letzten beiden verglichenen Bildern zuordnen, was in etwa dem Durchschnitt der Punkte in diesen Tests mit einem Glied dieser Länge entspricht.
 Ein weiterer Vorteil ergibt sich noch dadurch, dass Glieder welche sich mehrfach im selben Winkel befinden keine neuen Einträge zu den bekannten Punkten hinzufügen.
 Ohne diesen Filter würde die Menge der Datenpunkte linear zunehmen, und die Dauer des Algorithmus, dessen Zeit ebenfalls linear zur Menge der Datenpunkte wächst, entsprechend quadratisch wachsen.
-
-% TODO Vergleich der Performance.
+Es zeigt sich, dass in vielen Fällen die Menge der Datenpunkte reduziert werden kann ohne das Einbußen bei der Genauigkeit der Versuche in Kauf genommen werden muss.
 
 % TODO check das ° Zeichen ob das anständig gedruckt wird. Wird es nicht.
 Dieser Ansatz erkennt für ein Glied das sich mindestens 180° um den definierten Punkt dreht ein sehr nahe am tatsächlichen Wert gelegenen Drehpunkt.
@@ -132,53 +144,73 @@ Sobald eine Drehung von über 90° vollführt wurde, ist der Kreis der durch den
 
 % TODO Zeige dass das 1. wirklich eine Gerade ist und 2. sie wirklich Orthogonal zum Drehpunkt steht.
 
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/pendel1_3.png}
+        \caption{Im dritten Versuch wird gezeigt, dass der Mittelpunkt des über die Zeit sich ändernden kleinsten umfassenden Kreises einen voraussichtlich interessanten Pfad bildet.}\label{fig:pendel1_3}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/pendel1_4.png}
+        \caption{Der vierte Versuch zeigt, dass dieser Pfad genutzt werden kann um bei Drehungen weit unter 90° den Drehpunkt zu bestimmen.}\label{fig:pendel1_4}
+    \end{subfigure}
+    \label{fig:pendel1_3_4}
+\end{figure}
+
 Aus diesen Erkenntnissen lässt sich jedoch eine Algorithmus bilden, welcher auch für Bewegungen weit unter 90° eine hinreichend gute Vorhersage über die Position des Drehpunktes bringt.
 Hierfür wird, solange die Anzahl der Punkte die den zuletzt gebildeten Kreises bei über zwei liegt, die Steigung vom ersten zum letzten Punkt im Pfad des Mittelpunktes des kleinsten umfassenden Kreises gemessen.
-Die Steigung und der y-Achsenabschnitt berechnen sich durch
+So kann der Drehpunkt erheblich früher mit hinreichender Genauigkeit bestimmt werden.
+Auf die Berechnung wird hier nicht näher eingegangen, weil es sich gezeigt hat, dass obwohl die Erkenntnisse aus diesem Versuch sehr hilfreich sind, der kleinste umfassende Kreis nicht genutzt wird.
+Der Quellcode kann jedoch unter % TODO
+eingesehen werden.
 
-\begin{equation}
-    \begin{split}
-        m &= \frac{p2_y - p1_y}{p2_x - p1_x} \\
-        b &= p_y - p.x \times m
-    \end{split}
-    \label{eq:m_steigung}
-\end{equation}
+% TODO 
 
-wobei hier $p2$ entsprechend der letzte und $p1$ der erste Punkt dieser Liste ist.
-Für die Berechnung von $b$ kann für $p$ entweder $p1$ oder $p2$ gewählt werden.
+% Die Steigung und der y-Achsenabschnitt berechnen sich durch
 
-Der Drehpunkt befindet sich nun auf der Orthogonalen zu dieser Gerade mit $p1$ als Schnittpunkt.
-Es ist außerdem bekannt, dass der Abstand des Drehpunktes zu $p1$ genau dem Radius des ersten ermittelten kleinsten umfassenden Kreis entsprechen sollte.
+% \begin{equation}
+%     \begin{split}
+%         m &= \frac{p2_y - p1_y}{p2_x - p1_x} \\
+%         b &= p_y - p.x \times m
+%     \end{split}
+%     \label{eq:m_steigung}
+% \end{equation}
 
-Der Abstand in der X-Koordinate des gesuchten Punktes zu $p1$ findet sich durch umstellen des Steigungsdreiecks nach $dx$
+% wobei hier $p2$ entsprechend der letzte und $p1$ der erste Punkt dieser Liste ist.
+% Für die Berechnung von $b$ kann für $p$ entweder $p1$ oder $p2$ gewählt werden.
 
-\begin{equation}
-    \begin{split}
-        r^2 &= dx^2 + dx^2 \times m^2 \\
-        \frac{r^2}{dx^2} &= 1 + m^2 \\
-        dx^2 &= \frac{r^2}{1+m^2} \\
-        dx &= \frac{r}{\sqrt{1 + m^2}}
-    \end{split}
-    \label{eq:steigungsdreieck}
-\end{equation}
+% Der Drehpunkt befindet sich nun auf der Orthogonalen zu dieser Gerade mit $p1$ als Schnittpunkt.
+% Es ist außerdem bekannt, dass der Abstand des Drehpunktes zu $p1$ genau dem Radius des ersten ermittelten kleinsten umfassenden Kreis entsprechen sollte.
 
-Wird das $m$ entsprechend durch $\frac{-1}{m}$ getauscht, erhält man den Abstand des gesuchten Punktes von $p_1$ auf der X-Achse.
+% Der Abstand in der X-Koordinate des gesuchten Punktes zu $p1$ findet sich durch umstellen des Steigungsdreiecks nach $dx$
 
-Um den entsprechenden Wert für die Y-Achse zu finden kann die Berechnung für das $b$ aus Gleichung~\ref{eq:m_steigung} verwendet werden, indem auch dort das $m$ durch $\frac{-1}{m}$ ersetzt wird.
-So kann der entsprechende Punkt durch
+% \begin{equation}
+%     \begin{split}
+%         r^2 &= dx^2 + dx^2 \times m^2 \\
+%         \frac{r^2}{dx^2} &= 1 + m^2 \\
+%         dx^2 &= \frac{r^2}{1+m^2} \\
+%         dx &= \frac{r}{\sqrt{1 + m^2}}
+%     \end{split}
+%     \label{eq:steigungsdreieck}
+% \end{equation}
 
-\begin{equation}
-    \begin{split}
-        p_{0x} &= p_{1x} - \frac{r}{\sqrt{1 + m^{-2}}} \\
-        p_{0y} &= - \frac{p_0x}{m} + p_{1y} + \frac{p_{1x}}{m}
-    \end{split}
-\end{equation}
+% Wird das $m$ entsprechend durch $\frac{-1}{m}$ getauscht, erhält man den Abstand des gesuchten Punktes von $p_1$ auf der X-Achse.
 
-gefunden werden.
-Es sei darauf hingewiesen, dass $p_{0y}$ sich auch direkt mithilfe von Gleichgung~\ref{eq:steigungsdreieck} berechnen ließe, indem das ursprüngliche $m$ genutzt wird, gemäß des Orthogonaloperators auf diesem Vektor.
+% Um den entsprechenden Wert für die Y-Achse zu finden kann die Berechnung für das $b$ aus Gleichung~\ref{eq:m_steigung} verwendet werden, indem auch dort das $m$ durch $\frac{-1}{m}$ ersetzt wird.
+% So kann der entsprechende Punkt durch
 
-Dieser Ansatz basiert auf der Annahme, dass die Steigung die berechnet wird hinreichend genau ist.
-Da der kleinste umfassende Kreis mit Sicherheit durch die außenliegensten Punkte definiert wird, ist es jedoch unwahrscheinlich das exakt der Drehpunkt getroffen wird, da der Radius des Drehgelenkes nicht berücksichtigt werden kann.
+% \begin{equation}
+%     \begin{split}
+%         p_{0x} &= p_{1x} - \frac{r}{\sqrt{1 + m^{-2}}} \\
+%         p_{0y} &= - \frac{p_0x}{m} + p_{1y} + \frac{p_{1x}}{m}
+%     \end{split}
+% \end{equation}
+
+% gefunden werden.
+% Es sei darauf hingewiesen, dass $p_{0y}$ sich auch direkt mithilfe von Gleichgung~\ref{eq:steigungsdreieck} berechnen ließe, indem das ursprüngliche $m$ genutzt wird, gemäß des Orthogonaloperators auf diesem Vektor.
+
+% Dieser Ansatz basiert auf der Annahme, dass die Steigung die berechnet wird hinreichend genau ist.
+% Da der kleinste umfassende Kreis mit Sicherheit durch die außenliegensten Punkte definiert wird, ist es jedoch unwahrscheinlich das exakt der Drehpunkt getroffen wird, da der Radius des Drehgelenkes nicht berücksichtigt werden kann.
 
 
 % TODO Gerade Linie und dann Kreis.
