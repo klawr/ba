@@ -27,8 +27,8 @@
 
     <p>
         Test mit Ermittlung zweier Kreise von denen einer Richtig ist.
-    Hier wird der kleinste umfassende Kreis um die Punkte mit größter Distanz gemessen.
-    Der Mittelpunkt des Kreises mit kleinerem Radius ist vermutlich der Drehpunkt.
+        Hier wird der kleinste umfassende Kreis um die Punkte mit größter Distanz gemessen.
+        Der Mittelpunkt des Kreises mit kleinerem Radius ist vermutlich der Drehpunkt.
     </p>
 
     <script>
@@ -49,7 +49,7 @@
 
             const { p1, p2 } = result.getMaxDist();
 
-            if (!p1 || ! p2) return;
+            if (!p1 || !p2) return;
             group.addPoints([p1, p2]);
 
             group.draw(g);
@@ -61,7 +61,7 @@
 
             g.lin({ p1, p2 })
                 .gnd({ ...c });
-            
+
             g.exe(globalTestVariables.ctx2);
         }
 
