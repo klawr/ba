@@ -4,44 +4,53 @@
 
 Die wahrgenommene Bewegung hervorgerufen durch zwei Bilder in welcher die enthaltenen Objekte sich relativ zu einander Bewegen zu scheinen wird als \name{optischer Fluss}(zu engl. \name{Optical Flow}) bezeichnet. % TODO Zitat aus Modern AI, S. 939 unten.
 Der optische Fluss kann durch ein Vektorfeld betrachtet werden, wobei die Vektoren jeweils die relative Bewegung des betrachteten Punktes darstellen.
-Es lässt sich mathematisch durch
+Die Bewegung eines Objektes innerhalb zweier Bilder lässt sich durch
 
 \begin{equation}
-% TODO
+I(x, y, t) = I(x + \Delta x, y + \Delta y, t + \Delta t)
 \label{eq:optical_flow}
 \end{equation}
 
 darstellen.
-
-% TODO Erwähne, dass dieses Vektorfeld analog zum Gössner S.119 beschriebenen Vektorfeld steht.
-
+Hier stellen $x$ und $y$ jeweils die Koordinaten und $t$ die Helligkeit des Objektes dar.
+Durch die Ermittlung der Differenzen lässt sich so die Bewegung ermitteln.
+Wird diese Bewegung für jeden Pixel innerhalb zweier Bilder ermitteln, lässt sich so ein Vektorfeld für die Bewegung der einzelnen Objekte innerhalb eines Bildes darstellen.
 Inspiriert durch diesen Ansatz scheint es naheliegend ihn auf planare Mechanismen anzuwenden um so aus einer Videoaufnahme, oder mehrerer Bildaufnahmen eines Mechanismus diesen synthetisieren zu können.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/ai_modern_approach_optical_flow.png}
+    \caption{Hier werden zwei Bilder einer Bildsequenz gezeigt. Das dritte Bild zeigt das Vektorfeld an, welches die Bewegung der einzelnen Pixel im nächsten Bild vermutet~\cite[[S.~941]{Russell2010, Brox2009}.}
+    \label{fig:ai_modern_approach_optical_flow}
+\end{figure}
 
 % Hier ein Bild von Thomas Brox scheint angebracht. (Modern AI S. 941)
 
 \section{Optischer Fluss nach Lucas-Kanade}\label{ch:lucas_kanade}
 
-Einen Vorschlag einer nutzbaren Implementation wurde von Lucas und Kanade bereits 1981 vorgeschlagen. % TODO cite
+Einen Vorschlag einer nutzbaren Implementation des optischen Flusses wurde von Lucas und Kanade bereits 1981 vorgeschlagen~\cite{Lucas1981}.
 
 Der vorgeschlagene Ansatz trifft im vorherein jedoch mehrere Annahmen.
-Diese sind zunächst, dass die Bewegung nicht sehr groß ist.
-Zu schnelle Bewegungen können durch diesen Ansatz unwahrscheinlich erkannt werden.
-Eine andere Annahme ist, dass die zu untersuchende Bildsequenz in Graustufen immernoch nutzbar ist.
+Die erste Annahme ist, dass die Bewegung nicht sehr groß ist.
+Zu schnelle Bewegungen können durch diesen Ansatz wahrscheinlich nicht, oder nur schlecht erkannt werden.
+Eine weitere Annahme ist, dass die zu untersuchende Bildsequenz in Graustufen immernoch nutzbar ist.
 Es werden in dieser Methode die Helligkeitswerte der Pixel untersucht, sodass eine Szene welche in einer solchen Darstellung keine zu erkennende Bewegung hat entsprechend keine sinnvollen Ergebnisse verspricht.
 
-Die Überlegung die in diesem Algorithmus betrachtet wird ist, dass wenn für einen Pixel sich die Helligkeit verändert hat, wird sich das diesem Pixel zugrunde liegende Objekt bewegt haben.
+Die Überlegung die in diesem Algorithmus verfolgt wird ist, dass für einen Pixel sich die Helligkeit genau dann verändert, wenn sich das zugrundeliegende Objekt bewegt hat.
+Die Bewegung sollte durch einen Abgleich mit Benachbarten Pixeln gefunden werden indem der entsprechende Fehler minimiert wird der durch eine Bewegung erzeugt wird.
+Wird das erste Bild für die entsprechenden Pixelwerte als eine Funktion $F(x)$ und die Pixelwerte des zweiten Bildes entsprechend als $G(x)$ beschrieben, so wird also jener Vektor gesucht, welcher den Fehler zwischen diesen beiden Funktionen minimiert.
+Beschreiben diese Funktionen stattdessen Regionen auf entsprechenden Bildern, so kann der Vektor gesucht werden, welcher für die Bewegung dieser Regionen innerhalb der Bilder den geringsten Fehler ausschreibt.
+Auf diese Weise kann versucht werden die Bewegung einzelner Objekte zu verfolgen.
 
-Beschreibt man das erste Bild für die entsprechenden Pixelwerte als eine Funktion $F(x)$ und die Pixelwerte des zweiten Bildes entsprechend als $G(x)$, so wird der Vektor gesucht, welcher den Fehler zwischen diesen beiden Bildern minimiert.
-Wird für $F(x)$ und $G(x)$ eine Region festgelegt, so kann der Vektor gesucht werden, welcher für die Bewegung dieser Regionen innerhalb der Bilder den geringsten Fehler ausschreibt.
-
-Die größe der Regionen unbekannt, deshalb soll hier ein pyramidischer Ansatz genutzt werden.
-Das bedeuted, dass um eine Region von Interesse mehrere Regionen festgelegt werden, für welche der Fehler entsprechend berechnet wird.
+Zunächst ist die Größe der Regionen unbekannt, deshalb wird ein pyramidischer Ansatz genutzt werden.
+Das bedeutet, dass um eine Region von Interesse mehrere Regionen festgelegt werden, für welche der Fehler entsprechend berechnet wird.
 Diese Fehler können dann verglichen werden und die passende Region wird genutzt um die Verschiebung des Punktes innerhalb des Bildes zu beschreiben.
 Anhand dieses Ansatzes kann die ungefähre Größe des sich bewegenden Objektes untersucht werden.
+Diese Implementation wird durch Jean-Yves Bouget beschrieben~\cite{Bouguet2000}.
 
-Was für eine Implementation nun noch fehlt ist die Festlegung der Regionen von Interesse.
-Hierfür wird der Kantenerkennungsalgorithmus von Shi-Tomasi verwendet.
-% TODO erkläre Shi-Tomasi hier ein bisschen, so muss später nurnoch die reine Implementation beschrieben werden.
+Was für eine Nutzung nun noch fehlt ist die Festlegung der entsprechenden Regionen von Interesse.
+Hierfür wird ein Algorithmus genutzt, welcher in einem Bild interessante Punkte anhand von Kantenerkennung identifiziert.
+Entwickelt wurde dieser von J. Shi und C. Tomasi~\cite{Shi1994} und wird im nachfolgenden genutzt um die Menge der zu verfolgenden Punkte zu bestimmen.
 
 \subsection{Implementation des Lucas-Kanade Algorithmus}
 
@@ -49,22 +58,24 @@ Um diesen Algorithmus in die nun bestehende Struktur zu implementieren, wird fü
 Diese Eigenschaft verweist auf ein Objekt der \lstinline{LucasKanade} Klasse.
 Objekte der \lstinline{LucasKanade} Klasse enthalten wiederrum alle Parameter welche für die Implementation der Algorithmen notwendig sind.
 
-Die Funktionen zur Bestimmung interessanter Punkte und dessen Verfolgung wird von \name{opencv.js} bezogen. % TODO cite
-\name{opencv}\footnote{\name{opencv} ist eine Abkürzung für Open Computer Vision.} ist eine Sammlung optimierter Funktionen im Bereich der Bildverarbeitung und des Maschniellen sehens.
+Die Funktionen zur Bestimmung interessanter Punkte und dessen Verfolgung wird von \name{opencv.js} bezogen~\cite{OpenCV2021}.
+\name{opencv}\footnote{\name{opencv} ist eine Abkürzung für Open Computer Vision.} ist eine Sammlung zumeist optimierter Funktionen im Bereich der Bildverarbeitung und des Maschniellen sehens.
 Implementiert ist \name{opencv} in \name{C++}.
 Es gibt jedoch Unterstüzung für eine Vielzahl von anderen Programmiersprachen, wie zum Beispiel \name{Python}, \name{Java} und \name{JavaScript}.
 
 Für \name{JavaScript} wird das globale \lstinline{cv} Objekt genutzt um auf dessen Funktionen zuzugreifen.
 Für die Bestimmung von vermeintlich sinnvollen Regionen zur Verfolgung wird die \lstinline{cv.goodFeaturesToTrack} Funktion verwendet.
 Diese implementiert den Shi-Tomasi Algorithmus.
-Als Parameter übergeben werden hier ein Bild (in Graustufen), eine \lstinline{cv.Mat} Objekt in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte welche zur Verfolgung gesucht werden, dessen Qualität, % TODO wie Qualität?
-der minimale euklidische Abstand der Punkte zueinander. % none und blocksize? Hä?
+Als Parameter übergeben werden hier ein in Graustufen konvertiertes Bild, eine \lstinline{cv.Mat} Objekt in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte welche zur Verfolgung gesucht werden, die minimale Qualität einer Kante\footnote{Die Qualität einer Kante wird hier ins Verhältnis zur Kante mit bester Qualität gestellt. Die Qualität einer hier genutzten Kante berechnet sich durch \lstinline{cv.cornerMinEigenVal}, worauf hier jedoch nicht weiter eingegangen wird. Mehr Information kann unter \aka{https://docs.opencv.org/master/dd/d1a/group__imgproc__feature.html\#ga3dbce297c1feb859ee36707e1003e0a8} gefunden werden.},
+der minimale euklidische Abstand der Punkte zueinander.
+Des weiteren können hier spezielle Regionen von Interesse übergeben werden und die durchschnittliche Größe der Blöcke welche bei der Berechnung genutzt werden.
 
-Die darauf folgende Berechnung von \lstinline{cv.calcOpticalFlowPyrLK} gibt dann nach dem Vergleich zweier Bilder die prognostizierte neue Position der durch \lstinline{goodFeaturesToTrack} bestimmten Punkte.
+Nach der Bestimmung der zu verfolgenden Punkte wird versucht diese durch \lstinline{cv.calcOpticalFlowPyrLK} zu verfolgen.
 Die \lstinline{calcOpticalFlowPyrLK} Funktion benötigt als Parameter zunächst die beiden Bilder in zeitlicher Abfolge.
 Der dritte Parameter sind die Punkte welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt welcher die berechnet Punkte enthalten wird.
 Alles weitere sind Parameter zum Einstellen des Algorithmus, wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Größe der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung größer werdenen Regionen.
-Abschließend wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben. % TODO den man nochmal angucken sollte was genau der nochmal macht...
+Abschließend wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben, welcher eine Abbruchbedingung für die iterative Suche darstellt.
+Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfand, oder die Bewegung unterhalb eines bestimmten Wertes vermutet wird.
 
 Die in der \lstinline{LucasKanade} Klasse definierte \lstinline{step} Funktion ist in Listing~\ref{lst:LucasKanade_step} abgebildet.
 
