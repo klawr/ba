@@ -221,22 +221,32 @@ eingesehen werden.
 
 \section{Schnittpunkte von Geraden}\label{ch:schnittpunkt_gerade}
 
-Als ein weiterer Ansatz soll nun untersucht werden, ob der Drehpunkt durch die Schnittpunkte von durch die Punktwolke definierten Geraden ermittelt werden kann.
-Diese Gerade soll durch die Momentaufnahmen bestimmt werden.
+Als ein weiterer Ansatz soll nun untersucht werden ob der Drehpunkt durch die Schnittpunkte von durch die Punktwolke definierten Geraden ermittelt werden kann.
+Die entsprechende Gerade soll durch die ermittelten Datenpunkte ermittelt werden.
 
-Zunächst soll die Gerade genutzt werden, welche durch die am weitesten voneinander entfernten Punkte der Punktwolke definiert wird.
+Zunächst soll die Gerade anhand der am weitesten voneinander entfernten Punkte definiert werden.
 Diese Gerade sollte in etwa den selben Winkel haben wie der Winkel des tatsächlichen Gelenkes.
-Eine Annahme die hierbei implizit getroffen wird, ist dass die Glieder länger sind als sie breit sind, wobei die Länge durch den Abstand der Gelenke definiert ist und die Breite entsprechend durch die Punkte welche normal zu der Längenlinie stehen.
+Eine Annahme die hierbei implizit getroffen wird, ist dass die Glieder länger sind als sie breit sind, wobei die Länge durch den Abstand der Gelenke definiert ist und die Breite entsprechend durch die Punkte welche orthogonal zu der Längenlinie stehen.
 
-Die am weitest voneinander entfernten Punkte lassen sich durch eine auf der \lstinline{PointCloud} definierten Funktion \lstinline{getMaxDist} finden. % TODO lst:getmaxdist fehlt?
+Die am weitest voneinander entfernten Punkte einer \lstinline{PointCloud} lassen sich durch die auf dieser Klasse definierten Funktion \lstinline{getMaxDist} finden\footnote{Der entsprechende Quellcode kann unter \aka{TODO} eingesehen werden.}.
 In dieser Funktion wird für jeden Punkt der Punkt gesucht, welcher den größten Abstand zu diesem hat. Es wird außerdem festgehalten welches Paar den größten Abstand hatte.
-Mit dieser Funktion wird dann ein Objekt der Klasse \lstinline{Line} zurückgegeben, welches anhand der beiden ermittelten Punkte eine Gerade gemäß der in Gleichung~\ref{eq:m_steigung} gezeigten Formel erstellt..
+Diese beiden Punkte können genutzt werden um ein Objekt der Klasse \lstinline{Line} zu erstellen.
+Diese Klasse stellt in dieser Arbeit alle Funktionen bereit welche für den Umgang mit Geraden benötigt werden.
+% TODO welches anhand der beiden ermittelten Punkte eine Gerade gemäß der in Gleichung~\ref{eq:m_steigung} gezeigten Formel erstellt.
 
 Eine auf diese Weise definierte Gerade wird dann in einer Liste gespeichert und die nächste Iteration folgt.
 Bereits ab der zweiten Iteration können dann die Schnittpunkte dieser Geraden genutzt werden um den Drehpunkt zu bestimmen.
 
-Der Schnittpunkt zweier Geraden ist ebenfalls eine auf der \lstinline{Line} definierten Funktion \lstinline{intersection} definiert.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/pendel1_3.png} % TODO
+    \caption{Dieser Test versucht den Drehpunkt mittels des Erwartungswertes der Schnittpunkte aller Geraden, welche durch die in einer Iteration ermittelten am weitesten voneinander entfernten Punkte ermittelt werden.}
+    \label{fig:pendel2_1}
+\end{figure}
+
+Die Ermittlung des Schnittpunktes zweier Geraden ist durch die \lstinline{intersection} Funktion der \lstinline{Line} Klasse definiert.
 Der Schnittpunkt zweier Geraden berechnet sich durch
+
 \begin{equation}
     \begin{split}
         p_x &= \frac{b_2 - b_1}{m_1 - m_2} \\
@@ -245,40 +255,48 @@ Der Schnittpunkt zweier Geraden berechnet sich durch
     \label{eq:schnittpunkt}
 \end{equation}
 
-% TODO Implementation
-
 Wobei für die Berechnung von $p_y$ entweder die Parameter der ersten, oder zweiten Gerade genommen werden können.
+
+Die Implementation wird in Listing~\ref{lst:line_intersection} gezeigt.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{intersection} Funktion, welche eine Funktion der \lstinline{Line} Klasse darstellt.}\label{lst:line_intersection}]
+intersection(otherLine) {
+    const x = (this.b - otherLine.b) / (otherLine.m - this.m);
+    const y = this.m * x + this.b;
+    return { x, y };
+}
+\end{lstlisting}
 
 \subsection{Der Umgang mit Ungenauigkeit}
 
-Für die Verarbeitung der berechneten Punkte wurden zwei weitere Klassen erstellt, welche die Daten verwalten die zur Bestimmung der Pole erforderlich sind.
+Im Optimalfall würden alle gemessenen Daten exakt den Punkten entsprechen welche gesucht werden.
+Allerdings ist bei den Messungen mit Ungenauigkeiten zu rechnen.
+Für die Verarbeitung der Daten wurden zwei weitere Klassen erstellt, welche die Daten verwalten die bei der Bestimmung der gesuchten Punkte erforderlich ist.
 Die \lstinline{Data} Klasse wird genutzt um einzelne Datenpunkte zu halten, dessen Erwartungswert, Varianz, Standardabweichung und die Gauß'sche Normalverteilung zu berechnen.
 Außerdem bietet sie Funktionen zur Vorbereitung der Daten für den \lstinline{g2.chart} Befehl an.
 
 Die zweite Klasse ist die \lstinline{DataXY} Klasse.
-Sie bietet die Möglichkeit Punkte direkt zu verwalten.
+Sie bietet die Möglichkeit, statt einzelner Werte, Punkte zu verwalten.
 Punkte sind in diesem Fall definiert als Objekte welche die Eigenschaften \lstinline{x} und \lstinline{y} haben.
-Ein \lstinline{DataXY} Objekt hat jeweils die Eigenschaften \lstinline{x} und \lstinline{y} als \lstinline{Data} Objekt und bietet dazu Funktionen an, welche diese gemeinsam auf einem \lstinline{g2.chart} zeichnen können.
+Ein \lstinline{DataXY} Objekt hat die Eigenschaften \lstinline{x} und \lstinline{y}, welche selber als \lstinline{Data} Objekt vorliegen, und bietet dazu Funktionen an, welche diese gemeinsam auf einem \lstinline{g2.chart} zeichnen können.
 
 In der \lstinline{Data} Klasse ist ein \lstinline{data} Objekt definiert, welches dazu dient die gesammelten Daten zu verwalten.
-Statt einer Liste dienen die Schlüssel dieses Objektes als Wert welcher gemessen wurde und der dazugehörige Wert als der Anzahl wie oft dieser gemessen wurde.
-Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert, welche wie folgt aussieht:
+Statt eine Liste zu Nutzen wird ein Objekt verwendet dessen Schlüssel dem Messwert entsprechen und der dazugehörige Wert die Anzahl darstellt wie oft dieser gemessen wurde.
+Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert welche wie folgt aussieht:
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}\label{lst:data_add}]
 add(a) {
-if (!a) return;
-
-const r = Math.round(a);
-if (Number.isSafeInteger(r)) {
-    this.data[r] = this.data[r] ? this.data[r] + 1 : 1;
-}
+    if (!a) return;
+    const r = Math.round(a);
+    if (Number.isSafeInteger(r)) {
+        this.data[r] = this.data[r] ? this.data[r] + 1 : 1;
+    }
 };
 \end{lstlisting}
 
-Diese Schreibweise gibt einen besseren Überblick über die Verteilung der Daten.
-Außerdem sind weniger Iterationen notwendig um über die Daten zu iterieren.
+Die Entscheidung ein Objekt statt einer Liste zu nutzen bietet bessere Verarbeitungsmöglichkeiten der Daten. % TODO stattdessen eine Map verwenden?
+Es sind beispielsweise weniger Iterationen notwendig um über die Daten zu iterieren.
 Das Iterieren über das Objekt wird durch Funktionen wie \lstinline{Objekt.entries} ermöglicht, wie in Listing~\ref{lst:data_mu} gesehen werden kann.
-
 Die Vorhersage eines gesuchten Punktes wird hier stets durch den Erwartungswert aller vorangegangen Messungen bestimmt.
 
 Der Erwartungswert $\mu$ berechnet sich durch
@@ -298,7 +316,7 @@ get mu() {
 \end{lstlisting}
 
 Um verschiedene Ansätze miteinander Vergleichen zu können, soll außerdem noch die Standardabweichung berechnet werden.
-Die Varianz berechnet sich durch
+Hierfür berechnet sich zunächst die Varianz durch
 
 \begin{equation}
     \sigma^2 = \frac{1}{n - 1} \sum_{i=1}^n(x_i - \mu)^2
@@ -317,12 +335,11 @@ get variance() {
 }
 \end{lstlisting}
 
-\lstinline{mu} wird hier zwischengespeichert, damit dieser nicht für jede Iteration innerhalb des \lstinline{reduce} aufrufes erneut ausgerechnet werden muss.
+\lstinline{mu} wird hier zwischengespeichert, damit dieser nicht für jede Iteration innerhalb des \lstinline{reduce} aufrufes erneut berechnet werden muss.
 
 Die Standardabweichung $\sigma$ ist entspechend die Quadratwurzel der Varianz.
 
 Um die entsprechenden Ergebnisse mit der Gauß'schen Normalverteilung zu Vergleichen wurde eine Funktion geschrieben, welche vom \lstinline{g2.chart} genutzt werden kann um diese neben die gesammelten Daten zu zeichnen.
-
 Die Funktion für die Gauß'sche Normalverteilung berechnet sich durch
 
 \begin{equation}
@@ -341,7 +358,7 @@ gaussianDistribution(x) {
 }
 \end{lstlisting}
 
-Diese Funktion kann dann vom \lstinline{g2.chart} aufgerufen werden um den entsprechenden Graphen zu zeichnen.
+Diese Funktion kann dann vom \lstinline{g2.chart} aufgerufen werden um den entsprechenden Graphen mit Daten zu fällen.
 Die Implementation eines solchen Aufrufs wird in Listing~\ref{lst:data_getChart} gezeigt.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{getChart} Funktion der \lstinline{Data} Klasse.}\label{lst:data_getChart}]
@@ -359,6 +376,14 @@ getChart(limit) {
 \end{lstlisting}
 
 Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung des \lstinline{data} Objektes um durch \lstinline{g2.chart} dargestellt werden zu können.
+Ein entsprechend gezeichneter Graph kann in 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{gfx/normalverteilung.png}
+    \caption{Ein Beispiel zu einem durch \lstinline{g2.chart} gezeichneten Graphen. Die X-Achse bezeichnet die Koordinate des gefundenen Punktes und die Y-Achse den Anteil der auf dieser Koordinate gefundenen Punkte.}
+    \label{fig:pendel2_1}
+\end{figure}
 
 \subsection{Nutzung des Schwerpunktes mehrerer Datenpunkte}\label{ch:nutzung_des_schwerpunktes}
 
@@ -366,12 +391,13 @@ Idealerweise sollten alle Schnittpunkte der berechneten Geraden die selben Koord
 Wäre dies der Fall, dann wäre die Varianz gleich null und bereits nach zwei Iterationen hätte man ein ideales Ergebnis.
 Da dies jedoch nicht der Fall ist, wird für jede neue Gerade jeder Schnittpunkt mit den vorangegangen Geraden dem \lstinline{Data} Objekt übergeben.
 
-Diese Methode liefert schnell einen Erwartungswert der nah an dem tatsächlichen Wert auch für Schwungwinkel weit unter 180°.
+Diese Methode liefert schnell einen Erwartungswert der nah an dem tatsächlichen Wert.
+Dies gilt auch für vollzogene Winkel weit unter 180°.
 
 Nachteilig erscheint es, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
-Um dieses Problem zu Umgehen sollen nun mehrere am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden.
+Um dieses Problem zu behandeln sollen nun der Schwerpunkt mehrerer am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden\footnote{Für die Berechnung des Schwerpunktes wird davon ausgegeangen, dass das Gewicht der Punkte gleich ist. Die Berechnung ist also äquivalent zu der des Erwartungswerts.}.
 
-Es zeigt sich, dass die Standardabweichung für die selbe Menge an Iterationen bei der Nutzung des Schwerpunktes der 5 am weitesten auseinanderliegenden Punkte sich leicht reduziert.
+Die Standardabweichung für die selbe Menge an Iterationen bei der Nutzung des Schwerpunktes der 5 am weitesten auseinanderliegenden Punkte reduziert sich tatsächlich leicht.
 
 % TODO hier sollte ein Bild vorher zu nachher eingefügt werden um diese Aussage zu untermauern.
 

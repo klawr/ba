@@ -27,7 +27,7 @@ class Data {
     gaussianDistribution(x) {
         const mu = this.mu;
         const variance = this.variance;
-        const nominator = Math.exp(-((x - mu) ** 2) / (2 * variance));
+        const nominator = Math.exp(-0.5 * ((x - mu) / Math.sqrt(variance)) ** 2);
         const denominator = Math.sqrt(2 * Math.PI * variance);
         return nominator / denominator;
     }
@@ -41,9 +41,8 @@ class Data {
     get variance() {
         const mu = this.mu;
 
-        return Object.entries(this.data)
-            .reduce((pre, cur) =>
-                pre + (((+cur[0] - mu) ** 2) * (+cur[1])), 0)
+        return Object.entries(this.data).reduce((pre, cur) =>
+            pre + (((+cur[0] - mu) ** 2) * (+cur[1])), 0)
             / (this.length - 1);
     }
 
@@ -95,18 +94,18 @@ class DataXY {
         this.y.fillText(el2, "y", globalTestVariables.cnv_height);
     }
 
-    add(a, save = false) {
+    add(a, save = true) {
         if (!a) return;
-
-        // TODO make this comment an option with save
         const gtv = globalTestVariables;
-        this.pts.push(a);
-        // if (a.x > 0 && a.y > 0 &&
-        //     a.x < gtv.cnv_width &&
-        //     a.y < gtv.cnv_height) {
-        this.x.add(a.x);
-        this.y.add(a.y);
-        // }
+        if (!save || (
+            a.x > 0 &&
+            a.y > 0 &&
+            a.x < gtv.cnv_width &&
+            a.y < gtv.cnv_height)) {
+            this.pts.push(a);
+            this.x.add(a.x);
+            this.y.add(a.y);
+        }
     };
 
     getChart(showX = true, showY = true) {
