@@ -541,19 +541,34 @@ Entsprechend wird bei jeder Iteration der Abstand des Punktpaares mit dem letzte
 Zuständig für diesen Abgleich ist die \lstinline{addPoints} Funktion.
 
 Um mit dieser Information den Drehpunkt des Pendels zu ermitteln reicht es dann aus die Länge des gesamten Pfades zu messen, da der gesamtweg des Mittelpunktes erheblich kürzer sein sollte, als der des Enpunktes.
-Diese Beobachtung hält jedoch dem Test nicht zwingend statt.
-Das liegt vorallem darin, dass die in Kapitel~\ref{ch:bestimmung_regressionsgerade} gemacht Beobachtung, dass je weiter der Abgleich zweier Bilder vom tatsächlichen Drehpunkt entfernt ist die absolute Geschwindigkeit höher und die Dichte der Punktwolke entsprechend in solchen Regionen höher ist.
+Diese Beobachtung hält jedoch dem Test nicht zwingend stand.
+Das liegt vorallem daran, dass die in Kapitel~\ref{ch:bestimmung_regressionsgerade} gemacht Beobachtung, dass je weiter der Abgleich zweier Bilder vom tatsächlichen Drehpunkt entfernt ist die absolute Geschwindigkeit höher und die Dichte der Punktwolke entsprechend in solchen Regionen höher ist.
 Das hat zur Folge das die Fluktuationen erheblich zur Länge des Pfades der Bewegung des ermittelten Mittelpunktes beiträgt.
 
-Wird dieser Umstand versucht mit dem Schwerpunkt der Endpunkte zu behandeln, wie es in Kapitel~\ref{ch:nutzung_des_schwerpunktes}, scheint es diesen Umstand jedoch erheblich schlimmer zu machen.
+Wird dieser Umstand versucht mit dem Schwerpunkt der Endpunkte zu behandeln, wie es in Kapitel~\ref{ch:nutzung_des_schwerpunktes}, scheint es diesen Fehler noch zu verstärken.
 Beheben lässt sich dieser indem der kleinte umfassende Kreis um die beiden gesammelten Gruppen gebildet wird und derjeniger mit dem kleinerem Radius den Mittelpunkt darstellt.
 
 \section{Auswertung der Beobachtungen}
 
 Die hier besprochenen Ansätze haben viele Erkenntnisse eingebracht welche Information aus dem Abgleich zweier Bilder gewonnen werden kann.
-Es wurden für die Struktur der Versuche vier Klassen erstellt welche sicherlich auch bei weiteren Versuchen helfen werden.
+Es wurden für die Struktur der Versuche vier Klassen erstellt welche im Verlauf dieser Arbeit eine zentrale Rolle spielen werden.
+
+Die \lstinline{PointCloud} Klasse wird stets dann genutzt, wenn Anhand des Abgleichs zweier Bilder die Punktwolke genutzt werden soll um daraus weitere Informationen zu gewinnen.
+Bisher wird diese vorallem genutzt um die Regressionsgerade zu bilden, jedoch werden in den nachfolgenden Kapiteln weitere Funktionen dieser Klasse genutzt um Beispielsweise die Punkte der Punktwolken einzelner Glieder eines Mechanismus zuzuordnen.
+
+Die \lstinline{Line} Klasse hat ihren Fokus auf der Verarbeitung aller Methoden welche auf der Basis von Geraden gemacht werden sollen.
+Hier werden Funktionen für die Berechnung der Schnittpunkte definiert, sowie die Berechnung von Winkelhalbierenden zweier Geraden.
+Auch die Ermittlung von Orthogonalen zu einer Geraden wird hier definiert.
+
+Die \lstinline{Group} Klasse wurde in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} kurz angesprochen, wird allerdings eine größere Rolle in den nachfolgenden Kapiteln darstellen.
+Die Zuordnung von Punkten im Verlauf über mehrere Iterationen hat sich als ein notwendiges Werkzeug für die Berechnung von Polen herausgestellt.
 Als besonders wichtig hat sich die statistische Analyse der Beobachtungen gezeigt.
-Der Erwartungswert ist der intuitive Ansatz für die Ermittlung der Koordinaten gesuchter Punkte.
+
+Die \lstinline{Data} Klasse beinhaltet alle Funktionen welche zur Berechnung dieser notwendig ist.
+Unter anderem werden Funktionen hierraus auch genutzt, wenn die entsprechenden Kennwerte für die Berechnung anderer Funktionen notwendig ist, wie in Listing~\ref{lst:line_fromRegressionLine} gesehen werden kann.
+Der Erwartungswert ist der intuitive Ansatz für die Ermittlung der Koordinaten gesuchter Punkte, wenn diese eine Streuung aufweisen.
 Die Standardabweichung ermöglicht es die unterschiedlichen Ansätze qualitativ zu vergleichen.
+
+Jede der hier genannten Klassen hat zudem entsprechende \lstinline{draw} Funktionen, welche es ermöglicht die durch diese Klassen verwalteten Objekte visuell darzustellen um so die Ergebnisse zumeist im zweiten Canvas der Versuchsreihen darzustellen.
 
 Im Nachfolgenden soll noch eine weitere Möglichtkeit untersucht werden nutzbare Information aus Veränderungen in Bildern zu ermitteln.
