@@ -128,11 +128,12 @@ class Group {
     }
 
     draw(g, history) {
-        const width = globalTestVariables.cnv_width;
+        const { width, hsv2rgb } = globalTestVariables;
 
         const line = this.lines[this.lines.length - 1];
         const pts = this.pts?.map(p => p[p.length - 1]);
-        const colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
+
+        const color = (i) => hsv2rgb(i / (this.pts.length + 1) * 360);
 
         if (this.pts && history) {
             line && this.lines.forEach(l => g.lin({
@@ -141,14 +142,14 @@ class Group {
                 ls: '#fff8',
             }))
             this.pts.forEach((pt, i) => pt.forEach(p =>
-                g.cir({ ...p, r: 1, fs: colors[i % 6], ls: "@fs" })));
+                g.cir({ ...p, r: 1, fs: color(i), ls: "@fs" })));
         }
 
         line && g.lin({
             x1: 0, x2: width,
             y1: line.b, y2: line.m * width + line.b,
         });
-        pts?.forEach((p, i) => g.cir({ ...p, r: 5, fs: colors[i % 6], ls: "@fs" }));
+        pts?.forEach((p, i) => g.cir({ ...p, r: 5, fs: color(i), ls: "@fs" }));
     }
 }
 
@@ -172,7 +173,6 @@ class OpenCVLucasKanade {
     frameGray = undefined;
     st = undefined;
     err = undefined;
-    colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
 
 
     constructor(options) {

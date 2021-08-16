@@ -154,8 +154,6 @@ class PointCloud {
 
         const min = ungrouped.length / 10;
 
-        const colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
-
         let last = 0;
         while (ungrouped.length > min && ungrouped.length != last) {
             last = ungrouped.length;
@@ -208,8 +206,6 @@ class PointCloud {
 
         // There have to be at least 10% of initial points to continue
         const min = ungrouped.length / 10;
-
-        const colors = ['#00f8', '#0f08', '#0ff8', '#f008', '#f0f8', '#ff08'];
 
         // points to consider for respective line
         const bounds = 10;
@@ -277,7 +273,10 @@ class PointCloud {
 
                 if (Math.hypot(e.y - y, e.x - x) < bounds) {
                     group.push(e);
-                    g && g.cir({ ...e, r: 5, fs: colors[groups.length] });
+                    g && g.cir({
+                        ...e, r: 5,
+                        fs: globalTestVariables.hsv2rgb(groups.length / (this.points.length + 1) * 360)
+                    });
                 }
             });
 
@@ -368,7 +367,7 @@ class PointCloud {
      * @param {g2} g is a g2 command-queue used for rendering
      * @returns The mean of the points corresponding to a centroid.
      */
-    kMeansClustering(K, g) {
+    kMeansClustering(K, g, maxIter = 10) {
         function findNearestCentroid(point, centroids) {
             return centroids.indexOf(centroids.reduce((pre, cur) =>
                 Math.hypot(pre.y - point.y, pre.x - point.x) <
@@ -384,13 +383,7 @@ class PointCloud {
             centroids[0].push({ ...this.points[idx] });
         }
 
-        // TODO only works for k === 3;
-        const colorize = (i) => {
-            const str = "0".repeat(2 - i) + (15 * 16 ** i).toString(16);
-            return "#" + str;
-        }
-
-        for (let i = 0; i < 10; ++i) {
+        for (let i = 0; i < maxIter; ++i) {
             const data_assigned = this.points.map(d =>
                 ({ ...d, n: findNearestCentroid(d, centroids[i]) }));
 
@@ -412,7 +405,10 @@ class PointCloud {
             centroids.push(newCentroids);
 
             g && data_assigned.forEach(d => {
-                g.cir({ ...d, r: 1, ls: `${colorize(d.n)}` });
+                g.cir({
+                    ...d, r: 1,
+                    ls: globalTestVariables.hsv2rgb(d.n * 360 / k)
+                });
             });
         }
 
@@ -444,7 +440,7 @@ class Dijkstra {
                 console.log(p1);
             }
 
-            g.lin({ p1, p2, ls: `${globalTestVariables.hsv2rgb(c)}` });
+            g.lin({ p1, p2, ls: `${globalTestVariables.hsv2rgb(c)} ` });
         })
     }
 
