@@ -18,6 +18,7 @@
     <p>
         Hier wird eine Linie definiert durch den Schwerpunkt der 5 am weitesten voneinander entfernten Pixel bei denen eine Veränderung gemessen wurde.
         Der Erwartungswert der Schnittpunkte wird dann als Drehpunkt vermutet.
+        Die Y-Achse des Graphen ist auf 0.1 begrenzt um die Glockenkurve besser mit <a href="pendel2_1.html">pendel2_1</a> vergleichen zu können.
     </p>
 
     <script src="../third_party/g2.full.js"></script>
@@ -54,6 +55,11 @@
 
             lines.push(l);
 
+            if (lines.length === 100) {
+                globalTestVariables.running = false;
+                return;
+            }
+
             if (lines.length > 1) {
                 for (let i = 0; i < lines.length - 1; ++i) {
                     data.add(l.intersection(lines[i]));
@@ -66,7 +72,7 @@
 
                 g.cir({ ...gnd, r: 5 });
 
-                data.getChart().exe(globalTestVariables.ctx3);
+                data.getChart(1, 1, {ymax: 0.1}).exe(globalTestVariables.ctx3);
             }
 
             g.lin({ x1: 0, y1: l.b, x2: cnv1.width, y2: l.m * cnv1.width + l.b });

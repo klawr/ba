@@ -101,11 +101,11 @@ Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für di
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/pendel1_1.png}
-        \caption{Bild des ersten Versuchs. Im ersten Canvas wird das Pendel gezeigt. Im zweiten Bild werden die Punkte gezeigt welche gespeichert wurden um daraus den kleinsten umfassenden Kreis dieser Punkte zu ermitteln.}\label{fig:pendel1_1}
+        \caption{Versuch: \name{pendel1\_1.html}. Im ersten Canvas wird das Pendel gezeigt. Im zweiten Bild werden die Punkte gezeigt welche gespeichert wurden um daraus den kleinsten umfassenden Kreis dieser Punkte zu ermitteln.}\label{fig:pendel1_1}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/pendel1_2.png}
-        \caption{Bild des zweiten Versuchs. Hier werden die Punkte welche nicht zum jeweils kleinsten umfassenden Kreis beitragen gefiltert. Der eingeschlossene Winkel ist jedoch kleiner, weshalb der Mittelpunkt des Kreises nicht dem Drehpunkt entspricht.}\label{fig:pendel1_2}
+        \caption{Versuch: \name{pendel1\_2.html}. Hier werden die Punkte welche nicht zum jeweils kleinsten umfassenden Kreis beitragen gefiltert. Der eingeschlossene Winkel ist jedoch kleiner, weshalb der Mittelpunkt des Kreises nicht dem Drehpunkt entspricht.}\label{fig:pendel1_2}
     \end{subfigure}
     \label{fig:pendel1_1_2}
 \end{figure}
@@ -148,11 +148,11 @@ Sobald eine Drehung von über 90° vollführt wurde, ist der Kreis der durch den
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/pendel1_3.png}
-        \caption{Im dritten Versuch wird gezeigt, dass der Mittelpunkt des über die Zeit sich ändernden kleinsten umfassenden Kreises einen voraussichtlich interessanten Pfad bildet.}\label{fig:pendel1_3}
+        \caption{Versuch: \name{pendel1\_3.html}. Im dritten Versuch wird gezeigt, dass der Mittelpunkt des über die Zeit sich ändernden kleinsten umfassenden Kreises einen voraussichtlich interessanten Pfad bildet.}\label{fig:pendel1_3}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/pendel1_4.png}
-        \caption{Der vierte Versuch zeigt, dass dieser Pfad genutzt werden kann um bei Drehungen weit unter 90° den Drehpunkt zu bestimmen.}\label{fig:pendel1_4}
+        \caption{Versuch: \name{pendel1\_4.html}. Dieser Versuch zeigt, dass der durch den Mittelpunkt kreierte Pfad genutzt werden kann um bei Drehungen weit unter 90° den Drehpunkt zu bestimmen.}\label{fig:pendel1_4}
     \end{subfigure}
     \label{fig:pendel1_3_4}
 \end{figure}
@@ -237,6 +237,7 @@ Diese Klasse stellt in dieser Arbeit alle Funktionen bereit welche für den Umga
 Eine auf diese Weise definierte Gerade wird dann in einer Liste gespeichert und die nächste Iteration folgt.
 Bereits ab der zweiten Iteration können dann die Schnittpunkte dieser Geraden genutzt werden um den Drehpunkt zu bestimmen.
 
+% TODO falsches Bild.
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/pendel1_3.png} % TODO
@@ -382,7 +383,7 @@ Ein entsprechend gezeichneter Graph kann in
     \centering
     \includegraphics[width=0.5\textwidth]{gfx/normalverteilung.png}
     \caption{Ein Beispiel zu einem durch \lstinline{g2.chart} gezeichneten Graphen. Die X-Achse bezeichnet die Koordinate des gefundenen Punktes und die Y-Achse den Anteil der auf dieser Koordinate gefundenen Punkte.}
-    \label{fig:pendel2_1}
+    \label{fig:normalverteilung}
 \end{figure}
 
 \subsection{Nutzung des Schwerpunktes mehrerer Datenpunkte}\label{ch:nutzung_des_schwerpunktes}
@@ -390,22 +391,33 @@ Ein entsprechend gezeichneter Graph kann in
 Idealerweise sollten alle Schnittpunkte der berechneten Geraden die selben Koordinaten haben.
 Wäre dies der Fall, dann wäre die Varianz gleich null und bereits nach zwei Iterationen hätte man ein ideales Ergebnis.
 Da dies jedoch nicht der Fall ist, wird für jede neue Gerade jeder Schnittpunkt mit den vorangegangen Geraden dem \lstinline{Data} Objekt übergeben.
-
 Diese Methode liefert schnell einen Erwartungswert der nah an dem tatsächlichen Wert.
 Dies gilt auch für vollzogene Winkel weit unter 180°.
 
 Nachteilig erscheint es, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
-Um dieses Problem zu behandeln sollen nun der Schwerpunkt mehrerer am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden\footnote{Für die Berechnung des Schwerpunktes wird davon ausgegeangen, dass das Gewicht der Punkte gleich ist. Die Berechnung ist also äquivalent zu der des Erwartungswerts.}.
+Um dieses Problem zu behandeln sollen nun der Schwerpunkt mehrerer am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden\footnote{Für die Berechnung des Schwerpunktes wird davon ausgegeangen, dass das Gewicht der Punkte gleich ist. Die Berechnung ist also äquivalent zu der des Erwartungswertes.}.
 
-Die Standardabweichung für die selbe Menge an Iterationen bei der Nutzung des Schwerpunktes der 5 am weitesten auseinanderliegenden Punkte reduziert sich tatsächlich leicht.
+Die Standardabweichung für die selbe Menge an Iterationen bei der Nutzung des Schwerpunktes der 5 am weitesten auseinanderliegenden Punkte reduziert sich tatsächlich leicht, wie in Abbildung~\ref{fig:pendel2_1_2_stats} gesehen werden kann.
 
-% TODO hier sollte ein Bild vorher zu nachher eingefügt werden um diese Aussage zu untermauern.
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/pendel2_1_stats.png}
+        \label{fig:pendel2_1_stats}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/pendel2_2_stats.png}
+        \label{fig:pendel2_2_stats}
+    \end{subfigure}
+    \caption{Die Graphen zeigen jeweils die Verteilung der ermittelten Drehpunkte für die X- und Y-Achse. Orange ist jeweils der Y-Wert und Grün der X-Wert. Die darüber liegenden bläulichen Funktionen sind die entsprechenden Gauß-Verteilungen.
+    Um die beiden Graphen besser vergleichbar zu machen wurde die Y-Achse auf den Wert $0.1$ begrenzt. Tatsächlich scheint das Nutzen mehrere Punkte die Standardabweichung reduziert zu haben. Nach der Ermittlung von 100 Geraden konnte die Standardabweichung der Y-Achse von $13.4$ auf $11.2$ und die der X-Achse von $13.0$ auf $11.2$ reduziert werden.}
+    \label{fig:pendel2_1_2_stats}
+\end{figure}
 
 \section{Bestimmung der Regressionsgeraden}\label{ch:bestimmung_regressionsgerade}
 
 Die Gerade welche den geringsten Fehler gegenüber einer Menge an Punkten darstellt wird als Regressionsgerade bezeichnet.
-
-Die Berechnung der Regressionsgeraden nach der Gauß'schen Methode der kleinsten Quadrate wird durch % Zitat Papula 3 S. 696
+Die Berechnung der Regressionsgeraden nach der Gauß'schen Methode der kleinsten Quadrate wird durch % TODO Zitat Papula 3 S. 696
 
 \begin{equation}
     \begin{split}
@@ -416,19 +428,18 @@ Die Berechnung der Regressionsgeraden nach der Gauß'schen Methode der kleinsten
     \label{eq:regression_gauss}
 \end{equation}
 
-unterstellt jedoch einen vernachlässigbar kleinen Fehler auf der X-Achse.
-Dies resultiert in einer falschen Regressionsgerade wenn sie vertikal sein sollte.
+berechnet.
+Diese Berechnung unterstellt jedoch einen vernachlässigbar kleinen Fehler auf der X-Achse.
+Dies resultiert hier in der berechneten Gerade wenn sie vertikal sein sollte.
 
-Diese Regressionsgerade hat jedoch ein anderes Problem aufgezeigt.
+Die Berechnung durch die Methode der kleinsten Quadate hat jedoch ein anderes Problem aufgezeigt.
 Wenn zwei Bilder die eine Drehung darstellen miteinander verglichen werden, indem jene Pixel behalten werden in denen eine Änderung zu erkennen ist, dann werden typischerweise mehr Änderungen erkannt, je weiter man sich radial von Drehpunkt entfernt.
 Diese Beobachtung ist nicht überraschend, denn die absolute Geschwindigkeit eines Punktes nimmt mit Abstand zum Drehpunkt zu.
-Diese tatsache sorgt jedoch dafür, dass je weiter Regionen vom Drehpunkt entfernt sind, umso größer wird ihr Einfluss auf die Regressionsgerade.
-Hier kann jedoch eine Funktion abhilfe schaffen, die auch in der Bilderkennung durch neurale Netzwerke genutzt wird.
-Diese als Non-Max Suppression % TODO Cite...
-bezeichnete Funktion wird eigentlich dafür genutzt, dass durch Bilderkennung klassifizierte Objekte auf Bildern direkt nebeneinander liegen gefiltert werden für das Bild, dass den höchsten Konfidenzwert besitzt.
-Da den Pixeln hier kein Konfidenzwert zugeordnet werden kann, kann allerdings eine Funktion genutzt werden welche durch diesen Ansatz inspiriert die Dichte der Punkte filtert.
-Dadurch wird die Dichte der erkannten Pixel quasi homogen und der Drehpunkt liegt etwas näher an dem tatsächlich erkannten, ohne viel Präzision bei der Bestimmung der Steigung in Kauf zu nehmen.
-
+Diese tatsache sorgt jedoch dafür, dass die Dichte der Punktwolke in einigen Regionen höher ist, was die Berechnung der Regressionsgerade beeinflusst.
+Um dieses Problem zu umgehen soll die Dichte der Punktwolken limitiert werden.
+Diese Überlegung ist inspiriert aus der in der Bilderkennung verwendeten Methode der Non-Max Suppression~\cite{Geron2019}, welche dafür genutzt wird, dass durch Bilderkennung klassifizierte Objekte die direkt nebeneinander liegen gefiltert werden.
+Behalten wird dann jenes Objekt, dass den höchsten Konfidenzwert besitzt.
+Da innerhalb der Punktwolke jedoch nicht mit Konfidenzwerten gearbeitet wird, kann dieser Ansatz stark reduziert werden.
 Hierfür wurde der \lstinline{PointCloud} Klasse die \lstinline{removeOverlaps} Funktion definiert, welche für ein \lstinline{PointCloud} Objekt ein neues gefiltertes Objekt zurückgibt.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{removeOverlaps} Funktion der \lstinline{PointCloud} Klasse.}\label{lst:pointcloud_removeOverlaps}]
@@ -448,7 +459,7 @@ removeOverlaps(dist = 5) {
 };
 \end{lstlisting}
 
-Um jedoch die Regressionsgerade an sich zu korrigieren wird auf eine andere Methode zur Ermittlung der am besten passenden Gerade zurückgegriffen.
+Um jedoch die Berechnung der Regressionsgerade für diesen Anwendungsfall zu korrigieren wird auf eine andere Methode zurückgegriffen.
 
 \subsection{Orthogonale Regression}\label{ch:orthogonale_regression}
 
@@ -463,7 +474,7 @@ Während die vorher angesprochene Regressionsgerade den Abstand der Punkte in Y-
 \end{equation}
 
 Diese Gleichung nutzt die Varianz der einzelnen Datensammlungen um damit die entsprechende Steigung der Geraden zu ermitteln.
-Unter der Berücksichtigung, dass diese bereits Implementationen haben, welche in Listing~\ref{lst:data_variance} nachgesehen werden können, muss hierfür also nurnoch die Ermittlung der Kovarianz $\sigma_{xy}^2$ implementiert werden.
+Unter der Berücksichtigung, dass diese bereits Implementationen haben, welche in Listing~\ref{lst:data_variance} nachgesehen werden können, muss hierfür also nurnoch die Ermittlung der Kovarianz $\sigma_{xy}^2$ implementiert werden\footnote{Die Varianz nutzt in ihrer Berechnung jeweils die Menge der Daten. Diese Variable könnte aus der Gleichung gekürzt werden, was in einer abschließenden Implementation berücksichtigt werden sollte um ein paar Rechenschritte zu sparen.}.
 Diese kann passend der \lstinline{DataXY} Klasse hinzugefügt werden, welche für die Tests die entsprechenden Punkte bereithält.
 
 \begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{covariance} Funktion in der \lstinline{DataXY} Klasse}.\label{lst:dataxy_covariance}]
@@ -497,6 +508,24 @@ static fromRegressionLine(pts, g) {
     return new Line({m, b});
 }
 \end{lstlisting}
+
+Die so ermittelte Regressionsgerade ist nun für jede Steigung der Punktwolke definiert, wie in Abbildung~\ref{fig:regression_compare} gesehen werden kann.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/pendel2_4.png}
+        \caption{Versuch: \name{pendel2\_4.html}}
+        \label{fig:pendel2_4}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/pendel2_5.png}
+        \caption{Versuch: \name{pendel2\_5.html}}
+        \label{fig:regression_compare}
+    \end{subfigure}
+    \caption{Links wird die durch die Methode der kleinsten Quadrate ermittelte Regressionsgerade gezeigt. Diese geht von einem vernachlässigbar kleinem Fehler auf der X-Achse aus, weshalb die Gerade horizontal gezeichnet wird. Rechts wird die für den Anwendungsfall passendere orthogonale Regression genutzt. Im rechten Bild wird zudem wieder der Drehpunkt und ein vermuteter Endpunkt des Pendels gezeichnet, was im linken Bild keinen Sinn hat.}
+    \label{fig:pendel2_4_5}
+\end{figure}
 
 \section{Vergleich des Verlaufes von Randpunkten}\label{ch:vergleich_verlauf_randpunkte}
 

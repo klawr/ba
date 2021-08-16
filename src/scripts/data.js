@@ -108,7 +108,7 @@ class DataXY {
         }
     };
 
-    getChart(showX = true, showY = true) {
+    getChart(showX = true, showY = true, options = {}) {
         const gtv = globalTestVariables;
 
         const x = showX ? this.x.alignForChart(gtv.cnv_width) : [];
@@ -126,7 +126,7 @@ class DataXY {
             funcs: [{ data: x }, { data: y },
             { fn: fnY, dx: 1 }, { fn: fnX, dx: 1 }
             ],
-            xaxis: {}, yaxis: {},
+            xaxis: {}, yaxis: {}, ...options
         });
     };
 
