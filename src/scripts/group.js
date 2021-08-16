@@ -24,7 +24,7 @@ class Group {
         fn?.call(undefined, pts);
     }
 
-    // CAREFUL THIS CREATES FALSE POSITIVES FOR ROTATION AND TRANSLATION
+    // NOTE CAREFUL THIS CREATES FALSE POSITIVES FOR ROTATION AND TRANSLATION
     stepBisector(fn, frames = 1) {
         const frame = cv.imread(globalTestVariables.cnv1);
         this.addPoints(this.lk.step(frame));
@@ -133,7 +133,7 @@ class Group {
         const line = this.lines[this.lines.length - 1];
         const pts = this.pts?.map(p => p[p.length - 1]);
 
-        const color = (i) => hsv2rgb(i / (this.pts.length + 1) * 360);
+        const color = (i) => hsv2rgb(i / this.pts.length * 360) + '88';
 
         if (this.pts && history) {
             line && this.lines.forEach(l => g.lin({
@@ -173,7 +173,6 @@ class OpenCVLucasKanade {
     frameGray = undefined;
     st = undefined;
     err = undefined;
-
 
     constructor(options) {
         options && Object.assign(this, options);

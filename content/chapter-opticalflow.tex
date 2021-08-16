@@ -77,6 +77,19 @@ Alles weitere sind Parameter zum Einstellen des Algorithmus, wie etwa der Status
 Abschließend wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben, welcher eine Abbruchbedingung für die iterative Suche darstellt.
 Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfand, oder die Bewegung unterhalb eines bestimmten Wertes vermutet wird.
 
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/lucas_kanade_simple.png}
+        \caption{Versuch: \name{gruppe3\_1.html}. Hier wird gezeigt welche Punkte durch die \lstinline{cv.goodFeaturesToTrack} bei einem \name{mec2} Modell ermittelt werden.}\label{fig:gruppe3_1}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/lucas_kanade_history.png}
+        \caption{Versuch: \name{gruppe3\_2.html}. Durch die \lstinline{cv.calcOpticalFlowPyrLK} Funktion werden die Kanten über die Bildsequenz hinweg verfolgt.}\label{fig:gruppe3_2}
+    \end{subfigure}
+    \label{fig:gruppe_3_1_2}
+\end{figure}
+
 Die in der \lstinline{LucasKanade} Klasse definierte \lstinline{step} Funktion ist in Listing~\ref{lst:LucasKanade_step} abgebildet.
 
 \begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{step} Funktion der \lstinline{LucasKanade} Klasse}\label{lst:LucasKanade_step}]
@@ -106,7 +119,7 @@ Wenn dies der Fall ist müssen die Regionen definiert werden, welche im Anschlus
 Dies soll jedoch nur einmal am Anfang geschehen, damit die Reihenfolge der gefundenen Punkte konsistenz bleibt.
 Außerdem ist nicht sichergestellt, dass die vorgeschlagenen Regionen bei Veränderungen im Bild die selben bleiben.
 Die gefundenen Punkte werden im \lstinline{LucasKanade} Objekt entsprechend gespeichert.
-Nachdem das Bild in Graustufen übersetzt wurde wird es in der \lstinline{calcOpticalOpticalFlowPyLK} Funktion genutzt um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
+Nachdem das Bild in Graustufen übersetzt wurde wird es in der \lstinline{calcOpticalFlowPyrLK} Funktion genutzt um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
 Diese Punkte werden dann in einer \lstinline{points} Liste gespeichert, welche die zuletzt ermittelten Koordinaten enthält.
 Daraufhin wird das \lstinline{oldGray} Bild überschrieben, damit es bei der nächsten Iteration entsprechend als erstes Bild dienen kann.
 Ebenso wird \lstinline{p0} für die nächste Iteration auf die zuletzt ermittelten Koordinaten gesetzt.
@@ -120,52 +133,80 @@ Diese Punkte haben augenscheinlich eine sehr viel geringere Varianz als die Ans�
 Allerdings wird hier zunächst nicht näher darauf eingegangen ob diese Punkte nun dazu genutzt werden können um auf die Drehpunkte zu schließen.
 Darauf wird stattdessen in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen.
 
-% TODO das kommt eher in gruppierung am ende.
-% TODO Ich sollte am Ende einen Annähernd sinnvollen Wert für die Abstände haben durch die Standardabweichung?... Vllt?
-
-% \subsection{Zuordnung der gefundenen Punkte}
-
-% Der Shi-Tomasi Algorithmus erkennt für die von \name{mec2} gezeichneten Mechanismen für die selben Gelenke mehrere Punkte, sofern der Parameter der als \lstinline{minDistance} übergeben wird nicht zu groß ist.
-% Um hier keine Annahme treffen zu müssen welcher Wert für den vorliegenden Mechanismus optimal ist, sollen jetzt Überlegungen getroffen werden wie diese Punkte auf einen gemeinsamen Punkt reduziert werden können.
-
-% Hierfür könnten die Pfade der Punkte miteinander verglichen werden, sodass Punkte dessen Pfade besonders ähnlich sind wieder gruppiert werden.
-% Diese Pfade bilden dann für jede Iteration widerrum den Erwartungswert und ein gemeinsamer Pfad gebildet werden.
-
-% TODO ich könnte hier k-means einbauen.
-% TODO k-means über die Pfade vielleicht? 
-
 \section{Andere Methoden}
 
 \subsection{Optischer Fluss nach Farneback}
 
-Bei der Ermittlung des optischen Flusses wird zwischen dichtem und spärlichen optischen Fluss unterschieden.
-Während der spärliche optische Fluss einzelne Regionen von Interesse im Bild verfolgt und entsprechend dessen Bewegung nachvollzieht, ist der Anspruch von Algorithmen zur Berechnung von dichten optischem Fluss die Berechnung der Bewegung zu jedem einzelnen Pixel.
+Bei der Ermittlung des optischen Flusses wird zwischen dichtem und spärlichen optischen Fluss unterschieden\footnote{Englisch \textit{sparse and dense optical flow}.}.
+Während der spärliche optische Fluss einzelne Regionen von Interesse im Bild verfolgt und entsprechend dessen Bewegung nachvollzieht, ist der Anspruch von Algorithmen zur Berechnung von dichten optischem Fluss die Berechnung der Bewegung jedes einzelnen Pixels.
 Während ich auf die Implementation nicht weiter eingehen möchte, da dieser Ansatz wegen augenscheinlich zu großen Varianzen nicht weiter verfolgt wurde, verdient dieser dennoch eine Erwähnung.
-Die Implementation wurde wenig optimiert, der entsprechende Test kann jedoch eingesehen werden.
+Die Implementation wurde wenig optimiert, der entsprechende Test kann jedoch unter \name{src/gruppe/gruppe2\_1.html} eingesehen werden.
 
 Zu erwarten wäre für ein sich um einen festen Punkt drehendes Glied, dass alle Vektoren zur Bestimmung der Bewegung den selben Einheitsvektor haben.
-Die entsprechende länge sollte linear mit Abstand zum Drehpunkt zunehmen.
+Der entsprechende Betrag des Vektors sollte linear mit Abstand zum Drehpunkt zunehmen.
 Diese Information sollte dann genutzt werden können um die Pole der ebenen Bewegung zu ermitteln.
 
 Des Weiteren hätten die Glieder durch den Verlauf der gemessenen Geschwindigkeiten leicht unterscheidbar gewesen sein sollen.
-Da jedoch die Ungenauigkeiten hier zu groß zu sein scheinen soll hier nicht weiter drauf eingegangen werden.
+Da jedoch die Ungenauigkeiten hier zu groß zu sein scheinen fällt die Implementation entsprechend schwierig und wird hier nicht weiter Gegenstand sein.
 
-% TODO dieses Kapitel muss neu geschrieben werden, wenn farneback vielleicht doch noch genutzt wird.
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/farneback_okay.png}
+        \label{fig:gruppe2_1_okay}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{gfx/farneback_bad.png}
+        \label{fig:gruppe2_1_bad}
+    \end{subfigure}
+    \caption{Versuch: \name{gruppe2\_1.html}. Hier wird der Versuch mit dem optischen Fluss nach Farneback versucht. Die Farben stellen die vorausgesagte Richtung der entsprechenden Pixel dar. Auf dem ersten Bild scheinen diese noch relativ eindeutig zu sein. Es zeigt sich jedoch, dass vorallem für etwas schnellere Bewegungen diese Berechnungen sehr ungenau werden und starke Streuungen zeigen. Eine sinnvolle Nutzung bedarf entsprechend tieferer Analyse.}\label{fig:gruppe2_1_bad}
+    \label{fig:gruppe_2_1}
+\end{figure}
 
 \subsection{Ermittlung von Bewegung durch maschinelles Lernen.}
 
 Eine weitere Erwähnung verdienen modernere Ansätze zur Ermittlung des optischen Flusses.
 Diese Methoden basieren zumeist auf den Grundsätzen des maschinellen Lernens.
+Sie versprechen eine höhere Genauigkeit welche entsprechend dazu genutzt werden könnte die Pole der ebenen Bewegung zu finden.
+Solche Ansätze versprechen zum einen die Segmentierung einzelner Objekte durch die Verfolgung der Trajektorien der Punkte~\cite{Ochs2014, Keuper2015}.
+Diese Segmentierungen könnten dann im einzelnen analysiert werden, was die Problemstellung von Kapitel~\ref{ch:gruppierung_von_datenpunkten} darstellen wird.
 
-% TODO hier kann natürlich noch etwas mehr Text hin
+Auch für die Ermittlung des Vektorfeldes wurden Neuronale Netze entwickelt, welche eine höhere Genauigkeit und weniger Streuung der Ergebnisse versprechen.
+\name{FlowNet}~\cite{Fischer2015} ist ein \textit{Convolutional Neural Network}\footnote{Zu deutsch in etwa \textit{Faltendes neurales Netwerk}.}, welches durch automatisiert erstellte Trainingsdaten trainiert wurde.
+Es wurden hierfür beliebige Hintergründe verwendet auf denen dann Bilder von Stühlen platziert wurden.
+Diese Stühle wurden dann für das Training entsprechend ein wenig versetzt, damit das neurale Netz mit diesen vorgegebenen \textit{Ground Truth} Werten trainiert werden konnte.
+Es muss hierbei berücksichtigt werden, dass das neurale Netz nicht durch die Objekte, sondern dessen Bewegung trainiert wird.
+Der Stuhl wurde entsprechend verwendet weil er gute Bearbeitung auf den Trainingsdaten verspricht.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/flownet_flying_chairs.png}
+    \label{fig:flownet_flying_chairs}
+    \caption{Die ersten beiden Bilder sind ein Auszug aus dem \name{Flying Chair dataset}. Das zweite Bild versetzt die Stühle ein wenig, wobei die Bewegung welche in der Kontrolle des Programmierers liegt entsprechend als Wert für das Training festgehalten wird. Im dritten Bild sieht man entsprechend die Vektoren welche als wahre Werte gehalten werden. Die Farben zeigen hierbei die Richtugn des Vektors und die Sättigung der Farbe gibt den Betrag an~\cite{Fischer2015}.}
+\end{figure}
+
+Als eine Entwicklung von \name{FlowNet} wurde \name{FlowNet 2.0}~\cite{Ilg2016} mit dem Ziel eine Verbesserung der Ergebnisse zu erzielen.
+\name{FlowNet 2.0} hat einige Verbesserung im Umgang mit den Trainingsdaten eingeführt.
+Diese Verbesserungen basieren auf den gefundenen Mängeln des ersten Ansatzes, welcher auf Daten der echten Welt keine Verbesserung zur bis dahin genutzten Methoden hatte\footnote{\name{FlowNet} hat allerdings gezeigt, dass maschinelles Lernen dieses Problem bearbeiten kann.}.
+Zum einen wird hier ein größerer Fokus auf kleinere Änderungen in der Bewegung gelegt, was zu einer höheren Genauigkeit bei echten Bildern zur Folge hat.
+Es zeigte sich außerdem, dass der Zeitplan mit welchem die Trainingsdaten an das Netzwerk geliefert werden Einfluss auf dessen Generalisierbarkeit hat.
 
 \section{Betrachtung der Ergebnisse}
 
 Die Bestimmung des optischen Flusses war zunächst die zugrundeliegende Überlegung zur Lösung dieser Arbeit.
-Es hat sich jedoch schnell gezeigt, dass es sehr schwierig sein könnte die Ungenauigkeiten unter Kontrolle zu bringen.
-Ansätze des maschinellen Lernens sind vielversprechend doch deren Implementation übersteigen den Rahmen dieser Arbeit und wurden deshalb nicht untersucht.
+Das Bild, welches diese Arbeit initial inspieriert hat ist Abbildung~\ref{fig:ai_modern_approach_optical_flow}.
+Es hat sich jedoch schnell gezeigt, dass es sehr schwierig sein könnte die Ungenauigkeiten der Vektorfelder unter Kontrolle zu bringen.
+Ansätze des maschinellen Lernens sind vielversprechend.
+Die Entwicklung dieser zeigt, dass die in dieser Arbeit untersuchten Algorithmen durch die Nutzung der Methoden durch diese durchaus verbessert werden können und schlussendlich die Genauigkeit erhöhen können.
+Zur Zeit der Bearbeitung bedarf jedoch der Mehraufwand einer Implementierung solcher Ansätze einen zu hohen Aufwand.
+Um den Rahmen dieser Arbeit nicht zu übersteigen finden diese hier keine Anwendung.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{gfx/flownet_vs_flownet2.png}
+    \label{fig:flownet_vs_flownet2}
+    \caption{Vergleich der Genauigkeit von \name{FlowNet} gegenüber \name{FlowNet 2.0}. Die hier sichtbar verbesserte Genauigkeit ist laut den Autoren vier mal höher als beim Vorgänger~\cite{Ilg2016}}
+\end{figure}
 
 Die Implementation des Algorithmus nach Lucas-Kanade scheint jedoch eine stabile Methode zu sein Bewegung einzelner Punkte zu verfolgen.
-
-% TODO ich brauche noch Tests welche die des Pendels nachahmen nur halt mit Lucas Kanade. Ich sollte mal das Pendel damit nachbauen...
-
+Dieser findet vorallem im nachfolgenden Kapitel Anwendung.

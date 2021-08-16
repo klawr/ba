@@ -17,6 +17,7 @@ const globalGruppe2Variables = {
     mag: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1),
     ang: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1),
     rgb: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC3),
+    irgb: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC3),
     frame1: undefined,
 }
 
@@ -27,7 +28,7 @@ globalGruppe2Variables.hsvVec.push_back(globalGruppe2Variables.hsv2);
 
 function stepOpenCVFarneback(fn) {
     const { cnv1, ctx2 } = globalTestVariables;
-    const { prvs, next, flow, flowVec, ang, hsv, hsv0, hsv2, mag, magLimit, hsvVec, rgb } = globalGruppe2Variables;
+    const { prvs, next, flow, flowVec, ang, hsv, hsv0, hsv2, mag, magLimit, hsvVec, rgb, irgb } = globalGruppe2Variables;
 
     const frame2 = cv.imread(cnv1);
 
@@ -58,7 +59,9 @@ function stepOpenCVFarneback(fn) {
 
         cv.merge(hsvVec, hsv);
         cv.cvtColor(hsv, rgb, cv.COLOR_HSV2RGB);
-        cv.imshow(ctx2.canvas, rgb);
+        cv.bitwise_not(rgb, irgb);
+
+        cv.imshow(ctx2.canvas, irgb);
 
         fn?.call();
 
