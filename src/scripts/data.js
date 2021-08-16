@@ -144,7 +144,6 @@ class DataXY {
         const x = this.x.mu;
         const y = this.y.mu;
 
-
         for (let i = 0; i < 6; ++i) {
             g.ell({ x, y, rx: sigmaX * i, ry: sigmaY * i });
         }

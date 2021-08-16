@@ -26,8 +26,10 @@
     <script src="momentanpol1.js"></script>
 
     <p>
-        Test zur Bestimmung des Momentanpols eines Rades, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren soll um die Drehung zu zeigen.
-        Hier wird die Geschwindigkeit und die Winkelgeschwindigkeit durch den Abstand der meisten distanzierten Punkte in verschiedenen Iterationen gemessen.
+        Test zur Bestimmung des Momentanpols eines Rades, wobei der sichtbare Teil sich auf eine "Speiche" reduzieren
+        soll um die Drehung zu zeigen.
+        Hier wird die Geschwindigkeit und die Winkelgeschwindigkeit durch den Abstand der meisten distanzierten Punkte
+        in verschiedenen Iterationen gemessen.
     </p>
 
     <script>
@@ -67,7 +69,8 @@
             }
 
             data.draw(g);
-            data.getChart().exe(globalTestVariables.ctx3);
+            data.getChart(0, 1, { ymax: 0.3 }).exe(globalTestVariables.ctx3);
+            data.y.fillText(globalTestVariables.txt2, "y", globalTestVariables.cnv_height)
 
             g.exe(globalTestVariables.ctx2);
         };

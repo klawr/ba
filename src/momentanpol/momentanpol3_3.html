@@ -54,9 +54,10 @@
                 new Line({p1: pol, p2: p[p.length - 1]}).draw(g);
             })
             data.add(pol);
-            data.draw(g);
 
+            data.draw(g);
             data.getChart(false).exe(globalTestVariables.ctx3);
+            data.fillText(globalTestVariables.txt2, globalTestVariables.txt3);
 
             g.exe(globalTestVariables.ctx2);
         };

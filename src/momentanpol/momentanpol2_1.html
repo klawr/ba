@@ -77,7 +77,8 @@
 
             data.draw(g);
             data.drawDeviation(g);
-            data.getChart().exe(globalTestVariables.ctx3);
+            data.getChart(1, 1, { ymax: 0.25 }).exe(globalTestVariables.ctx3);
+            data.fillText(globalTestVariables.txt2, globalTestVariables.txt3);
 
             g.exe(globalTestVariables.ctx2);
         };

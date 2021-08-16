@@ -36,15 +36,15 @@
         const { group, data } = globalMomentanpol1Variables;
 
         const fn = (result) => {
-            roll(5);
+            roll();
 
             const g = g2().clr();
             result?.draw(g);
             group.draw(g, true);
-            data.add(group.momentanpol(5));
+            data.add(group.momentanpol(20));
             data.draw(g);
-            data.getChart(false).exe(globalTestVariables.ctx3);
-
+            data.getChart(0, 1, {ymax: 0.3}).exe(globalTestVariables.ctx3);
+            data.y.fillText(globalTestVariables.txt2, "y", globalTestVariables.cnv_height)
             g.exe(globalTestVariables.ctx2);
         };
 
