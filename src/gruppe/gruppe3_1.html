@@ -23,37 +23,35 @@
     <script src="gruppe1.js"></script>
 
     <p>
-        TODO
-        Test zur Unterscheidung mehrerer Pendel durch den Korrelationskoeffizienten.
+        Test zur Unterscheidung der Glieder eines Mechanismus'.
     </p>
 
     <script>
         globalTestVariables.model = {
             gravity: true,
             nodes: [
-                { id: 'A0', x: 80, y: 120, base: true },
-                { id: 'A1', x: 150, y: 90 },
-                { id: 'B0', x: 240, y: 120, base: true },
-                { id: 'B1', x: 160, y: 90 }
+                { id: 'A0', x: 150, y: 100, base: true },
+                { id: 'A1', x: 30, y: 100 },
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } },
-                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } }
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: {type: 'drive', Dw: 100, Dt: 100, w0: -0.5} },
             ]
         };
 
-        const { ctx2 } = globalTestVariables;
         const { ply } = globalGruppe1Variables;
 
         const fn = (result) => {
+            const filtered = result.removeOverlaps(5);
+
             const g = g2().clr();
-            const filtered = result.removeOverlaps();
-            const groups = filtered.groupByCorrelation(g);
+
+            const dijkstras = new Dijkstra(filtered, {x: 150, y: 80});
+            dijkstras.draw(g);
 
             filtered.draw(g);
             filtered.points.forEach(r => ply.push({ ...r }));
 
-            g.exe(ctx2);
+            g.exe(globalTestVariables.ctx2);
         }
 
         globalTestVariables.register(() => stepCompareImages(fn));

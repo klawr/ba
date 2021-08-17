@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset='UTF-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Document</title>
     <style>
         canvas {
@@ -14,13 +14,13 @@
 </head>
 
 <body>
-    <a id="title"></a>
-    <script src="../third_party/g2.full.js"></script>
-    <script src="../third_party/mec2.min.js"></script>
-    <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/line.js"></script>
-    <script src="../scripts/pointCloud.js"></script>
-    <script src="gruppe1.js"></script>
+    <a id='title'></a>
+    <script src='../third_party/g2.full.js'></script>
+    <script src='../third_party/mec2.min.js'></script>
+    <script src='../scripts/simulation.js'></script>
+    <script src='../scripts/line.js'></script>
+    <script src='../scripts/pointCloud.js'></script>
+    <script src='gruppe1.js'></script>
 
     <p>
         Test zur Unterscheidung der Glieder eines Mechanismus'.
@@ -30,13 +30,13 @@
         globalTestVariables.model = {
             gravity: true,
             nodes: [
-                { id: 'A0', x: 80, y: 120, base: true },
-                { id: 'A1', x: 80, y: 50 },
-                { id: 'B0', x: 240, y: 120, base: true },
-                { id: 'B1', x: 160, y: 90 }
+                { 'id': 'A0', 'x': 100, 'y': 50, 'base': true },
+                { 'id': 'A1', 'x': 100, 'y': 100 },
+                { 'id': 'B1', 'x': 250, 'y': 130 },
+                { 'id': 'B0', 'x': 250, 'y': 50, 'base': true },
             ],
             constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: {type: 'drive', Dw: 100, Dt: 100} },
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: 100, Dt: 100 } },
                 { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
                 { id: 'c', p1: 'B1', p2: 'A1', len: { type: 'const' } }
             ]
@@ -49,10 +49,10 @@
 
             const g = g2().clr();
 
-            const dijkstras = new Dijkstra(filtered.points, {x: 80, y: 50});
+            const dijkstras = new Dijkstra(filtered, { x: 100, y: 130 });
             dijkstras.draw(g);
 
-            // filtered.draw(g);
+            filtered.draw(g);
             filtered.points.forEach(r => ply.push({ ...r }));
 
             g.exe(globalTestVariables.ctx2);

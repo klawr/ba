@@ -484,10 +484,6 @@ class Dijkstra {
             const pred = this.graph[i].pred;
             const p1 = pred.id < 0 ? this.anchor : this.points[pred.id];
 
-            if (!p1) {
-                console.log(p1);
-            }
-
             g.lin({ p1, p2, ls: `${globalTestVariables.hsv2rgb(c)} ` });
         })
     }
@@ -496,7 +492,9 @@ class Dijkstra {
         return Math.hypot(p1.x - p2.x, p1.y - p2.y);
     }
 
-    constructor(points, anchor, warp = 2, numEdges = 0) {
+    constructor(pointcloud, anchor, warp = 2, numEdges = 0) {
+        const points = pointcloud.points;
+        
         if (numEdges < 1) {
             numEdges = points.length - 1;
         }
@@ -516,7 +514,8 @@ class Dijkstra {
             id,
             dist: Infinity,
             known: false,
-            edges: compEdges(p)
+            edges: compEdges(p),
+            pred: undefined,
         }));
         const unvisited = [...graph];
         unvisited.unshift({

@@ -82,7 +82,7 @@ Es ist davon auszugehen, dass Mechanismen welche eine andere Form aufweisen als 
 
 \section{k-Means-Algorithmus}
 
-Eine andere Möglichkeit die Punkte zuzuordnen ist durch den k-Means-Algorithmus~\cite[S.~241]{Geron2019}.
+Eine andere Möglichkeit die Datenpunkte ihren Gruppen zuzuordnen ist durch den \name{k-Means-Algorithmus}~\cite[S.~241]{Geron2019}.
 Dieser wird in der Statistik genutzt um Datenpunkte in Gruppen einzuteilen.
 Ein offensichtlier Nachteil dieses besteht darin, dass die Anzahl der Gruppen von vorneherein bekannt sein muss.
 Eine Untersuchung, ob er für den vorliegenden Anwedungsfall nutzbar ist scheint jedoch angebracht.
@@ -119,6 +119,87 @@ Diese Werte zu bestimmen kann die Möglichkeit geben die Regressionsgeraden ents
 % TODO EM-Algorithmus 
 
 \section{Dijkstra-Algorithmus}
+
+Die letzte Variante die hier untersucht werden soll um die Glieder des Mechanismus in entsprechende Gruppen zu zerteilen ist die Zuordnung aller Datenpunkte zueinander.
+Hierfür soll das \lstinline{PointCloud} Objekt in einen Graphen überführt werden welcher dann über den \name{Dijkstra-Algorithmus} Pfade definiert.
+Anschließend werden diese Pfade genutzt um Geraden zu definieren welche dann Rückschluss auf die zugrundeliegenden Gruppen geben können.
+
+Zur Durchführung des Dijkstra-Algorithmus wurde die \lstinline{Dijkstra} Klasse definiert.
+Der Konstruktor dieser Klasse nimmt hierfür ein Objekt der \lstinline{PointCloud} Klasse und ein Objekt welches eine X- und Y-Koordinate hat entgegen, welcher hier als \lstinline{anchor} bezeichnet werden soll.
+Ziel ist es den kürzesten Pfad zu bestimmen um vom \lstinline{anchor} zu jedem Punkt des übergebenen \lstinline{PointCloud} Objektes zu gelangen.
+Der offensichtliche kürzeste Weg ist laut der Dreiecksungleichung natürlich immer der direkte Weg vom \lstinline{anchor} zum entsprechenden Punkt.
+Deshalb sollen die Distanzen zwischen den Werten jeweils potenziert werden.
+An den Konstruktur kann dafür der Parameter \lstinline{warp} übergeben werden, welcher standardmäßig den Wert zwei einnimmt.
+Dieser \lstinline{warp} Parameter unterscheidet sich von der traditionellen Implementation des \name{Dijkstra-Algorithmus}.
+Diese Anpassung ist jedoch notwendig, da hier keine Annahmen über die Verbindungen einzelner Datenpunkte gemacht werden kann, sondern der Pfad jedes Punktes zu jedem anderem gemessen wird.
+Hierfür wird der Graph gebildet indem alle Objekte des übergebenen \lstinline{PointCloud} Objektes in ein Objekt überführt werden welche in Listing~\ref{lst:dijkstra_points_graph} gesehen werden kann.
+
+\begin{lstlisting}[language=JavaScript, caption={Im \lstinline{Dijkstra} Konstruktor werden die Punkte des übergebenen \lstinline{PointCloud} Objektes in einen Graphen überführt.}\label{lst:dijkstra_points_graph}]
+const compEdges = (p) => points
+    .map((sp, sidx) => ({
+        target: sidx,
+        weight: Dijkstra.euclDistance(p, sp) ** warp,
+    }))
+    .sort((a, b) => a.weight - b.weight)
+    .slice(1, numEdges + 1);
+
+const graph = points.map((p, id) => ({
+    id,
+    dist: Infinity,
+    known: false,
+    edges: compEdges(p),
+    pred: -1,
+}));
+\end{lstlisting}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/dijkstra_edit.png}
+    \caption{Versuch: \lstinline{gruppe3_2.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Verbindung des lstinline{anchor}, welcher im linken Gestellpunkt ist. Die Farbe der Verbindung zwischen den Punkte weist auf den \lstinline{dist} Wert hin.
+    Wie im rechten Bild zu sehen ist, werden die Verbindungen bei sehr kleinen eingeschlossenen Winkeln fehlerbehaftet.}
+    \label{fig:gruppe3_1}
+\end{figure}
+
+Die \lstinline{id} entspricht dem Index des Punktes innerhalb der \lstinline{points} Liste.
+\lstinline{dist} beschreibt die Distanz welche zum entsprechendem \lstinline{anchor} ermittelt wurde.
+Hierbei ist zu beachten, dass es sich nicht um die tatsächliche Distanz, sondern um die Summe der Einzelpfade handelt, welche jeweils mit \lstinline{warp} potenziert werden.
+Diese Wert ist also eher als Wert zum Vergleichen mit anderen Punkten zu verstehen.
+Er ist initial \lstinline{Infinity}, damit er später bis zum kleinsten gefundenen Pfad reduziert werden kann.
+\lstinline{known} wird genutzt um bei der Berechnung jene Punkte überspringen zu können dessen \lstinline{dist} Wert bereits ermittelt wurde.
+Die \lstinline{edges} Eigenschaft hält von jedem Punkt jeden anderen Punkt mittels des entsprechenden Index und der Distanz vor.
+Diese Distanz wird hier als \lstinline{weight} bezeichnet um zu unterstreichen, dass es nicht die euklidische Distanz ist, sondern diese mit dem \lstinline{warp} Parameter potenziert wird.
+Zuletzt wird \lstinline{pred} genutzt um jeweils der Vorgänger jedes Knotens auf dem Graphen betiteln zu können.
+
+Daraufhin wird dieser Graph als \lstinline{unvisited} kopiert um alle unbesuchten Punkte festhalten zu können.
+Dieser kopierten Liste wird der \lstinline{anchor} an den Start angefügt\footnote{Mit der \lstinline{id} $-1$ und einer \lstinline{dist} von 0}.
+
+\begin{lstlisting}[language=JavaScript, caption={Berechnung der \lstinline{dist} Eigenschaft der einzelnen Objekte aus dem Dijkstra-Graphen.}\label{lst:creation_dijkstra_graph}]
+while (unvisited.length) {
+    unvisited.sort((a, b) => a.dist - b.dist);
+    const u = unvisited.shift();
+    u.known = true;
+
+    for (const { ldist, o } of u.edges
+        .map(e => ({ ldist: e.weight, o: graph[e.target] }))
+        .filter(({ o }) => !o.known)) {
+        const cdist = u.dist + ldist;
+        if (cdist < o.dist) {
+            o.dist = cdist;
+            o.pred = u;
+        }
+    }
+}
+\end{lstlisting}
+
+Hier wird es sich zu nutze gemacht, dass Obwohl die Liste \lstinline{unvisited} nur eine Kopie von \lstinline{graph} ist, die Referenzen der einzelnen darin enthaltenen Objekte jedoch jeweils die selben sind.
+So können die Elemente in \lstinline{unvisited} dort jeweils der \lstinline{dist} nach aufsteigend sortiert und verschoben werden und die Objekte in \lstinline{graph} werden hierbei mit Information gefüllt.
+Das Sortieren lässt die Objekte mit aufsteigener Distanz in \lstinline{unvisited} erscheinen.
+Das erste Objekt wird entsprechend aus der Liste entfernt und die \lstinline{known} Eigenschaft wird auf \lstinline{true} gesetzt.
+Bei der ersten Iteration ist dies in jedem Fall \lstinline{anchor}.
+Daraufhin wird für jedes Element in der \lstinline{edges} Liste des entsprechenden Punktes die Distanz mit seiner eigenen addiert.
+Nach der ersten Iteration ist also davon auszugehen, dass jeder Punkt direkt mit dem \lstinline{anchor} verbunden ist.
+Bei der zweiten Iteration werden alle Punkte aus \lstinline{unvisited} wieder sortiert und jeder Punkt der nun zusammen mit der Distanz dieses Punktes eine kürzere Distanz aufweist wird seinen \lstinline{dist} nd entsprechend den \lstinline{pred} Wert aktualisieren.
+Dadurch, dass die \lstinline{dist} jeweils potenziert wird passiert dies bis alle Punkte durchlaufen wurden.
 
 \section{Rekonstruktion eines Mechanismus durch die Relativpole}
 
