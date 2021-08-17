@@ -5,13 +5,13 @@
 % Aus dieser Gesetzmäßigkeit leitet sich der \name{Satz der konjugierten Krümmungsmittelpunkte\cite{Gössner2017} ab.
 % Für ein Viergelenk würde hierraus folgen, dass der Momentanpol der Koppel sich stets im Schnittpunkt der Kurbel und Schwinge befindet.
 
-\chapter{Gruppierung von Datenpunkten zu Gliedern} \label{ch:gruppierung_von_datenpunkten}
+\chapter{Zuordnung von Datenpunkten zu Gliedern} \label{ch:gruppierung_von_datenpunkten}
 
 \cleanchapterquote{Eine Kinematische Kette ist die Aneinanderreihung wenigstens dreier durch Elementenpaare beweglich miteinander verbundener Glieder}{VDI2127}{Getriebetechnische Grundlagen}
 
 Im vorangegangen Abschnitt wurde die Erkennung von Polen ebener Glider durch ihre Bewegung betrachtet.
 Alle Methoden gingen jedoch davon aus, dass sich alle Datenpunkte einem Glied zuordnen lassen.
-Es ist entsprechend notwendig bevor man die bereits besprochenen Methoden vornimmt eine Zuordnung der Punkte in entsprechende Gruppen zu unternehmen, welche dann an die bekannten Methoden weiter gegeben werden können.
+Es ist entsprechend notwendig bevor man die bereits besprochenen Methoden anwenden kann eine Zuordnung der Punkte in entsprechende Gruppen zu unternehmen, welche dann an die bekannten Methoden weiter gegeben werden können.
 
 Für eine solche Gruppierung können verschiedene Ansätze herangezogen werden.
 
@@ -26,11 +26,69 @@ Dann werden alle Punkte genommen dessen Abstand zu dieser Linie kleiner ist als 
 Alle Punkte dessen Abstand unter diesem Schwellenwert sind werden dann der ersten Gruppen zugeordnet und der Prozess wird mit allen ungruppierten Punkten wiederholt.
 Hierfür soll die Linie ähnlich zur Regressionsgerade bestimmt werden.
 Als problematisch stellt sich jedoch heraus, dass die Regressionsgerade nicht zwischen Punkten unterscheiden kann welche vermutlich zu einem Glied des gewählten Punktes gehören und welche nicht.
-Daher kann die Regressionsgerade in der Form nicht genutzt werden.
+Daher kann die Regressionsgerade in seiner bisher genutzten Form nicht genutzt werden.
 Ein naiver Ansatz an dieser Stelle wäre die Berechnung des Fehlers der entsteht wenn eine Linie willkürlich in den Raum gelegt wird.
 Der Fehler berechnet sich entsprechend durch die Summe der orthogonalen Abstände aller Punktes zu dieser Linie.
-Damit Punkte welche weit von der Linie entfernt werden einen geringeren Einfluss auf den Fehler haben kann stattdessen die Quadratwurzel dessen genommen werden.
-Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf diese Weise misst, kann die am besten passende Gerade gewählt werden.
+Damit Punkte welche weit von der Linie entfernt werden einen geringeren Einfluss auf den Fehler haben kann stattdessen eine Wurzel dessen berechnet werden.
+Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf diese Weise misst, kann die am besten passende Gerade gewählt werden und alle Punkte innerhalb des vorher angesprochenen Schwellenwertes dieser als Gruppe zugeordnet werden.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[t]{0.24\textwidth}
+        \includegraphics[width=\textwidth]{gfx/gruppe1_2_0.png}
+        \caption{}
+        \label{fig:gruppe1_2_0}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.24\textwidth}
+        \includegraphics[width=\textwidth]{gfx/gruppe1_2_1.png}
+        \caption{}
+        \label{fig:gruppe1_2_1}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.24\textwidth}
+        \includegraphics[width=\textwidth]{gfx/gruppe1_2_2.png}
+        \caption{}
+        \label{fig:gruppe1_2_2}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.24\textwidth}
+        \includegraphics[width=\textwidth]{gfx/gruppe1_2_3.png}
+        \caption{}
+        \label{fig:gruppe1_2_3}
+    \end{subfigure}
+    \caption{Versuch: \lstinline{gruppe2_1.html}. In Bild~\ref{fig:gruppe1_2_0} wird der Mechanismus gezeigt, dessen Glieder nun zugeordnet werden sollen.
+    Bild~\ref{fig:gruppe1_2_1} zeigt die Vorhersage zur Zuordnung dieser Punkte.
+    Bild~\ref{fig:gruppe1_2_2} zeigt die Zuordnung der Punkte in den Totlagen des Mechanismus. Hier wird das linke Glied und die Koppel einer einzelnen Gruppe zugeordnet. Bild~\ref{fig:gruppe1_2_2} zeigt, dass der genutzte Algorithmus manchmal auch falsche vorhersagen trifft. Hier liegt das daran, dass zuerst die grüne Gruppe ermittelt wurde, bei welcher die Dichte der weit entfernten Punkte des Gelenkes des rechten Gliedes zu einer falschen Gerade geführt hat. Danach hat sich der Fehler in den übrigen Gruppen entsprechend fortgepflanzt.}
+    \label{fig:gruppe1_2}
+\end{figure}
+
+Eine entsprechende Funktion um dies umzusetzen wurde auf der \lstinline{PointCloud} Klasse definiert.
+Diese hält die Punkte vor, welche gruppiert werden sollen.
+Ziel der Funktion ist es zunächst die Linien zu finden, welche den Mechanismus am ehesten repräsentieren.
+Zunächst eine Kopie der Punkteliste erstellt.
+Dann wird, solange es noch mehr als $10\%$ der initial ungruppierten Punkte gibt eine solche Linie ermittelt.
+Es wird zunächst der Punkt gewählt welcher den geringsten Wert für die X-Koordinate aufweist.
+Dann wird für eine festgelegte Anzahl an Linien welche alle im gleichen Winkel zueinander stehen und einen gemeinsamen Schnittpunkt in dem zuvor gewählten Punkt haben, die orthogonale Distanz aller anderen Punkte gemessen.
+In Abbildung~\ref{fig:gruppe1_2} ist die Anzahl dieser Punkte 36, welche durch die grauen Linien gezeigt werden.
+Von dieser orthogonale Distanz wird jeweils noch die dritte Wurzel genommen, damit Punkte die weiter weg von der geraden weniger Einfluss auf diese Summe haben.
+Ziel ist es die Gerade zu finden, welche hierbei die geringste Summe aufweist, welcher als \lstinline{score} bezeichnet wird.
+Ohne einen weiteren Ausgleichswert würden hier entsprechend jene Linien welche wenig Punkte treffen bevorzugt werden.
+Daher wird der \lstinline{score} noch durch die Anzahl der Punkte geteilt, dessen Distanz zur Gerade unterhalb des Schwellenwertes liegt.
+
+Der Schwellenwert so wie die Skalierung der Ausgleichswerte wurden experimentell bestimmt.
+Es ist davon auszugehen, dass Mechanismen welche eine andere Form aufweisen als die \name{mec2} Modelle andere Schwellenwerte zur korrekten Berechnung benötigen würden.
+
+% TODO link zum Quellcode
+
+% TODO testen wie hier die Momentanpole ermittelt werden.
+
+\section{k-Means-Algorithmus}
+
+Eine andere Möglichkeit die Punkte zu Gruppieren
+
+\section{Dijkstra's Algorithmus}
+
+\section{Rekonstruktion eines Mechanismus durch die Relativpole}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Um dann festzulegen in welchem Abstand zur Linie alle Punkte jeweils der entsprechenden Gerade hinzugefügt werden kann der Korrelationskoeffizient gewählt werden.
 So kann der Abstand der hinzuzufügenden Punkte solange erhöht werden wie der Korrelationskoeffizient über einem bestimmten Schwellenwert ist.

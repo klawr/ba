@@ -197,18 +197,16 @@ class PointCloud {
     /**
      * 
      * @param { g2 } g is a g2 command-queue used for rendering
+     * @param {bounds} bounds defines the max. orthogonal distance to the line
      * @returns this PointCloud grouped up into multiple
      * TODO add more info how this works...
      */
-    groupUp(g) {
+    groupUp(g, bounds = 10, iterations = 36, warp = 3, fixWarp = 2) {
         const groups = [];
         let ungrouped = [...this.points];
 
         // There have to be at least 10% of initial points to continue
         const min = ungrouped.length / 10;
-
-        // points to consider for respective line
-        const bounds = 10;
 
         for (let last = 0, len = ungrouped.length;
             ungrouped.length > min && ungrouped.length != last;
@@ -220,7 +218,7 @@ class PointCloud {
             const hypos = [];
             const lines = [];
 
-            for (let i = 0; i < 360; i += 10) {
+            for (let i = 0; i < 360; i += 360 / iterations) {
                 const m_i = Math.tan(i * Math.PI / 180);
                 const b_i = pt.y - m_i * pt.x;
 
@@ -237,10 +235,10 @@ class PointCloud {
                     const y = m_o * x + b_o || b_i;
 
                     const hypo = Math.hypot(e.y - y, e.x - x);
-                    const score = Math.pow(hypo, 1 / 3);
+                    const score = Math.pow(hypo, 1 / warp);
 
                     if (hypo < bounds) {
-                        fix += 2;
+                        fix += fixWarp;
                     }
 
                     hypos[hypos.length - 1].push(score);
@@ -261,7 +259,7 @@ class PointCloud {
             const idx = score.indexOf(Math.min(...score));
             const line = lines[idx];
 
-            g && g.lin({ x1: 0, x2: 400, y1: line.b, y2: line.m * 400 + line.b, ls: 'blue' });
+            g?.lin({ x1: 0, x2: 400, y1: line.b, y2: line.m * 400 + line.b, ls: 'blue' });
 
             const group = [];
             this.points.forEach(e => {
@@ -273,16 +271,22 @@ class PointCloud {
 
                 if (Math.hypot(e.y - y, e.x - x) < bounds) {
                     group.push(e);
-                    g && g.cir({
-                        ...e, r: 5,
-                        fs: globalTestVariables.hsv2rgb(groups.length / (this.points.length + 1) * 360)
-                    });
                 }
             });
 
             groups.push(new PointCloud(group));
 
             ungrouped = ungrouped.filter(e => !group.includes(e));
+        }
+
+        if (g) {
+            for (let i = 0; i < groups.length; ++i) {
+                groups[i].forEach(e => g.cir({
+                    ...e, r: 5,
+                    fs: globalTestVariables.hsv2rgb(i / groups.length * 360)
+                })
+                );
+            }
         }
 
         return groups;
