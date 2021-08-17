@@ -94,18 +94,29 @@ Dies sollte ein bis drei Gruppen zur Folge haben, welche die entsprechenden Punk
 Daraufhin werden neue \name{Centroids} definiert, indem der Erwartungswert dieser Gruppen ermittelt wird.
 Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen.
 
-\subsection{Bestimmung der Anzahl der Gruppen}
-
-Um die Anzahl der Gruppen zu bestimmen kann eine Metrik verwendet werden welche als Trägheit bezeichnet wird.
-Die Trägheit berechnet sich hier durch die durchschnittliche Distanz der Punkte zu ihrem jeweiligen \name{Centroid}.
-
-
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/k_means_centroids_edit.png}
     \caption{Versuch: \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration größer um die Annäherung zu visualisieren. Es ist sichtbar, dass sie sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
     \label{fig:gruppe2_1}
 \end{figure}
+
+Um die Anzahl der Gruppen zu bestimmen kann eine Metrik verwendet werden welche als Trägheit bezeichnet wird.
+Die Trägheit berechnet sich hier durch die durchschnittliche Distanz der Punkte zu ihrem jeweiligen \name{Centroid}.
+Wird die Trägheit der einzelnen Gruppen auf einen Graphen gezeichnet, so ist die Anzahl zu bevorzugen welche eine starke Änderung der Trägheit im Verhältnis zu den anderen Anzahlen aufweist.
+Auf dem Graphen ist dies als ein Knick zu sehen, weshalb dies auch als Ellbogenmethode bezeichnet wird.
+
+Eine andere Herangehensweise zur Bestimmung der korrekten Anzahl an Gruppen ist der Silhouettenwert.
+Dieser zeigt für die entsprechende Anzahl der Gruppen einen Wert zwischen $-1$ und $1$ an.
+Ein Silhouettenwert von eins zeigt an, dass der Datenpunkt mitten in der Gruppe ist.
+Ein Wert von null zeigt an, dass der Datenpunkt sich am Rand der Gruppe befindet.
+Ein Wert von $-1$ zeigt hingegen an, dass der Datenpunkt vermutlich der falschen Gruppe zugeordnet wurde.
+
+% TODO Der Silhouettenwert sollte genutzt werden können um die Regressionsgerade besser bestimmen zu können.
+
+Diese Werte zu bestimmen kann die Möglichkeit geben die Regressionsgeraden entsprechend zu beeinflussen, womit die Regressionsgeraden welche durch die gruppierten \lstinline{PointCloud} Objekte gebildet werden um bessere Ergebnisse zu erzielen.
+
+% TODO EM-Algorithmus 
 
 \section{Dijkstra-Algorithmus}
 
