@@ -52,7 +52,7 @@
             const pol = group.momentanpol(5);
             group.pts.forEach(p => {
                 new Line({p1: pol, p2: p[p.length - 1]}).draw(g);
-            })
+            });
             data.add(pol);
 
             data.draw(g);

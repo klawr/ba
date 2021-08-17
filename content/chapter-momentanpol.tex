@@ -62,7 +62,35 @@ sodass der Momentanpol $P$ über die Beziehung $\vec{r}_P = \vec{r}_A + \vec{r}_
 
 Diese Formel soll nun angewendet werden um den Momentanpol von Elementen zu bestimmen dessen Bewegung in Videos nachvollzogen wird.
 
-% TODO implementation
+\section{Implementation}
+
+Die \lstinline{group} Klasse hat eine entsprechende \lstinline{momentanpol} Funktion erhalten.
+Dieser implementiert hier zunächst eine Berechnung des Erwartungswertes für einen Punkt.
+Im Grunde ist diese implementation äquivalent zu Listing~\ref{lst:data_mu}, jedoch wird hier ein Punkt zurückgegeben, welcher also die Eigenschaften \lstinline{x} und \lstinline{y} stellt.
+
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{momentanpol} Funktion, welche in der \lstinline{group} Klasse definiert ist Die Ermittlung der Punkte \lstinline{p1} und \lstinline{p2}, sowie der Winkel \lstinline{w1} und \lstinline{w2} wurde hier aus Platzgründen weggelassen.}\label{lst:group_momentanpol}]
+momentanpol(threshold = 1) {
+    /**
+    * Ermittlung von p1, p2, m1, m2
+    */
+
+    const v = { x: p1.x - p2.x, y: p1.y - p2.y };
+    let dw = ((w1 - w2) + Math.PI) % Math.PI;
+    dw = dw > Math.PI / 2 ? dw - Math.PI : dw;
+
+    return {
+        x: (p1.x + p2.x) / 2 - v.y / dw,
+        y: (p1.y + p2.y) / 2 + v.x / dw,
+    }
+}
+\end{lstlisting}
+
+\lstinline{p1} und \lstinline{p2} sind jeweils der letzte Punkt und jener der vor \lstinline{threshold} Iterationen hinzugefügt wurde.
+Analog dazu sind \lstinline{w1} und \lstinline{w2} die Winkel der Geraden welche als letztes und vor \lstinline{threshold} Iterationen hinzugefügt wurden.
+Hierfür hat die \lstinline{Group} Klasse die Eigenschaft \lstinline{lines} bekommen, welche in etwa die selbe Aufgabe wie die \lstinline{pts} Eigenschaft erfüllen soll.
+Diese Liste wird entsprechend von den Tests analog zu \lstinline{pts} gefüllt.
+Es muss hier noch garantiert werden, dass in jedem Fall ein Winkel unter $\pi$ eingesetzt wird und anschließend wird dieser noch auf einen Wert gesetzt dessen Betrag in jedem Fall unter $\pi / 2$ ist. Damit wird sichergestellt, dass wenn durch den eingeschlossenen Winkel geteilt wird in jedem Fall der kleinere Betrag genommen wird.
+Ein ansonsten daraus resultierender Fehler würde sich bei der Berechnung des sich translativ bewegenden Gliedes zeigen.
 
 \section{Das drehende Rad}\label{ch:drehendesRad}
 
@@ -80,19 +108,18 @@ Das Rollen wird durch den \lstinline{g2.use} Befehl simuliert, indem die Rotatio
 Die Animation wird dann an \lstinline{globalTestVariables.g} übergeben.
 Da kein \name{mec2} Modell definiert ist werden dessen Befehle, wie in Kapitel~\ref{ch:simulation_js} beschrieben, ignoriert.
 
-Zur Ermittlung des Momentanpols ist es nun notwendig die absolute Geschwindigkeit eines Punktes auf dem Glied, sowie die Rotationsgeschwindigkeit des Gliedes selbst zu ermitteln.
-Die absolute Geschwindigkeit soll zunächst ermittelt werden, indem wie in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} beschrieben die Bewegung der äußersten Randpunkte gemessen wird.
-Unter der Vorrausetzung, dass diese in etwa den selben Punkt auf dem Glied bezeichnen, sollten diese eine ausreichende Approximation darstellen.
+Zur Ermittlung des Momentanpols ist es nun notwendig die absolute Geschwindigkeit eines fest mit dem Glied verbundenen Punktes, sowie die Rotationsgeschwindigkeit des Gliedes zu ermitteln.
+Die absolute Geschwindigkeit wird zunächst ermittelt, indem wie in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} beschrieben die Bewegung der äußersten Randpunkte gemessen wird.
+Unter der Vorausetzung, dass diese in etwa den selben Punkt auf dem Glied bezeichnen, sollten diese eine ausreichende Approximation darstellen.
 Die \lstinline{Group} Klasse speichert hierbei den Pfad der gemessenen Punkte und ordnet diese entsprechend zu.
-Durch den Gradienten zweier Punkte in dieser Liste kann so eine Geschwindigkeit berechnet werden.
-Die Rotationsgeschwindigkeit wird ähnlich gemessen.
-Hierfür hat die \lstinline{Group} Klasse die Eigenschaft \lstinline{lines} bekommen, welche in etwa die selbe Aufgabe wie die \lstinline{pts} Eigenschaft erfüllen soll.
-Wird der Gradient über die selbe Anzahl an Iterationen für die Winkelgeschwindigkeit wie für die absolute Geschwindigkeit berechnet, so kann Gleichung~\ref{eq:euler_rAP} genutzt werden um die Position des Momentanpols zu ermitteln.
+Durch den Gradienten zweier Punkte in dieser Liste wird so eine Geschwindigkeit berechnet.
+Die Rotationsgeschwindigkeit wird ähnlich gemessen, wie in Listing~\ref{lst:group_momentanpol} zu sehen ist.
 
+Wird der Gradient über die selbe Anzahl an Iterationen für die Winkelgeschwindigkeit wie für die absolute Geschwindigkeit berechnet, so kann Gleichung~\ref{eq:euler_rAP} genutzt werden um die Position des Momentanpols zu ermitteln.
 Dieser stellt hier wieder eine Schätzung dar, da die Eingangsparameter mit einer Ungenauigkeit behaftet sind.
 Des Weiteren ist anzumerken, dass die Anzahl der Iterationen zwischen den beiden zu vergleichenden Bildern im vorhinein festgelegt werden muss.
 Ist diese Zahl zu klein, oder zu groß, so folgt daraus eine größere Standardabweichung.
-Diese optimale Anzahl ist jedoch je nach Geschwindigkeit des sich bewegenden Gliedes unterschiedlich, sodass zur Ermittlung dieses weitere Untersuchung notwendig sind.
+Diese optimale Anzahl ist jedoch je nach Geschwindigkeit des sich bewegenden Gliedes unterschiedlich, sodass zur automatisierten Ermittlung weitere Untersuchung notwendig sind.
 Für den Versuch des Rades wird hier lediglich die Y-Koordinate betrachtet.
 Tatsächlich befindet sich der Erwartungswert des Momentanpols, unter Berücksichtigung der Standardabweichung, in etwa im Wälzpunkt des Rades.
 
@@ -118,7 +145,8 @@ Der Verlauf der nun verfolgten Punkte verspricht weniger Streuung der Koordinate
 Des Weiteren soll nicht mehr die Gerade der am weitesten auseinander liegenden Punkte genutzt werden, sondern die orthogonale Regressionsgerade, welche in Kapitel~\ref{ch:orthogonale_regression} beschrieben wurde.
 Diese verspricht ebenfalls weniger Streuung bei der Ermittlung des vom Glied eingelegten Winkels.
 
-Die Berechnung des Momentanpols ist ansonsnten äquivalent.
+Die beschriebene Implementation erfordert hier jedoch nur eine andersartige Befüllung der \lstinline{pts} und \lstinline{lines} Eigenschaften des entsprechenden \lstinline{Group} Objekt.
+Die Berechnung des Momentanpols und die genutzten Funktionen sind ansonnsten äquivalent.
 In Abbildung~\ref{fig:drehendes_rad_1_4} ist zu sehen, dass die Berechnung in der Tat eine erheblich geringere Streuung aufweisen.
 Die gezeigten Ansätze überspringen jeweils 20 Iterationen.
 Dieser Wert ist experimentell ermittelt und sollte der Geschwindigkeit der Drehung angepasst werden.
@@ -159,9 +187,10 @@ Ein eindeutiges Ergebnis zu bekommen ist hier nicht zu erwarten.
 Im Gegenteil lässt hier ein besonders schlechtes Ergebnis den Schluss zu, dass es sich entsprechend um ein sich translativ bewegendes Glied handelt.
 Bei der Berechnung des Momentanpols des sich translativ bewegenden Gelenkes teilweise ein Winkel von in etwa $\pi$ ermittelt wird, weshalb in Abbildung~\ref{fig:translatives_glied_1} die Momentanpole teilweise auf dem Pfad des Gelenkes liegen.
 Im Vergleich mit dem Ansatz welcher die absolute Geschwindigkeit über Lucas-Kanade und die Winkelgeschwindigkeit über die Regressionsgerade bestimmt wird dieser Fehler allerdings nicht weiter beachtet, da der letztere dem ersten offensichtlich überlegen ist.
-Beim zweiten Ansatz wurde aus diesem Grund der eingeschlossene Winkel durch \lstinline{dw = dw > Math.PI / 2 ? dw - Math.PI : dw;} korrigiert, was jeweils den kleineren der beiden eingeschlossenen Winkel bevorzugt.
+Beim zweiten Ansatz wurde aus diesem Grund der eingeschlossene Winkel durch \lstinline{dw = dw > Math.PI / 2 ? dw - Math.PI : dw;} korrigiert wie in Listing~\ref{lst:group_momentanpol} gesehen werden kann, damit jeweils den kleineren der beiden eingeschlossenen Winkel bevorzugt.
 Der rote Punkt in Abbildung~\ref{fig:translatives_glied_3} stellt hier den verfolgten Punkt dar und nicht den Momentanpol.
-Die Standardabweichung, sofern ein Vergleich an dieser Stelle sinnvoll ist, hat im ersten Versuch einen Wert jeweils um die $100$, während dieser im zweiten Ansatz nicht mehr berechenbar scheint\footnote{Die jeweils berechnete Standardabweichung wird hier als \lstinline{NaN} angegeben.}. % TODO warum?
+Die Standardabweichung zu vergleichen scheint an dieser Stelle weniger sinnvoll.
+Sie ist in beiden Fällen sehr hoch und wird nur durch die Tatsache niedrig gehalten, dass \lstinline{Data} Koordinaten außerhalb des Canvas ignoriert um die Gauß-Verteilung mit den gemessenen Werten vergleichbar zu halten\footnote{Teilweise auftretende extreme Ausschläge haben einen großen Einfluss auf die Varianz.}
 
 \begin{figure}
     \centering
@@ -177,50 +206,14 @@ Die Standardabweichung, sofern ein Vergleich an dieser Stelle sinnvoll ist, hat 
     \label{fig:translatives_glied_1_3}
 \end{figure}
 
-% \section{Nutzung des Lucas-Kanade Algorithmus}
-
-% Es ist davon auszugehen, dass die vorangegangene Methode eine gewisse Ungenauigkeit mit sich bringt, da die Eingangsparameter bereits mit einer signifikanten Streuung eingehen.
-% Hierbei ist zu vermuten, dass die Nutzung der Punkte mit größter Distanz die größere Fehlerquelle darstellt.
-% Aus diesem Grund soll die Absolutgeschwindigkeit nicht über diese, sondern über die Punkte gemessen werden, welche durch den in Kapitel~\ref{ch:lucas_kanade} eingeührten Algorithmus ermittelt werden.
-
-% Diese Herangehensweise benötigt nun jedoch eine Mischung der Funktionen welche vorher für die Berechnung der unterschiedlichen Bilder genutzt wurde.
-% Für die Bestimmung der Regressionsgerade wird die Punktwolke genommen welche durch die \lstinline{PointCloud.fromImages} ermittelt wird.
-% Die \lstinline{LucasKanade.step} Funktion benötigt jedoch ein \lstinline{cv.Mat} Objekt des Bildes.
-% Deshalb wurde auf der \lstinline{Group} Klasse eine \lstinline{step} Funktion definiert.
-
-% \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{step} Funktion der \lstinline{Group} Klasse} \label{lst:group_step}]
-% step(fn) {
-%     this.lucasKanade();
-%     const pts = this.regressionLine();
-
-%     fn?.call(undefined, pts);
-% }
-% \end{lstlisting}
-
-% In Listing~\ref{lst:group_step} wird beschrieben wie der Lucas-Kanade Ansatz zusammen mit der Regressionsgerade genutzt wird.
-% In der \lstinline{lucasKanade} Funktion wird entsprechend das Bild von \lstinline{cnv1} als ein \lstinline{cv.Mat} Objekt ausgelesen und die \lstinline{LucasKanade.step} Funktion aufgerufen.
-% Für diesen Test wird zunächst der \lstinline{maxCorners} für den \name{Shi-Tomasi} Algorithmus auf eins gesetzt, damit nur ein Punkt verfolgt wird.
-% Der Speiche des Rades wurden ebensfalls zwei Punkte hinzugefügt, damit diese als eine Ecke von diesem erkannt werden können.
-% Der dann verfolgte Punkt wird dem \lstinline{Group} Objekt hinzugefügt.
-
-% Die weitergehende Berechnung ist die gleiche wie in Kapitel~\ref{ch:drehendesRad}.
-% Die Standardabweichung des hier ermittelten Momentanpols ist hier viel kleiner.
-% Dies ist auch dann der Fall, wenn direkt aufeinanderfolgende Iterationen genutzt werden.
-% Erhöht man die Anzahl dieser, so reduziert sich die Standardabweichung weiter.
-% Für das sich drehende Rad ist anzumerken, dass wenn der verfolgte Punkt sich im höchsten Punkt des von ihm gezeichneten Zykloiden befindet der Momentanpol dort falsch vorhergesagt wird.
-% Das kann jedoch mit entsprechenden Maßnahmen in einer Nachbearbeitung entfernt werden.
-
-% Für die Ermittlung des Momentanpols des Pendels sind die Ergebnisse sehr viel besser.
-% Dort wird der Momentanpol mit einer Standardabweichung von unter eins korrekt vorhergesagt.
-% Für das sich translativ bewegende Glied steigt die Standardabweichung Erwartungsgemäß in extrem Hohe werte, sodass auch diese als eine vielversprechende Beobachtung bezeichnet werden kann.
 
 % TODO es kann noch mit den Mittelsenkrechten von den Punkte gearbeitet werden statt den Regressionsgeraden. Vielleicht sind die ja genauer.
 
 \section{Beobachtungen}
 Es hat sich gezeigt, dass die naive herangehensweise von den am weitest entfernten Punkten in Verbindung mit der Regressionsgerade durchaus Erwartungswerte liefert welche dem tatsächlichen Momentanpol entsprechen.
-Werden jedoch lediglich Momentaufnahmen betrachtet, so sind diese wahrscheinlich nicht als gute Bezugspunkte für weitere Prognosen zur Zusammenstellung des Mechanismus geeignet.
-Die Kombination aus der Ermittlung der Regressionsgeraden und der Verfolgung von Punkten durch den Lucas-Kanade Algorithmus haben jedoch eine sehr geringe Streuung.
-Es kann also davon ausgegangen werden, dass auf diese Weise ermittelte Erwartungswerte nach nur wenigen Iterationen nutzbare Pole darstellen um einen Mechanismus zu rekonstruieren.
+Werden jedoch lediglich Momentaufnahmen betrachtet, so sind diese wahrscheinlich nicht als gute Bezugspunkte für weitere Prognosen zur Rekonstruktion eines Mechanismus geeignet.
+Die Kombination aus der Ermittlung der Regressionsgeraden und der Verfolgung von Punkten durch den Lucas-Kanade Algorithmus haben jedoch eine geringere Streuung.
+Es kann also davon ausgegangen werden, dass auf diese Weise ermittelte Erwartungswerte nach nur wenigen Iterationen nutzbare Pole darstellen.
 
 Bisher wurde die Ermittlung des Momentanpols eines isolierten Gliedes betrachtet.
 Da ein Mechanismus zwangsläufig aus mehreren Gliedern besteht soll nun betrachtet werden wie ein mehrgliedriges Modell in seine Komponenten geteilt werden kann.

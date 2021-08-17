@@ -77,16 +77,15 @@ class Group {
         const p1 = mu(1);
         const p2 = mu(threshold + 1);
 
+        const w1 = Math.atan(this.lines[this.lines.length - 1].m);
+        const w2 = Math.atan(this.lines[this.lines.length - (threshold + 1)].m);
+
         const v = {
             x: p1.x - p2.x,
             y: p1.y - p2.y
         };
 
-        let dw = ((
-            Math.atan(this.lines[this.lines.length - 1].m) -
-            Math.atan(this.lines[this.lines.length - (threshold + 1)].m))
-            + Math.PI) % Math.PI;
-
+        let dw = ((w1 - w2) + Math.PI) % Math.PI;
         dw = dw > Math.PI / 2 ? dw - Math.PI : dw;
 
         return {
@@ -102,7 +101,7 @@ class Group {
     }
 
     addPoints(pts) {
-        if (!pts?.length) {
+        if (!pts?.length || pts.some(e => !e)) {
             return;
         }
         else if (!this.pts.length) {

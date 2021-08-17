@@ -43,28 +43,7 @@
             group.lines.push(Line.fromRegressionLine(result, g));
             result.draw(g);
 
-            const threshold = 20;
-            if (group.pts[0].length > threshold) {
-                const l = group.getPoint(0);
-                const b = group.getPoint(0, threshold);
-
-                const va = {
-                    x: l.x - b.x,
-                    y: l.y - b.y,
-                }
-
-                const l1 = group.lines[group.lines.length - 1];
-                const l2 = group.lines[group.lines.length - threshold];
-
-                const dw = (Math.atan(l1.m) - Math.atan(l2.m) + Math.PI) % Math.PI;
-
-                const rp = {
-                    x: (l.x + b.x) / 2 - va.y / dw,
-                    y: (l.y + b.y) / 2 + va.x / dw,
-                };
-
-                data.add(rp);
-            }
+            data.add(group.momentanpol(20));
 
             data.draw(g);
             data.getChart(0, 1, {ymax: 0.3}).exe(globalTestVariables.ctx3);

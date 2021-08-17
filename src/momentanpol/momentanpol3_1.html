@@ -50,28 +50,14 @@
             const line = Line.fromRegressionLine(result, g);
             const { p1, p2 } = result.getMaxDist(g);
             group.addPoints([p1, p2]);
+            group.lines.push(new Line({p1, p2}))
             result.draw(g);
 
-            const threshold = 5;
-            if (group.pts[0].length > threshold) {
-                const l = group.getPoint(0);
-                const b = group.getPoint(0, threshold);
-                const va = {
-                    x: l.x - b.x,
-                    y: l.y - b.y,
-                }
-                const l1 = new Line({ p1: l, p2: group.getPoint(1) });
-                const l2 = new Line({ p1: b, p2: group.getPoint(1, threshold) });
-
-                const dw = (Math.atan(l1.m) - Math.atan(l2.m) + Math.PI) % Math.PI;
-
-                const rp = {
-                    x: l.x - va.y / dw,
-                    y: l.y + va.x / dw,
-                };
-
-                data.add(rp);
-            }
+            const pol = group.momentanpol(5);
+            data.add(pol);
+            group.pts.forEach(p => {
+                new Line({p1: pol, p2: p[p.length - 1]}).draw(g);
+            });
 
             data.draw(g);
             data.getChart().exe(globalTestVariables.ctx3);
