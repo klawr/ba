@@ -367,7 +367,7 @@ class PointCloud {
 
     /**
      * 
-     * @param {number} K is the number of clusters to be created
+     * @param {number | Array} K is the number of clusters to be created, or predefined clusters
      * @param {g2} g is a g2 command-queue used for rendering
      * @returns The mean of the points corresponding to a centroid.
      */
@@ -379,13 +379,12 @@ class PointCloud {
                     pre : cur));
         }
 
-        const k = Math.min(K, this.length);
-
-        const centroids = [[]];
-        for (let i = 0; i < k; ++i) {
-            const idx = Math.round(Math.random() * this.length);
-            centroids[0].push({ ...this.points[idx] });
-        }
+        const centroids = Array.isArray(K) ? K : [[]
+            .concat(Array(Math.min(K, this.length))
+                .fill(null)
+                .map(() => ({
+                    ...this.points[Math.round(Math.random() * this.length)]
+                })))];
 
         for (let i = 0; i < maxIter; ++i) {
             const data_assigned = this.points.map(d =>
@@ -410,8 +409,8 @@ class PointCloud {
 
             g && data_assigned.forEach(d => {
                 g.cir({
-                    ...d, r: 1,
-                    ls: globalTestVariables.hsv2rgb(d.n * 360 / k)
+                    ...d, r: 1, ls: globalTestVariables.hsv2rgb(
+                        d.n / centroids[0].length * 360)
                 });
             });
         }
@@ -420,10 +419,10 @@ class PointCloud {
             c.forEach(d => { g.cir({ ...d, r: i }); }));
 
         return centroids[centroids.length - 1].map((_, i) =>
-            this.points.map(d => ({ ...d, n: findNearestCentroid(d, centroids[i]) }))
+            this.points
+                .map(d => ({ ...d, n: findNearestCentroid(d, centroids[i]) }))
                 .filter(d => d.n === i));
     }
-
 }
 
 class Dijkstra {

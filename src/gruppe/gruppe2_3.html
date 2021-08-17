@@ -44,13 +44,18 @@
             ]
         }
 
+        const k = 3;
         const fn = (result) => {
             const filtered = result.removeOverlaps();
             const g = g2().clr();
-            const k = 3;
-            const groups = filtered.kMeansClustering(k, g);
-            if (groups.filter(g => g.length).length === k) {
-                groups.forEach(e => Line.fromRegressionLine(e, g));
+            const cluster = filtered.kMeansClustering(
+                globalGruppe2Variables.previousClusters || k, g);
+            if (cluster.length === 3) {
+                globalGruppe2Variables.previousClusters =
+                    [cluster.map(c => new DataXY(c).mu)];
+            }
+            if (cluster.filter(g => g.length).length === k) {
+                cluster.forEach(e => Line.fromRegressionLine(e, g));
             }
             g.exe(globalTestVariables.ctx2);
         }

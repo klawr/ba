@@ -1,3 +1,4 @@
 
-const globalGruppe4Variables = {
+const globalGruppe2Variables = {
+    previousClusters: null,
 }
