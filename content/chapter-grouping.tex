@@ -82,9 +82,19 @@ Es ist davon auszugehen, dass Mechanismen welche eine andere Form aufweisen als 
 
 \section{k-Means-Algorithmus}
 
-Eine andere Möglichkeit die Punkte zu Gruppieren
+Eine andere Möglichkeit die Punkte zuzuordnen ist durch den k-Means-Algorithmus.
+Dieser wird in der Statistik genutzt um Datenpunkte in Gruppen einzuteilen.
+Ein offensichtlier Nachteil dieses besteht darin, dass die Anzahl der Gruppen von vorneherein bekannt sein muss.
+Eine Untersuchung, ob er für den vorliegenden Anwedungsfall nutzbar ist scheint jedoch angebracht.
+Eine entsprechende Funktion wurde wieder auf der \lstinline{PointCloud} Klasse definiert.
+Hier werden zunächst zufällig drei Punkte auf dem Bild ausgewählt.
+Diese drei Punkte werden als \name{Centroids} bezeichnet.
+Jeder Punkt der Punktwolke ordnet sich dann demjenigen \name{Centroid} zu, welcher die geringste euklidische Distanz aufweist.
+Dies sollte ein bis drei Gruppen zur Folge haben, welche die entsprechenden Punkte enthalten.
+Daraufhin werden neue \name{Centroids} definiert, indem der Erwartungswert dieser Gruppen ermittelt wird.
+Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen.
 
-\section{Dijkstra's Algorithmus}
+\section{Dijkstra-Algorithmus}
 
 \section{Rekonstruktion eines Mechanismus durch die Relativpole}
 
