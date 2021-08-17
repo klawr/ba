@@ -81,13 +81,13 @@ Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfa
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/lucas_kanade_simple.png}
-        \caption{Versuch: \name{gruppe3\_1.html}. Hier wird gezeigt welche Punkte durch die \lstinline{cv.goodFeaturesToTrack} bei einem \name{mec2} Modell ermittelt werden.}\label{fig:gruppe3_1}
+        \caption{Versuch: \name{opticalflow2\_1.html}. Hier wird gezeigt welche Punkte durch die \lstinline{cv.goodFeaturesToTrack} bei einem \name{mec2} Modell ermittelt werden.}\label{fig:opticalflow2_1}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/lucas_kanade_history.png}
-        \caption{Versuch: \name{gruppe3\_2.html}. Durch die \lstinline{cv.calcOpticalFlowPyrLK} Funktion werden die Kanten über die Bildsequenz hinweg verfolgt.}\label{fig:gruppe3_2}
+        \caption{Versuch: \name{opticalflow2\_2.html}. Durch die \lstinline{cv.calcOpticalFlowPyrLK} Funktion werden die Kanten über die Bildsequenz hinweg verfolgt.}\label{fig:opticalflow2_2}
     \end{subfigure}
-    \label{fig:gruppe_3_1_2}
+    \label{fig:opticalflow2_1_2}
 \end{figure}
 
 Die in der \lstinline{LucasKanade} Klasse definierte \lstinline{step} Funktion ist in Listing~\ref{lst:LucasKanade_step} abgebildet.
@@ -140,7 +140,7 @@ Darauf wird stattdessen in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen.
 Bei der Ermittlung des optischen Flusses wird zwischen dichtem und spärlichen optischen Fluss unterschieden\footnote{Englisch \textit{sparse and dense optical flow}.}.
 Während der spärliche optische Fluss einzelne Regionen von Interesse im Bild verfolgt und entsprechend dessen Bewegung nachvollzieht, ist der Anspruch von Algorithmen zur Berechnung von dichten optischem Fluss die Berechnung der Bewegung jedes einzelnen Pixels.
 Während ich auf die Implementation nicht weiter eingehen möchte, da dieser Ansatz wegen augenscheinlich zu großen Varianzen nicht weiter verfolgt wurde, verdient dieser dennoch eine Erwähnung.
-Die Implementation wurde wenig optimiert, der entsprechende Test kann jedoch unter \name{src/gruppe/gruppe2\_1.html} eingesehen werden.
+Die Implementation wurde wenig optimiert, der entsprechende Test kann jedoch unter \name{src/opticalflow/opticalflow1\_1.html} eingesehen werden.
 
 Zu erwarten wäre für ein sich um einen festen Punkt drehendes Glied, dass alle Vektoren zur Bestimmung der Bewegung den selben Einheitsvektor haben.
 Der entsprechende Betrag des Vektors sollte linear mit Abstand zum Drehpunkt zunehmen.
@@ -153,13 +153,13 @@ Da jedoch die Ungenauigkeiten hier zu groß zu sein scheinen fällt die Implemen
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/farneback_okay.png}
-        \label{fig:gruppe2_1_okay}
+        \label{fig:opticalflow1_okay}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/farneback_bad.png}
-        \label{fig:gruppe2_1_bad}
+        \label{fig:opticalflow1_1_bad}
     \end{subfigure}
-    \caption{Versuch: \name{gruppe2\_1.html}. Hier wird der Versuch mit dem optischen Fluss nach Farneback versucht. Die Farben stellen die vorausgesagte Richtung der entsprechenden Pixel dar. Auf dem ersten Bild scheinen diese noch relativ eindeutig zu sein. Es zeigt sich jedoch, dass vorallem für etwas schnellere Bewegungen diese Berechnungen sehr ungenau werden und starke Streuungen zeigen. Eine sinnvolle Nutzung bedarf entsprechend tieferer Analyse.}\label{fig:gruppe2_1_bad}
+    \caption{Versuch: \name{opticalflow1\_1.html}. Hier wird der Versuch mit dem optischen Fluss nach Farneback versucht. Die Farben stellen die vorausgesagte Richtung der entsprechenden Pixel dar. Auf dem ersten Bild scheinen diese noch relativ eindeutig zu sein. Es zeigt sich jedoch, dass vorallem für etwas schnellere Bewegungen diese Berechnungen sehr ungenau werden und starke Streuungen zeigen. Eine sinnvolle Nutzung bedarf entsprechend tieferer Analyse.}\label{fig:opticalflow1_1_bad}
     \label{fig:gruppe_2_1}
 \end{figure}
 

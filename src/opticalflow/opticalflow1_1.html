@@ -19,11 +19,10 @@
     <script src="../third_party/mec2.min.js"></script>
     <script src="../third_party/opencv.js"></script>
     <script src="../scripts/simulation.js"></script>
-    <script src="../scripts/group.js"></script>
-    <script src="gruppe3.js"></script>
+    <script src="opticalflow1.js"></script>
 
     <p>
-        Test zur Lucas-Kanade mit Historie.
+        Test zu Farneback.
     </p>
 
     <script>
@@ -35,21 +34,16 @@
                 { "id": "B0", "x": 210, "y": 60, "base": true },
             ],
             "constraints": [
-                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
+                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 10, "Dw": 6.283185307179586, repeat: 1000 } },
                 { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
                 { "id": "c", "p1": "B0", "p2": "B", "len": { "type": "const" } }
             ]
         }
 
-        const { group } = globalGruppe3Variables;
         const fn = (result) => {
-            const g = g2().use({ grp: globalTestVariables.g });
-            group.draw(g, true);
-            g.exe(globalTestVariables.ctx2);
         }
 
-        globalTestVariables.register(() =>
-            globalGruppe3Variables.group.lucasKanade(fn));
+        globalTestVariables.register(() => stepOpenCVFarneback(fn));
     </script>
 </body>
 
