@@ -59,10 +59,12 @@ class Data {
             .flatMap(e => [+e[0], e[1] / length]);
     }
 
-    getChart(limit) {
+    getChart(limit, gaussian = true, align = true) {
         const gtv = globalTestVariables;
-        const data = this.alignForChart(limit);
-        const fn = (i) => this.gaussianDistribution(i);
+        const data = align ?
+            this.alignForChart(limit) :
+            Object.entries(this.data).map(e => [+e[0], +e[1]]);
+        const fn = (i) => gaussian ? this.gaussianDistribution(i) : [];
 
         return g2().clr().view({ cartesian: true }).chart({
             x: 20, y: 20, b: gtv.cnv_width - 40, h: gtv.cnv_height - 30,

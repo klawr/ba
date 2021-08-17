@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../third_party/opencv.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="gruppe2.js"></script>
+
+    <p>
+        Hier soll die Trägheit des verschiedenen K's betrachtet werden um so die optimale Anzahl der Gruppen zu
+        bestimmen.
+    </p>
+
+    <script>
+        // globalTestVariables.model = {
+        //     "nodes": [
+        //         { "id": "A0", "x": 60, "y": 60, "base": true },
+        //         { "id": "A", "x": 60, "y": 110 },
+        //         { "id": "B", "x": 210, "y": 120 },
+        //         { "id": "B0", "x": 210, "y": 60, "base": true },
+        //     ],
+        //     "constraints": [
+        //         { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
+        //         { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
+        //         { "id": "c", "p1": "B0", "p2": "B", "len": { "type": "const" } }
+        //     ]
+        // }
+
+        globalTestVariables.model = {
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 80, y: 120, base: true },
+                { id: 'A1', x: 150, y: 90 },
+                { id: 'B0', x: 240, y: 120, base: true },
+                { id: 'B1', x: 160, y: 90 }
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } },
+                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } }
+            ]
+        };
+
+        const data = new Data();
+
+        const fn = (result) => {
+            const filtered = result.removeOverlaps();
+            const g = g2().clr();
+
+            const clusters = [];
+
+            for (let k = 2; k < 9; ++k) {
+                const cluster = filtered.kMeansClustering(k);
+                const inertia = filtered.kMeansSilhouette(cluster);
+                if (Number.isNaN(inertia) ||
+                    cluster[0].some(c => c.x === 0 && c.y === 0)) {
+                    data.data[k] = -1;
+                    continue;
+                }
+                data.data[k] = inertia;
+                clusters[k] = [cluster[0]];
+            }
+
+            const winner = Object.entries(data.data)
+                .sort((a, b) => b[1] - a[1])[0][0];
+            filtered.kMeansClustering(clusters[winner], g, 10);
+
+            data.getChart(false, false, false).exe(globalTestVariables.ctx3);
+            g.exe(globalTestVariables.ctx2);
+        }
+
+        globalTestVariables.register(() => stepCompareImages(fn));
+    </script>
+</body>
+
+</html>

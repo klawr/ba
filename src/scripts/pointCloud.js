@@ -380,11 +380,13 @@ class PointCloud {
         }
 
         const centroids = Array.isArray(K) ? K : [[]
-            .concat(Array(Math.min(K, this.length))
+            .concat(Array(Math.min(K, this.length) || 0)
                 .fill(null)
                 .map(() => ({
                     ...this.points[Math.round(Math.random() * this.length)]
                 })))];
+
+        if (!centroids[0].length) return [[], []];
 
         for (let i = 0; i < maxIter; ++i) {
             const data_assigned = this.points.map(d =>
@@ -418,10 +420,53 @@ class PointCloud {
         g && centroids.forEach((c, i) =>
             c.forEach(d => { g.cir({ ...d, r: i }); }));
 
-        return centroids[centroids.length - 1].map((_, i) =>
+        const winner = centroids[centroids.length - 1];
+        return [winner, winner.map((_, i) =>
             this.points
                 .map(d => ({ ...d, n: findNearestCentroid(d, centroids[i]) }))
-                .filter(d => d.n === i));
+                .filter(d => d.n === i))];
+    }
+
+    kMeansSilhouette(cluster) {
+        const group = cluster[1];
+
+        const coefficients = [];
+
+        // get mean distance of instance to all other points per group
+        for (let i = 0; i < group.length; ++i) {
+            for (let j = 0; j < group[i].length; ++j) {
+                const p1 = group[i][j];
+                const dists = [];
+                // get mean distance to all clusters
+                for (let k = 0; k < group.length; ++k) {
+                    let dist = 0;
+                    for (let l = 0; l < group[k].length; ++l) {
+                        const p2 = group[k][l];
+                        dist += Math.hypot(p1.x - p2.x, p1.y - p2.y);
+                    }
+                    dists.push(dist / group[k].length);
+                }
+                const a = dists[i];
+                dists.splice(i, 1);
+                const b = Math.min(...dists);
+                coefficients.push((a - b) / Math.max(a, b));
+            }
+        }
+
+        return coefficients
+            .reduce((pre, cur) => pre + cur) / coefficients.length;
+    }
+
+    kMeansInertia(cluster) {
+        if (cluster[0].length !== cluster[1].length) {
+            throw "no";
+        }
+        return cluster[0].reduce((pre, centroid, i) =>
+            pre + cluster[1][i].reduce((pre, cur) =>
+                pre + Math.hypot(
+                    cur.x - centroid.x,
+                    cur.y - centroid.y) ** 2
+                , 0), 0);
     }
 }
 

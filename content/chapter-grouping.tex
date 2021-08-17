@@ -54,7 +54,7 @@ Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf dies
         \caption{}
         \label{fig:gruppe1_2_3}
     \end{subfigure}
-    \caption{Versuch: \lstinline{gruppe2_1.html}. In Bild~\ref{fig:gruppe1_2_0} wird der Mechanismus gezeigt, dessen Glieder nun zugeordnet werden sollen.
+    \caption{Versuch: \lstinline{gruppe1_1.html}. In Bild~\ref{fig:gruppe1_2_0} wird der Mechanismus gezeigt, dessen Glieder nun zugeordnet werden sollen.
     Bild~\ref{fig:gruppe1_2_1} zeigt die Vorhersage zur Zuordnung dieser Punkte.
     Bild~\ref{fig:gruppe1_2_2} zeigt die Zuordnung der Punkte in den Totlagen des Mechanismus. Hier wird das linke Glied und die Koppel einer einzelnen Gruppe zugeordnet. Bild~\ref{fig:gruppe1_2_2} zeigt, dass der genutzte Algorithmus manchmal auch falsche vorhersagen trifft. Hier liegt das daran, dass zuerst die grüne Gruppe ermittelt wurde, bei welcher die Dichte der weit entfernten Punkte des Gelenkes des rechten Gliedes zu einer falschen Gerade geführt hat. Danach hat sich der Fehler in den übrigen Gruppen entsprechend fortgepflanzt.}
     \label{fig:gruppe1_2}
@@ -82,7 +82,7 @@ Es ist davon auszugehen, dass Mechanismen welche eine andere Form aufweisen als 
 
 \section{k-Means-Algorithmus}
 
-Eine andere Möglichkeit die Punkte zuzuordnen ist durch den k-Means-Algorithmus.
+Eine andere Möglichkeit die Punkte zuzuordnen ist durch den k-Means-Algorithmus~\cite[S.~241]{Geron2019}.
 Dieser wird in der Statistik genutzt um Datenpunkte in Gruppen einzuteilen.
 Ein offensichtlier Nachteil dieses besteht darin, dass die Anzahl der Gruppen von vorneherein bekannt sein muss.
 Eine Untersuchung, ob er für den vorliegenden Anwedungsfall nutzbar ist scheint jedoch angebracht.
@@ -93,6 +93,19 @@ Jeder Punkt der Punktwolke ordnet sich dann demjenigen \name{Centroid} zu, welch
 Dies sollte ein bis drei Gruppen zur Folge haben, welche die entsprechenden Punkte enthalten.
 Daraufhin werden neue \name{Centroids} definiert, indem der Erwartungswert dieser Gruppen ermittelt wird.
 Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen.
+
+\subsection{Bestimmung der Anzahl der Gruppen}
+
+Um die Anzahl der Gruppen zu bestimmen kann eine Metrik verwendet werden welche als Trägheit bezeichnet wird.
+Die Trägheit berechnet sich hier durch die durchschnittliche Distanz der Punkte zu ihrem jeweiligen \name{Centroid}.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/k_means_centroids_edit.png}
+    \caption{Versuch: \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration größer um die Annäherung zu visualisieren. Es ist sichtbar, dass sie sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
+    \label{fig:gruppe2_1}
+\end{figure}
 
 \section{Dijkstra-Algorithmus}
 

@@ -21,12 +21,11 @@
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/pointCloud.js"></script>
     <script src="../scripts/data.js"></script>
-    <script src="../scripts/line.js"></script>
     <script src="gruppe2.js"></script>
 
     <p>
-        Hier wird eine Gruppierung durch den K-Means Algorithmus versucht.
-        Zu den Gruppen wird jeweils noch die Regressionsgerade ermittelt.
+        Hier soll die Trägheit des verschiedenen K's betrachtet werden um so die optimale Anzahl der Gruppen zu
+        bestimmen.
     </p>
 
     <script>
@@ -44,19 +43,20 @@
             ]
         }
 
-        const k = 3;
+        const data = new Data();
+
         const fn = (result) => {
             const filtered = result.removeOverlaps();
             const g = g2().clr();
-            const cluster = filtered.kMeansClustering(
-                globalGruppe2Variables.previousClusters || k, g);
-            if (cluster[0].length === 3) {
-                globalGruppe2Variables.previousClusters = [cluster[0]];
+
+            for (let k = 2; k < 8; ++k) {
+                const cluster = filtered.kMeansClustering(k, g);
+                const inertia = filtered.kMeansInertia(cluster);
+                data.data[k] = inertia;
+                g.exe(globalTestVariables.ctx2);
             }
-            if (cluster[1].filter(g => g.length).length === k) {
-                cluster[1].forEach(e => Line.fromRegressionLine(e, g));
-            }
-            g.exe(globalTestVariables.ctx2);
+
+            data.getChart(false, false, false).exe(globalTestVariables.ctx3);
         }
 
         globalTestVariables.register(() => stepCompareImages(fn));
