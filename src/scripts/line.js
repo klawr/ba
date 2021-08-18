@@ -101,7 +101,9 @@ class Line {
             y2: m * globalTestVariables.cnv_width + b
         });
 
-        return new Line({ m, b });
+        return !(Number.isNaN(m) || Number.isNaN(b)) ?
+            new Line({ m, b }) :
+            null;
     }
 
     static fromBisector(p1, p2, g) {

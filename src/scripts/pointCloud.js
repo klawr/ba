@@ -126,6 +126,8 @@ class PointCloud {
     static correlation(pts) {
         const len = pts.length;
 
+        if (len < 2) return 1;
+
         const s = pts.reduce((pre, cur) => ({
             x: pre.x + cur.x,
             y: pre.y + cur.y,
@@ -135,7 +137,7 @@ class PointCloud {
         }), { x: 0, y: 0, xs: 0, ys: 0, xy: 0 });
 
 
-        const nominator = s.xy - s.x * s.y;
+        const nominator = s.xy - s.x * s.y / len;
         const denominator = Math.sqrt(
             (s.xs - (s.x ** 2 / len)) *
             (s.ys - (s.y ** 2 / len)));
@@ -423,6 +425,56 @@ class Dijkstra {
     graph = [];
     anchor = undefined;
 
+    groupsByCorrelation(g) {
+        let ends = this.graph
+            .filter((n) => !this.graph.some(g => g.pred.id === n.id))
+            .sort((a, b) => b.dist - a.dist);
+
+        const winner = [];
+
+        while (ends.length) {
+            const occupied = (function f(o, arr) {
+                if (o.pred) arr = f(o.pred, arr);
+                return [...arr, o];
+            })(ends[0], []);
+            winner.push(ends.shift());
+
+            ends = ends.filter(u => {
+                for (let p = u.pred; p.pred; p = p.pred)
+                    if (occupied.includes(p)) return false;
+                return true;
+            });
+        }
+
+        winner
+            .map(u => this.points[u.id])
+            .forEach((p, i) => g.cir({
+                ...p, r: 10,
+                ls: globalTestVariables.hsv2rgb(i / ends.length * 300)
+            }));
+
+        let lines = [];
+        for (const win of winner) {
+            let group = [];
+            for (let u = win; u.pred; u = u.pred) {
+                const correlation = PointCloud.correlation(
+                    [...group, this.points[u.id]]);
+                if (Math.abs(correlation) ** group.length < 0.623) {
+                    if (group.length > this.points.length * 0.25) {
+                        lines.push(Line.fromRegressionLine(group, g));
+                    }
+                    group = [];
+                }
+                group.push(this.points[u.id]);
+            }
+            lines.push(Line.fromRegressionLine(group, g));
+        }
+        lines = lines.filter(l => l);
+        g && lines.forEach(l => l.draw(g));
+
+        return lines;
+    }
+
     draw(g) {
         g.cir({ ...this.anchor, r: 5, fs: '#f00', ls: '@fs' });
         const max = Math.max(...this.graph.map(n => n.dist));
@@ -442,7 +494,8 @@ class Dijkstra {
 
     constructor(pointcloud, anchor, warp = 2, numEdges = 0) {
         const points = pointcloud.points;
-        
+        anchor = anchor || points[0];
+
         if (numEdges < 1) {
             numEdges = points.length - 1;
         }
