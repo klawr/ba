@@ -144,58 +144,6 @@ class PointCloud {
 
     /**
      * 
-     * @param {g2} g is a g2 command-queue used for rendering
-     * @param {number} bounds is the max distance of points
-     * @returns this PointCloud grouped up into an array of PointClouds 
-     */
-    groupByCorrelation(g, bounds = 10) {
-        const groups = [];
-        let ungrouped = [...this.points];
-
-        const min = ungrouped.length / 10;
-
-        let last = 0;
-        while (ungrouped.length > min && ungrouped.length != last) {
-            last = ungrouped.length;
-            // Get left most ungrouped point.
-            const pt = ungrouped.reduce((pre, cur) =>
-                pre.x < cur.x ? pre : cur);
-
-            // 36 lines are checked
-            const coefficients = [];
-
-            const lines = [];
-
-            for (let i = 0; i < 360; i += 10) {
-                const inbounds = [];
-
-                const m_i = Math.tan(i * Math.PI / 180)
-                const b_i = pt.y - m_i * pt.x;
-
-                lines.push({ m: m_i, b: b_i });
-
-                const m_o = - 1 / m_i;
-
-                ungrouped.forEach(e => {
-                    const b_o = e.y - m_o * e.x;
-
-                    const x = (b_o - b_i) / (m_i - m_o) || e.x;
-                    const y = m_o * x + b_o || b_i;
-
-                    if (Math.hypot(e.y - y, e.x - x) < bounds) {
-                        inbounds.push(e);
-                    }
-                });
-
-                coefficients.push(PointCloud.correlation(inbounds));
-            }
-
-            console.log(coefficients);
-        }
-    }
-
-    /**
-     * 
      * @param { g2 } g is a g2 command-queue used for rendering
      * @param {bounds} bounds defines the max. orthogonal distance to the line
      * @returns this PointCloud grouped up into multiple
