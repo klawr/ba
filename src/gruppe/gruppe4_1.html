@@ -60,6 +60,8 @@
                 p2: cartesian(c.p2),
             }));
 
+            model.nodes.forEach(n => g.cir({ ...cartesian(n), r: 10 }));
+
             const A0 = cartesian(model.nodes.find(e => e.id === 'A0'));
             const B0 = cartesian(model.nodes.find(e => e.id === 'B0'));
             const abs_line = new Line({ p1: A0, p2: B0 });

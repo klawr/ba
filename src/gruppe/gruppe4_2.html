@@ -62,7 +62,7 @@
                 p2: cartesian(c.p2),
             }));
 
-            const nodes = model.nodes.forEach(n => g.cir({ ...cartesian(n), r: 10 }));
+            model.nodes.forEach(n => g.cir({ ...cartesian(n), r: 10 }));
 
             const A0 = cartesian(model.nodes.find(e => e.id === 'A0'));
             const B0 = cartesian(model.nodes.find(e => e.id === 'B0'));
