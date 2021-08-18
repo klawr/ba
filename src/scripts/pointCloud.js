@@ -425,7 +425,7 @@ class Dijkstra {
     graph = [];
     anchor = undefined;
 
-    groupsByCorrelation(g) {
+    groupsByCorrelation(g, minCorr = 0.6, minPercent = 0.1) {
         let ends = this.graph
             .filter((n) => !this.graph.some(g => g.pred.id === n.id))
             .sort((a, b) => b.dist - a.dist);
@@ -446,28 +446,23 @@ class Dijkstra {
             });
         }
 
-        winner
-            .map(u => this.points[u.id])
-            .forEach((p, i) => g.cir({
-                ...p, r: 10,
-                ls: globalTestVariables.hsv2rgb(i / ends.length * 300)
-            }));
-
         let lines = [];
         for (const win of winner) {
             let group = [];
             for (let u = win; u.pred; u = u.pred) {
                 const correlation = PointCloud.correlation(
                     [...group, this.points[u.id]]);
-                if (Math.abs(correlation) ** group.length < 0.623) {
-                    if (group.length > this.points.length * 0.25) {
+                if (Math.abs(correlation) ** group.length < minCorr) {
+                    if (group.length > this.points.length * minPercent) {
                         lines.push(Line.fromRegressionLine(group, g));
                     }
                     group = [];
                 }
                 group.push(this.points[u.id]);
             }
-            lines.push(Line.fromRegressionLine(group, g));
+            if (group.length > this.points.length * minPercent) {
+                lines.push(Line.fromRegressionLine(group, g));
+            }
         }
         lines = lines.filter(l => l);
         g && lines.forEach(l => l.draw(g));
