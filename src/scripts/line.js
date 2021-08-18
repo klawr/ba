@@ -42,13 +42,21 @@ class Line {
         return { x, y: x * this.m + this.b }
     }
 
-    draw(g) {
+    draw(g, opts) {
         g.lin({
             x1: 0,
             x2: globalTestVariables.cnv_width,
             y1: this.b,
             y2: this.m * globalTestVariables.cnv_width + this.b,
+            ...opts
         });
+    }
+
+    containsPoint(pt, tol = 1) {
+        const y = this.m * pt.x + this.b;
+        const x = (pt.y - this.b) / this.m;
+
+        return Math.hypot(pt.y - y, pt.x - x) < tol;
     }
 
     /**

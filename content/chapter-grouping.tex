@@ -283,3 +283,26 @@ Diese Geraden werden dann vorgehalten und könnten für weitere Analysen genutzt
 
 \section{Rekonstruktion eines Mechanismus durch die Relativpole}
 
+Der letzte Schritt der nach einer erfolgreichen Ermittlung der Pole durchgeführt werden muss ist die Rekonstruktion des zugrundeliegenden Mechanismus.
+Das ist nach den Regeln der Relativkinematik möglich~\cite[S.~66]{Kerle2016}.
+
+Hierfür sollen die Momentanpole von allen bewegten Gliedebenen ermittelt werden.
+Die Bewegung eines Gliedes um ein anderes Glied geschieht stets um einen gemeinsamen Pol.
+Daraus lässt sich ableiten, dass die Anzahl dieser Pole durch~\cite{Goessner2017}
+
+\begin{equation}
+    k = \frac{n}{2}(n-1)
+    \label{eq:anzahl_pole}
+\end{equation}
+
+ermittelt werden kann.
+
+Nach dem Satz von Aronhold-Kennedy~\cite{Goessner2017, Kerle2016}, welcher auch als 3-Polsatz bezeichnet wird, befinden sich für drei bewegte Gliedebenen jeweils drei Relativpole auf einer Geraden.
+Das bedeuted, dass für zwei ausgewählte bereits ermittelte Pole ein dritter ermittelt werden kann, indem auf Schnittpunkte mit anderen bewegten Gliedebenen gesucht wird.
+Für ein 4-Gelenk werden entsprechend sechs Relativpole gesucht.
+Die Anzahl der Gliedebenen sei hier bekannt durch die Menge welche durch die Algorithmen dieses Kapitels bestimmt wird.
+Bei einem 4-Gelenk sind dies drei Gliedebenen, von denen zwei Absolutpole darstellen.
+Aus den Schnittpunkten der bekannten Gliedebenen lassen sich entsprechend zwei weitere Pole bestimmen, welche in diesem Fall die Gelenke darstellen.
+Der letzte Pol wird ermittelt durch die Gliedebene der Koppel und der gedachten Geraden durch die Absolutpole.
+Der dadurch ermittelte Pol stellt jedoch offensichtlich kein Gelenk dar, sodass die anderen beiden ermittelten Pole als solche deklariert werden.
+Die Absolutpole werden entsprechend als Gelenke zum Gestell aufgefasst.

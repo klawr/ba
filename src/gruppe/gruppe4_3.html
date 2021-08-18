@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../third_party/opencv.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/line.js"></script>
+    <script src="opticalflow1.js"></script>
+
+    <p>
+        Ermittlung von Gelenken über die Relativpole.
+    </p>
+
+    <script>
+        globalTestVariables.model = {
+            gravity: true,
+            nodes: [
+                { 'id': 'A0', 'x': 100, 'y': 20, 'base': true },
+                { 'id': 'A1', 'x': 100, 'y': 60 },
+                { 'id': 'B0', 'x': 200, 'y': 20, 'base': true },
+                { 'id': 'B1', 'x': 200, 'y': 90 },
+                { 'id': 'C0', 'x': 250, 'y': 150, 'base': true },
+                { 'id': 'C1', 'x': 160, 'y': 150 },
+            ],
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: 100, Dt: 100 } },
+                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
+                { id: 'c', p1: 'B1', p2: 'A1', len: { type: 'const' } },
+                { id: 'd', p1: 'B1', p2: 'C1', len: { type: 'const' } },
+                { id: 'e', p1: 'C0', p2: 'C1', len: { type: 'const' } },
+            ]
+        };
+
+        const { model } = globalTestVariables;
+        function cartesian(p) {
+            return {
+                x: p.x,
+                y: globalTestVariables.cnv_height - p.y,
+            }
+        }
+
+        const fn = () => {
+            const g = g2().clr();
+
+            const lines = model.constraints.map(c => new Line({
+                p1: cartesian(c.p1),
+                p2: cartesian(c.p2),
+            }));
+
+            const nodes = model.nodes.forEach(n => g.cir({ ...cartesian(n), r: 10 }));
+
+            const A0 = cartesian(model.nodes.find(e => e.id === 'A0'));
+            const B0 = cartesian(model.nodes.find(e => e.id === 'B0'));
+            const C0 = cartesian(model.nodes.find(e => e.id === 'C0'));
+
+            [A0, B0, C0].forEach(p => g.gnd({ ...p }));
+
+            const rel = [];
+            for (let i = 0; i < lines.length; ++i) {
+                for (j = i + 1; j < lines.length; ++j) {
+                    const fi = lines[i];
+                    const fj = lines[j];
+
+                    if (fi.containsPoint(A0) +
+                        fi.containsPoint(B0) +
+                        fi.containsPoint(C0) +
+                        fj.containsPoint(A0) +
+                        fj.containsPoint(B0) +
+                        fj.containsPoint(C0) < 2) {
+                        rel.push(fi.intersection(fj));
+                    }
+                }
+            }
+
+            lines.forEach(l => {
+                l.draw(g);
+            });
+
+            rel.forEach(p => g.nod({ ...p }));
+
+            g.exe(globalTestVariables.ctx2);
+        }
+
+        globalTestVariables.register(() => fn());
+    </script>
+</body>
+
+</html>

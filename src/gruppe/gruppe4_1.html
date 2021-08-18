@@ -30,20 +30,19 @@
 
     <script>
         globalTestVariables.model = {
-            "nodes": [
-                { "id": "A0", "x": 60, "y": 60, "base": true },
-                { "id": "A", "x": 60, "y": 100 },
-                { "id": "B", "x": 210, "y": 120 },
-                { "id": "B0", "x": 210, "y": 60, "base": true },
-                { "id": "C", "x": 210, "y": 120 },
-                { "id": "C0", "x": 210, "y": 60, "base": true },
+            gravity: true,
+            nodes: [
+                { 'id': 'A0', 'x': 100, 'y': 50, 'base': true },
+                { 'id': 'A1', 'x': 100, 'y': 90 },
+                { 'id': 'B1', 'x': 200, 'y': 120 },
+                { 'id': 'B0', 'x': 200, 'y': 50, 'base': true },
             ],
-            "constraints": [
-                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
-                { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
-                { "id": "c", "p1": "B0", "p2": "B", "len": { "type": "const" } }
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: 100, Dt: 100 } },
+                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
+                { id: 'c', p1: 'B1', p2: 'A1', len: { type: 'const' } }
             ]
-        }
+        };
 
         const { model } = globalTestVariables;
         function cartesian(p) {
@@ -55,28 +54,29 @@
 
         const fn = () => {
             const g = g2().clr();
-            // .use({ grp: globalTestVariables.g });
 
-            const lines = model.constraints.map(c =>
-                new Line({
-                    p1: cartesian(c.p1),
-                    p2: cartesian(c.p2),
-                }));
+            const lines = model.constraints.map(c => new Line({
+                p1: cartesian(c.p1),
+                p2: cartesian(c.p2),
+            }));
 
-            // Absolutpole
             const A0 = cartesian(model.nodes.find(e => e.id === 'A0'));
             const B0 = cartesian(model.nodes.find(e => e.id === 'B0'));
+            const abs_line = new Line({ p1: A0, p2: B0 });
+            abs_line.draw(g, { ld: [3, 0, 3] });
 
-            const Relativpole = [];
+            const rel = [];
             for (let i = 0; i < lines.length; ++i) {
                 for (j = i + 1; j < lines.length; ++j) {
-                    Relativpole.push(lines[i].intersection(lines[j]));
+                    rel.push(lines[i].intersection(lines[j]));
                 }
             }
+            lines.forEach(l => {
+                rel.push(abs_line.intersection(l));
+                l.draw(g);
+            });
 
-            lines.forEach(l => l.draw(g));
-            g.gnd(A0).gnd(B0)
-            Relativpole.forEach(p => g.nod({ ...p }));
+            rel.forEach(p => g.nod({ ...p }));
 
             g.exe(globalTestVariables.ctx2);
         }
