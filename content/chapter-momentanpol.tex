@@ -66,9 +66,9 @@ Diese Formel soll nun angewendet werden um den Momentanpol von Elementen zu best
 
 Die \lstinline{group} Klasse hat eine entsprechende \lstinline{momentanpol} Funktion erhalten.
 Dieser implementiert hier zunächst eine Berechnung des Erwartungswertes für einen Punkt.
-Im Grunde ist diese implementation äquivalent zu Listing~\ref{lst:data_mu}, jedoch wird hier ein Punkt zurückgegeben, welcher also die Eigenschaften \lstinline{x} und \lstinline{y} stellt.
+Im Grunde ist diese Implementation äquivalent zu Listing~\ref{lst:data_mu}, jedoch wird hier ein Punkt zurückgegeben, welcher also die Eigenschaften \lstinline{x} und \lstinline{y} stellt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{momentanpol} Funktion, welche in der \lstinline{group} Klasse definiert ist Die Ermittlung der Punkte \lstinline{p1} und \lstinline{p2}, sowie der Winkel \lstinline{w1} und \lstinline{w2} wurde hier aus Platzgründen weggelassen.}\label{lst:group_momentanpol}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{momentanpol} Funktion, welche in der \lstinline{group} Klasse definiert ist Die Ermittlung der Punkte \lstinline{p1} und \lstinline{p2}, sowie der Winkel \lstinline{w1} und \lstinline{w2} wurde hier aus Platzgründen weggelassen.}, label={lst:group_momentanpol}]
 momentanpol(threshold = 1) {
     /**
     * Ermittlung von p1, p2, m1, m2

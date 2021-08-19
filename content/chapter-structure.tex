@@ -10,7 +10,7 @@ Die Testseiten sind jeweils eigenständige HTML-Seiten welche über ein HTML-Ifr
 Die Tests sind widerrum gruppiert in einzelne zu untersuchende Fragmente.
 Für diese Gruppierung wurde in der \name{index.html} ein \lstinline{tests} Objekt definiert welches Information über die entsprechenden Versuchsgruppen bereithält.
 
-\begin{lstlisting}[language=JavaScript, caption={Ausschnitt der Definition des \lstinline{tests} Objekts in der \name{index.html}.}\label{lst:tests_objekt}]
+\begin{lstlisting}[language=JavaScript, caption={Ausschnitt der Definition des \lstinline{tests} Objekts in der \name{index.html}.}, label={lst:tests_objekt}]
 const tests = {
     pendel: {
         title: "Drehpunkt bei gegebenem Glied.",
@@ -44,7 +44,7 @@ Der in Abbildung~\ref{fig:index.html} gezeigte Test ist entsprechend unter dem R
 
 Dieser zunächst komplex wirkende Aufbau erlaubt es allerdings alle Tests durch Listing~\ref{lst:tests_objekt_reason} in die \name{index.html} einbauen.
 
-\begin{lstlisting}[language=JavaScript, caption={Iteration über das tests Objekt zur Population der index.html.}\label{lst:tests_objekt_reason}]
+\begin{lstlisting}[language=JavaScript, caption={Iteration über das tests Objekt zur Population der index.html.}, label={lst:tests_objekt_reason}]
 Object.entries(tests).forEach((kv, i) => {
     const title = create('h2', null, kv[1].title);
     const details = create('details', byId('sidenav'));
@@ -111,7 +111,7 @@ Auf diese Funktion wird im genaueren in Kapitel~\ref{ch:aufbau_der_testseiten} e
 
 Die \lstinline{run} Funktion trägt Sorge dafür, dass alle Tests unter den selben Konditionen aufgerufen werden.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{globalTestVariables.run} Funktion.}\label{lst:gtv_run}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{globalTestVariables.run} Funktion.}, label={lst:gtv_run}]
 run(step) {
     this.model?.tick(1 / 60);
     this.g.exe(this.ctx1);
@@ -216,7 +216,7 @@ Bewegt wird das Pendel, sofern es keinen Antrieb hat, lediglich durch das Gewich
 Entsprechend wird in den \name{mec2} Simulationen Gravitation simuliert.
 Ein Beispiel für die Definition eines solchen Modells für \name{mec2} wird in Listing~\ref{lst:pendel} und in Abbildung~\ref{fig:index.html} gezeigt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition eines einfachen Pendels in \name{mec2}, inklusive animation.}\label{lst:pendel}]
+\begin{lstlisting}[language=JavaScript, caption={Definition eines einfachen Pendels in \name{mec2}, inklusive animation.}, label={lst:pendel}]
 globalTestVariables.model = {
     gravity: true,
     nodes: [

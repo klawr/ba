@@ -131,7 +131,7 @@ Dieser \lstinline{warp} Parameter unterscheidet sich von der traditionellen Impl
 Diese Anpassung ist jedoch notwendig, da hier keine Annahmen über die Verbindungen einzelner Datenpunkte gemacht werden kann, sondern der Pfad jedes Punktes zu jedem anderem gemessen wird.
 Hierfür wird der Graph gebildet indem alle Objekte des übergebenen \lstinline{PointCloud} Objektes in ein Objekt überführt werden welche in Listing~\ref{lst:dijkstra_points_graph} gesehen werden kann.
 
-\begin{lstlisting}[language=JavaScript, caption={Im \lstinline{Dijkstra} Konstruktor werden die Punkte des übergebenen \lstinline{PointCloud} Objektes in einen Graphen überführt.}\label{lst:dijkstra_points_graph}]
+\begin{lstlisting}[language=JavaScript, caption={Im \lstinline{Dijkstra} Konstruktor werden die Punkte des übergebenen \lstinline{PointCloud} Objektes in einen Graphen überführt.}, label={lst:dijkstra_points_graph}]
 const compEdges = (p) => points
     .map((sp, sidx) => ({
         target: sidx,
@@ -170,7 +170,7 @@ Zuletzt wird \lstinline{pred} genutzt um jeweils der Vorgänger jedes Knotens au
 Daraufhin wird dieser Graph als \lstinline{unvisited} kopiert um alle unbesuchten Punkte festhalten zu können.
 Dieser kopierten Liste wird der \lstinline{anchor} an den Start angefügt\footnote{Mit der \lstinline{id} $-1$ und einer \lstinline{dist} von 0}.
 
-\begin{lstlisting}[language=JavaScript, caption={Berechnung der \lstinline{dist} Eigenschaft der einzelnen Objekte aus dem Dijkstra-Graphen.}\label{lst:creation_dijkstra_graph}]
+\begin{lstlisting}[language=JavaScript, caption={Berechnung der \lstinline{dist} Eigenschaft der einzelnen Objekte aus dem Dijkstra-Graphen.}, label={lst:creation_dijkstra_graph}]
 while (unvisited.length) {
     unvisited.sort((a, b) => a.dist - b.dist);
     const u = unvisited.shift();
@@ -204,7 +204,7 @@ Der Graph erstellt für die Punktwolke einen Pfad für jeden Punkt zu dem \lstin
 Dieser Pfad soll jetzt dazu genutzt werden um eine Linie zu bilden.
 Die Idee ist, dass wenn man die äußersten Punkte des Graphen nimmt um von diesen zum \lstinline{anchor} wandert, dann werden hierdurch Pfade gebildet welche keine Ausläufer haben.
 
-\begin{lstlisting}[language=JavaScript, caption={Bestimmung der äußersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}\label{lst:dijkstra_correlation_part1}]
+\begin{lstlisting}[language=JavaScript, caption={Bestimmung der äußersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part1}]
 let ends = this.graph
     .filter((n) => !this.graph.some(g => g.pred.id === n.id))
     .sort((a, b) => b.dist - a.dist);
@@ -234,7 +234,7 @@ Dieser Vorgang wird solange wiederholt, bis die \lstinline{ends} Liste leer ist,
 
 Diese als \lstinline{winner} bezeichneten Knoten werden dann über ihre Vorgänger iterieren um zu prüfen ob sich mit diesen eine Gerade bilden lässt.
 
-\begin{lstlisting}[language=JavaScript, caption={Bestimmung der äußersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}\label{lst:dijkstra_correlation_part2}]
+\begin{lstlisting}[language=JavaScript, caption={Bestimmung der äußersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part2}]
 let lines = [];
 for (const win of winner) {
     let group = [];
@@ -270,7 +270,7 @@ und dessen Berechnung ist als statische Funktion auf der \lstinline{PointCloud} 
     \label{fig:gruppe3_3}
 \end{figure}
 
-In Listing~\ref{dijkstra_correlation_part2} wird für jeden Eintrag aus \lstinline{winner} der Vorgänger gewählt und diese werden einer Liste \lstinline{group} hinzugefügt.
+In Listing~\ref{lst:dijkstra_correlation_part2} wird für jeden Eintrag aus \lstinline{winner} der Vorgänger gewählt und diese werden einer Liste \lstinline{group} hinzugefügt.
 Für diese Gruppe an Punkten wird dann der Korrelationskoeffizient bemessen.
 Ist dieser niederiger als der Schwellenwert wird noch geprüft ob eine Mindestanzahl an Punkten erreicht ist, damit aus diesen dann die Regressionsgerade gebildet werden kann\footnote{Der Standardwert für den Schwellenwert der Regressionsgeraden liegt bei $0.6$ und die Mindestanzahl an Punkten liegt bei $10\%$ der Gesamtzahl der Punkte des Graphen.}.
 

@@ -31,7 +31,7 @@ Für solche Vergleiche wurde eine Klasse \lstinline{PointCloud} definiert.
 Diese Klasse beinhaltet alle Funktionen welche auf und mit Punktwolken in dieser Arbeit benötigt werden.
 Unter anderem wird hier eine \lstinline{fromImages} Funktion bereitgestellt, welche zwei Bilder auf Unterschiede untersucht und anhand derer eine Punktwolke zurückgibt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{fromImages} Funktion, welche eine statische Funktion der \lstinline{PointCloud} Klasse darstellt.}\label{lst:PointCloud}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{fromImages} Funktion, welche eine statische Funktion der \lstinline{PointCloud} Klasse darstellt.}, label={lst:PointCloud}]
 fromImages(image1, image2, width, height) {
     const difference = [];
 
@@ -107,7 +107,7 @@ Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für di
         \includegraphics[width=\textwidth]{gfx/pendel1_2.png}
         \caption{Versuch \name{pendel1\_2.html}. Hier werden die Punkte welche nicht zum jeweils kleinsten umfassenden Kreis beitragen gefiltert. Der eingeschlossene Winkel ist jedoch kleiner, weshalb der Mittelpunkt des Kreises nicht dem Drehpunkt entspricht.}\label{fig:pendel1_2}
     \end{subfigure}
-    \caption[Versuche\name{pendel1\_1.html} und \name{pendel1\_2.html}]{}
+    \caption[Versuche \name{pendel1\_1.html} und \name{pendel1\_2.html}]{}
     \label{fig:pendel1_1_2}
 \end{figure}
 
@@ -262,7 +262,7 @@ Wobei für die Berechnung von $p_y$ entweder die Parameter der ersten, oder zwei
 
 Die Implementation wird in Listing~\ref{lst:line_intersection} gezeigt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{intersection} Funktion, welche eine Funktion der \lstinline{Line} Klasse darstellt.}\label{lst:line_intersection}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{intersection} Funktion, welche eine Funktion der \lstinline{Line} Klasse darstellt.}, label={lst:line_intersection}]
 intersection(otherLine) {
     const x = (this.b - otherLine.b) / (otherLine.m - this.m);
     const y = this.m * x + this.b;
@@ -287,7 +287,7 @@ In der \lstinline{Data} Klasse ist ein \lstinline{data} Objekt definiert, welche
 Statt eine Liste zu Nutzen wird ein Objekt verwendet dessen Schlüssel dem Messwert entsprechen und der dazugehörige Wert die Anzahl darstellt wie oft dieser gemessen wurde.
 Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert welche wie folgt aussieht:
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}\label{lst:data_add}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}, label={lst:data_add}]
 add(a) {
     if (!a) return;
     const r = Math.round(a);
@@ -310,7 +310,7 @@ Der Erwartungswert $\mu$ berechnet sich durch
 
 Die entsprechende Funktion der \lstinline{Data} Klasse ist in Listing~\ref{lst:data_mu} definiert.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{mu} Funktion, welche den Erwartungswert der Daten in \lstinline{Data} berechnet}\label{lst:data_mu}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{mu} Funktion, welche den Erwartungswert der Daten in \lstinline{Data} berechnet},label={lst:data_mu}]
 get mu() {
     return Object.entries(this.data)
         .reduce((pre, cur) => pre + cur[0] * cur[1], 0)
@@ -327,7 +327,7 @@ Hierfür berechnet sich zunächst die Varianz durch
 
 Die entsprechende Implementation ist durch Listing~\ref{lst:data_variance} gegeben.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{variance} Funktion, welche die Varianz der Daten in \lstinline{Data} berechnet}\label{lst:data_variance}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{variance} Funktion, welche die Varianz der Daten in \lstinline{Data} berechnet}, label={lst:data_variance}]
 get variance() {
     const mu = this.mu;
 
@@ -351,7 +351,7 @@ Die Funktion für die Gauß'sche Normalverteilung berechnet sich durch
 
 Die entsprechende Implementation ist gegeben durch Listing~\ref{lst:data_gauss}.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{gaussianDistribution} Funktion, welche die Normalverteilung für die gegebene Varianz und den Erwartungswert formt.}\label{lst:data_gauss}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{gaussianDistribution} Funktion, welche die Normalverteilung für die gegebene Varianz und den Erwartungswert formt.}, label={lst:data_gauss}]
 gaussianDistribution(x) {
     const mu = this.mu;
     const variance = this.variance;
@@ -364,7 +364,7 @@ gaussianDistribution(x) {
 Diese Funktion kann dann vom \lstinline{g2.chart} aufgerufen werden um den entsprechenden Graphen mit Daten zu fällen.
 Die Implementation eines solchen Aufrufs wird in Listing~\ref{lst:data_getChart} gezeigt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{getChart} Funktion der \lstinline{Data} Klasse.}\label{lst:data_getChart}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{getChart} Funktion der \lstinline{Data} Klasse.}, label={lst:data_getChart}]
 getChart(limit) {
     const gtv = globalTestVariables;
     const data = this.alignForChart(limit);
@@ -444,7 +444,7 @@ Behalten wird dann jenes Objekt, dass den höchsten Konfidenzwert besitzt.
 Da innerhalb der Punktwolke jedoch nicht mit Konfidenzwerten gearbeitet wird, kann dieser Ansatz stark reduziert werden.
 Hierfür wurde der \lstinline{PointCloud} Klasse die \lstinline{removeOverlaps} Funktion definiert, welche für ein \lstinline{PointCloud} Objekt ein neues gefiltertes Objekt zurückgibt.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{removeOverlaps} Funktion der \lstinline{PointCloud} Klasse.}\label{lst:pointcloud_removeOverlaps}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{removeOverlaps} Funktion der \lstinline{PointCloud} Klasse.}, label={lst:pointcloud_removeOverlaps}]
 removeOverlaps(dist = 5) {
     let copy = [...this.points];
     const survivor = [];
@@ -479,7 +479,7 @@ Diese Gleichung nutzt die Varianz der einzelnen Datensammlungen um damit die ent
 Unter der Berücksichtigung, dass diese bereits Implementationen haben, welche in Listing~\ref{lst:data_variance} nachgesehen werden können, muss hierfür also nurnoch die Ermittlung der Kovarianz $\sigma_{xy}^2$ implementiert werden\footnote{Die Varianz nutzt in ihrer Berechnung jeweils die Menge der Daten. Diese Variable könnte aus der Gleichung gekürzt werden, was in einer abschließenden Implementation berücksichtigt werden sollte um ein paar Rechenschritte zu sparen.}.
 Diese kann passend der \lstinline{DataXY} Klasse hinzugefügt werden, welche für die Tests die entsprechenden Punkte bereithält.
 
-\begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{covariance} Funktion in der \lstinline{DataXY} Klasse}.\label{lst:dataxy_covariance}]
+\begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{covariance} Funktion in der \lstinline{DataXY} Klasse}., label={lst:dataxy_covariance}]
 get() covariance() {
     const xmu = this.x.mu;
     const ymu = this.y.mu;
@@ -495,7 +495,7 @@ Hier werden die entsprechenden Erwartungswerte analog zu Listing~\ref{lst:data_v
 Die erzeugung der Regressionsgerade kann dann auf der \lstinline{List} Klasse defniert werden.
 Die Implementation kann in Listing~\ref{lst:line_fromRegressionLine} nachvollzogen werden.
 
-\begin{lstlisting}[language=JavaScript, caption={Erstellung von \lstinline{Line} Objekten durch die orthogonale Regressionsgerade für Datenpunkte} \label{lst:line_fromRegressionLine}]
+\begin{lstlisting}[language=JavaScript, caption={Erstellung von \lstinline{Line} Objekten durch die orthogonale Regressionsgerade für Datenpunkte} , label={lst:line_fromRegressionLine}]
 static fromRegressionLine(pts, g) {
     const data = new DataXY(pts);
 
