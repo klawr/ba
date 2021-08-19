@@ -4,22 +4,22 @@
 
 In dieser Arbeit wurde untersucht welche Information us einer Bildsequenz von einem sich bewegendem planaren Mechanismus gewonnen werden kann.
 Es hat sich gezeigt, dass allein durch die Punktwolke der sich verändernden Pixel einiges ermittelt werden kann.
-Nachdem zunächst für den kleinsten umfassenden Kreis zwar viele Methoden entwickelt wurden welche später gebraucht wurden, so hat dieser in einer abschließenden Lösung keinen Platz gefunden.
+Nachdem zunächst für den kleinsten umfassenden Kreis zwar viele Methoden entwickelt wurden welche später gebraucht wurden, so hat dieser in einer abschlie{\ss}enden Lösung keinen Platz gefunden.
 Die Ermittlung der orthogonalen Regressionsgeraden hingegen hat sich hier als ein notwendiges Hilfsmittel herausgestellt, welches die Gliedebenen selber definiert und für die Ermittlung der Winkelgeschwindigkeiten unverzichtbar ist.
-Außerdem wurden Methoden entwickelt um die zunächst unzusammenhängenden Punkte über die zeitlichen Iterationen miteinander zu verbinden um so auch darüber Informationen gewinnen zu können.
+Au{\ss}erdem wurden Methoden entwickelt um die zunächst unzusammenhängenden Punkte über die zeitlichen Iterationen miteinander zu verbinden um so auch darüber Informationen gewinnen zu können.
 
-Die Nutzung der äußersten Punkte der Punktwolke wurden durch spätere Versuche durch die vom \name{Shi-Tomasi} Algorithmus ermittelten Punkte ersetzt.
+Die Nutzung der äu{\ss}ersten Punkte der Punktwolke wurden durch spätere Versuche durch die vom \name{Shi-Tomasi} Algorithmus ermittelten Punkte ersetzt.
 Diese Punkte werden dann durch eine Implementation des \name{Lucas-Kanade} Algorithmus verfolgt, sodass aus diesen die Absolutgeschwindigkeit von auf den Gliedern ermittelten Punkten gemessen wird.
-Die Anwendung dieser Algorithmen hat hier den Fehler bereits maßgeblich reduziert, sodass bei einzelnen Gliedern die Momentanpole mit einer hinreichenden Genauigkeit ermittelt werden konnten.
+Die Anwendung dieser Algorithmen hat hier den Fehler bereits ma{\ss}geblich reduziert, sodass bei einzelnen Gliedern die Momentanpole mit einer hinreichenden Genauigkeit ermittelt werden konnten.
 
 % TODO das braucht noch ein wenig mehr hier...
 Die Absolutgeschwindigkeit und die Winkelgeschwindigkeit werden genutzt um den Momentanpol eines sich in der Ebene bewegenden Gliedes zu ermitteln.
 Nach der Ermittlung aller Momentanpole lassen sich dann daraus jene filtern, welche als Absolutpole interpretiert werden können.
-Daraufhin werden die Gesetzmäßigkeiten der Relativkinematik angewandt um den zugrundeliegenden Mechanismus zu rekonstruieren.
+Daraufhin werden die Gesetzmä{\ss}igkeiten der Relativkinematik angewandt um den zugrundeliegenden Mechanismus zu rekonstruieren.
 
 Die vorgeschlagenen Methoden beinhalten alle Fehler, welche es zunächst nicht zulassen kompliziertere Mechanismen zu entwickeln.
 Allerdings wurden auch Methoden vorgeschlagen, welche aus dem Bereich der künstlichen Intelligenz diese Fehler durch eine bessere Segmentierung der Glieder reduzieren können.
-Außerdem wurden Methoden vorgestellt welche die Vektorfelder der einzelnen Gliedebenen ermitteln könnten.
+Au{\ss}erdem wurden Methoden vorgestellt welche die Vektorfelder der einzelnen Gliedebenen ermitteln könnten.
 Diese wurden jedoch auch zugunsten des Rahmens dieser Arbeit nicht weiter unteruscht.
 
 Schlussendlich ist zu sagen, dass eine komplette Rekonstruktion von Mechanismen durchaus denkbar ist.

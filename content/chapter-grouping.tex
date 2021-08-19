@@ -92,7 +92,7 @@ Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/k_means_centroids_edit.png}
-    \caption[Versuch \lstinline{gruppe2_1.html}]{Versuch \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration größer um die Annäherung zu visualisieren. Es ist sichtbar, dass sie sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
+    \caption[Versuch \lstinline{gruppe2_1.html}]{Versuch \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration grö{\ss}er um die Annäherung zu visualisieren. Es ist sichtbar, dass sie sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
     \label{fig:gruppe2_1}
 \end{figure}
 
@@ -111,7 +111,7 @@ Ein Wert von $-1$ zeigt hingegen an, dass der Datenpunkt vermutlich der falschen
 
 Diese Werte zu bestimmen kann die Möglichkeit geben die Regressionsgeraden entsprechend zu beeinflussen, womit die Regressionsgeraden welche durch die gruppierten \lstinline{PointCloud} Objekte gebildet werden um bessere Ergebnisse zu erzielen.
 
-Als eine Erweiterung des \name{k-Means} Algorithmus könnte noch der EM-Algorithmus untersucht werden, welcher weniger das Problem hat Gruppen von unterschiedlicher Größe zu erstellen.
+Als eine Erweiterung des \name{k-Means} Algorithmus könnte noch der EM-Algorithmus untersucht werden, welcher weniger das Problem hat Gruppen von unterschiedlicher Grö{\ss}e zu erstellen.
 Dies wird jedoch an dieser Stelle nicht mehr getan.
 % TODO Zitat und so.
 
@@ -119,14 +119,14 @@ Dies wird jedoch an dieser Stelle nicht mehr getan.
 
 Die letzte Variante die hier untersucht werden soll um die Glieder des Mechanismus in entsprechende Gruppen zu zerteilen ist die Zuordnung aller Datenpunkte zueinander.
 Hierfür soll das \lstinline{PointCloud} Objekt in einen Graphen überführt werden welcher dann über den \name{Dijkstra-Algorithmus} Pfade definiert.
-Anschließend werden diese Pfade genutzt um Geraden zu definieren welche dann Rückschluss auf die zugrundeliegenden Gruppen geben können.
+Anschlie{\ss}end werden diese Pfade genutzt um Geraden zu definieren welche dann Rückschluss auf die zugrundeliegenden Gruppen geben können.
 
 Zur Durchführung des Dijkstra-Algorithmus wurde die \lstinline{Dijkstra} Klasse definiert.
 Der Konstruktor dieser Klasse nimmt hierfür ein Objekt der \lstinline{PointCloud} Klasse und ein Objekt welches eine X- und Y-Koordinate hat entgegen, welcher hier als \lstinline{anchor} bezeichnet werden soll.
 Ziel ist es den kürzesten Pfad zu bestimmen um vom \lstinline{anchor} zu jedem Punkt des übergebenen \lstinline{PointCloud} Objektes zu gelangen.
 Der offensichtliche kürzeste Weg ist laut der Dreiecksungleichung natürlich immer der direkte Weg vom \lstinline{anchor} zum entsprechenden Punkt.
 Deshalb sollen die Distanzen zwischen den Werten jeweils potenziert werden.
-An den Konstruktur kann dafür der Parameter \lstinline{warp} übergeben werden, welcher standardmäßig den Wert zwei einnimmt.
+An den Konstruktur kann dafür der Parameter \lstinline{warp} übergeben werden, welcher standardmä{\ss}ig den Wert zwei einnimmt.
 Dieser \lstinline{warp} Parameter unterscheidet sich von der traditionellen Implementation des \name{Dijkstra-Algorithmus}.
 Diese Anpassung ist jedoch notwendig, da hier keine Annahmen über die Verbindungen einzelner Datenpunkte gemacht werden kann, sondern der Pfad jedes Punktes zu jedem anderem gemessen wird.
 Hierfür wird der Graph gebildet indem alle Objekte des übergebenen \lstinline{PointCloud} Objektes in ein Objekt überführt werden welche in Listing~\ref{lst:dijkstra_points_graph} gesehen werden kann.
@@ -202,9 +202,9 @@ Dadurch, dass die \lstinline{dist} jeweils potenziert wird passiert dies bis all
 
 Der Graph erstellt für die Punktwolke einen Pfad für jeden Punkt zu dem \lstinline{anchor}.
 Dieser Pfad soll jetzt dazu genutzt werden um eine Linie zu bilden.
-Die Idee ist, dass wenn man die äußersten Punkte des Graphen nimmt um von diesen zum \lstinline{anchor} wandert, dann werden hierdurch Pfade gebildet welche keine Ausläufer haben.
+Die Idee ist, dass wenn man die äu{\ss}ersten Punkte des Graphen nimmt um von diesen zum \lstinline{anchor} wandert, dann werden hierdurch Pfade gebildet welche keine Ausläufer haben.
 
-\begin{lstlisting}[language=JavaScript, caption={Bestimmung der äußersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part1}]
+\begin{lstlisting}[language=JavaScript, caption={Bestimmung der äu{\ss}ersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part1}]
 let ends = this.graph
     .filter((n) => !this.graph.some(g => g.pred.id === n.id))
     .sort((a, b) => b.dist - a.dist);
@@ -228,13 +228,13 @@ while (ends.length) {
 
 Hierfür werden zunächst die Knoten im Graphen gesucht, welche keinen Vorgänger haben.
 Dann wird eine Liste dieser, welche als \lstinline{ends} bezeichnet wird, der \lstinline{dist} nach absteigend sortiert.
-Diese Liste wird dann gefiltert, indem der Punkt der jeweils die größte Distanz hat andere Punkte filtert, nach dem Prädikat ob diese, oder rekursiv dessen \lstinline{pred} Eigenschaften gemeinsame Vorgänger haben.
+Diese Liste wird dann gefiltert, indem der Punkt der jeweils die grö{\ss}te Distanz hat andere Punkte filtert, nach dem Prädikat ob diese, oder rekursiv dessen \lstinline{pred} Eigenschaften gemeinsame Vorgänger haben.
 
-Dieser Vorgang wird solange wiederholt, bis die \lstinline{ends} Liste leer ist, sodass nurnoch äußere Knoten vorgehalten werden welche keine gemeinsamen Vorgänger zum \lstinline{anchor} haben.
+Dieser Vorgang wird solange wiederholt, bis die \lstinline{ends} Liste leer ist, sodass nurnoch äu{\ss}ere Knoten vorgehalten werden welche keine gemeinsamen Vorgänger zum \lstinline{anchor} haben.
 
 Diese als \lstinline{winner} bezeichneten Knoten werden dann über ihre Vorgänger iterieren um zu prüfen ob sich mit diesen eine Gerade bilden lässt.
 
-\begin{lstlisting}[language=JavaScript, caption={Bestimmung der äußersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part2}]
+\begin{lstlisting}[language=JavaScript, caption={Bestimmung der äu{\ss}ersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part2}]
 let lines = [];
 for (const win of winner) {
     let group = [];

@@ -33,7 +33,7 @@ Inspiriert durch diesen Ansatz scheint es naheliegend ihn auf planare Mechanisme
 Einen Vorschlag einer nutzbaren Implementation des optischen Flusses wurde von Lucas und Kanade bereits 1981 vorgeschlagen~\cite{Lucas1981}.
 
 Der vorgeschlagene Ansatz trifft im vorherein jedoch mehrere Annahmen.
-Die erste Annahme ist, dass die Bewegung nicht sehr groß ist.
+Die erste Annahme ist, dass die Bewegung nicht sehr gro{\ss} ist.
 Zu schnelle Bewegungen können durch diesen Ansatz wahrscheinlich nicht, oder nur schlecht erkannt werden.
 Eine weitere Annahme ist, dass die zu untersuchende Bildsequenz in Graustufen immernoch nutzbar ist.
 Es werden in dieser Methode die Helligkeitswerte der Pixel untersucht, sodass eine Szene welche in einer solchen Darstellung keine zu erkennende Bewegung hat entsprechend keine sinnvollen Ergebnisse verspricht.
@@ -44,10 +44,10 @@ Wird das erste Bild für die entsprechenden Pixelwerte als eine Funktion $F(x)$ 
 Beschreiben diese Funktionen stattdessen Regionen auf entsprechenden Bildern, so kann der Vektor gesucht werden, welcher für die Bewegung dieser Regionen innerhalb der Bilder den geringsten Fehler ausschreibt.
 Auf diese Weise kann versucht werden die Bewegung einzelner Objekte zu verfolgen.
 
-Zunächst ist die Größe der Regionen unbekannt, deshalb wird ein pyramidischer Ansatz genutzt werden.
+Zunächst ist die Grö{\ss}e der Regionen unbekannt, deshalb wird ein pyramidischer Ansatz genutzt werden.
 Das bedeutet, dass um eine Region von Interesse mehrere Regionen festgelegt werden, für welche der Fehler entsprechend berechnet wird.
 Diese Fehler können dann verglichen werden und die passende Region wird genutzt um die Verschiebung des Punktes innerhalb des Bildes zu beschreiben.
-Anhand dieses Ansatzes kann die ungefähre Größe des sich bewegenden Objektes untersucht werden.
+Anhand dieses Ansatzes kann die ungefähre Grö{\ss}e des sich bewegenden Objektes untersucht werden.
 Diese Implementation wird durch Jean-Yves Bouget beschrieben~\cite{Bouguet2000}.
 
 Was für eine Nutzung nun noch fehlt ist die Festlegung der entsprechenden Regionen von Interesse.
@@ -70,13 +70,13 @@ Für die Bestimmung von vermeintlich sinnvollen Regionen zur Verfolgung wird die
 Diese implementiert den Shi-Tomasi Algorithmus.
 Als Parameter übergeben werden hier ein in Graustufen konvertiertes Bild, eine \lstinline{cv.Mat} Objekt in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte welche zur Verfolgung gesucht werden, die minimale Qualität einer Kante\footnote{Die Qualität einer Kante wird hier ins Verhältnis zur Kante mit bester Qualität gestellt. Die Qualität einer hier genutzten Kante berechnet sich durch \lstinline{cv.cornerMinEigenVal}, worauf hier jedoch nicht weiter eingegangen wird. Mehr Information kann unter \aka{https://docs.opencv.org/master/dd/d1a/group__imgproc__feature.html\#ga3dbce297c1feb859ee36707e1003e0a8} gefunden werden.},
 der minimale euklidische Abstand der Punkte zueinander.
-Des weiteren können hier spezielle Regionen von Interesse übergeben werden und die durchschnittliche Größe der Blöcke welche bei der Berechnung genutzt werden.
+Des weiteren können hier spezielle Regionen von Interesse übergeben werden und die durchschnittliche Grö{\ss}e der Blöcke welche bei der Berechnung genutzt werden.
 
 Nach der Bestimmung der zu verfolgenden Punkte wird versucht diese durch \lstinline{cv.calcOpticalFlowPyrLK} zu verfolgen.
 Die \lstinline{calcOpticalFlowPyrLK} Funktion benötigt als Parameter zunächst die beiden Bilder in zeitlicher Abfolge.
 Der dritte Parameter sind die Punkte welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt welcher die berechnet Punkte enthalten wird.
-Alles weitere sind Parameter zum Einstellen des Algorithmus, wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Größe der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung größer werdenen Regionen.
-Abschließend wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben, welcher eine Abbruchbedingung für die iterative Suche darstellt.
+Alles weitere sind Parameter zum Einstellen des Algorithmus, wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Grö{\ss}e der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung grö{\ss}er werdenen Regionen.
+Abschlie{\ss}end wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben, welcher eine Abbruchbedingung für die iterative Suche darstellt.
 Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfand, oder die Bewegung unterhalb eines bestimmten Wertes vermutet wird.
 
 \begin{figure}
@@ -120,7 +120,7 @@ step(frame) {
 Hier wird mittels der \lstinline{first_indicator} Eigenschaft geprüft, ob es sich um den ersten Aufruf handelt.
 Wenn dies der Fall ist müssen die Regionen definiert werden, welche im Anschluss auf Bewegung untersucht werden sollen.
 Dies soll jedoch nur einmal am Anfang geschehen, damit die Reihenfolge der gefundenen Punkte konsistenz bleibt.
-Außerdem ist nicht sichergestellt, dass die vorgeschlagenen Regionen bei Veränderungen im Bild die selben bleiben.
+Au{\ss}erdem ist nicht sichergestellt, dass die vorgeschlagenen Regionen bei Veränderungen im Bild die selben bleiben.
 Die gefundenen Punkte werden im \lstinline{LucasKanade} Objekt entsprechend gespeichert.
 Nachdem das Bild in Graustufen übersetzt wurde wird es in der \lstinline{calcOpticalFlowPyrLK} Funktion genutzt um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
 Diese Punkte werden dann in einer \lstinline{points} Liste gespeichert, welche die zuletzt ermittelten Koordinaten enthält.
@@ -133,7 +133,7 @@ Dieses ermittelt die Bildinformation von \lstinline{cnv1} durch \lstinline{cv.im
 Daraufhin wird die in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} bereits angedeutete Funktion \lstinline{addPoints} genutzt um die nun für die nächste Iteration ermittelten Koordinaten der Punkte der Liste an Punkten hinzuzufügen.
 
 Diese Punkte haben augenscheinlich eine sehr viel geringere Varianz als die Ansätze aus Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder}.
-Allerdings wird hier zunächst nicht näher darauf eingegangen ob diese Punkte nun dazu genutzt werden können um auf die Drehpunkte zu schließen.
+Allerdings wird hier zunächst nicht näher darauf eingegangen ob diese Punkte nun dazu genutzt werden können um auf die Drehpunkte zu schlie{\ss}en.
 Darauf wird stattdessen in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen.
 
 \section{Andere Methoden}
@@ -142,7 +142,7 @@ Darauf wird stattdessen in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen.
 
 Bei der Ermittlung des optischen Flusses wird zwischen dichtem und spärlichen optischen Fluss unterschieden\footnote{Englisch \textit{sparse and dense optical flow}.}.
 Während der spärliche optische Fluss einzelne Regionen von Interesse im Bild verfolgt und entsprechend dessen Bewegung nachvollzieht, ist der Anspruch von Algorithmen zur Berechnung von dichten optischem Fluss die Berechnung der Bewegung jedes einzelnen Pixels.
-Während ich auf die Implementation nicht weiter eingehen möchte, da dieser Ansatz wegen augenscheinlich zu großen Varianzen nicht weiter verfolgt wurde, verdient dieser dennoch eine Erwähnung.
+Während ich auf die Implementation nicht weiter eingehen möchte, da dieser Ansatz wegen augenscheinlich zu gro{\ss}en Varianzen nicht weiter verfolgt wurde, verdient dieser dennoch eine Erwähnung.
 Die Implementation wurde wenig optimiert, der entsprechende Test kann jedoch unter \name{src/opticalflow/opticalflow1\_1.html} eingesehen werden.
 
 Zu erwarten wäre für ein sich um einen festen Punkt drehendes Glied, dass alle Vektoren zur Bestimmung der Bewegung den selben Einheitsvektor haben.
@@ -150,7 +150,7 @@ Der entsprechende Betrag des Vektors sollte linear mit Abstand zum Drehpunkt zun
 Diese Information sollte dann genutzt werden können um die Pole der ebenen Bewegung zu ermitteln.
 
 Des Weiteren hätten die Glieder durch den Verlauf der gemessenen Geschwindigkeiten leicht unterscheidbar gewesen sein sollen.
-Da jedoch die Ungenauigkeiten hier zu groß zu sein scheinen fällt die Implementation entsprechend schwierig und wird hier nicht weiter Gegenstand sein.
+Da jedoch die Ungenauigkeiten hier zu gro{\ss} zu sein scheinen fällt die Implementation entsprechend schwierig und wird hier nicht weiter Gegenstand sein.
 
 \begin{figure}
     \centering
@@ -191,8 +191,8 @@ Der Stuhl wurde entsprechend verwendet weil er gute Bearbeitung auf den Training
 Als eine Entwicklung von \name{FlowNet} wurde \name{FlowNet 2.0}~\cite{Ilg2016} mit dem Ziel eine Verbesserung der Ergebnisse zu erzielen.
 \name{FlowNet 2.0} hat einige Verbesserung im Umgang mit den Trainingsdaten eingeführt.
 Diese Verbesserungen basieren auf den gefundenen Mängeln des ersten Ansatzes, welcher auf Daten der echten Welt keine Verbesserung zur bis dahin genutzten Methoden hatte\footnote{\name{FlowNet} hat allerdings gezeigt, dass maschinelles Lernen dieses Problem bearbeiten kann.}.
-Zum einen wird hier ein größerer Fokus auf kleinere Änderungen in der Bewegung gelegt, was zu einer höheren Genauigkeit bei echten Bildern zur Folge hat.
-Es zeigte sich außerdem, dass der Zeitplan mit welchem die Trainingsdaten an das Netzwerk geliefert werden Einfluss auf dessen Generalisierbarkeit hat.
+Zum einen wird hier ein grö{\ss}erer Fokus auf kleinere Änderungen in der Bewegung gelegt, was zu einer höheren Genauigkeit bei echten Bildern zur Folge hat.
+Es zeigte sich au{\ss}erdem, dass der Zeitplan mit welchem die Trainingsdaten an das Netzwerk geliefert werden Einfluss auf dessen Generalisierbarkeit hat.
 
 \section{Betrachtung der Ergebnisse}
 

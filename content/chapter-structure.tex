@@ -84,15 +84,15 @@ JavaScript kam für die Gestaltung nicht zum Einsatz.
 
 \section{globalTestVariables}\label{ch:simulation_js}
 
-Die Versuche teilen sich zu einem großen Anteil die benötigten Variablen.
+Die Versuche teilen sich zu einem gro{\ss}en Anteil die benötigten Variablen.
 Deshalb ist es sinnvoll den meisten Programmcode in einer zentralen Datei abzulegen.
 Diese soll dann in den Versuchsdateien eingebunden werden.
 Die Datei welche diese zentralen Definitionen enthält wurde als \name{simulation.js} bezeichnet.
 
-In \name{simulation.js} wird ausschließlich das \lstinline{globalTestVariables} Objekt definiert.
+In \name{simulation.js} wird ausschlie{\ss}lich das \lstinline{globalTestVariables} Objekt definiert.
 Dieses Objekt soll dazu dienen die genutzten globalen Variablen zu begrenzen und enthhält entsprechend alle zur Simulation benötigten Variablen und Funktionen.
 Es beinhaltet alle Referenzen zu den HTML-Elementen auf welche im Zuge der Versuche zugegriffen werden können, sowie den Referenzen zu den einzelnen \name{CanvasRenderingContext2D} Objekten welche von \name{g2} genutzt werden um auf die entsprechenden HTML-Canvas Elemente zu zeichnen.
-Außerdem werden globale Konstanten wie unter Anderem die Höhe und Breite der HTML-Canvas Elemente hier zentral bestimmt.
+Au{\ss}erdem werden globale Konstanten wie unter Anderem die Höhe und Breite der HTML-Canvas Elemente hier zentral bestimmt.
 
 Auf die in \lstinline{globalTestVariables} definierten Funktionen soll im nachfolgenden näher eingegangen werden.
 Diese Funktionen bestimmen den Aufbau welchem die einzelnen Versuche folgen müssen.
@@ -104,7 +104,7 @@ Die HTML-Elemente welche innerhalb der Testseiten verwendet werden sind grundsä
 Aus dem Grund beschreibt die \lstinline{createElements} Funktion die Befüllung der Testseiten mit den entsprechenden HTML-Elementen.
 So muss bei entsprechendem Wunsch zur Änderung nur an dieser zentralen Stelle beispielsweise das \lstinline{innerHTML} eines Elementes geändert werden.
 Hier werden alle Knöpfe erstellt die für die Versuche notwendig sind so wie vier HTML-Canvas Elemente welche bei Vergleichen der Versuche helfen.
-Außerdem werden in dieser Funktion die Eigenschaften von \lstinline{globalTestVariables} gesetzt, welche zunächst undefiniert sind.
+Au{\ss}erdem werden in dieser Funktion die Eigenschaften von \lstinline{globalTestVariables} gesetzt, welche zunächst undefiniert sind.
 Auf diese Funktion wird im genaueren in Kapitel~\ref{ch:aufbau_der_testseiten} eingegangen.
 
 \subsection{run}\label{ch:gtv_run}
@@ -133,22 +133,22 @@ Hierbei wird davon ausgegangen, dass wenn ein \name{mec2} Modell auf dem \lstinl
 Die Definition der Modelle soll in den entsprechenden Versuchsdateien stattfinden.
 Innerhalb der an \lstinline{run} übergebenen Funktion sollte dieses Modell jedoch nicht modifiziert werden, da es als Quelle für die Bildsequenzen dient.
 
-Anschließend wird der \name{CanvasRenderingContext2D} des ersten der vier HTML-Canavs Elemente \lstinline{ctx1} beschrieben.
-Dieser sollte ausschließlich hier beschrieben werden, damit der Versuch nicht versehentlich Einfluss auf die Zeichnung nimmt.
-Es sollte sichergestellt werden, dass die gesuchte Funktion zur Ermittlung des Mechanismus ausschließlich Anhand der Bildsequenzen funktioniert und selbst keinen Einfluss auf diese hat.
+Anschlie{\ss}end wird der \name{CanvasRenderingContext2D} des ersten der vier HTML-Canavs Elemente \lstinline{ctx1} beschrieben.
+Dieser sollte ausschlie{\ss}lich hier beschrieben werden, damit der Versuch nicht versehentlich Einfluss auf die Zeichnung nimmt.
+Es sollte sichergestellt werden, dass die gesuchte Funktion zur Ermittlung des Mechanismus ausschlie{\ss}lich Anhand der Bildsequenzen funktioniert und selbst keinen Einfluss auf diese hat.
 
 Nachdem der HTML-Canvas gezeichnet wurde, wird eine an \lstinline{run} übergebene Funktion, welche hier als \lstinline{step} step deklariert ist, ausgeführt.
 Diese Funktion wird durch den Versuch selber definiert und führt alle Vergleiche und Berechnungen aus welche durchgeführt werden sollen.
 Entsprechend werden die an die \lstinline{run} übergebenen Funktionen in den entsprechenden Kapiteln für die Versuche beschrieben.
 
-Abschließend wird hier noch die Zeit welche diese \lstinline{step} benötigt vermerkt, indem \lstinline{updateTimesChart} aufgerufen wird.
+Abschlie{\ss}end wird hier noch die Zeit welche diese \lstinline{step} benötigt vermerkt, indem \lstinline{updateTimesChart} aufgerufen wird.
 In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now()} % TODO MDN Link oder besser erklären.
 ermittelt und in einer Liste hinzugefügt welche die Historie der Geschwindigkeiten der einzelnen \lstinline{step} Aufrufe festhält.
-Es wird außerdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist um eine sinnvolle Bezeichnung der Achsen der Graphen zu ermöglichen.
-Dieser Graph wird anschließend auf einem HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
+Es wird au{\ss}erdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist um eine sinnvolle Bezeichnung der Achsen der Graphen zu ermöglichen.
+Dieser Graph wird anschlie{\ss}end auf einem HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
 \lstinline{ctx_times} ist der Kontext des vierten von \lstinline{createElements} erstellten HTML-Canvas Elements.
 
-Nachdem anschließend geprüft wurde ob der Test weiter laufen soll \footnote{\lstinline{running} kann beispielsweise durch einen Start/Stop Knopf umgeschaltet werden.} wird die \lstinline{run} Funktion erneut durch \lstinline{requestAnimationFrame} aufgerufen.
+Nachdem anschlie{\ss}end geprüft wurde ob der Test weiter laufen soll \footnote{\lstinline{running} kann beispielsweise durch einen Start/Stop Knopf umgeschaltet werden.} wird die \lstinline{run} Funktion erneut durch \lstinline{requestAnimationFrame} aufgerufen.
 
 \subsection{register}\label{ch:gtv_register}
 
@@ -157,14 +157,14 @@ Nachdem anschließend geprüft wurde ob der Test weiter laufen soll \footnote{\l
 In \lstinline{register} wird zunächst der Titel festgelegt, welcher hier dem Namen der HTML-Datei entspricht.
 Dieser Titel wird in einem HTML-Anker Element % MDN Link
 platziert, damit diese in der \name{index.html} einfacher zugeordnet werden können.
-Es dient außerdem als Hyperlink, der genutzt werden kann um isoliert auf den Test zuzugreifen, was sich während der Entwicklung als hilfreich herausgestellt hat.
+Es dient au{\ss}erdem als Hyperlink, der genutzt werden kann um isoliert auf den Test zuzugreifen, was sich während der Entwicklung als hilfreich herausgestellt hat.
 
-An dieser Stelle wird außerdem eine Funktion erzeugt, welche durch das Laden der Seite ausgeführt wird.
+An dieser Stelle wird au{\ss}erdem eine Funktion erzeugt, welche durch das Laden der Seite ausgeführt wird.
 Diese Funktion führt \lstinline{createElements} aus und sollte ein \name{mec2} Modell definiert sein, so wird die \lstinline{mec.model.extend} Funktion mit diesem aufgerufen und dann dessen \lstinline{init} Funktion bemüht um dieses zu instanzieren.
 
 Es wird zudem einmalig die \lstinline{run} Funktion aufgerufen um das erste Bild zu zeigen\footnote{Da \lstinline{globalTestVariables.running} initial den Wert \lstinline{false} hat wird innerhalb des \lstinline{run} Aufrufs \lstinline{requestAnimationFrame} nicht ausgeführt.}.
 Die Funktion welche an \lstinline{run} übergeben werden soll muss an \lstinline{register} übergeben werden, damit dieses das an diese weitergeben kann.
-Es wird außerdem noch die Erstellung des Knopfes zum Starten und Pausieren der Tests definiert.
+Es wird au{\ss}erdem noch die Erstellung des Knopfes zum Starten und Pausieren der Tests definiert.
 Die Betätigung dieses Knopfes resultiert in einem Umschalten der \lstinline{globalTestVariables.running} Variable und dem Ausführen von \lstinline{run}.
 
 Das \lstinline{globalTestVariables} Objekt enthält noch weitere Variablen und Funktionen welche Einfluss auf den Ablauf der Tests haben.
@@ -182,7 +182,7 @@ Neben diesen wurden jedoch viele Skripte geschrieben welche sich einzelne Tests 
 
 Des weiteren enthalten Gruppen an Tests weitere etwas spezialisiertere globale Variablen, welche entsprechend \lstinline{globalTestVariables} für diese Versuche erweitern sollen.
 
-Jede Versuchsdatei enthält außerdem noch jeweils ein HTML-Paragraph Element % TODO Link, 
+Jede Versuchsdatei enthält au{\ss}erdem noch jeweils ein HTML-Paragraph Element % TODO Link, 
 in welchem beschrieben wird was in dem entsprechenden Versuch untersucht wird.
 
 Wie bereits angemerkt dient die \lstinline{globalTestVariables.createElements} Funktion der einhetlichen Befüllung aller Versuchsseiten.
@@ -200,9 +200,9 @@ Das erste dieser Elemente dazu verwendet den getesteten Algorithmus mit Bildern 
 Das zweite HTML-Canvas Element wird genutzt um zu visualisieren was in einem Versuch getestet wird.
 Diese Visualisierung soll dazu dienen einen besseren Eindruck davon zu bekommen ob die darunterliegenden Funktionen funktionieren und welche Erkenntnisse daraus gezogen werden können.
 Das dritte HTML-Canvas Element dient zur Auswertung der ermittelten Daten.
-In den meisten Tests wird dieses Element dazu genutzt um die ermittelten Koordinaten in einem Graphen darzustellen und dessen Form nach Regelmäßigkeiten zu untersuchen.
+In den meisten Tests wird dieses Element dazu genutzt um die ermittelten Koordinaten in einem Graphen darzustellen und dessen Form nach Regelmä{\ss}igkeiten zu untersuchen.
 Das zweite und dritte HTML-Canvas Element wird durch die an \lstinline{register} übergebenen Funktionenen selbst gezeichnet.
-Sie dienen entsprechend lediglich der Untersuchung der Ansätze und spielen für die Entwicklung eines abschließenden Verfahrens keine Rolle.
+Sie dienen entsprechend lediglich der Untersuchung der Ansätze und spielen für die Entwicklung eines abschlie{\ss}enden Verfahrens keine Rolle.
 Das befüllen des vierten HTML-Canvas Elementes wurde bereits in Kapitel~\ref{ch:gtv_run} ausführlich beschrieben.
 Es zeichnet den Graphen welcher dabei helfen soll einen Eindruck über die Performanz des Ansatzes zu bekommen.
 

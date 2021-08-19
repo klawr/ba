@@ -89,7 +89,7 @@ momentanpol(threshold = 1) {
 Analog dazu sind \lstinline{w1} und \lstinline{w2} die Winkel der Geraden welche als letztes und vor \lstinline{threshold} Iterationen hinzugefügt wurden.
 Hierfür hat die \lstinline{Group} Klasse die Eigenschaft \lstinline{lines} bekommen, welche in etwa die selbe Aufgabe wie die \lstinline{pts} Eigenschaft erfüllen soll.
 Diese Liste wird entsprechend von den Tests analog zu \lstinline{pts} gefüllt.
-Es muss hier noch garantiert werden, dass in jedem Fall ein Winkel unter $\pi$ eingesetzt wird und anschließend wird dieser noch auf einen Wert gesetzt dessen Betrag in jedem Fall unter $\pi / 2$ ist. Damit wird sichergestellt, dass wenn durch den eingeschlossenen Winkel geteilt wird in jedem Fall der kleinere Betrag genommen wird.
+Es muss hier noch garantiert werden, dass in jedem Fall ein Winkel unter $\pi$ eingesetzt wird und anschlie{\ss}end wird dieser noch auf einen Wert gesetzt dessen Betrag in jedem Fall unter $\pi / 2$ ist. Damit wird sichergestellt, dass wenn durch den eingeschlossenen Winkel geteilt wird in jedem Fall der kleinere Betrag genommen wird.
 Ein ansonsten daraus resultierender Fehler würde sich bei der Berechnung des sich translativ bewegenden Gliedes zeigen.
 
 \section{Das drehende Rad}\label{ch:drehendesRad}
@@ -109,7 +109,7 @@ Die Animation wird dann an \lstinline{globalTestVariables.g} übergeben.
 Da kein \name{mec2} Modell definiert ist werden dessen Befehle, wie in Kapitel~\ref{ch:simulation_js} beschrieben, ignoriert.
 
 Zur Ermittlung des Momentanpols ist es nun notwendig die absolute Geschwindigkeit eines fest mit dem Glied verbundenen Punktes, sowie die Rotationsgeschwindigkeit des Gliedes zu ermitteln.
-Die absolute Geschwindigkeit wird zunächst ermittelt, indem wie in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} beschrieben die Bewegung der äußersten Randpunkte gemessen wird.
+Die absolute Geschwindigkeit wird zunächst ermittelt, indem wie in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} beschrieben die Bewegung der äu{\ss}ersten Randpunkte gemessen wird.
 Unter der Vorausetzung, dass diese in etwa den selben Punkt auf dem Glied bezeichnen, sollten diese eine ausreichende Approximation darstellen.
 Die \lstinline{Group} Klasse speichert hierbei den Pfad der gemessenen Punkte und ordnet diese entsprechend zu.
 Durch den Gradienten zweier Punkte in dieser Liste wird so eine Geschwindigkeit berechnet.
@@ -118,7 +118,7 @@ Die Rotationsgeschwindigkeit wird ähnlich gemessen, wie in Listing~\ref{lst:gro
 Wird der Gradient über die selbe Anzahl an Iterationen für die Winkelgeschwindigkeit wie für die absolute Geschwindigkeit berechnet, so kann Gleichung~\ref{eq:euler_rAP} genutzt werden um die Position des Momentanpols zu ermitteln.
 Dieser stellt hier wieder eine Schätzung dar, da die Eingangsparameter mit einer Ungenauigkeit behaftet sind.
 Des Weiteren ist anzumerken, dass die Anzahl der Iterationen zwischen den beiden zu vergleichenden Bildern im vorhinein festgelegt werden muss.
-Ist diese Zahl zu klein, oder zu groß, so folgt daraus eine größere Standardabweichung.
+Ist diese Zahl zu klein, oder zu gro{\ss}, so folgt daraus eine grö{\ss}ere Standardabweichung.
 Diese optimale Anzahl ist jedoch je nach Geschwindigkeit des sich bewegenden Gliedes unterschiedlich, sodass zur automatisierten Ermittlung weitere Untersuchung notwendig sind.
 Für den Versuch des Rades wird hier lediglich die Y-Koordinate betrachtet.
 Tatsächlich befindet sich der Erwartungswert des Momentanpols, unter Berücksichtigung der Standardabweichung, in etwa im Wälzpunkt des Rades.
@@ -133,7 +133,7 @@ Tatsächlich befindet sich der Erwartungswert des Momentanpols, unter Berücksic
         \includegraphics[width=\textwidth]{gfx/drehendes_rad_4.png}
         \caption{Versuch \name{momentanpol1\_4.html}.}\label{fig:drehendes_rad_4}
     \end{subfigure}
-    \caption[Versuche \name{momentanpol1\_1.html} und \name{momentanpol1\_4.html}]{Die orangenen Punkte sind hier die berechneten Momentanpole der entsprechenden Iteration. Der Verlauf ist von links nach rechts, entsprechend der Bewegung des Rades. Die Graphen zeigen jeweils die Verteilung der Momentanpole gemäß ihrer Y-Koordinate.}
+    \caption[Versuche \name{momentanpol1\_1.html} und \name{momentanpol1\_4.html}]{Die orangenen Punkte sind hier die berechneten Momentanpole der entsprechenden Iteration. Der Verlauf ist von links nach rechts, entsprechend der Bewegung des Rades. Die Graphen zeigen jeweils die Verteilung der Momentanpole gemä{\ss} ihrer Y-Koordinate.}
     \label{fig:drehendes_rad_1_4}
 \end{figure}
 
@@ -170,7 +170,7 @@ Für diesen Versuch wurde entsprechend das Pendel aus Kapitel~\ref{ch:infoerhalt
         \includegraphics[width=\textwidth]{gfx/drehendes_pendel_4.png}
         \caption{Versuch \name{momentanpol2\_4.html}.}\label{fig:drehendes_pendel_4}
     \end{subfigure}
-    \caption[Versuche \name{momentanpol2\_1.html} und \name{momentanpol2\_4.html}]{Hier stellen die orangenen Punkte die pro Iteration berechneten Momentanpole dar. Der grüne Graph steht jeweils für die Anzahl der X-Koordinaten der berechneten Momentanpole und der orangene Graph für die Y-Koordinaten. Die bläulichen Funktionen stellen jeweils die Gauß-Verteilungen dar.}
+    \caption[Versuche \name{momentanpol2\_1.html} und \name{momentanpol2\_4.html}]{Hier stellen die orangenen Punkte die pro Iteration berechneten Momentanpole dar. Der grüne Graph steht jeweils für die Anzahl der X-Koordinaten der berechneten Momentanpole und der orangene Graph für die Y-Koordinaten. Die bläulichen Funktionen stellen jeweils die Gau{\ss}-Verteilungen dar.}
     \label{fig:drehendes_pendel_1_4}
 \end{figure}
 
@@ -190,7 +190,7 @@ Im Vergleich mit dem Ansatz welcher die absolute Geschwindigkeit über Lucas-Kan
 Beim zweiten Ansatz wurde aus diesem Grund der eingeschlossene Winkel durch \lstinline{dw = dw > Math.PI / 2 ? dw - Math.PI : dw;} korrigiert wie in Listing~\ref{lst:group_momentanpol} gesehen werden kann, damit jeweils den kleineren der beiden eingeschlossenen Winkel bevorzugt.
 Der rote Punkt in Abbildung~\ref{fig:translatives_glied_3} stellt hier den verfolgten Punkt dar und nicht den Momentanpol.
 Die Standardabweichung zu vergleichen scheint an dieser Stelle weniger sinnvoll.
-Sie ist in beiden Fällen sehr hoch und wird nur durch die Tatsache niedrig gehalten, dass \lstinline{Data} Koordinaten außerhalb des Canvas ignoriert um die Gauß-Verteilung mit den gemessenen Werten vergleichbar zu halten\footnote{Teilweise auftretende extreme Ausschläge haben einen großen Einfluss auf die Varianz.}
+Sie ist in beiden Fällen sehr hoch und wird nur durch die Tatsache niedrig gehalten, dass \lstinline{Data} Koordinaten au{\ss}erhalb des Canvas ignoriert um die Gau{\ss}-Verteilung mit den gemessenen Werten vergleichbar zu halten\footnote{Teilweise auftretende extreme Ausschläge haben einen gro{\ss}en Einfluss auf die Varianz.}
 
 \begin{figure}
     \centering
