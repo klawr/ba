@@ -49,7 +49,7 @@ Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf dies
         \caption{}
         \label{fig:gruppe1_2_3}
     \end{subfigure}
-    \caption{Versuch: \lstinline{gruppe1_1.html}. In Bild~\ref{fig:gruppe1_2_0} wird der Mechanismus gezeigt, dessen Glieder nun zugeordnet werden sollen.
+    \caption[Versuch \lstinline{gruppe1_1.html}]{Versuch \lstinline{gruppe1_1.html}. In Bild~\ref{fig:gruppe1_2_0} wird der Mechanismus gezeigt, dessen Glieder nun zugeordnet werden sollen.
     Bild~\ref{fig:gruppe1_2_1} zeigt die Vorhersage zur Zuordnung dieser Punkte.
     Bild~\ref{fig:gruppe1_2_2} zeigt die Zuordnung der Punkte in den Totlagen des Mechanismus. Hier wird das linke Glied und die Koppel einer einzelnen Gruppe zugeordnet. Bild~\ref{fig:gruppe1_2_2} zeigt, dass der genutzte Algorithmus manchmal auch falsche vorhersagen trifft. Hier liegt das daran, dass zuerst die grüne Gruppe ermittelt wurde, bei welcher die Dichte der weit entfernten Punkte des Gelenkes des rechten Gliedes zu einer falschen Gerade geführt hat. Danach hat sich der Fehler in den übrigen Gruppen entsprechend fortgepflanzt.}
     \label{fig:gruppe1_2}
@@ -92,7 +92,7 @@ Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/k_means_centroids_edit.png}
-    \caption{Versuch: \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration größer um die Annäherung zu visualisieren. Es ist sichtbar, dass sie sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
+    \caption[Versuch \lstinline{gruppe2_1.html}]{Versuch \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration größer um die Annäherung zu visualisieren. Es ist sichtbar, dass sie sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
     \label{fig:gruppe2_1}
 \end{figure}
 
@@ -152,7 +152,7 @@ const graph = points.map((p, id) => ({
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/dijkstra_edit.png}
-    \caption{Versuch: \lstinline{gruppe3_2.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Verbindung des lstinline{anchor}, welcher im linken Gestellpunkt ist. Die Farbe der Verbindung zwischen den Punkte weist auf den \lstinline{dist} Wert hin.
+    \caption[Versuch \lstinline{gruppe3_2.html}]{Versuch \lstinline{gruppe3_2.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Verbindung des lstinline{anchor}, welcher im linken Gestellpunkt ist. Die Farbe der Verbindung zwischen den Punkte weist auf den \lstinline{dist} Wert hin.
     Wie im rechten Bild zu sehen ist, werden die Verbindungen bei sehr kleinen eingeschlossenen Winkeln fehlerbehaftet.}
     \label{fig:gruppe3_1}
 \end{figure}
@@ -266,7 +266,7 @@ und dessen Berechnung ist als statische Funktion auf der \lstinline{PointCloud} 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/correlation_edit.png}
-    \caption{Versuch: \lstinline{gruppe3_3.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Regressionsgeraden welche durch die vorgeschlagene Methode meistens ermittelt werden. Das rechte Bild zeigt einen entsprechenden Fehler, welcher der falschen Zuordnung der Pfade im Graphen zugrunde liegt.}
+    \caption[Versuch \lstinline{gruppe3_3.html}]{Versuch \lstinline{gruppe3_3.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Regressionsgeraden welche durch die vorgeschlagene Methode meistens ermittelt werden. Das rechte Bild zeigt einen entsprechenden Fehler, welcher der falschen Zuordnung der Pfade im Graphen zugrunde liegt.}
     \label{fig:gruppe3_3}
 \end{figure}
 
