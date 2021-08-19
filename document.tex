@@ -39,10 +39,10 @@
 % --------------------------
 % rename document parts
 % --------------------------
-%\renewcaptionname{ngerman}{\figurename}{Abb.}
-%\renewcaptionname{ngerman}{\tablename}{Tab.}
-\renewcaptionname{english}{\figurename}{Fig.}
-\renewcaptionname{english}{\tablename}{Tab.}
+\renewcaptionname{ngerman}{\figurename}{Abb.}
+\renewcaptionname{ngerman}{\tablename}{Tab.}
+% \renewcaptionname{english}{\figurename}{Fig.}
+% \renewcaptionname{english}{\tablename}{Tab.}
 
 % --------------------------
 % Front matter
@@ -55,9 +55,8 @@
 \pagestyle{plain}				% display just page numbers
 \input{content/abstract}		% INCLUDE: the abstracts (english and german)
 \cleardoublepage
-%
-\cleardoublepage
-%
+
+
 \currentpdfbookmark{\contentsname}{toc}
 \setcounter{tocdepth}{2}		% define depth of toc
 \tableofcontents				% display table of contents
@@ -88,11 +87,9 @@
 \renewcommand{\bibfont}{\normalfont\small}
 \setlength{\biblabelsep}{0pt}
 \setlength{\bibitemsep}{0.5\baselineskip plus 0.5\baselineskip}
-% TODO bibliography
-% \printbibliography[nottype=online]
-% \printbibliography
+%\printbibliography[nottype=online]
 \newrefcontext[labelprefix={@}]
-% \printbibliography[heading=subbibliography,title={Webpages},type=online]
+%\printbibliography[heading=subbibliography,title={Webpages},type=online]
 }
 \cleardoublepage
 
