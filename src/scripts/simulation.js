@@ -132,7 +132,7 @@ const globalTestVariables = {
         this.model?.tick(1 / 60);
         this.g.exe(this.ctx1);
         this.time_reset = performance.now();
-        step();
+        step?.call();
         this.updateTimesChart().exe(this.ctx_times);
 
         if (this.running) {

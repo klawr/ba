@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../scripts/simulation.js"></script>
+
+    <p>
+        Bild des Werkzeugkoffers.
+    </p>
+
+    <script>
+        globalTestVariables.model = {
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 100, y: 0, base: true },
+                { id: 'A1', x: 90, y: 105 },
+                { id: 'B0', x: 245, y: 15, base: true },
+                { id: 'B1', x: 180, y: 150 }
+            ],
+            constraints: [
+                {
+                    id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' },
+                    ori: { type: 'drive', Dw: Math.PI / 2.3 }
+                },
+                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
+                { id: 'c', p1: 'A1', p2: 'B1', len: { type: 'const' } },
+            ]
+        };
+
+        const image = {
+            uri: '../../gfx/werkzeugkoffer.png',
+            b: globalTestVariables.cnv_width,
+            h: globalTestVariables.cnv_height
+        };
+
+        globalTestVariables.g.img(image);
+
+        globalTestVariables.register(() => {
+            g2().img(image).exe(globalTestVariables.ctx2);
+            const g = g2().clr().view({cartesian: true});
+            globalTestVariables.model.draw(g);
+            g.exe(globalTestVariables.ctx3);
+        });
+    </script>
+</body>
+
+</html>
