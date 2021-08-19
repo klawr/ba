@@ -71,18 +71,15 @@
             [A0, B0, C0].forEach(p => g.gnd({ ...p }));
 
             const rel = [];
-            for (let i = 0; i < lines.length; ++i) {
-                for (j = i + 1; j < lines.length; ++j) {
-                    const fi = lines[i];
-                    const fj = lines[j];
-
-                    if (fi.containsPoint(A0) +
-                        fi.containsPoint(B0) +
-                        fi.containsPoint(C0) +
-                        fj.containsPoint(A0) +
-                        fj.containsPoint(B0) +
-                        fj.containsPoint(C0) < 2) {
-                        rel.push(fi.intersection(fj));
+            for (const l1 of lines) {
+                for (const l2 of lines) {
+                    if (l1.containsPoint(A0) +
+                        l1.containsPoint(B0) +
+                        l1.containsPoint(C0) +
+                        l2.containsPoint(A0) +
+                        l2.containsPoint(B0) +
+                        l2.containsPoint(C0) === 1) {
+                        rel.push(l1.intersection(l2));
                     }
                 }
             }
