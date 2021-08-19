@@ -127,21 +127,20 @@ Ein weiterer Vorteil ergibt sich noch dadurch, dass Glieder welche sich mehrfach
 Ohne diesen Filter würde die Menge der Datenpunkte linear zunehmen, und die Dauer des Algorithmus, dessen Zeit ebenfalls linear zur Menge der Datenpunkte wächst, entsprechend quadratisch wachsen.
 Es zeigt sich, dass in vielen Fällen die Menge der Datenpunkte reduziert werden kann ohne das Einbu{\ss}en bei der Genauigkeit der Versuche in Kauf genommen werden muss.
 
-% TODO check das ° Zeichen ob das anständig gedruckt wird. Wird es nicht.
-Dieser Ansatz erkennt für ein Glied das sich mindestens 180° um den definierten Punkt dreht ein sehr nahe am tatsächlichen Wert gelegenen Drehpunkt.
-Der offensichtliche Nachteil besteht jedoch darin, dass alle Glieder die sich um weit weniger als 180° drehen mit Sicherheit kein gutes Ergebnis liefern, wie im zweiten Test nachvollzogen werden kann.
+Dieser Ansatz erkennt für ein Glied das sich mindestens $180^\circ$ um den definierten Punkt dreht ein sehr nahe am tatsächlichen Wert gelegenen Drehpunkt.
+Der offensichtliche Nachteil besteht jedoch darin, dass alle Glieder die sich um weit weniger als $180^\circ$ drehen mit Sicherheit kein gutes Ergebnis liefern, wie im zweiten Test nachvollzogen werden kann.
 
 Nähere Untersuchungen zum kleinsten umfassenden Kreis können jedoch weitere Erkenntnisse bringen.
 Zunächst ist der Pfad welcher vom Mittelpunkt des über die Zeit wachsenden kleinsten umfassenden Kreis interessant.
-Für die ersten 90° die sich das Glied dreht bewegt sich der Mittelpunkt auf einer Geraden, die exakt Orthogonal zum Drehpunkt steht.
+Für die ersten $90^\circ$ die sich das Glied dreht bewegt sich der Mittelpunkt auf einer Geraden, die exakt Orthogonal zum Drehpunkt steht.
 Der Abstand zum Drehpunkt ist ebenfalls bekannt, da bekannt ist dass er exakt dem Radius des zuerst gemessenen kleinsten umfassenden Kreises entspricht\footnote{Das ist Äquivalent zur hälfte der Gliedlänge}.
-Die weiterfolgenden 90° durch auf einem Kreisbogen mit dem ersten Mittelpunkt des eben beschriebenen Pfades als Mittelpunkt beschrieben, wobei der Winkel dem des Gliedes entspricht (abzüglich der ersten 90°).
+Die weiterfolgenden $90^\circ$ durch auf einem Kreisbogen mit dem ersten Mittelpunkt des eben beschriebenen Pfades als Mittelpunkt beschrieben, wobei der Winkel dem des Gliedes entspricht (abzüglich der ersten $90^\circ$).
 Abschlie{\ss}end landet der Mittelpunkt des kleinsten umfassenden Kreises im Drehpunkt des betrachteten Gliedes.
 
 Es kann au{\ss}erdem beobachtet werden, dass der kleinste umfassende Kreis, solange er eine Gerade bildet durch drei Punkte definiert wird\footnote{Mit Ausnahme der ersten Iterationen, wo er allein durch die Endpunkte des Gliedes beschrieben werden kann.}.
-Sobald das Glied jedoch eine Drehung von über 90° vollführt, wird der Kreis nurnoch durch zwei Punkte beschrieben.
+Sobald das Glied jedoch eine Drehung von über $90^\circ$ vollführt, wird der Kreis nurnoch durch zwei Punkte beschrieben.
 Diese drei Punkte sind die beiden Punkte welche für die erste Iteration\footnote{In der Realität ist es mehr als eine Iteration die der Kreis durch nur zwei Punkte definiert wird, dass kann jedoch auf die Ungenauigkeit der Daten zurückgeführt werden mit denen hier gearbeitet wird.} und dem letzten erfassten Endpunkt des Pendels.
-Sobald eine Drehung von über 90° vollführt wurde, ist der Kreis der durch den ersten sowie den letzten Drehpunkt definiert wird jedoch grö{\ss}er, weshalb der Drehpunkt selber nicht mehr zum kleinsten umfassenden Kreis beiträgt.
+Sobald eine Drehung von über $90^\circ$ vollführt wurde, ist der Kreis der durch den ersten sowie den letzten Drehpunkt definiert wird jedoch grö{\ss}er, weshalb der Drehpunkt selber nicht mehr zum kleinsten umfassenden Kreis beiträgt.
 
 % TODO Zeige dass das 1. wirklich eine Gerade ist und 2. sie wirklich Orthogonal zum Drehpunkt steht.
 
@@ -153,13 +152,13 @@ Sobald eine Drehung von über 90° vollführt wurde, ist der Kreis der durch den
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/pendel1_4.png}
-        \caption{Versuch \name{pendel1\_4.html}. Dieser Versuch zeigt, dass der durch den Mittelpunkt kreierte Pfad genutzt werden kann um bei Drehungen weit unter 90° den Drehpunkt zu bestimmen.}\label{fig:pendel1_4}
+        \caption{Versuch \name{pendel1\_4.html}. Dieser Versuch zeigt, dass der durch den Mittelpunkt kreierte Pfad genutzt werden kann um bei Drehungen weit unter $90^\circ$ den Drehpunkt zu bestimmen.}\label{fig:pendel1_4}
     \end{subfigure}
     \caption[Versuche \name{pendel1\_3.html} und \name{pendel1\_4.html}]{}
     \label{fig:pendel1_3_4}
 \end{figure}
 
-Aus diesen Erkenntnissen lässt sich jedoch eine Algorithmus bilden, welcher auch für Bewegungen weit unter 90° eine hinreichend gute Vorhersage über die Position des Drehpunktes bringt.
+Aus diesen Erkenntnissen lässt sich jedoch eine Algorithmus bilden, welcher auch für Bewegungen weit unter $90^\circ$ eine hinreichend gute Vorhersage über die Position des Drehpunktes bringt.
 Hierfür wird, solange die Anzahl der Punkte die den zuletzt gebildeten Kreises bei über zwei liegt, die Steigung vom ersten zum letzten Punkt im Pfad des Mittelpunktes des kleinsten umfassenden Kreises gemessen.
 So kann der Drehpunkt erheblich früher mit hinreichender Genauigkeit bestimmt werden.
 Auf die Berechnung wird hier nicht näher eingegangen, weil es sich gezeigt hat, dass obwohl die Erkenntnisse aus diesem Versuch sehr hilfreich sind, der kleinste umfassende Kreis nicht genutzt wird.
@@ -394,7 +393,7 @@ Idealerweise sollten alle Schnittpunkte der berechneten Geraden die selben Koord
 Wäre dies der Fall, dann wäre die Varianz gleich null und bereits nach zwei Iterationen hätte man ein ideales Ergebnis.
 Da dies jedoch nicht der Fall ist, wird für jede neue Gerade jeder Schnittpunkt mit den vorangegangen Geraden dem \lstinline{Data} Objekt übergeben.
 Diese Methode liefert schnell einen Erwartungswert der nah an dem tatsächlichen Wert.
-Dies gilt auch für vollzogene Winkel weit unter 180°.
+Dies gilt auch für vollzogene Winkel weit unter $180^\circ$.
 
 Nachteilig erscheint es, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
 Um dieses Problem zu behandeln sollen nun der Schwerpunkt mehrerer am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden\footnote{Für die Berechnung des Schwerpunktes wird davon ausgegeangen, dass das Gewicht der Punkte gleich ist. Die Berechnung ist also äquivalent zu der des Erwartungswertes.}.
