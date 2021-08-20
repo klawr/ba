@@ -226,7 +226,7 @@ class OpenCVLucasKanade {
         return points;
     }
 
-    very_first = true; // TODO
+    very_first = true;
 
     step(frame) {
         if (this.very_first) {

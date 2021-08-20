@@ -72,7 +72,7 @@ Im nachfolgenden sollen für diese Aufgabe unterschiedliche Ansätze untersucht 
 Die Versuche wurden in unterschiedliche Gruppen unterteilt.
 Alle Versuche die mit dem Pendel gemacht werden befinden sich im Verzeichnis \lstinline{src/pendel}.
 
-Die Versuchsgruppe \name{pendel1} beschäftigt sich mit der Untersuchung des kleinsten umfassenden Kreises. % TODO hier anmerken wie man die toll mit der index.html oder so folgen kann.
+Die Versuchsgruppe \name{pendel1} beschäftigt sich mit der Untersuchung des kleinsten umfassenden Kreises.
 
 \section{Bestimmung des kleinsten umfassenden Kreises}
 
@@ -85,11 +85,9 @@ Stattdessen wird beim ersten untersuchten Ansatz der kleinste Kreis bestimmt, we
 Den kleinsten umfassenden Kreis zu ermitteln ist ein Problem für das ein Algorithmus existiert welcher in linearer Zeit\footnote{Das hei{\ss}t die Dauer des Algorithmus steht in linearem Verhältnis zur Menge der Datenpunkte} durchgeführt werden kann.
 Der entsprechende Algorithmus wurde von Nimrod Megido~\cite{Megiddo1983} entwickelt und die Implementation wird von \aka{https://github.com/nayuki/Nayuki-web-published-code/blob/master/smallest-enclosing-circle/smallest-enclosing-circle-demo.js} bezogen.
 Eine anschauliche Demo kann unter \aka{https://www.nayuki.io/page/smallest-enclosing-circle}~\cite{Nayuki2021} betrachtet werden.
-% TODO hier könnte noch etwas vom Algorithmus erzählt werden.
 
 
 Um einen solchen Kreis zu bestimmen müssen zunächst alle Koordinaten für die eine Änderung erkannt wurde in einer Liste festgehalten werden.
-
 Da zu Beginn der Aufnahme die Region welche durch die Punkte gefüllt wird sehr schnell an Fläche zunimmt, ändern sich die Koordinaten und der Radius des Mittelpunktes des kleinsten umfassenden Kreises relativ schnell.
 Sobald sich das drehende Glied einer halben Umdrehung nähert verändert sich die Definition des kleinsten umfassenden Kreises augenscheinlich garnicht mehr und dessen Mittelpunkt scheint mit einer sehr kleinen Abweichung dem tatsächlichen Drehpunkt zu entsprechen.
 Entsprechend wird bei diesem Versuch der Drehpunkt als der letzte ermittelte Mittelpunkt des Kreises angenommen.
@@ -162,10 +160,9 @@ Aus diesen Erkenntnissen lässt sich jedoch eine Algorithmus bilden, welcher auc
 Hierfür wird, solange die Anzahl der Punkte die den zuletzt gebildeten Kreises bei über zwei liegt, die Steigung vom ersten zum letzten Punkt im Pfad des Mittelpunktes des kleinsten umfassenden Kreises gemessen.
 So kann der Drehpunkt erheblich früher mit hinreichender Genauigkeit bestimmt werden.
 Auf die Berechnung wird hier nicht näher eingegangen, weil es sich gezeigt hat, dass obwohl die Erkenntnisse aus diesem Versuch sehr hilfreich sind, der kleinste umfassende Kreis nicht genutzt wird.
-Der Quellcode kann jedoch unter % TODO
-eingesehen werden.
+Der hier genutzte Quellcode kann jedoch unter \aka{https://github.com/klawr/ba/blob/master/src/third_party/smallestEnclosingCircle.js} eingesehen werden.
 
-% TODO 
+% TODO entscheide was mit diesem Abschnitt passiert.
 
 % Die Steigung und der y-Achsenabschnitt berechnen sich durch
 
@@ -213,12 +210,7 @@ eingesehen werden.
 % Dieser Ansatz basiert auf der Annahme, dass die Steigung die berechnet wird hinreichend genau ist.
 % Da der kleinste umfassende Kreis mit Sicherheit durch die au{\ss}enliegensten Punkte definiert wird, ist es jedoch unwahrscheinlich das exakt der Drehpunkt getroffen wird, da der Radius des Drehgelenkes nicht berücksichtigt werden kann.
 
-
-% TODO Gerade Linie und dann Kreis.
-% TODO Abhängigkeit von Bedeckter Fläche
-% TODO Ermittlung von Schnittpunkten durch die geraden
-% TODO Kathetensatz nach Euklid, welcher über h und q das b ermitteln kann, welches durch den Satz von Thales auf das a schlie{\ss}en kann welches mit q einen Schnittpunkt in B haben muss, wobei B bekanntenma{\ss}en der Drehpunkt ist.
-% TODO Das sollte bei steigendem h und q eine immer genauere Prognose von B geben können.
+% TODO Kathetensatz nach Euklid, welcher über h und q das b ermitteln kann, welches durch den Satz von Thales auf das a schlie{\ss}en kann welches mit q einen Schnittpunkt in B haben muss, wobei B bekanntenma{\ss}en der Drehpunkt ist. Das sollte bei steigendem h und q eine immer genauere Prognose von B geben können.
 
 \section{Schnittpunkte von Geraden}\label{ch:schnittpunkt_gerade}
 
@@ -229,20 +221,17 @@ Zunächst soll die Gerade anhand der am weitesten voneinander entfernten Punkte 
 Diese Gerade sollte in etwa den selben Winkel haben wie der Winkel des tatsächlichen Gelenkes.
 Eine Annahme die hierbei implizit getroffen wird, ist dass die Glieder länger sind als sie breit sind, wobei die Länge durch den Abstand der Gelenke definiert ist und die Breite entsprechend durch die Punkte welche orthogonal zu der Längenlinie stehen.
 
-Die am weitest voneinander entfernten Punkte einer \lstinline{PointCloud} lassen sich durch die auf dieser Klasse definierten Funktion \lstinline{getMaxDist} finden\footnote{Der entsprechende Quellcode kann unter \aka{TODO} eingesehen werden.}.
+Die am weitest voneinander entfernten Punkte einer \lstinline{PointCloud} lassen sich durch die auf dieser Klasse definierten Funktion \lstinline{getMaxDist} finden\footnote{Der entsprechende Quellcode kann unter \aka{https://github.com/klawr/ba/blob/master/src/scripts/pointCloud.js\#L63} eingesehen werden.}.
 In dieser Funktion wird für jeden Punkt der Punkt gesucht, welcher den grö{\ss}ten Abstand zu diesem hat. Es wird au{\ss}erdem festgehalten welches Paar den grö{\ss}ten Abstand hatte.
 Diese beiden Punkte können genutzt werden um ein Objekt der Klasse \lstinline{Line} zu erstellen.
 Diese Klasse stellt in dieser Arbeit alle Funktionen bereit welche für den Umgang mit Geraden benötigt werden.
-% TODO welches anhand der beiden ermittelten Punkte eine Gerade gemä{\ss} der in Gleichung~\ref{eq:m_steigung} gezeigten Formel erstellt.
-
 Eine auf diese Weise definierte Gerade wird dann in einer Liste gespeichert und die nächste Iteration folgt.
 Bereits ab der zweiten Iteration können dann die Schnittpunkte dieser Geraden genutzt werden um den Drehpunkt zu bestimmen.
 
-% TODO falsches Bild.
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{gfx/pendel1_3.png} % TODO
-    \caption[Versuch \name{pendel1\_3.html}]{Versuch \name{pendel1\_3.html}. Dieser Test versucht den Drehpunkt mittels des Erwartungswertes der Schnittpunkte aller Geraden, welche durch die in einer Iteration ermittelten am weitesten voneinander entfernten Punkte ermittelt werden.}
+    \includegraphics[width=\textwidth]{gfx/pendel2_1.png}
+    \caption[Versuch \name{pendel2\_1.html}]{Versuch \name{pendel2\_1.html}. Links ist das Eingangsvideo. In der Mitte werden mit den roten Kreise die aktuell am weitest entfernten Punkt gezeigt. Der Erwartungswert aller Schnittpunkte ist als transparenter Kreis dargestellt. Im rechten Canvas kann gesehen werden, dass die Ergebnisse durchaus zuverlässig sind, jedoch einzelne Ausrei{\ss}er die Gau{\ss}-Verteilung niedrig halten.}
     \label{fig:pendel2_1}
 \end{figure}
 
@@ -418,7 +407,7 @@ Die Standardabweichung für die selbe Menge an Iterationen bei der Nutzung des S
 \section{Bestimmung der Regressionsgeraden}\label{ch:bestimmung_regressionsgerade}
 
 Die Gerade welche den geringsten Fehler gegenüber einer Menge an Punkten darstellt wird als Regressionsgerade bezeichnet.
-Die Berechnung der Regressionsgeraden nach der Gau{\ss}'schen Methode der kleinsten Quadrate wird durch % TODO Zitat Papula 3 S. 696
+Die Berechnung der Regressionsgeraden nach der Gau{\ss}'schen Methode der kleinsten Quadrate wird durch~\cite[S.~694]{Papula2016}
 
 \begin{equation}
     \begin{split}

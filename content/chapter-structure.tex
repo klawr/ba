@@ -73,7 +73,7 @@ Object.entries(tests).forEach((kv, i) => {
 });
 \end{lstlisting}
 
-Hier wird für jeden Eintrag im \lstinline{tests} Objekt ein neues HTML-Details Element erstellt. % TODO MDN link?
+Hier wird für jeden Eintrag im \lstinline{tests} Objekt ein neues HTML-Details Element erstellt\footnote{Für mehr Information zum HTML-Details Element siehe \aka{https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details}}.
 Über die Listen der einzelnen Einträge wird dann iteriert um die einzelnen Gruppen gemeinsam in ein weiteres HTML-Details Element zu platzieren.
 Über die Länge dieser Listen wird dann festgestellt wie viele HTML-Iframe Elemente erstellt werden sollen und welchen Pfad diese als Quelle (\lstinline{src}) besitzen.
 Sollte eine Datei also nicht diesem Wert entsprechen wird ein Fehler geworfen.
@@ -88,10 +88,12 @@ Die Versuche teilen sich zu einem gro{\ss}en Anteil die benötigten Variablen.
 Deshalb ist es sinnvoll den meisten Programmcode in einer zentralen Datei abzulegen.
 Diese soll dann in den Versuchsdateien eingebunden werden.
 Die Datei welche diese zentralen Definitionen enthält wurde als \name{simulation.js} bezeichnet.
+Durch die zentrale Definition wird der Aufwand zur Wartung des Codes und zur Behebung von Fehlern stark reduziert.
+Dieses Prinzip ist als \name{DRY}\footnote{Englisch für \textit{don't repeat yourself}, zu deutsch \textit{wiederhole dich nicht}.} bekannt~\cite{AndrewHunt2021}.
 
 In \name{simulation.js} wird ausschlie{\ss}lich das \lstinline{globalTestVariables} Objekt definiert.
 Dieses Objekt soll dazu dienen die genutzten globalen Variablen zu begrenzen und enthhält entsprechend alle zur Simulation benötigten Variablen und Funktionen.
-Es beinhaltet alle Referenzen zu den HTML-Elementen auf welche im Zuge der Versuche zugegriffen werden können, sowie den Referenzen zu den einzelnen \name{CanvasRenderingContext2D} Objekten welche von \name{g2} genutzt werden um auf die entsprechenden HTML-Canvas Elemente zu zeichnen.
+Das \lstinline{globalTestVariable} Objekt beinhaltet alle Referenzen zu den HTML-Elementen auf welche im Zuge der Versuche zugegriffen werden können, sowie den Referenzen zu den einzelnen \name{CanvasRenderingContext2D} Objekten welche von \name{g2} genutzt werden um auf die entsprechenden HTML-Canvas Elemente zu zeichnen.
 Au{\ss}erdem werden globale Konstanten wie unter Anderem die Höhe und Breite der HTML-Canvas Elemente hier zentral bestimmt.
 
 Auf die in \lstinline{globalTestVariables} definierten Funktionen soll im nachfolgenden näher eingegangen werden.
@@ -142,7 +144,7 @@ Diese Funktion wird durch den Versuch selber definiert und führt alle Vergleich
 Entsprechend werden die an die \lstinline{run} übergebenen Funktionen in den entsprechenden Kapiteln für die Versuche beschrieben.
 
 Abschlie{\ss}end wird hier noch die Zeit welche diese \lstinline{step} benötigt vermerkt, indem \lstinline{updateTimesChart} aufgerufen wird.
-In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now()} % TODO MDN Link oder besser erklären.
+In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now()} gemessen\footnote{Für mehr Information zu \lstinline{performance.now} siehe \aka{https://developer.mozilla.org/en-US/docs/Web/API/Performance/now}.}.
 ermittelt und in einer Liste hinzugefügt welche die Historie der Geschwindigkeiten der einzelnen \lstinline{step} Aufrufe festhält.
 Es wird au{\ss}erdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist um eine sinnvolle Bezeichnung der Achsen der Graphen zu ermöglichen.
 Dieser Graph wird anschlie{\ss}end auf einem HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
@@ -168,10 +170,7 @@ Es wird au{\ss}erdem noch die Erstellung des Knopfes zum Starten und Pausieren d
 Die Betätigung dieses Knopfes resultiert in einem Umschalten der \lstinline{globalTestVariables.running} Variable und dem Ausführen von \lstinline{run}.
 
 Das \lstinline{globalTestVariables} Objekt enthält noch weitere Variablen und Funktionen welche Einfluss auf den Ablauf der Tests haben.
-Um die Beschreibung hier jedoch auf das wesentliche zu reduzieren, sei hier auf die Definition des kompletten Objektes im Quellcode %TODO Link
-hingewiesen.
-
-% TODO irgendwo erklären wieso diese one-definition rule sinnvoll ist. Besser noch die odr selber erklären.
+Um die Beschreibung hier jedoch auf das wesentliche zu reduzieren, sei hier auf die Definition des kompletten Objektes im Quellcode, welcher unter \aka{https://github.com/klawr/ba/blob/master/src/scripts/simulation.js} nachgesehen werden kann, hingewiesen.
 
 \section{Aufbau der Versuchsseiten}\label{ch:aufbau_der_testseiten}
 
@@ -182,7 +181,7 @@ Neben diesen wurden jedoch viele Skripte geschrieben welche sich einzelne Tests 
 
 Des weiteren enthalten Gruppen an Tests weitere etwas spezialisiertere globale Variablen, welche entsprechend \lstinline{globalTestVariables} für diese Versuche erweitern sollen.
 
-Jede Versuchsdatei enthält au{\ss}erdem noch jeweils ein HTML-Paragraph Element % TODO Link, 
+Jede Versuchsdatei enthält au{\ss}erdem noch jeweils ein HTML-Paragraph Element\footnote{Für mehr Information zum HTML-Paragraph Element siehe \aka{https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p}.}, 
 in welchem beschrieben wird was in dem entsprechenden Versuch untersucht wird.
 
 Wie bereits angemerkt dient die \lstinline{globalTestVariables.createElements} Funktion der einhetlichen Befüllung aller Versuchsseiten.

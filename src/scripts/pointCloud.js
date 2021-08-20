@@ -149,7 +149,6 @@ class PointCloud {
      * @param { g2 } g is a g2 command-queue used for rendering
      * @param {bounds} bounds defines the max. orthogonal distance to the line
      * @returns this PointCloud grouped up into multiple
-     * TODO add more info how this works...
      */
     groupUp(g, bounds = 10, iterations = 36, warp = 3, fixWarp = 2) {
         const groups = [];
