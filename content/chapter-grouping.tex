@@ -277,26 +277,79 @@ Diese Geraden werden dann vorgehalten und könnten für weitere Analysen genutzt
 
 \section{Rekonstruktion eines Mechanismus durch die Relativpole}
 
-Der letzte Schritt der nach einer erfolgreichen Ermittlung der Pole durchgeführt werden muss ist die Rekonstruktion des zugrundeliegenden Mechanismus.
-Das ist nach den Regeln der Relativkinematik möglich~\cite[S.~66]{Kerle2016}.
+Die vorangegangen Methoden geben ansatzweise akzeptable Ergebnisse für Viergelenke.
+Sie scheitern jedoch, sobald die Anzahl der Glieder höher wird, wie in Abbildung~\ref{fig:gruppe1_3_2_6_3_4} gesehen werden kann.
 
-Hierfür sollen die Momentanpole von allen bewegten Gliedebenen ermittelt werden.
-Die Bewegung eines Gliedes um ein anderes Glied geschieht stets um einen gemeinsamen Pol.
-Daraus lässt sich ableiten, dass die Anzahl dieser Pole durch~\cite{Goessner2016}
+\begin{figure}
+    \includegraphics[width=\textwidth]{gfx/gruppe_failed_edit.png}
+    \caption[Versuche \name{gruppe1\_3.html}, \name{gruppe2\_6.html} und \name{gruppe3\_4.html}.]{Links ist der Ausgangsmechanismus, welcher durch die Wattsche Kette gebildet wird. Von links nach rechts sind jeweils der Versuch \name{gruppe1\_3.html}, welcher so offensichtlich keine nutzbaren Ergebnisse hervorbringt, \name{gruppe2\_6.html}, welcher etwas bessere Ergebnisse zeigt und der Versuch \name{gruppe3\_4.html}, welcher hier die stabilsten Ergebnisse zu produzieren scheint scheint, jedoch sind auch diese für weitere Analysen kaum brauchbar.}
+    \label{fig:gruppe1_3_2_6_3_4}
+\end{figure}
+
+Aus diesem Grund soll jetzt davon ausgegangen werden, dass die Ergebnisse ideal sind.
+Aus diesen idealen Ergebnissen sollen nun die Gelenke ermittelt werden.
+Hierbei wird also davon ausgegangen, dass sowohl die Regressionsgeraden für die Datenpunkte und die entsprechenden Momentanpole erfolgreich ermittelt wurden.
+
+\subsection{Ermittlung der Anzahl der gesuchten Punkte}
+
+Der Freiheitsgrad für einen planaren Mechanismus berechnet sich nach Grübler durch
+
+\begin{equation}
+    F = 3n - 3 - b_1 - 2b_2
+    \label{eq:gruebler}
+\end{equation}
+
+wobei $F$ den Freiheitsgrad, $n$ die Anzahl der Glieder und der $b$-Index jeweils die Wertigkeit dieses Gelenkes darstellt.
+Hierbei sei anzumerken, dass ein $b_1$ jederzeit durch zwei $b_2$ ersetzt werden kann, wenn man entsprechend auch die Gliederzahl $n$ um eins erhöht, was durch
+
+\begin{equation}
+    \begin{split}
+        F &= 3((n+c)-1) - (b_1 - c) - 2(b_2 + 2c) \\
+        F &= 3n + 3c - 3 - b_1 + c - 2b_2 - 4c \\
+        F &= 3n - 3 - b_1 - 2b_2
+    \end{split}
+\end{equation}
+
+gezeigt wird.
+$c$ kann hierbei beliebig, also auch als $c = b_1$, gewählt werden.
+Entsprechend darf in den folgenden Überlegungen von lediglich zweiwertigen Gelenken ausgegangen werden.
+Aus der Annahme heraus, dass die hier betrachteten Mechanismen jeweils zwangläufige Mechanismen mit genau einem angetriebenem Glied sind lässt sich diese Gleichung durch
+
+\begin{equation}
+    \begin{split}
+        1 &= 3n - 3 - 2b_2 \\
+        b_2 &= \frac{3n}{2} - 2
+    \end{split}
+\end{equation}
+
+vereinfachen.
+So kann neben der Anzahl der gesuchten Gelenke des weiteren festgestellt werden, dass die Gliederzahl der hier für die Berechnung genutzten kinematischen Ketten in jedem Fall einer geraden Zahl entspricht.
+
+
+\subsection{Betrachtung aller Relativpole}
+
+Die gemeinsame Drehung zweier Gliedebenen geschieht jeweils um einen Relativpol.
+Entsprechend sind alle gesuchten Gelenke auch Relativpole.
+Die Anzahl der Relativpole eines Mechanismus berechnet sich durch~\cite{Goessner2016}
 
 \begin{equation}
     k = \frac{n}{2}(n-1)
     \label{eq:anzahl_pole}
 \end{equation}
 
-ermittelt werden kann.
+Wobei $n$ hier wieder die Anzahl der Glieder ist.
+Hier lassen sich in jedem Fall die durch die in den angeführten Methoden bestimmten Momentanpole einzelner Gliedebenen ausschlie{\ss}en, wobei die Absolutpole dann direkt als gefundene Gelenke identifiziert werden können.
+Entsprechend lassen sich nun $k - (2n - 1)$ Gelenke ausschlie{\ss}en.
+Für ein Viergelenk bedeutet das, dass noch ein Relativpol übrig ist der nicht ausgeschlossen werden kann.
 
-Nach dem Satz von Aronhold-Kennedy~\cite{Goessner2016, Kerle2016}, welcher auch als 3-Polsatz bezeichnet wird, befinden sich für drei bewegte Gliedebenen jeweils drei Relativpole auf einer Geraden.
-Das bedeuted, dass für zwei ausgewählte bereits ermittelte Pole ein dritter ermittelt werden kann, indem auf Schnittpunkte mit anderen bewegten Gliedebenen gesucht wird.
-Für ein 4-Gelenk werden entsprechend sechs Relativpole gesucht.
-Die Anzahl der Gliedebenen sei hier bekannt durch die Menge welche durch die Algorithmen dieses Kapitels bestimmt wird.
-Bei einem 4-Gelenk sind dies drei Gliedebenen, von denen zwei Absolutpole darstellen.
-Aus den Schnittpunkten der bekannten Gliedebenen lassen sich entsprechend zwei weitere Pole bestimmen, welche in diesem Fall die Gelenke darstellen.
-Der letzte Pol wird ermittelt durch die Gliedebene der Koppel und der gedachten Geraden durch die Absolutpole.
-Der dadurch ermittelte Pol stellt jedoch offensichtlich kein Gelenk dar, sodass die anderen beiden ermittelten Pole als solche deklariert werden.
-Die Absolutpole werden entsprechend als Gelenke zum Gestell aufgefasst.
+Allerdings ist auch zu beachten, dass sobald ein Relativpol durch den Schnittpunkt zweier Gliedebenen definiert ist welche mehr als einen Absolutpol als Parameter besitzen kein Gelenk sein kann, da er sonst starr wäre.
+Die Relativpole welche durch zwei nicht benachbarte Gliedebenen gebildet werden lassen sich dennoch nicht einfach ausschlie{\ss}en, sodass hier weitere Analysen notwendig sein werden.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{gfx/gruppe4_3_edit.png}
+    \caption[Versuch \name{gruppe4\_3.html}]{Versuch \name{gruppe4\_3.html}. Links ist der Ausgangsmechanismus. Fast alle Relativpole können durch die genannten Methoden als Gelenke ausgeschlossen werden. Jedoch bilden die nicht benachbarten Gliedebenen hier zwei weitere Kandidaten welche ohne weitere Analyse nicht ausgeschlossen werden können.}
+    \label{fig:gruppe4_3}
+\end{figure}
+
+% TODO kann man den hier überhaupt verwenden?
+% Nach dem Satz von Aronhold-Kennedy~\cite{Goessner2016, Kerle2016}, welcher auch als 3-Polsatz bezeichnet wird, befinden sich für drei bewegte Gliedebenen jeweils drei Relativpole auf einer Geraden.
