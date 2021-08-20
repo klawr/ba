@@ -10,9 +10,9 @@ class Data {
     }
 
     reduce(callback, acc) {
-        const entries = this.data.entries();
-        acc = acc !== undefined ? acc : entries.next();
-        for (let cur = entries.next(); !cur.done; cur = entries.next()) {
+        const itr = this.data.entries();
+        acc = acc !== undefined ? acc : itr.next();
+        for (let cur = itr.next(); !cur.done; cur = itr.next()) {
             acc = callback(acc, cur.value);
         }
         return acc;
@@ -24,8 +24,6 @@ class Data {
     }
 
     add(a) {
-        if (!a) return;
-
         const r = Math.round(a);
         if (Number.isSafeInteger(r)) {
             this.data.set(r, this.data.get(r) + 1 || 1);

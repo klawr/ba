@@ -268,28 +268,41 @@ Au{\ss}erdem bietet sie Funktionen zur Vorbereitung der Daten für den \lstinlin
 
 Die zweite Klasse ist die \lstinline{DataXY} Klasse.
 Sie bietet die Möglichkeit, statt einzelner Werte, Punkte zu verwalten.
-Punkte sind in diesem Fall definiert als Objekte welche die Eigenschaften \lstinline{x} und \lstinline{y} haben.
-Ein \lstinline{DataXY} Objekt hat die Eigenschaften \lstinline{x} und \lstinline{y}, welche selber als \lstinline{Data} Objekt vorliegen, und bietet dazu Funktionen an, welche diese gemeinsam auf einem \lstinline{g2.chart} zeichnen können.
+Punkte sind in diesem Fall definiert als Objekte mit den Eigenschaften \lstinline{x} und \lstinline{y}.
+Ein \lstinline{DataXY} Objekt hat die Eigenschaften \lstinline{x} und \lstinline{y}, welche stattdessen als \lstinline{Data} Objekt vorliegen
+\lstinline{DataXY} bietet Funktionen an um diese Werte gemeinsam auf einem \lstinline{g2.chart} zeichnen zu können.
 
 In der \lstinline{Data} Klasse ist ein \lstinline{data} Objekt definiert, welches dazu dient die gesammelten Daten zu verwalten.
-Statt eine Liste zu Nutzen wird ein Objekt verwendet dessen Schlüssel dem Messwert entsprechen und der dazugehörige Wert die Anzahl darstellt wie oft dieser gemessen wurde.
+Statt eine Liste zu Nutzen wird eine Map verwendet dessen Schlüssel dem Messwert entsprechen und der dazugehörige Wert die Anzahl darstellt wie oft dieser gemessen wurde\footnote{Für mehr Information zu Maps siehe \aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map}}.
 Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert welche wie folgt aussieht:
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}, label={lst:data_add}]
 add(a) {
-    if (!a) return;
     const r = Math.round(a);
     if (Number.isSafeInteger(r)) {
-        this.data[r] = this.data[r] ? this.data[r] + 1 : 1;
+        this.data.set(r, this.data.get(r) + 1 || 1);
     }
 };
 \end{lstlisting}
 
-Die Entscheidung ein Objekt statt einer Liste zu nutzen bietet bessere Verarbeitungsmöglichkeiten der Daten. % TODO stattdessen eine Map verwenden?
+Die Entscheidung eine Map statt einer Liste zu nutzen bietet bessere Verarbeitungsmöglichkeiten der Daten.
 Es sind beispielsweise weniger Iterationen notwendig um über die Daten zu iterieren.
-Das Iterieren über das Objekt wird durch Funktionen wie \lstinline{Objekt.entries} ermöglicht, wie in Listing~\ref{lst:data_mu} gesehen werden kann.
-Die Vorhersage eines gesuchten Punktes wird hier stets durch den Erwartungswert aller vorangegangen Messungen bestimmt.
+Listen bieten jedoch die in dieser Arbeit äußerst praktische \lstinline{reduce} Funktion.
+Diese wurde entsprechend auf der \lstinline{Data} Klasse für diese Map implementiert.
 
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{reduce} Funktion um die Standardfunktion der Liste nachzubilden}, label={lst:data_reduce}]
+reduce(callback, acc) {
+    const itr = this.data.entries();
+    acc = acc !== undefined ? acc : itr.next();
+    for (let cur = itr.next(); !cur.done; cur = itr.next()) {
+        acc = callback(acc, cur.value);
+    }
+    return acc;
+}
+\end{lstlisting}
+
+Diese Funktion wird beispielsweise in Listing~\ref{lst:data_mu} genutzt.
+Die Vorhersage eines gesuchten Punktes wird hier stets durch den Erwartungswert aller vorangegangen Messungen bestimmt.
 Der Erwartungswert $\mu$ berechnet sich durch
 
 \begin{equation}
@@ -298,10 +311,9 @@ Der Erwartungswert $\mu$ berechnet sich durch
 
 Die entsprechende Funktion der \lstinline{Data} Klasse ist in Listing~\ref{lst:data_mu} definiert.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{mu} Funktion, welche den Erwartungswert der Daten in \lstinline{Data} berechnet},label={lst:data_mu}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{mu} Funktion, welche den Erwartungswert der Daten in \lstinline{Data} berechnet.},label={lst:data_mu}]
 get mu() {
-    return Object.entries(this.data)
-        .reduce((pre, cur) => pre + cur[0] * cur[1], 0)
+    return this.reduce((pre, cur) => pre + cur[0] * cur[1], 0)
         / this.length;
 }
 \end{lstlisting}
@@ -318,10 +330,8 @@ Die entsprechende Implementation ist durch Listing~\ref{lst:data_variance} gegeb
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{variance} Funktion, welche die Varianz der Daten in \lstinline{Data} berechnet}, label={lst:data_variance}]
 get variance() {
     const mu = this.mu;
-
-    return Object.entries(this.data)
-        .reduce((pre, cur) =>
-            pre + (((+cur[0] - mu) ** 2) * (+cur[1])), 0)
+    return this.reduce((pre, cur) =>
+        pre + (((cur[0] - mu) ** 2) * cur[1]), 0)
         / (this.length - 1);
 }
 \end{lstlisting}
@@ -331,7 +341,7 @@ get variance() {
 Die Standardabweichung $\sigma$ ist entspechend die Quadratwurzel der Varianz.
 
 Um die entsprechenden Ergebnisse mit der Gau{\ss}'schen Normalverteilung zu Vergleichen wurde eine Funktion geschrieben, welche vom \lstinline{g2.chart} genutzt werden kann um diese neben die gesammelten Daten zu zeichnen.
-Die Funktion für die Gau{\ss}'sche Normalverteilung berechnet sich durch
+Die Funktion für die Gau{\ss}'sche Normalverteilung ist gegeben sich durch
 
 \begin{equation}
     f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}
@@ -349,7 +359,7 @@ gaussianDistribution(x) {
 }
 \end{lstlisting}
 
-Diese Funktion kann dann vom \lstinline{g2.chart} aufgerufen werden um den entsprechenden Graphen mit Daten zu fällen.
+Diese Funktion kann dann vom \lstinline{g2.chart} aufgerufen werden um den entsprechenden Graphen mit Daten zu füllen.
 Die Implementation eines solchen Aufrufs wird in Listing~\ref{lst:data_getChart} gezeigt.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{getChart} Funktion der \lstinline{Data} Klasse.}, label={lst:data_getChart}]
@@ -366,8 +376,8 @@ getChart(limit) {
 };
 \end{lstlisting}
 
-Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung des \lstinline{data} Objektes um durch \lstinline{g2.chart} dargestellt werden zu können.
-Ein entsprechend gezeichneter Graph kann in 
+Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung der \lstinline{data} Map um durch \lstinline{g2.chart} dargestellt werden zu können.
+Ein entsprechend gezeichneter Graph kann in Abbildung~\ref{fig:normalverteilung} gesehen werden.
 
 \begin{figure}
     \centering
