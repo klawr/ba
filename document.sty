@@ -2,6 +2,7 @@
 \usepackage{subcaption}
 \usepackage{wrapfig}
 \usepackage{siunitx}
+\usepackage{xurl}
 
 \newcommand\name[1]{\texttt{#1}}
 
@@ -10,7 +11,7 @@
 \newlistof{links}{aka}{\listlinkname}
 \newcommand{\theaka}{\url{https://aka.klawr.de/\akaAbb\#\thelinks}}
 \newcommand{\aka}[1]{\refstepcounter{links}\theaka%
-\addcontentsline{aka}{links}{\url{\#\thelinks}: \tiny{\url{#1}}}}
+\addcontentsline{aka}{links}{\url{\#\thelinks}: \small{\url{#1}}}}
 
 \lstdefinelanguage{JavaScript}{
   keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
