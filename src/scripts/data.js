@@ -1,8 +1,21 @@
 class Data {
-    data = {};
+    data = new Map();
+
+    get arr() {
+        return Array.from(this.data.entries());
+    }
 
     get length() {
-        return Object.values(this.data).reduce((p, c) => c + p, 0);
+        return this.reduce((p, c) => c[1] + p, 0);
+    }
+
+    reduce(callback, acc) {
+        const entries = this.data.entries();
+        acc = acc !== undefined ? acc : entries.next();
+        for (let cur = entries.next(); !cur.done; cur = entries.next()) {
+            acc = callback(acc, cur.value);
+        }
+        return acc;
     }
 
     fillText(p, name, off = 0) {
@@ -15,7 +28,7 @@ class Data {
 
         const r = Math.round(a);
         if (Number.isSafeInteger(r)) {
-            this.data[r] = this.data[r] ? this.data[r] + 1 : 1;
+            this.data.set(r, this.data.get(r) + 1 || 1);
         }
     };
 
@@ -33,16 +46,15 @@ class Data {
     }
 
     get mu() {
-        return Object.entries(this.data)
-            .reduce((pre, cur) => pre + cur[0] * cur[1], 0)
+        return this.reduce((pre, cur) => pre + cur[0] * cur[1], 0)
             / this.length;
     }
 
     get variance() {
         const mu = this.mu;
 
-        return Object.entries(this.data).reduce((pre, cur) =>
-            pre + (((+cur[0] - mu) ** 2) * (+cur[1])), 0)
+        return this.reduce((pre, cur) =>
+            pre + (((cur[0] - mu) ** 2) * cur[1]), 0)
             / (this.length - 1);
     }
 
@@ -53,17 +65,15 @@ class Data {
     alignForChart(limit = false) {
         let length = this.length;
 
-        return Object.entries(this.data)
-            .filter(e => limit ? (+e[0] > 0 && +e[0] < limit) : true)
-            .sort((a, b) => +a[0] > +b[0])
-            .flatMap(e => [+e[0], e[1] / length]);
+        return this.arr
+            .filter(e => limit ? (e[0] > 0 && e[0] < limit) : true)
+            .sort((a, b) => a[0] > b[0])
+            .flatMap(e => [e[0], e[1] / length]);
     }
 
     getChart(limit, gaussian = true, align = true) {
         const gtv = globalTestVariables;
-        const data = align ?
-            this.alignForChart(limit) :
-            Object.entries(this.data).map(e => [+e[0], +e[1]]);
+        const data = align ? this.alignForChart(limit) : this.arr;
         const fn = (i) => gaussian ? this.gaussianDistribution(i) : [];
 
         return g2().clr().view({ cartesian: true }).chart({
