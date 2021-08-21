@@ -74,18 +74,6 @@ Es ist davon auszugehen, dass Mechanismen welche eine andere Form aufweisen als 
 
 \section{\name{k-Means} Algorithmus}\label{ch:kMeans}
 
-Eine andere Möglichkeit die Datenpunkte ihren Gruppen zuzuordnen ist durch den \name{k-Means} Algorithmus~\cite[S.~241]{Geron2019}.
-Dieser wird in der Statistik genutzt um Datenpunkte in Gruppen einzuteilen.
-Ein offensichtlier Nachteil dieses besteht darin, dass die Anzahl der Gruppen von vorneherein bekannt sein muss.
-Eine Untersuchung, ob er für den vorliegenden Anwedungsfall nutzbar ist scheint jedoch angebracht.
-Eine entsprechende Funktion wurde wieder auf der \lstinline{PointCloud} Klasse definiert.
-Hier werden zunächst zufällig drei Punkte auf dem Bild ausgewählt.
-Diese drei Punkte werden als \name{Centroids} bezeichnet.
-Jeder Punkt der Punktwolke ordnet sich dann demjenigen \name{Centroid} zu, welcher die geringste euklidische Distanz aufweist.
-Dies sollte ein bis drei Gruppen zur Folge haben, welche die entsprechenden Punkte enthalten.
-Daraufhin werden neue \name{Centroids} definiert, indem der Erwartungswert dieser Gruppen ermittelt wird.
-Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen.
-
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/k_means_centroids_edit.png}
@@ -93,20 +81,17 @@ Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen
     \label{fig:gruppe2_1}
 \end{figure}
 
-Um die Anzahl der Gruppen zu bestimmen kann eine Metrik verwendet werden welche als Trägheit bezeichnet wird.
-Die Trägheit berechnet sich hier durch die durchschnittliche Distanz der Punkte zu ihrem jeweiligen \name{Centroid}.
-Wird die Trägheit der einzelnen Gruppen auf einen Graphen gezeichnet, so ist die Anzahl zu bevorzugen welche eine starke Änderung der Trägheit im Verhältnis zu den anderen Anzahlen aufweist.
-Auf dem Graphen ist dies als ein Knick zu sehen, weshalb dies auch als Ellbogenmethode bezeichnet wird.
-
-Eine andere Herangehensweise zur Bestimmung der korrekten Anzahl an Gruppen ist der Silhouettenwert.
-Dieser zeigt für die entsprechende Anzahl der Gruppen einen Wert zwischen $-1$ und $1$ an.
-Ein Silhouettenwert von eins zeigt an, dass der Datenpunkt mitten in der Gruppe ist.
-Ein Wert von null zeigt an, dass der Datenpunkt sich am Rand der Gruppe befindet.
-Ein Wert von $-1$ zeigt hingegen an, dass der Datenpunkt vermutlich der falschen Gruppe zugeordnet wurde.
-
-% TODO Der Silhouettenwert sollte genutzt werden können um die Regressionsgerade besser bestimmen zu können.
-
-Diese Werte zu bestimmen kann die Möglichkeit geben die Regressionsgeraden entsprechend zu beeinflussen, womit die Regressionsgeraden welche durch die gruppierten \lstinline{PointCloud} Objekte gebildet werden um bessere Ergebnisse zu erzielen.
+Eine andere Möglichkeit die Datenpunkte ihren Gruppen zuzuordnen ist durch den \name{k-Means} Algorithmus~\cite[S.~241]{Geron2019}.
+Dieser wird in der Statistik genutzt um Datenpunkte in Gruppen einzuteilen.
+Ein offensichtlier Nachteil dieses Ansatzes besteht darin, dass die Anzahl der Gruppen von vorneherein bekannt sein muss\footnote{Es gibt jedoch Methoden um diese Anzahl zu berechnen, zum Beispiel durch den Silhouettenkoeffizienten~\cite[S.~247]{Geron2019}.}.
+Eine Untersuchung, ob er für den vorliegenden Anwedungsfall nutzbar ist scheint jedoch angebracht.
+Eine entsprechende Funktion ist in der \lstinline{PointCloud} Klasse definiert.
+Hier werden zunächst zufällig $k$ Punkte auf dem Bild ausgewählt.
+Diese Punkte werden als \name{Centroids} bezeichnet.
+Jeder Punkt der Punktwolke ordnet sich dann demjenigen \name{Centroid} zu, welcher die geringste euklidische Distanz aufweist.
+Dies sollte ein bis drei Gruppen zur Folge haben, welche die entsprechenden Punkte enthalten.
+Daraufhin werden neue \name{Centroids} definiert, indem der Erwartungswert dieser Gruppen ermittelt wird.
+Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen.
 
 Als eine Erweiterung des \name{k-Means} Algorithmus könnte noch der EM-Algorithmus untersucht werden, welcher weniger das Problem hat Gruppen von unterschiedlicher Grö{\ss}e zu erstellen~\cite[S.~262]{Geron2019}.
 Dies wird jedoch an dieser Stelle nicht mehr getan.
