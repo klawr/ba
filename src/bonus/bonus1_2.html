@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../scripts/simulation.js"></script>
+
+    <p>
+        Video des Werkzeugkoffers mit manueller Nachbildung des Mechanismus.
+        Das hier ist manuell erstellt und keine magische Lösung der Aufgabe.
+    </p>
+
+    <script>
+        globalTestVariables.model = {
+            gravity: true,
+            nodes: [
+                { id: 'A0', x: 100, y: 0, base: true },
+                { id: 'A1', x: -10, y: 50 },
+                { id: 'B0', x: 245, y: 15, base: true },
+                { id: 'B1', x: 100, y: 50 }
+            ],
+            constraints: [
+                {
+                    id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' },
+                    ori: {
+                        type: 'drive', t0: 0.9, Dw: -2, Dt: 2.5,
+                        func: 'linear'
+                    },
+                },
+                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
+                { id: 'c', p1: 'A1', p2: 'B1', len: { type: 'const' } },
+            ]
+        };
+
+        const video = document.createElement('video');
+        video.src = '../../gfx/werkzeugkoffer.MP4';
+        video.autoplay = false;
+        video.muted = true;
+
+        video.addEventListener('ended', () => {
+            globalTestVariables.model.reset();
+        });
+
+        // First is used to counter missing cartesian at the beginning...
+        let first = true;
+
+        function fn() {
+            const gtv = globalTestVariables;
+            video.play();
+
+            if (!gtv.running) {
+                video.pause();
+            }
+            if (!first) {
+                gtv.ctx3.transform(1, 0, 0, -1, 0, gtv.cnv_height);
+            }
+            first = false;
+
+            gtv.ctx2.drawImage(
+                video, 0, gtv.cnv_height, gtv.cnv_width, -gtv.cnv_height);
+
+            const g = g2();
+            globalTestVariables.model.draw(g.view({ cartesian: true }));
+            gtv.ctx3.drawImage(
+                video, 0, gtv.cnv_height, gtv.cnv_width, -gtv.cnv_height);
+
+            g.exe(globalTestVariables.ctx3);
+        }
+
+        globalTestVariables.register(fn);
+    </script>
+</body>
+
+</html>

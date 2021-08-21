@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../third_party/opencv.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/line.js"></script>
+    <script src="../scripts/group.js"></script>
+
+    <p>
+        Video des Werkzeugkoffers für Lucas-Kanade. Die Shi-Tomasi Parameter sind hier sehr sensibel eingestellt um so
+        viele Ecken wie möglich zu finden.
+        Die zunächst bedeckte Kurbel wird hier zunächst nicht erkannt.
+    </p>
+
+    <script>
+        const gtv = globalTestVariables;
+        gtv.g = g2();
+
+        const video = document.createElement('video');
+        video.src = '../../gfx/werkzeugkoffer.MP4';
+        video.autoplay = false;
+        video.muted = true;
+
+        video.addEventListener('ended', () => {
+            ended = true;
+            globalTestVariables.running = false;
+        });
+
+        let ended = false;
+
+        const group = new Group({ lk: { maxCorners: 30, qualityLevel: 0.1, minDistance: 1, blockSize: 1 } });
+
+        function fn(result) {
+            video.play();
+
+            if (!globalTestVariables.running) {
+                video.pause();
+            }
+            if (!ended) {
+                gtv.ctx1.drawImage(video, 0, gtv.cnv_height,
+                    gtv.cnv_width, -gtv.cnv_height);
+                const g = g2().clr();
+                group.draw(g, true);
+                result?.removeOverlaps(10).draw(g)
+                g.exe(gtv.ctx2);
+            }
+        }
+
+        gtv.register(() => group.stepBisector(fn));
+    </script>
+</body>
+
+</html>

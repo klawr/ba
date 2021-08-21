@@ -1,3 +1,3 @@
-const globalGruppe3Variables = {
+const globalOpticalFlow2Variables = {
     group: new Group({lk: true}),
 }

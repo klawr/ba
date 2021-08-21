@@ -175,10 +175,6 @@ class OpenCVLucasKanade {
 
     constructor(options) {
         options && Object.assign(this, options);
-        this.init();
-    }
-
-    init() {
         this.first_indicator = false;
 
         ["oldGray", "p0", "none", "frameGray", "p1", "st", "err"]

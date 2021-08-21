@@ -41,15 +41,14 @@
             ]
         }
 
-        const { group } = globalGruppe3Variables;
         const fn = (result) => {
             const g = g2().use({ grp: globalTestVariables.g });
-            group.draw(g, true);
+            globalOpticalFlow2Variables.group.draw(g, true);
             g.exe(globalTestVariables.ctx2);
         }
 
         globalTestVariables.register(() =>
-            globalGruppe3Variables.group.lucasKanade(fn));
+            globalOpticalFlow2Variables.group.lucasKanade(fn));
     </script>
 </body>
 
