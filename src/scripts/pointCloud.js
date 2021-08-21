@@ -452,7 +452,8 @@ class Dijkstra {
                 const correlation = PointCloud.correlation(
                     [...group, this.points[u.id]]);
                 if (Math.abs(correlation) ** group.length < minCorr) {
-                    if (group.length > this.points.length * minPercent) {
+                    if (group.length > 2 &&
+                        group.length > this.points.length * minPercent) {
                         lines.push(Line.fromRegressionLine(group, g));
                     }
                     group = [];
