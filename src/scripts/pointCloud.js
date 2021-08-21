@@ -168,22 +168,18 @@ class PointCloud {
             const lines = [];
 
             for (let i = 0; i < 360; i += 360 / iterations) {
-                const m_i = Math.tan(i * Math.PI / 180);
-                const b_i = pt.y - m_i * pt.x;
+                const m = Math.tan(i * Math.PI / 180);
+                const b = pt.y - m * pt.x;
+
+                const l = new Line({m, b});
 
                 hypos.push([]);
-                lines.push({ m: m_i, b: b_i });
-
-                const m_o = -1 / m_i;
+                lines.push(l);
 
                 // fix is used to prohibit lines to be favored that consist of less points.
                 let fix = 0;
                 ungrouped.forEach(e => {
-                    const b_o = e.y - m_o * e.x;
-                    const x = (b_o - b_i) / (m_i - m_o) || e.x;
-                    const y = m_o * x + b_o || b_i;
-
-                    const hypo = Math.hypot(e.y - y, e.x - x);
+                    const hypo = l.orthogonalDistance(e);
                     const score = Math.pow(hypo, 1 / warp);
 
                     if (hypo < bounds) {
@@ -197,7 +193,7 @@ class PointCloud {
 
                 g?.lin({
                     x1: 0, x2: 400,
-                    y1: b_i, y2: m_i * 400 + b_i,
+                    y1: b, y2: m * 400 + b,
                     ls: 'lightgrey'
                 });
             }

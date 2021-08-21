@@ -27,7 +27,7 @@ class Line {
      * @returns Line which is orthogonal to this line crossing p.
      */
     orthogonal(p) {
-        const b = p.y + p.x / this.m;
+        const b = this.m ? p.y + p.x / this.m : p.y;
         return new Line({ b, m: - 1 / this.m })
     }
 
