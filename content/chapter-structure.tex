@@ -114,9 +114,9 @@ Auf diese Funktion wird im genaueren in Kapitel~\ref{ch:aufbau_der_testseiten} e
 Die \lstinline{run} Funktion trägt Sorge dafür, dass alle Tests unter den selben Konditionen aufgerufen werden.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{globalTestVariables.run} Funktion.}, label={lst:gtv_run}]
-run(step) {
+async run(step) {
     this.model?.tick(1 / 60);
-    this.g.exe(this.ctx1);
+    await this.g.exe(this.ctx1);
     this.time_reset = performance.now();
     step();
     this.updateTimesChart().exe(this.ctx_times);
@@ -135,7 +135,8 @@ Hierbei wird davon ausgegangen, dass wenn ein \name{mec2} Modell auf dem \lstinl
 Die Definition der Modelle soll in den entsprechenden Versuchsdateien stattfinden.
 Innerhalb der an \lstinline{run} übergebenen Funktion sollte dieses Modell jedoch nicht modifiziert werden, da es als Quelle für die Bildsequenzen dient.
 
-Anschlie{\ss}end wird der \name{CanvasRenderingContext2D} des ersten der vier HTML-Canavs Elemente \lstinline{ctx1} beschrieben.
+Anschlie{\ss}end wird der \name{CanvasRenderingContext2D} des ersten der vier HTML-Canavs Elemente \lstinline{ctx1} beschrieben\footnote{Vor der \lstinline{exe} Funktion steht hier ein \lstinline{await}, da wenn Bilder geladen werden die \lstinline{exe} Funktion leicht abgewandelt werden muss. Anwedung findet dies in der Versuchsgruppe \name{bonus2} (s. \aka{https://klawr.github.io/ba/src/bonus/bonus2_1.html}).
+Entsprechend ist die \lstinline{run} Funktion als \lstinline{async} deklariert.}
 Dieser sollte ausschlie{\ss}lich hier beschrieben werden, damit der Versuch nicht versehentlich Einfluss auf die Zeichnung nimmt.
 Es sollte sichergestellt werden, dass die gesuchte Funktion zur Ermittlung des Mechanismus ausschlie{\ss}lich Anhand der Bildsequenzen funktioniert und selbst keinen Einfluss auf diese hat.
 

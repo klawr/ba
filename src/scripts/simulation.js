@@ -128,9 +128,9 @@ const globalTestVariables = {
         this.createElement({ tag: "br" });
     },
 
-    run(step) {
+    async run(step) {
         this.model?.tick(1 / 60);
-        this.g.exe(this.ctx1);
+        await this.g.exe(this.ctx1);
         this.time_reset = performance.now();
         step?.call();
         this.updateTimesChart().exe(this.ctx_times);
