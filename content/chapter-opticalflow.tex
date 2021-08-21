@@ -9,8 +9,8 @@ Der optische Fluss kann durch ein Vektorfeld betrachtet werden, wobei die Vektor
 Die Bewegung eines Objektes innerhalb zweier Bilder lässt sich durch
 
 \begin{equation}
-I(x, y, t) = I(x + \Delta x, y + \Delta y, t + \Delta t)
-\label{eq:optical_flow}
+    I(x, y, t) = I(x + \Delta x, y + \Delta y, t + \Delta t)
+    \label{eq:optical_flow}
 \end{equation}
 
 darstellen.
@@ -61,15 +61,17 @@ Diese Eigenschaft verweist auf ein Objekt der \lstinline{LucasKanade} Klasse.
 Objekte der \lstinline{LucasKanade} Klasse enthalten wiederrum alle Parameter welche für die Implementation der Algorithmen notwendig sind.
 
 Die Funktionen zur Bestimmung interessanter Punkte und dessen Verfolgung wird von \name{opencv.js} bezogen~\cite{OpenCV2021}.
-\name{opencv}\footnote{\name{opencv} ist eine Abkürzung für Open Computer Vision.} ist eine Sammlung zumeist optimierter Funktionen im Bereich der Bildverarbeitung und des Maschniellen sehens.
+\name{opencv}\footnote{\name{opencv} ist eine Abkürzung für Open Computer Vision.}
+ist eine Sammlung zumeist optimierter Funktionen im Bereich der Bildverarbeitung und des Maschniellen sehens.
 Implementiert ist \name{opencv} in \name{C++}.
 Es gibt jedoch Unterstüzung für eine Vielzahl von anderen Programmiersprachen, wie zum Beispiel \name{Python}, \name{Java} und \name{JavaScript}.
 
 Für \name{JavaScript} wird das globale \lstinline{cv} Objekt genutzt um auf dessen Funktionen zuzugreifen.
 Für die Bestimmung von vermeintlich sinnvollen Regionen zur Verfolgung wird die \lstinline{cv.goodFeaturesToTrack} Funktion verwendet.
 Diese implementiert den Shi-Tomasi Algorithmus.
-Als Parameter übergeben werden hier ein in Graustufen konvertiertes Bild, eine \lstinline{cv.Mat} Objekt in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte welche zur Verfolgung gesucht werden, die minimale Qualität einer Kante\footnote{Die Qualität einer Kante wird hier ins Verhältnis zur Kante mit bester Qualität gestellt. Die Qualität einer hier genutzten Kante berechnet sich durch \lstinline{cv.cornerMinEigenVal}, worauf hier jedoch nicht weiter eingegangen wird. Mehr Information kann unter \aka{https://docs.opencv.org/master/dd/d1a/group__imgproc__feature.html\#ga3dbce297c1feb859ee36707e1003e0a8} gefunden werden.},
-der minimale euklidische Abstand der Punkte zueinander.
+Als Parameter übergeben werden hier ein in Graustufen konvertiertes Bild, eine \lstinline{cv.Mat} Objekt in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte welche zur Verfolgung gesucht werden, die minimale Qualität einer Kante\footnote{Die Qualität einer Kante wird hier ins Verhältnis zur Kante mit bester Qualität gestellt.
+Die Qualität einer hier genutzten Kante berechnet sich durch \lstinline{cv.cornerMinEigenVal}, worauf hier jedoch nicht weiter eingegangen wird.
+Mehr Information kann unter \aka{https://docs.opencv.org/master/dd/d1a/group__imgproc__feature.html\#ga3dbce297c1feb859ee36707e1003e0a8} gefunden werden.}, der minimale euklidische Abstand der Punkte zueinander.
 Des weiteren können hier spezielle Regionen von Interesse übergeben werden und die durchschnittliche Grö{\ss}e der Blöcke welche bei der Berechnung genutzt werden.
 
 Nach der Bestimmung der zu verfolgenden Punkte wird versucht diese durch \lstinline{cv.calcOpticalFlowPyrLK} zu verfolgen.

@@ -164,7 +164,7 @@ Diese Distanz wird hier als \lstinline{weight} bezeichnet um zu unterstreichen, 
 Zuletzt wird \lstinline{pred} genutzt um jeweils der Vorgänger jedes Knotens auf dem Graphen betiteln zu können.
 
 Daraufhin wird dieser Graph als \lstinline{unvisited} kopiert um alle unbesuchten Punkte festhalten zu können.
-Dieser kopierten Liste wird der \lstinline{anchor} an den Start angefügt\footnote{Mit der \lstinline{id} $-1$ und einer \lstinline{dist} von 0}.
+Dieser kopierten Liste wird der \lstinline{anchor} an den Start angefügt\footnote{Mit der \lstinline{id} $-1$ und einer \lstinline{dist} von 0.}.
 
 \begin{lstlisting}[language=JavaScript, caption={Berechnung der \lstinline{dist} Eigenschaft der einzelnen Objekte aus dem Dijkstra-Graphen.}, label={lst:creation_dijkstra_graph}]
 while (unvisited.length) {

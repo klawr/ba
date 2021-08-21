@@ -72,7 +72,7 @@ Object.entries(tests).forEach((kv, i) => {
 });
 \end{lstlisting}
 
-Hier wird für jeden Eintrag im \lstinline{tests} Objekt ein neues HTML-Details Element erstellt\footnote{Für mehr Information zum HTML-Details Element siehe \aka{https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details}}.
+Hier wird für jeden Eintrag im \lstinline{tests} Objekt ein neues HTML-Details Element erstellt\footnote{Für mehr Information zum HTML-Details Element siehe \aka{https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details}.}.
 Über die Listen der einzelnen Einträge wird dann iteriert um die einzelnen Gruppen gemeinsam in ein weiteres HTML-Details Element zu platzieren.
 Über die Länge dieser Listen wird dann festgestellt wie viele HTML-Iframe Elemente erstellt werden sollen und welchen Pfad diese als Quelle (\lstinline{src}) besitzen.
 Sollte eine Datei also nicht diesem Wert entsprechen wird ein Fehler geworfen.
@@ -136,7 +136,7 @@ Die Definition der Modelle soll in den entsprechenden Versuchsdateien stattfinde
 Innerhalb der an \lstinline{run} übergebenen Funktion sollte dieses Modell jedoch nicht modifiziert werden, da es als Quelle für die Bildsequenzen dient.
 
 Anschlie{\ss}end wird der \name{CanvasRenderingContext2D} des ersten der vier HTML-Canavs Elemente \lstinline{ctx1} beschrieben\footnote{Vor der \lstinline{exe} Funktion steht hier ein \lstinline{await}, da wenn Bilder geladen werden die \lstinline{exe} Funktion leicht abgewandelt werden muss. Anwedung findet dies in der Versuchsgruppe \name{bilder2} (s. \aka{https://klawr.github.io/ba/src/bilder/bilder2_1.html}).
-Entsprechend ist die \lstinline{run} Funktion als \lstinline{async} deklariert.}
+Entsprechend ist die \lstinline{run} Funktion als \lstinline{async} deklariert.}.
 Dieser sollte ausschlie{\ss}lich hier beschrieben werden, damit der Versuch nicht versehentlich Einfluss auf die Zeichnung nimmt.
 Es sollte sichergestellt werden, dass die gesuchte Funktion zur Ermittlung des Mechanismus ausschlie{\ss}lich Anhand der Bildsequenzen funktioniert und selbst keinen Einfluss auf diese hat.
 

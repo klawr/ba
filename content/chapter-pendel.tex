@@ -7,7 +7,7 @@
 Das erste Problem das hier untersucht werden soll ist welche Information aus dem Abgleich von Bildern in Bildsequenzen gewonnen werden kann und wie man daraus gewonnene Erkenntnisse auf die zugrundeliegenden mechanismentechnische Strukturen zurückführen kann.
 Deshalb wird statt der vollständigen Rekonstruktion eines Mechansimus zunächst mit einem einzelnem Glied in Form eines einfachen Pendels begonnen.
 Dieses stellt im Grunde ein einzelnes Glied eines beliebigen Mechanismus dar.
-Die korrekte Erkennung eines Pendels ist also eine notwendige Bedingung für einen Ansatz der die Glieder des Mechanismus einzeln betrachtet\footnote{Das gilt im Grunde für alle Mechanismen welche rotierende Elemente beinhalten. Für alle Glieder welche keine Absolutpole besitzen sei die Relativbewegung gegenüber solchen heranziehbar}.
+Die korrekte Erkennung eines Pendels ist also eine notwendige Bedingung für einen Ansatz der die Glieder des Mechanismus einzeln betrachtet\footnote{Das gilt im Grunde für alle Mechanismen welche rotierende Elemente beinhalten. Für alle Glieder welche keine Absolutpole besitzen sei die Relativbewegung gegenüber solchen heranziehbar.}.
 
 Als zentrales Ziel dieses Kapitels wird die korrekte Bestimmung des Drehpunkts eines Pendels gesetzt; es sei jedoch angemerkt, dass ein Drehpunkt lediglich einen Sonderfall der Bestimmung des Momentanpols darstellt, auf dessen Bestimmung in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen wird.
 Zunächst wird die Erkennung des Drehpols als vereinfachtes Ziel genommen um herauszufinden, welche Information man durch die Beobachtung eines sich bewegenden Elementes gewinnen kann.
@@ -82,7 +82,7 @@ Diese Koordinaten sollten bei der Drehung eines Gliedes um einen festen Punkt ei
 Die genaue Bestimmung eines solchen Bogens durch Mittelpunkt, Radius und eingeschlossenem Winkel anhand der Punktwolke zu ermitteln erscheint zunächst schwierig.
 Stattdessen wird beim ersten untersuchten Ansatz der kleinste Kreis bestimmt, welcher alle bisher gesammelten Datenpunkte umfasst.
 
-Den kleinsten umfassenden Kreis zu ermitteln ist ein Problem für das ein Algorithmus existiert welcher in linearer Zeit\footnote{Das hei{\ss}t die Dauer des Algorithmus steht in linearem Verhältnis zur Menge der Datenpunkte} durchgeführt werden kann.
+Den kleinsten umfassenden Kreis zu ermitteln ist ein Problem für das ein Algorithmus existiert welcher in linearer Zeit\footnote{Das hei{\ss}t die Dauer des Algorithmus steht in linearem Verhältnis zur Menge der Datenpunkte.} durchgeführt werden kann.
 Der entsprechende Algorithmus wurde von Nimrod Megido~\cite{Megiddo1983} entwickelt und die Implementation wird von \aka{https://github.com/nayuki/Nayuki-web-published-code/blob/master/smallest-enclosing-circle/smallest-enclosing-circle-demo.js} bezogen.
 Eine anschauliche Demo kann unter \aka{https://www.nayuki.io/page/smallest-enclosing-circle}~\cite{Nayuki2021} betrachtet werden.
 
@@ -115,7 +115,7 @@ Die Menge der Punkte die hier gesammelt werden kann in Abbildung~\ref{fig:pendel
 Für jeden Kreis welcher über den zeitlichen Verlauf gebildet werden können alle Punkte verworfen werden, welche nicht zur Erstellung dieses genutzt wurden.
 Dies sind je nach Verteilung der Punktwolke entweder drei oder auch nur zwei Punkte, da ein Kreis sich genau durch mindestens zwei, aber maximal durch bereits drei Punkte bestimmen lässt.
 
-Dafür wurde die Funktion des genutzten Algorithmus angepasst, sodass er nicht mehr nur den Kreis, sondern auch die entsprechenden Koordinaten zurückgibt, welche für die Erstellung des entsprechenden Kreises genutzt wurden\footnote{Die entsprechende Änderung kann auf \aka{https://github.com/klawr/ba/commit/7209dfee5ab0a70470e22862f26f7c45046cd98f} nachvollzogen werden}.
+Dafür wurde die Funktion des genutzten Algorithmus angepasst, sodass er nicht mehr nur den Kreis, sondern auch die entsprechenden Koordinaten zurückgibt, welche für die Erstellung des entsprechenden Kreises genutzt wurden\footnote{Die entsprechende Änderung kann auf \aka{https://github.com/klawr/ba/commit/7209dfee5ab0a70470e22862f26f7c45046cd98f} nachvollzogen werden.}.
 Au{\ss}erdem wird nach der Ermittlung des Kreises zwischen den bereits bekannten und der aktuell ermittelten Punktwolke unterschieden, sodass die Liste der bekannten Punkte keine Duplikate enthält.
 
 Diese Anpassung reduziert die Menge der Punkte die im ersten Test in einer Sekunde ermittelt werden von 19880 auf 294 Datenpunkte.
@@ -131,7 +131,7 @@ Der offensichtliche Nachteil besteht jedoch darin, dass alle Glieder die sich um
 Nähere Untersuchungen zum kleinsten umfassenden Kreis können jedoch weitere Erkenntnisse bringen.
 Zunächst ist der Pfad welcher vom Mittelpunkt des über die Zeit wachsenden kleinsten umfassenden Kreis interessant.
 Für die ersten $90^\circ$ die sich das Glied dreht bewegt sich der Mittelpunkt auf einer Geraden, die exakt Orthogonal zum Drehpunkt steht.
-Der Abstand zum Drehpunkt ist ebenfalls bekannt, da bekannt ist dass er exakt dem Radius des zuerst gemessenen kleinsten umfassenden Kreises entspricht\footnote{Das ist Äquivalent zur hälfte der Gliedlänge}.
+Der Abstand zum Drehpunkt ist ebenfalls bekannt, da bekannt ist dass er exakt dem Radius des zuerst gemessenen kleinsten umfassenden Kreises entspricht\footnote{Das ist Äquivalent zur hälfte der Gliedlänge.}.
 Die weiterfolgenden $90^\circ$ durch auf einem Kreisbogen mit dem ersten Mittelpunkt des eben beschriebenen Pfades als Mittelpunkt beschrieben, wobei der Winkel dem des Gliedes entspricht (abzüglich der ersten $90^\circ$).
 Abschlie{\ss}end landet der Mittelpunkt des kleinsten umfassenden Kreises im Drehpunkt des betrachteten Gliedes.
 
@@ -273,7 +273,7 @@ Ein \lstinline{DataXY} Objekt hat die Eigenschaften \lstinline{x} und \lstinline
 \lstinline{DataXY} bietet Funktionen an um diese Werte gemeinsam auf einem \lstinline{g2.chart} zeichnen zu können.
 
 In der \lstinline{Data} Klasse ist ein \lstinline{data} Objekt definiert, welches dazu dient die gesammelten Daten zu verwalten.
-Statt eine Liste zu Nutzen wird eine Map verwendet dessen Schlüssel dem Messwert entsprechen und der dazugehörige Wert die Anzahl darstellt wie oft dieser gemessen wurde\footnote{Für mehr Information zu Maps siehe \aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map}}.
+Statt eine Liste zu Nutzen wird eine Map verwendet dessen Schlüssel dem Messwert entsprechen und der dazugehörige Wert die Anzahl darstellt wie oft dieser gemessen wurde\footnote{Für mehr Information zu Maps siehe \aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map}.}.
 Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert welche wie folgt aussieht:
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}, label={lst:data_add}]
