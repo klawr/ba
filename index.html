@@ -193,9 +193,8 @@
                     const li = create('li', ul, e[1][m] || name);
                     li.addEventListener('click', () => {
                         byId('iframe').src = `src/${kv[0]}/${name}`;
-                        for (e of ul.children) {
-                            e.style.listStyle = 'disc';
-                        }
+                        Array.from(document.getElementsByTagName('li'))
+                            .forEach(e => e.style.listStyle = 'disc');
                         li.style.listStyle = 'inside';
                     });
                 }

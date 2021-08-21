@@ -63,9 +63,8 @@ Object.entries(tests).forEach((kv, i) => {
             const li = create('li', ul, e[1][m] || name);
             li.addEventListener('click', () => {
                 byId('iframe').src = `src/${kv[0]}/${name}`;
-                for (e of ul.children) {
-                    e.style.listStyle = 'disc';
-                }
+                Array.from(document.getElementsByTagName('li'))
+                    .forEach(e => e.style.listStyle = 'disc');
                 li.style.listStyle = 'inside';
             });
         }
@@ -81,6 +80,7 @@ Sollte eine Datei also nicht diesem Wert entsprechen wird ein Fehler geworfen.
 Damit die Seite eine anständige Formatierung besitzt wurden die entsprechenden Elemente durch CSS gestaltet, worauf hier jedoch nicht weiter eingegangen werden soll.
 Die Seite ist so gestaltet, dass die Navigation auf der linken Seite in der Breite verstellbar ist und die Versuchsseite sich entsprechend anpasst.
 JavaScript kam für die Gestaltung nicht zum Einsatz.
+Der Quelltext kann unter \aka{https://github.com/klawr/ba/blob/master/index.html} eingesehen werden.
 
 \section{globalTestVariables}\label{ch:simulation_js}
 
