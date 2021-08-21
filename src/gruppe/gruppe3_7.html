@@ -31,29 +31,35 @@
 
     <script>
         globalTestVariables.model = {
-            "nodes": [
-                { "id": "A0", "x": 60, "y": 60, "base": true },
-                { "id": "A", "x": 60, "y": 110 },
-                { "id": "B", "x": 210, "y": 120 },
-                { "id": "B0", "x": 210, "y": 60, "base": true },
+            gravity: true,
+            nodes: [
+                { 'id': 'A0', 'x': 100, 'y': 20, 'base': true },
+                { 'id': 'A1', 'x': 100, 'y': 60 },
+                { 'id': 'B0', 'x': 200, 'y': 20, 'base': true },
+                { 'id': 'B1', 'x': 200, 'y': 90 },
+                { 'id': 'C0', 'x': 250, 'y': 150, 'base': true },
+                { 'id': 'C1', 'x': 160, 'y': 150 },
             ],
-            "constraints": [
-                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
-                { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
-                { "id": "c", "p1": "B0", "p2": "B", "len": { "type": "const" } }
+            constraints: [
+                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: 100, Dt: 100 } },
+                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
+                { id: 'c', p1: 'B1', p2: 'A1', len: { type: 'const' } },
+                { id: 'd', p1: 'B1', p2: 'C1', len: { type: 'const' } },
+                { id: 'e', p1: 'C0', p2: 'C1', len: { type: 'const' } },
             ]
-        }
+        };
 
-        const k = 3;
+        const k = 5;
         const fn = (result) => {
-            const filtered = result.removeOverlaps();
+            const filtered = result.removeOverlaps(5);
             const g = g2().clr();
-            const cluster = filtered.kMeansClustering(
-                globalGruppe2Variables.previousClusters || k, g);
+            const cluster = filtered.kMeansDijkstra(
+                globalGruppe2Variables.previousClusters || k);
             if (cluster[0].length === k) {
                 globalGruppe2Variables.previousClusters = [cluster[0]];
             }
-            if (cluster[1].filter(g => g.length).length === k) {
+            if (cluster[1].filter(g => g.length).length > 0) {
+                cluster[1] = Line.realignGroups(cluster[1], g);
                 cluster[1].forEach(e => Line.fromRegressionLine(e, g));
             }
             g.exe(globalTestVariables.ctx2);

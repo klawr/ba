@@ -137,10 +137,11 @@ class Line {
     }
 
     static realignGroups(groups, g) {
-        const lines = groups.map(c => Line.fromRegressionLine(c));
+        const copy = groups.filter(e => e.length);
+        const lines = copy.map(c => Line.fromRegressionLine(c));
 
-        const newGroups = Array(groups.length).fill(null).map(_ => []);
-        groups.flatMap(c => c.points)
+        const newGroups = Array(copy.length).fill(null).map(_ => []);
+        copy.flatMap(c => c.points)
             .forEach(p => {
                 newGroups[lines.indexOf(lines.reduce((pre, cur) =>
                     cur.orthogonalDistance(p) < pre.orthogonalDistance(p) ?
@@ -148,7 +149,7 @@ class Line {
             });
 
         g && newGroups.forEach((c, i) => {
-            const color = globalTestVariables.hsv2rgb(i / groups.length * 360);
+            const color = globalTestVariables.hsv2rgb(i / copy.length * 360);
             c.forEach(p => {
                 g.cir({ ...p, r: 3, ls: color, fs: '@ls' });
             });

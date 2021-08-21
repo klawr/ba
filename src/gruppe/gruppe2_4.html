@@ -55,7 +55,7 @@
             const g = g2().clr();
             const cluster = filtered.kMeansClustering(
                 globalGruppe2Variables.previousClusters || k, g);
-            if (cluster[0].length === 5) {
+            if (cluster[0].length === k) {
                 globalGruppe2Variables.previousClusters = [cluster[0]];
             }
             if (cluster[1].filter(g => g.length).length === k) {
