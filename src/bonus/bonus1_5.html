@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../third_party/opencv.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="../scripts/line.js"></script>
+    <script src="../scripts/group.js"></script>
+
+    <p>
+        Hier wird der Schnittpunkt der Mittelsenkrechten berechnet.
+        Es hat sich gezeigt, dass diese Methode für Absolutpole korrekte Ergebnisse produziert.
+        Hier wurden die Parameter angepasst um zu kompensieren, dass das Video nicht ganz linear ist.
+        Der Erwartungswert ist hier offensichtlich nicht das richtige Medium, daher wird der Wert mit den meisten Treffern genommen.
+    </p>
+
+    <script>
+        const gtv = globalTestVariables;
+        gtv.g = g2();
+
+        const video = document.createElement('video');
+        video.src = '../../gfx/werkzeugkoffer.MP4';
+        video.autoplay = false;
+        video.muted = true;
+
+        video.addEventListener('ended', () => {
+            ended = true;
+            globalTestVariables.running = false;
+        });
+
+        let ended = false;
+
+        const data = new DataXY();
+        const group = new Group({ lk: { maxCorners: 2, qualityLevel: 0.1, minDistance: 1, blockSize: 1 } });
+
+
+        function fn(result) {
+            gtv.txt1.innerHTML = 'Tatsächlich: x: 245, y: 15';
+            video.play();
+
+            if (!gtv.running) {
+                video.pause();
+            }
+            if (!ended) {
+                gtv.ctx1.drawImage(video, 0, gtv.cnv_height,
+                    gtv.cnv_width, -gtv.cnv_height);
+                const g = g2().clr();
+                data.add(group.momentanpol(50));
+
+                const x = data.x.reduce((pre, cur) => cur = pre[1] > cur[1] ? pre : cur)[0];
+                const y = data.y.reduce((pre, cur) => cur = pre[1] > cur[1] ? pre : cur)[0];
+
+                g.gnd({ x, y });
+                g.cir({ x: 245, y: gtv.cnv_height - 15, r: 10 });
+                data.draw(g);
+                data.fillText(gtv.txt2, gtv.txt3);
+                gtv.txt2.innerHTML += `, meist gefunden: ${x}`;
+                gtv.txt3.innerHTML += `, meist gefunden: ${gtv.cnv_height - y}`;
+                group.draw(g, true);
+                g.exe(gtv.ctx2);
+                data.getChart().exe(gtv.ctx3);
+            }
+        }
+
+        gtv.register(() => group.stepBisector(fn));
+    </script>
+</body>
+
+</html>
