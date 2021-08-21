@@ -7,8 +7,9 @@
 Im vorangegangen Abschnitt wurde die Erkennung von Polen ebener Glider durch ihre Bewegung betrachtet.
 Alle Methoden gingen jedoch davon aus, dass sich alle Datenpunkte einem Glied zuordnen lassen.
 Es ist entsprechend notwendig bevor man die bereits besprochenen Methoden anwenden kann eine Zuordnung der Punkte in entsprechende Gruppen zu unternehmen, welche dann an die bekannten Methoden weiter gegeben werden können.
+Die hier untersuchten Mechanismen folgen der Getriebedefinition aus~\cite[G167]{Grote2014} mit genau einem angetriebenem Glied.
 
-Für eine solche Gruppierung können verschiedene Ansätze herangezogen werden.
+Für eine solche Zuordnung von Gliedern werden verschiedene Ansätze untersucht.
 
 \section{Zuordnung von Linien an Punkte}
 
@@ -71,9 +72,9 @@ Daher wird der \lstinline{score} noch durch die Anzahl der Punkte geteilt, desse
 Der Schwellenwert so wie die Skalierung der Ausgleichswerte wurden experimentell bestimmt.
 Es ist davon auszugehen, dass Mechanismen welche eine andere Form aufweisen als die \name{mec2} Modelle andere Schwellenwerte zur korrekten Berechnung benötigen würden.
 
-\section{k-Means-Algorithmus}
+\section{\name{k-Means} Algorithmus}
 
-Eine andere Möglichkeit die Datenpunkte ihren Gruppen zuzuordnen ist durch den \name{k-Means-Algorithmus}~\cite[S.~241]{Geron2019}.
+Eine andere Möglichkeit die Datenpunkte ihren Gruppen zuzuordnen ist durch den \name{k-Means} Algorithmus~\cite[S.~241]{Geron2019}.
 Dieser wird in der Statistik genutzt um Datenpunkte in Gruppen einzuteilen.
 Ein offensichtlier Nachteil dieses besteht darin, dass die Anzahl der Gruppen von vorneherein bekannt sein muss.
 Eine Untersuchung, ob er für den vorliegenden Anwedungsfall nutzbar ist scheint jedoch angebracht.
@@ -273,7 +274,7 @@ Diese Geraden werden dann vorgehalten und könnten für weitere Analysen genutzt
 
 \section{Rekonstruktion eines Mechanismus durch die Relativpole}
 
-Die vorangegangen Methoden geben ansatzweise akzeptable Ergebnisse für Viergelenke.
+Die vorangegangen Methoden geben scheinbar akzeptable Ergebnisse für Viergelenke.
 Sie scheitern jedoch, sobald die Anzahl der Glieder höher wird, wie in Abbildung~\ref{fig:gruppe1_3_2_6_3_4} gesehen werden kann.
 
 \begin{figure}
@@ -282,9 +283,7 @@ Sie scheitern jedoch, sobald die Anzahl der Glieder höher wird, wie in Abbildun
     \label{fig:gruppe1_3_2_6_3_4}
 \end{figure}
 
-Aus diesem Grund soll jetzt davon ausgegangen werden, dass die Ergebnisse ideal sind.
-Aus diesen idealen Ergebnissen sollen nun die Gelenke ermittelt werden.
-Hierbei wird also davon ausgegangen, dass sowohl die Regressionsgeraden für die Datenpunkte und die entsprechenden Momentanpole erfolgreich ermittelt wurden.
+Aus diesem Grund soll nun davon ausgegangen werden, dass sowohl die Ermittlung der Gliedebenen also auch die dazugehörigen Momentanpole erfolgreich ermittelt wurden.
 
 \subsection{Ermittlung der Anzahl der gesuchten Punkte}
 
@@ -334,9 +333,7 @@ Die Anzahl der Relativpole eines Mechanismus berechnet sich durch~\cite{Goessner
 \end{equation}
 
 Wobei $n$ hier wieder die Anzahl der Glieder ist.
-Hier lassen sich in jedem Fall die durch die in den angeführten Methoden bestimmten Momentanpole einzelner Gliedebenen ausschlie{\ss}en, wobei die Absolutpole dann direkt als gefundene Gelenke identifiziert werden können.
-Entsprechend lassen sich nun $k - (2n - 1)$ Gelenke ausschlie{\ss}en.
-Für ein Viergelenk bedeutet das, dass noch ein Relativpol übrig ist der nicht ausgeschlossen werden kann.
+Hier lassen sich in jedem Fall die durch die in den angeführten Methoden bestimmten Momentanpole der bewegten Gliedebenen ausschlie{\ss}en, wobei die Absolutpole dann direkt als gefundene Gelenke identifiziert werden können.
 
 Allerdings ist auch zu beachten, dass sobald ein Relativpol durch den Schnittpunkt zweier Gliedebenen definiert ist welche mehr als einen Absolutpol als Parameter besitzen kein Gelenk sein kann, da er sonst starr wäre.
 Die Relativpole welche durch zwei nicht benachbarte Gliedebenen gebildet werden lassen sich dennoch nicht einfach ausschlie{\ss}en, sodass hier weitere Analysen notwendig sein werden.
