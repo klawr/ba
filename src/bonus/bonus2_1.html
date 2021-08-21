@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
+
+    <p>
+        Bild des Werkzeugkoffers.
+    </p>
+
+    <!-- 
+For the mec2 model:
+    
+MIT License
+
+Copyright (c) 2018 jauhl
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE. -->
+
+    <script>
+        globalTestVariables.model = {
+            id: 'pumpjack',
+            nodes: [
+                { id: 'A0', x: 284.8, y: 223.2, base: true },
+                { id: 'A', x: 322.8, y: 289.6 },
+                { id: 'B', x: 306, y: 530 },
+                { id: 'B0', x: 459.2, y: 477.2, base: true }
+            ],
+            'constraints': [
+                { id: 'a', p1: 'A0', p2: 'A', len: { type: 'const' }, 'ori': { type: 'drive', func: 'linear', Dt: 5, Dw: Math.PI * 2, repeat: 10000 } },
+                { id: 'b', p1: 'A', p2: 'B', len: { type: 'const' } },
+                { id: 'c', p1: 'B0', p2: 'B', len: { type: 'const' } }
+            ],
+            'shapes': [
+                {
+                    type: 'img', uri: '../../gfx/crank.png',
+                    p: 'A0', xoff: -220, yoff: -50, 'w0': - Math.PI / 2,
+                    wref: 'a', 'scl': 0.4
+                },
+                {
+                    type: 'img', uri: '../../gfx/rocker.png',
+                    p: 'B0', xoff: -430, yoff: -226, 'w0': -Math.PI,
+                    wref: 'c', 'scl': 0.4
+                },
+                {
+                    type: 'img', uri: '../../gfx/coupler.png',
+                    p: 'A', xoff: -34, yoff: -35, 'w0': - Math.PI / 2,
+                    wref: 'b', 'scl': 0.4
+                },
+                {
+                    type: 'img', uri: '../../gfx/frame.png',
+                    p: 'B0', xoff: -60, yoff: -34, 'scl': 0.4
+                }
+            ]
+        };
+
+        g2.prototype.exe = async function (ctx) {
+            let handler = g2.handler(ctx);
+            if (handler && handler.init(this)) {
+                await handler.exe(this.commands);
+            }
+            return this;
+        };
+
+        globalTestVariables.cnv_height = 600;
+        globalTestVariables.cnv_width = 600;
+
+        globalTestVariables.g.view({ x: -100, y: -50 })
+
+        function fn(result) {
+            const g = g2().clr();
+            result.removeOverlaps(20).draw(g);
+            g.exe(globalTestVariables.ctx2);
+        }
+
+
+        globalTestVariables.register(() => stepCompareImages(fn));
+    </script>
+</body>
+
+</html>
