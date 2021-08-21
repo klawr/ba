@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 
 <head>
-    <meta charset='UTF-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
         canvas {
@@ -14,17 +14,17 @@
 </head>
 
 <body>
-    <a id='title'></a>
-    <script src='../third_party/g2.full.js'></script>
-    <script src='../third_party/mec2.min.js'></script>
-    <script src='../scripts/simulation.js'></script>
-    <script src='../scripts/line.js'></script>
-    <script src='../scripts/pointCloud.js'></script>
-    <script src="../scripts/data.js"></script>
-    <script src='gruppe1.js'></script>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../third_party/opencv.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/line.js"></script>
 
     <p>
-        Test zur Unterscheidung der Glieder eines Mechanismus'.
+        Ermittlung von Gelenken über die Relativpole.
+        2 der 3 Punkte auf jeder Gerade werden durch die vorangegangen Methoden zu ermitteln.
+        Der andere ist dann der gesucht Gelenkpunkt.
     </p>
 
     <script>
@@ -32,9 +32,9 @@
             gravity: true,
             nodes: [
                 { 'id': 'A0', 'x': 100, 'y': 50, 'base': true },
-                { 'id': 'A1', 'x': 100, 'y': 100 },
-                { 'id': 'B1', 'x': 250, 'y': 130 },
-                { 'id': 'B0', 'x': 250, 'y': 50, 'base': true },
+                { 'id': 'A1', 'x': 100, 'y': 90 },
+                { 'id': 'B1', 'x': 200, 'y': 120 },
+                { 'id': 'B0', 'x': 200, 'y': 50, 'base': true },
             ],
             constraints: [
                 { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: 100, Dt: 100 } },
@@ -43,27 +43,46 @@
             ]
         };
 
-        const { ply } = globalGruppe1Variables;
+        const { model } = globalTestVariables;
+        function cartesian(p) {
+            return {
+                x: p.x,
+                y: globalTestVariables.cnv_height - p.y,
+            }
+        }
 
-        const data = new Data();
-
-        const fn = (result) => {
-            const filtered = result.removeOverlaps(5);
-
+        const fn = () => {
             const g = g2().clr();
 
-            const dijkstras = new Dijkstra(filtered);
-            dijkstras.draw(g);
-            const a = dijkstras.groupsByCorrelation(g);
-            data.add(a.length);
-            data.getChart(false).exe(globalTestVariables.ctx3);
-            filtered.draw(g);
-            filtered.points.forEach(r => ply.push({ ...r }));
+            const lines = model.constraints.map(c => new Line({
+                p1: cartesian(c.p1),
+                p2: cartesian(c.p2),
+            }));
+
+            model.nodes.forEach(n => g.cir({ ...cartesian(n), r: 10 }));
+
+            const A0 = cartesian(model.nodes.find(e => e.id === 'A0'));
+            const B0 = cartesian(model.nodes.find(e => e.id === 'B0'));
+            const abs_line = new Line({ p1: A0, p2: B0 });
+            abs_line.draw(g, { ld: [3, 0, 3] });
+
+            const rel = [];
+            for (let i = 0; i < lines.length; ++i) {
+                for (j = i + 1; j < lines.length; ++j) {
+                    rel.push(lines[i].intersection(lines[j]));
+                }
+            }
+            lines.forEach(l => {
+                rel.push(abs_line.intersection(l));
+                l.draw(g);
+            });
+
+            rel.forEach(p => g.nod({ ...p }));
 
             g.exe(globalTestVariables.ctx2);
         }
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        globalTestVariables.register(() => fn());
     </script>
 </body>
 
