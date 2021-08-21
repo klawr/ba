@@ -54,7 +54,7 @@ class Line {
 
     containsPoint(pt, tol = 1) {
         const y = this.m * pt.x + this.b;
-        const x = (pt.y - this.b) / this.m;
+        const x = (pt.y - this.b) / this.m || pt.x;
 
         return Math.hypot(pt.y - y, pt.x - x) < tol;
     }
