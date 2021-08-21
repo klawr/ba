@@ -430,12 +430,11 @@ class PointCloud {
             const dijk = new Dijkstra(c, winner[i]);
             dijk.draw(g);
             c.forEach(p => {
-                g.cir({...p, r: 0, ls: color});
+                g.cir({...p, r: 3, ls: color + "22", fs: '@ls'});
             })
         })
 
         return [winner, groups];
-
     }
 }
 
