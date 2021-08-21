@@ -369,10 +369,8 @@ class PointCloud {
 
         g && groups.forEach((c, i) => {
             const color =  globalTestVariables.hsv2rgb(i / winner.length * 360);
-            c.forEach(p => {
-                g.cir({...p, r: 1, ls: color})
-            })
-        })
+            c.forEach(p => g.cir({...p, r: 1, ls: color}));
+        });
 
         return [winner, groups];
     }
@@ -429,9 +427,7 @@ class PointCloud {
             const color =  globalTestVariables.hsv2rgb(i / winner.length * 360);
             const dijk = new Dijkstra(c, winner[i]);
             dijk.draw(g);
-            c.forEach(p => {
-                g.cir({...p, r: 3, ls: color + "22", fs: '@ls'});
-            })
+            c.forEach(p => g.cir({...p, r: 3, ls: color + "22", fs: '@ls'}));
         });
 
         return [winner, groups];

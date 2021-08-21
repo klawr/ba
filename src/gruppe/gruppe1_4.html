@@ -20,9 +20,10 @@
     <script src="../scripts/simulation.js"></script>
     <script src="../scripts/line.js"></script>
     <script src="../scripts/pointCloud.js"></script>
+    <script src="../scripts/data.js"></script>
 
     <p>
-        Test zur Unterscheidung mehrerer Pendel.
+        Test zur Unterscheidung der Glieder eines Mechanismus'.
     </p>
 
     <script>
@@ -30,22 +31,28 @@
             gravity: true,
             nodes: [
                 { id: 'A0', x: 80, y: 120, base: true },
-                { id: 'A1', x: 150, y: 90 },
+                { id: 'A1', x: 80, y: 50 },
                 { id: 'B0', x: 240, y: 120, base: true },
                 { id: 'B1', x: 160, y: 90 }
             ],
             constraints: [
                 { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' } },
-                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } }
+                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
+                { id: 'c', p1: 'B1', p2: 'A1', len: { type: 'const' } }
             ]
         };
 
         const fn = (result) => {
-            const g = g2().clr();
-
             const filtered = result.removeOverlaps();
-            const groups = filtered.groupUp(g);
-            filtered.draw(g);
+
+            const g = g2().clr();
+            const groups = Line.realignGroups(filtered.groupUp());
+
+            groups.forEach((c, i) => {
+                const color = globalTestVariables.hsv2rgb(i / groups.length * 360);
+                c.forEach(p => g.cir({ ...p, r: 5, ls: color, fs: '@ls' }));
+                Line.fromRegressionLine(c, g);
+            })
 
             g.exe(globalTestVariables.ctx2);
         }

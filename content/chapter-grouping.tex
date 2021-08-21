@@ -72,6 +72,11 @@ Daher wird der \lstinline{score} noch durch die Anzahl der Punkte geteilt, desse
 Der Schwellenwert so wie die Skalierung der Ausgleichswerte wurden experimentell bestimmt.
 Es ist davon auszugehen, dass Mechanismen welche eine andere Form aufweisen als die \name{mec2} Modelle andere Schwellenwerte zur korrekten Berechnung benötigen würden.
 
+Nachdem die entsprechenden Linien bestimmt wurden, wird als nächstes die auf der \lstinline{Line} Klasse definierte statische Funktion \lstinline{realignGroups} aufgerufen.
+Diese bestimmt für jede der Gruppen die entsprechende Regressionsgerade.
+Dann wird für jeder Punkt der Gerade zugeordnet, welche die geringste orthogonale Distanz aufweist.
+Auf diese Weise werden die Punkte neu gruppiert.
+
 \section{\name{k-Means} Algorithmus}\label{ch:kMeans}
 
 \begin{figure}
