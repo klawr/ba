@@ -72,7 +72,7 @@ Daher wird der \lstinline{score} noch durch die Anzahl der Punkte geteilt, desse
 Der Schwellenwert so wie die Skalierung der Ausgleichswerte wurden experimentell bestimmt.
 Es ist davon auszugehen, dass Mechanismen welche eine andere Form aufweisen als die \name{mec2} Modelle andere Schwellenwerte zur korrekten Berechnung benötigen würden.
 
-\section{\name{k-Means} Algorithmus}
+\section{\name{k-Means} Algorithmus}\label{ch:kMeans}
 
 Eine andere Möglichkeit die Datenpunkte ihren Gruppen zuzuordnen ist durch den \name{k-Means} Algorithmus~\cite[S.~241]{Geron2019}.
 Dieser wird in der Statistik genutzt um Datenpunkte in Gruppen einzuteilen.
@@ -111,7 +111,7 @@ Diese Werte zu bestimmen kann die Möglichkeit geben die Regressionsgeraden ents
 Als eine Erweiterung des \name{k-Means} Algorithmus könnte noch der EM-Algorithmus untersucht werden, welcher weniger das Problem hat Gruppen von unterschiedlicher Grö{\ss}e zu erstellen~\cite[S.~262]{Geron2019}.
 Dies wird jedoch an dieser Stelle nicht mehr getan.
 
-\section{Dijkstra-Algorithmus}
+\section{Dijkstra-Algorithmus}\label{ch:dijkstra}
 
 Die letzte Variante die hier untersucht werden soll um die Glieder des Mechanismus in entsprechende Gruppen zu zerteilen ist die Zuordnung aller Datenpunkte zueinander.
 Hierfür soll das \lstinline{PointCloud} Objekt in einen Graphen überführt werden welcher dann über den \name{Dijkstra-Algorithmus} Pfade definiert.
