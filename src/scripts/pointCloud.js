@@ -432,7 +432,7 @@ class PointCloud {
             c.forEach(p => {
                 g.cir({...p, r: 3, ls: color + "22", fs: '@ls'});
             })
-        })
+        });
 
         return [winner, groups];
     }

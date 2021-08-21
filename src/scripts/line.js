@@ -31,6 +31,11 @@ class Line {
         return new Line({ b, m: - 1 / this.m })
     }
 
+    orthogonalDistance(p) {
+        const o = this.intersection(this.orthogonal(p));
+        return Math.hypot(o.y - p.y, o.x - p.x);
+    }
+
     /**
      *
      * @param {Object} p - Point with x and y Values. Must be on this Line. 
@@ -129,5 +134,26 @@ class Line {
         g && line.draw(g);
 
         return line;
+    }
+
+    static realignGroups(groups, g) {
+        const lines = groups.map(c => Line.fromRegressionLine(c));
+
+        const newGroups = Array(groups.length).fill(null).map(_ => []);
+        groups.flatMap(c => c.points)
+            .forEach(p => {
+                newGroups[lines.indexOf(lines.reduce((pre, cur) =>
+                    cur.orthogonalDistance(p) < pre.orthogonalDistance(p) ?
+                        cur : pre))].push(p);
+            });
+
+        g && newGroups.forEach((c, i) => {
+            const color = globalTestVariables.hsv2rgb(i / groups.length * 360);
+            c.forEach(p => {
+                g.cir({ ...p, r: 3, ls: color, fs: '@ls' });
+            });
+        });
+
+        return newGroups;
     }
 }
