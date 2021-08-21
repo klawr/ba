@@ -357,23 +357,85 @@ class PointCloud {
             });
 
             centroids.push(newCentroids);
-
-            g && data_assigned.forEach(d => {
-                g.cir({
-                    ...d, r: 1, ls: globalTestVariables.hsv2rgb(
-                        d.n / centroids[0].length * 360)
-                });
-            });
         }
 
         g && centroids.forEach((c, i) =>
             c.forEach(d => { g.cir({ ...d, r: i }); }));
 
         const winner = centroids[centroids.length - 1];
-        return [winner, winner.map((_, i) =>
-            this.points
-                .map(d => ({ ...d, n: findNearestCentroid(d, centroids[i]) }))
-                .filter(d => d.n === i))];
+        const groups = winner.map((_, i) =>
+            this.points.map(d => ({ ...d, n: findNearestCentroid(d, centroids[i]) }))
+                .filter(d => d.n === i));
+
+        g && groups.forEach((c, i) => {
+            const color =  globalTestVariables.hsv2rgb(i / winner.length * 360);
+            c.forEach(p => {
+                g.cir({...p, r: 1, ls: color})
+            })
+        })
+
+        return [winner, groups];
+    }
+
+    kMeansDijkstra(K, g, maxIter = 10) {
+        function findNearestCentroid(pointIdx, dijkstras) {
+            return dijkstras.indexOf(dijkstras.reduce((pre, cur) =>
+                pre.graph[pointIdx].dist > cur.graph[pointIdx].dist ?
+                    cur : pre));
+        }
+
+        const centroids = Array.isArray(K) ? K : [[]
+            .concat(Array(Math.min(K, this.length) || 0)
+                .fill(null)
+                .map(() => ({
+                    ...this.points[Math.round(Math.random() * this.length)]
+                })))];
+
+        if (!centroids[0].length) return [[], []];
+
+        for (let i = 0; i < maxIter; ++i) {
+            const dijkstras = centroids[i].map(c => new Dijkstra(this, c, 2));
+
+            const data_assigned = this.points.map((d, i) =>
+                ({ ...d, n: findNearestCentroid(i, dijkstras) }));
+            const filtered = centroids[i].map((_, j) => {
+                return data_assigned.filter(d => d.n === j);
+            });
+
+            const newCentroids = filtered.map(f => {
+                const centroid = f.reduce((pre, cur) => ({
+                    x: pre.x + cur.x,
+                    y: pre.y + cur.y
+                }), { x: 0, y: 0 });
+                centroid.x /= f.length || 1;
+                centroid.y /= f.length || 1;
+
+                return centroid;
+            });
+
+            centroids.push(newCentroids);
+        }
+
+        const winner = centroids[centroids.length - 1];
+        const dijkstras = winner.map(c => new Dijkstra(this, c, 2));
+        const groups = dijkstras.map((_, i) =>
+            new PointCloud(this.points.map((d, j) => ({
+                ...d,
+                n: findNearestCentroid(j, dijkstras)
+            })).filter(d => d.n === i)));
+
+
+        g && groups.forEach((c, i) => {
+            const color =  globalTestVariables.hsv2rgb(i / winner.length * 360);
+            const dijk = new Dijkstra(c, winner[i]);
+            dijk.draw(g);
+            c.forEach(p => {
+                g.cir({...p, r: 0, ls: color});
+            })
+        })
+
+        return [winner, groups];
+
     }
 }
 
