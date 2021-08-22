@@ -260,6 +260,13 @@ Diese Geraden werden dann vorgehalten und könnten für weitere Analysen genutzt
 
 \section{Kombination der Ansätze}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/gruppe4_1.png}
+    \caption[Versuch \lstinline{gruppe4_1.html}]{Versuch \lstinline{gruppe4_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Regressionsgeraden, die Gruppen, sowie die Momentanpole welche durch die Gruppen ermittelt werden. Die Kreise zeigen jeweils die Standardabweichung der Verteilungen als Ellipsen in ihren Vielfachen dar. Im rechten Bild ist das rekonstruierte Viergelenk zu sehen.}
+    \label{fig:gruppe4_1}
+\end{figure}
+
 Die Ermittlung der Pfade durch den \name{Dijkstra} Algorithmus führte zu der Idee die dadurch ermittelten Distanzen zu nutzen um die \name{Centroids} des \name{k-Means} Algorithmus zu verwenden.
 Dies führte zur Erstellung der \lstinline{kMeansDijkstra} Funktion der \lstinline{PointCloud}.
 Diese nutzt größtenteils die selbe Implentation wie die \lstinline{kMeansClustering} Funktion aus Kapitel~\ref{ch:kMeans}, jedoch wird hier eine andere Methode zur Ermittlung des nächsten \name{Centroids} der Punkte genutzt.
@@ -279,14 +286,7 @@ Diese Implementation zeigt weniger Fluktuation als die anderen Ansätze.
 Werden diese Gruppen dann noch durch die in Kapitel~\ref{ch:naive_grouping_approach} erwähnte \lstinline{realignGroups} Funktion den Regressionsgeraden entsprechend angeglichen, so werden die Gruppierungen für einen durch \name{mec2} animierten Mechanismus nahezu stabil.
 Dementsprechend wurde in Versuch \name{gruppe4\_1.html} Versucht ein Viergelenk zu rekonstruieren, indem für ein Viergelenk die Absolutpole als jene definiert wurden, welche eine geringe Standardabweichung aufweisen, da davon auszugehen ist, dass andere Pole naturgemäß eine höhere aufweisen.
 Daraufhin wurden die Relativpole als die Schnittpunkte der durch die Gruppen gezogenen Regressionsgeraden definiert.
-Der entsprechend rekonstruierte Mechanismus wird in Abbildung~\ref{fig:final_fourbar} gezeigt.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/gruppe4_1.png}
-    \caption[Versuch \lstinline{gruppe4_1.html}]{Versuch \lstinline{gruppe4_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Regressionsgeraden, die Gruppen, sowie die Momentanpole welche durch die Gruppen ermittelt werden. Die Kreise zeigen jeweils die Standardabweichung der Verteilungen als Ellipsen in ihren Vielfachen dar. Im rechten Bild ist das rekonstruierte Viergelenk zu sehen.}
-    \label{fig:gruppe3_3}
-\end{figure}
+Der entsprechend rekonstruierte Mechanismus wird in Abbildung~\ref{fig:gruppe4_1} gezeigt.
 
 \section{Rekonstruktion eines Mechanismus durch die Relativpole}
 
@@ -366,11 +366,4 @@ Eine Analyse des Momentanpols dieser Punkte würde diesen entsprechend in unendl
 
 Die gleichen Methoden können auch genutzt werden, wenn der Mechanismus translativ bewegende Glieder enthält, was in den Versuchen \name{gruppe4\_4} und \name{gruppe4\_5} gezeigt wird.
 Die translativen Elemente können ausgeschlossen werden, weil jenes, welches am Gestell befestigt ist bereits als Absolutpol ermittelt wurde.
-Es sei jedoch darauf hingewiesen, dass Glieder, welche translativ sind aber nicht am Gestellt befestigt sind hier ausgeschlossen sind.
-
-\section{Auswertung der Ergebnisse}
-
-Die vorgeschlagenen Methoden zeigen Mängel in der Genauigkeit.
-Entsprechend sollen für die Auswertung lediglich Viergelenke untersucht werden.
-
-% TODO auswerten
+Es sei jedoch darauf hingewiesen, dass Glieder, welche translativ sind aber nicht am Gestell befestigt sind hier ausgeschlossen sind.
