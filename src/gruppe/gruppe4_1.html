@@ -70,30 +70,26 @@
 
             const h = g2().clr();
 
-            const copy = [...data];
-            const meh = data.map(e => e.covariance);
-            const idx = meh.indexOf(Math.max(...meh));
-            const noGnd = copy.splice(idx, 1)[0];
+            const copy = data.map(e => e.mu);
+            const mp = data.map(e => Math.hypot(e.x.deviation, e.y.deviation));
+            const idx = mp.indexOf(Math.max(...mp));
+            copy.splice(idx, 1)[0];
 
-            console.log(idx);
+            if (idx !== -1) {
+                const mline = groups[idx].lines[groups[idx].lines.length - 1];
+                const alines = groups.map(c => c.lines[c.lines.length - 1])
+                    .filter((e, i) => i !== idx);
+                const links = alines.map((l, i) => {
+                    const intersection = l.intersection(mline);
+                    h.bar({ p1: intersection, p2: copy[i] });
+                    return intersection;
+                });
+                h.bar({p1: links[0], p2: links[1]});
+                links.forEach(l => h.nod(l));
 
-            copy.forEach(d => h.gnd({ ...d.mu }));
-            h.cir({ ...noGnd.pts[noGnd.pts.length - 1], r: 5, fs: '#1115' });
+                copy.forEach(d => h.gnd({ ...d }));
+            }
 
-            const rel = [];
-            const len = groups[0].lines.length;
-            groups.forEach((gr, i) => {
-                for (j = i + 1; j < groups.length; ++j) {
-                    const p2 = gr.lines[len - 1].intersection(
-                        groups[j].lines[len - 1])
-                    rel.push(p2);
-
-                    if (j === idx) {
-                        h.bar({ p1: data[i].mu, p2 }).nod({ ...p2 });
-                    }
-                }
-            });
-            rel.forEach(p => h.cir({ ...p, r: 10, fs: '#ff05' }));
             h.exe(simulation.ctx3);
             g.exe(simulation.ctx2);
         }

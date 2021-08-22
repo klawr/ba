@@ -40,17 +40,17 @@ class Group {
 
     regressionLine() {
         const { cnv1 } = simulation;
-        const sim = simulation;
+        const gtv = simulation;
         const new_image = cnv1.getContext('2d')
             .getImageData(0, 0, cnv1.width, cnv1.height).data;
         let pts;
-        if (sim.temp_image) {
+        if (gtv.temp_image) {
             pts = PointCloud.fromImages(
-                sim.temp_image, new_image, cnv1.width, cnv1.height);
+                gtv.temp_image, new_image, cnv1.width, cnv1.height);
             this.lines.push(Line.fromRegressionLine(pts));
         }
 
-        sim.temp_image = new_image;
+        gtv.temp_image = new_image;
 
         return pts;
     }
@@ -239,6 +239,7 @@ class OpenCVLucasKanade {
         if (!this.first_indicator) {
             this.goodFeaturesToTrack(frame);
             this.first_indicator = true;
+            return;
         }
 
         cv.cvtColor(frame, this.frameGray, cv.COLOR_RGBA2GRAY);
