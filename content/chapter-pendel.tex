@@ -4,7 +4,7 @@
 
 \cleanchapterquote{Was kann ich wissen?\\Was soll ich tun?\\Was darf ich hoffen?}{Immanuel Kant}{Kritik der reinen Vernunft}
 
-Zunächst soll untersucht werden welche Informationen aus Videosequenzen gewonnen und die daraus abgeleiteten Erkenntnisse genutzt werden können.
+Zunächst soll untersucht werden, welche Informationen aus Videosequenzen gewonnen und die daraus abgeleiteten Erkenntnisse genutzt werden können.
 Es wird zunächst mit einem einzelnem Glied in Form eines einfachen Pendels gearbeitet.
 Dieses stellt im Grunde ein einzelnes Glied eines beliebigen Mechanismus dar.
 Die Methoden zur korrekten Erkennung eines Pendels sind also notwendige Werkzeuge für einen Ansatz der die Glieder eines Mechanismus einzeln betrachtet.
@@ -79,11 +79,11 @@ Zur Visualisierung des Modells wird das andere Ende des Pendels vorerst durch de
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/pendel1_1.png}
-        \caption{Versuch \name{pendel1\_1.html}. Im ersten Canvas wird das Pendel gezeigt. Im zweiten Bild werden die Punkte gezeigt welche gespeichert wurden um daraus den kleinsten umfassenden Kreis dieser Punkte zu ermitteln.}\label{fig:pendel1_1}
+        \caption{Versuch \name{pendel1\_1.html}. Im ersten Canvas wird das Pendel gezeigt. Im zweiten Bild werden die Punkte gezeigt, welche gespeichert wurden um daraus den kleinsten umfassenden Kreis dieser Punkte zu ermitteln.}\label{fig:pendel1_1}
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/pendel1_2.png}
-        \caption{Versuch \name{pendel1\_2.html}. Hier werden die Punkte welche jeweils nicht zum Kreis beitragen gefiltert. Der eingeschlossene Winkel ist jedoch kleiner, weshalb der Mittelpunkt des Kreises hier nicht dem Drehpunkt entspricht.}\label{fig:pendel1_2}
+        \caption{Versuch \name{pendel1\_2.html}. Hier werden die Punkte, welche jeweils nicht zum Kreis beitragen gefiltert. Der eingeschlossene Winkel ist jedoch kleiner, weshalb der Mittelpunkt des Kreises hier nicht dem Drehpunkt entspricht.}\label{fig:pendel1_2}
     \end{subfigure}
     \caption[Versuche \name{pendel1\_1.html} und \name{pendel1\_2.html}]{}
     \label{fig:pendel1_1_2}
@@ -105,7 +105,7 @@ Es zeigt sich, dass in vielen Fällen die Menge der Datenpunkte reduziert werden
 Dieser Ansatz erkennt für ein Glied, dass sich mindestens $180^\circ$ um den definierten Punkt dreht ein sehr nahe am tatsächlichen Wert gelegenen Drehpunkt.
 Der offensichtliche Nachteil besteht jedoch darin, dass alle Glieder die sich um weit weniger als $180^\circ$ drehen mit Sicherheit kein gutes Ergebnis liefern, wie im zweiten Test nachvollzogen werden kann.
 Nähere Untersuchungen zum kleinsten umfassenden Kreis können jedoch weitere Erkenntnisse bringen.
-Zunächst ist der Pfad welcher vom Mittelpunkt des über die Zeit wachsenden kleinsten umfassenden Kreis interessant.
+Zunächst ist der Pfad, welcher vom Mittelpunkt des über die Zeit wachsenden kleinsten umfassenden Kreis interessant.
 Für die ersten $90^\circ$ die sich das Glied dreht, bewegt sich der Mittelpunkt auf einer Linie, die scheinbar Orthogonal zum Drehpunkt steht.
 Der Abstand zum Drehpunkt ist ebenfalls bekannt, da bekannt ist dass er exakt dem Radius des zuerst gemessenen kleinsten umfassenden Kreises entspricht\footnote{Das ist äquivalent zur hälfte der Gliedlänge.}.
 Die weiteren $90^\circ$ werden durch einen Kreisbogen, mit dem ersten Mittelpunkt des eben beschriebenen Pfades, als Mittelpunkt beschrieben.
@@ -124,7 +124,7 @@ Sobald eine Drehung von über $90^\circ$ vollführt wurde, ist der Kreis, der du
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/pendel1_4.png}
-        \caption{Versuch \name{pendel1\_4.html}. Dieser Versuch zeigt, dass der durch den Mittelpunkt kreierte Pfad genutzt werden kann um bei Drehungen weit unter $90^\circ$ den Drehpunkt zu bestimmen.}\label{fig:pendel1_4}
+        \caption{Versuch \name{pendel1\_4.html}. Dieser Versuch zeigt, dass der durch den Mittelpunkt kreierte Pfad genutzt werden kann, um bei Drehungen weit unter $90^\circ$ den Drehpunkt zu bestimmen.}\label{fig:pendel1_4}
     \end{subfigure}
     \caption[Versuche \name{pendel1\_3.html} und \name{pendel1\_4.html}]{}
     \label{fig:pendel1_3_4}
@@ -197,10 +197,10 @@ Hierbei wird implizit angenommen, dass die Glieder länger sind als sie breit si
 
 Die am weitest voneinander entfernten Punkte einer \lstinline{PointCloud} lassen sich durch die auf dieser Klasse definierten Funktion \lstinline{getMaxDist} finden\footnote{Der entsprechende Quellcode kann unter \aka{https://github.com/klawr/ba/blob/master/src/scripts/pointCloud.js\#L63} eingesehen werden.}.
 In dieser Funktion wird für jeden Punkt der Punkt gesucht, welcher den grö{\ss}ten Abstand zu diesem hat. Es wird au{\ss}erdem festgehalten welches Paar den grö{\ss}ten Abstand hatte.
-Diese beiden Punkte können genutzt werden um ein Objekt der Klasse \lstinline{Line} zu erstellen.
+Diese beiden Punkte können genutzt werden, um ein Objekt der Klasse \lstinline{Line} zu erstellen.
 Diese Klasse stellt alle Funktionalitäten bereit, welche hier für den Umgang mit Geraden benötigt werden.
 Eine auf diese Weise definierte Gerade wird dann in einer Liste gespeichert und die nächste Iteration folgt.
-Bereits ab der zweiten Iteration können dann die Schnittpunkte dieser Geraden genutzt werden um den Drehpunkt zu bestimmen.
+Bereits ab der zweiten Iteration können dann die Schnittpunkte dieser Geraden genutzt werden, um den Drehpunkt zu bestimmen.
 
 \begin{figure}
     \centering
@@ -243,13 +243,13 @@ Die zweite Klasse ist die \lstinline{DataXY} Klasse.
 Sie bietet die Möglichkeit statt einzelner Werte Punkte zu verwalten.
 Punkte sind in diesem Fall definiert als Objekte mit den Eigenschaften \lstinline{x} und \lstinline{y}.
 Ein \lstinline{DataXY} Objekt hat die Eigenschaften \lstinline{x} und \lstinline{y}, welche wiederum als \lstinline{Data} Objekt vorliegen.
-Dementsprechend bietet \lstinline{DataXY} Funktionen an um diese Daten gemeinsam auf einem \lstinline{g2.chart} zeichnen zu können.
+Dementsprechend bietet \lstinline{DataXY} Funktionen an, um diese Daten gemeinsam auf einem \lstinline{g2.chart} zeichnen zu können.
 
 In der \lstinline{Data} Klasse ist ein \lstinline{data} Objekt definiert, welches dazu dient die gesammelten Daten zu verwalten.
 Statt eine Liste zu Nutzen wird eine Map verwendet, dessen Schlüssel Messwerten entsprechen und die dazugehörigen Werte die Anzahl darstellen wie oft diese gemessen wurden\footnote{Für mehr Information zu Maps siehe \aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map}.}.
 Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert, welche wie folgt aussieht:
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}, label={lst:data_add}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion, welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}, label={lst:data_add}]
 add(a) {
     const r = Math.round(a);
     if (Number.isSafeInteger(r)) {
@@ -259,11 +259,11 @@ add(a) {
 \end{lstlisting}
 
 Die Entscheidung eine Map statt einer Liste zu nutzen basiert auf den handlicheren Verarbeitungsmöglichkeiten der Daten.
-Es sind beispielsweise weniger Iterationen notwendig um über die Daten zu iterieren, wenn der Erwartungswert berechnet werden soll.
+Es sind beispielsweise weniger Iterationen notwendig, um über die Daten zu iterieren, wenn der Erwartungswert berechnet werden soll.
 Listen bieten jedoch die in dieser Arbeit häufig verwendete \lstinline{reduce} Funktion.
 Diese wurde entsprechend für die \lstinline{Data} Klasse implementiert.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{reduce} Funktion um die Standardfunktion der Liste nachzubilden}, label={lst:data_reduce}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{reduce} Funktion, um die Standardfunktion der Liste nachzubilden}, label={lst:data_reduce}]
 reduce(callback, acc) {
     const itr = this.data.entries();
     acc = acc !== undefined ? acc : itr.next();
@@ -307,7 +307,7 @@ get variance() {
 \lstinline{mu} wird hier zwischengespeichert, damit dieser nicht für jede Iteration innerhalb des \lstinline{reduce} aufrufes erneut berechnet werden muss.
 Die Standardabweichung $\sigma$ ist entspechend die Quadratwurzel der Varianz.
 
-Um die entsprechenden Ergebnisse mit der Gau{\ss}'schen Normalverteilung zu Vergleichen wurde eine Funktion geschrieben, welche vom \lstinline{g2.chart} genutzt werden kann um diese parallell zu den gesammelten Daten zu rendern.
+Um die entsprechenden Ergebnisse mit der Gau{\ss}'schen Normalverteilung zu Vergleichen wurde eine Funktion geschrieben, welche vom \lstinline{g2.chart} genutzt werden kann, um diese parallell zu den gesammelten Daten zu rendern.
 Die Funktion für die Gau{\ss}'sche Normalverteilung ist gegeben durch
 
 \begin{equation}
@@ -324,7 +324,7 @@ gaussianDistribution(x) {
 }
 \end{lstlisting}
 
-Diese Funktion kann dann vom \lstinline{g2.chart} aufgerufen werden um den entsprechenden Graphen mit Daten zu füllen.
+Diese Funktion kann dann vom \lstinline{g2.chart} aufgerufen werden, um den entsprechenden Graphen mit Daten zu füllen.
 Die Implementation eines solchen Aufrufs wird in Listing~\ref{lst:data_getChart} gezeigt.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{getChart} Funktion der \lstinline{Data} Klasse.}, label={lst:data_getChart}]
@@ -341,7 +341,7 @@ getChart(limit) {
 };
 \end{lstlisting}
 
-Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung der \lstinline{data} Map um durch \lstinline{g2.chart} dargestellt zu werden.
+Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung der \lstinline{data} Map, um durch \lstinline{g2.chart} dargestellt zu werden.
 Ein entsprechend gezeichneter Graph kann in Abbildung~\ref{fig:normalverteilung} gesehen werden.
 
 \begin{figure}
@@ -439,9 +439,9 @@ Während die vorher angesprochene Regressionsgerade den Abstand der Punkte in Y-
     \label{eq:orthogonal_regression}
 \end{equation}
 
-Diese Gleichung nutzt die Varianz der einzelnen Datensammlungen um damit die entsprechende Steigung der Geraden zu ermitteln.
+Diese Gleichung nutzt die Varianz der einzelnen Datensammlungen, um damit die entsprechende Steigung der Geraden zu ermitteln.
 Die Berechnung dieser Parameter kann aus der \lstinline{Data} Klasse wiederverwendet werden, was in Listing~\ref{lst:data_variance} gezeigt wird.
-Hierfür muss also nur noch die Ermittlung der Kovarianz $\sigma_{xy}^2$ implementiert werden\footnote{Die Varianz nutzt in ihrer Berechnung jeweils die Anzahl der Datenpunkte. Diese könnte aus der Gleichung gekürzt werden, was in einer abschlie{\ss}enden Implementation berücksichtigt werden sollte um ein paar Rechenschritte zu sparen.}.
+Hierfür muss also nur noch die Ermittlung der Kovarianz $\sigma_{xy}^2$ implementiert werden\footnote{Die Varianz nutzt in ihrer Berechnung jeweils die Anzahl der Datenpunkte. Diese könnte aus der Gleichung gekürzt werden, was in einer abschlie{\ss}enden Implementation berücksichtigt werden sollte, um ein paar Rechenschritte zu sparen.}.
 Diese kann passend der \lstinline{DataXY} Klasse hinzugefügt werden, welche für die Tests die entsprechenden Punkte bereithält.
 
 \begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{covariance} Funktion in der \lstinline{DataXY} Klasse}., label={lst:dataxy_covariance}]
@@ -511,7 +511,7 @@ Diese Überlegung entspricht nicht der Beobachtung.
 Das liegt vorallem daran, dass die in Kapitel~\ref{ch:bestimmung_regressionsgerade} gemachte Beobachtung, dass je weiter der Abgleich zweier Bilder vom tatsächlichen Drehpunkt entfernt ist die absolute Geschwindigkeit höher und die Dichte der Punktwolke entsprechend in solchen Regionen höher ist.
 Das hat zur Folge, dass die Streuung der über die Iteration unterschiedlichen Punktwolken erheblich zur Länge des Pfades der Bewegung des eigentlichen Drehpunktes beiträgt.
 Die Nutzung mehrerer maximal distanzierter Punkte, wie es in Kapitel~\ref{ch:nutzung_des_schwerpunktes} gemacht wurde, scheint diesen Fehler zu verstärken.
-Minimieren lässt sich dieser indem der kleinte umfassende Kreis um die beiden gesammelten Gruppen gebildet wird und derjeniger mit dem kleinerem Radius den Mittelpunkt darstellt.
+Minimieren lässt sich dieser indem der kleinte umfassende Kreis, um die beiden gesammelten Gruppen gebildet wird und derjeniger mit dem kleinerem Radius den Mittelpunkt darstellt.
 
 \section{Auswertung der Beobachtungen}
 
@@ -519,7 +519,7 @@ Die hier besprochenen Ansätze haben viele Erkenntnisse gebracht, welche Informa
 Es wurden für die Struktur der Versuche vier zentrale Klassen implementiert, welche im Verlauf dieser Arbeit eine zentrale Rolle spielen werden\footnote{Es existieren vereinzelt Klassen, welche in Relation zu diesen vier Klassen stehen, wie zum Beispiel \lstinline{DataXY} zu \lstinline{Data}.}.
 
 Die \lstinline{PointCloud} Klasse wird ordnet den Umgang mit Punktwolken.
-Bisher wird diese vorallem genutzt um die Regressionsgerade zu bilden, jedoch werden in den nachfolgenden Kapiteln weitere Funktionen dieser Klasse genutzt um beispielsweise die Punkte der Punktwolken einzelner Glieder eines Mechanismus zuzuordnen.
+Bisher wird diese vorallem genutzt, um die Regressionsgerade zu bilden, jedoch werden in den nachfolgenden Kapiteln weitere Funktionen dieser Klasse genutzt, um beispielsweise die Punkte der Punktwolken einzelner Glieder eines Mechanismus zuzuordnen.
 
 Die \lstinline{Line} Klasse beinhaltet alle Methoden, welche auf der Basis von Geraden gemacht werden können.
 Hier werden Funktionen für die Berechnung der Schnittpunkte definiert, sowie die Berechnung von Winkelhalbierenden zweier Geraden.

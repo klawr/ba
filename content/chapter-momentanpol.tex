@@ -20,8 +20,8 @@ Tatsächlich kann entsprechend die Bewegung des ebenen starren Gliedes als ein V
 Wären die Methoden der Berechnung des optischen Flusses also mit nur sehr kleinem Fehler behaftet, würde sich so möglicherweise auch direkt der Momentanpol ermitteln lassen.
 
 Die Position des Momentanpols kann konstant sein, wodurch dann der Drehpunkt definiert wird, welcher dann auch als Absolutpol bezeichnet wird.
-Ein translatives Elemtent, dessen Bewegung durch die abwesenheit einer Rotation definiert ist dreht sich in dem Sinne um einen Momentanpol welcher sich orthogonal zur Bewegungsrichtung in unendlicher Distanz befinidet.
-Bei einer Parallelkurbel bei welcher sich die Koppel nicht bewegt, würde der Momentanpol ebenfalls stets im Unendlichen liegen.
+Ein translatives Elemtent, dessen Bewegung durch die abwesenheit einer Rotation definiert ist dreht sich in dem Sinne um einen Momentanpol, welcher sich orthogonal zur Bewegungsrichtung in unendlicher Distanz befindet.
+Bei einer Parallelkurbel bei, welcher sich die Koppel nicht bewegt, würde der Momentanpol ebenfalls stets im Unendlichen liegen.
 Entsprechend findet bei dieser auch keine Drehung statt.
 
 Eine Möglichkeit der Ermittlung des Momentanpols ist die Ermittlung der Bewegung durch den \name{ersten Satz von Euler}\cite{Goessner2016}.
@@ -59,7 +59,7 @@ Diese kann dann nach $r_{AP}$ umgestellt werden,
 
 sodass der Momentanpol $P$ über die Beziehung $\vec{r}_P = \vec{r}_A + \vec{r}_{AP}$ ermittelt werden kann.
 
-Diese Formel soll nun angewendet werden um den Momentanpol von Elementen zu bestimmen dessen Bewegung in Videosequenzen nachvollzogen wird.
+Diese Formel soll nun angewendet werden, um den Momentanpol von Elementen zu bestimmen dessen Bewegung in Videosequenzen nachvollzogen wird.
 
 \section{Implementation}
 
@@ -84,7 +84,7 @@ momentanpol(threshold = 1) {
 \end{lstlisting}
 
 \lstinline{p1} und \lstinline{p2} sind jeweils der letzte Punkt und jener der vor \lstinline{threshold} Iterationen hinzugefügt wurde.
-Analog dazu sind \lstinline{w1} und \lstinline{w2} die Winkel der Geraden welche als letztes und vor \lstinline{threshold} Iterationen hinzugefügt wurden.
+Analog dazu sind \lstinline{w1} und \lstinline{w2} die Winkel der Geraden, welche als letztes und vor \lstinline{threshold} Iterationen hinzugefügt wurden.
 Hierfür hat die \lstinline{Group} Klasse die Eigenschaft \lstinline{lines} bekommen, welche in etwa die selbe Aufgabe wie die \lstinline{pts} Eigenschaft erfüllen soll.
 Diese Liste wird entsprechend von den Tests analog zu \lstinline{pts} befüllt.
 Es muss hier noch garantiert werden, dass in jedem Fall ein Winkel kleiner $\pi$ eingesetzt wird und anschlie{\ss}end wird dieser noch auf einen Wert gesetzt dessen Betrag in jedem Fall kleiner $\pi / 2$ ist.
@@ -114,7 +114,7 @@ Die \lstinline{Group} Klasse speichert hierbei den Pfad der gemessenen Punkte un
 Durch den Gradienten zweier Punkte in dieser Liste wird so eine Geschwindigkeit berechnet.
 Die Rotationsgeschwindigkeit wird ähnlich gemessen, wie in Listing~\ref{lst:group_momentanpol} zu sehen ist.
 
-Wird der Gradient über die selbe Anzahl an Iterationen für die Winkelgeschwindigkeit wie für die absolute Geschwindigkeit berechnet, so kann Gleichung~\ref{eq:euler_rAP} genutzt werden um die Position des Momentanpols zu ermitteln.
+Wird der Gradient über die selbe Anzahl an Iterationen für die Winkelgeschwindigkeit wie für die absolute Geschwindigkeit berechnet, so kann Gleichung~\ref{eq:euler_rAP} genutzt werden, um die Position des Momentanpols zu ermitteln.
 Dieser stellt hier wieder eine Schätzung dar, da die Eingangsparameter mit einer Ungenauigkeit behaftet sind.
 Des Weiteren ist anzumerken, dass die Anzahl der Iterationen zwischen den beiden zu vergleichenden Bildern im vorhinein festgelegt werden muss.
 Ist diese Zahl zu klein, oder zu gro{\ss}, so folgt daraus eine grö{\ss}ere Standardabweichung.
@@ -156,7 +156,7 @@ Die Standardabweichung hat sich durch den neuen Ansatz von $4.8$ auf $1.9$ reduz
 \subsection{Drehendes Gestellglied}
 
 Diese herangehensweise soll nun für die Ermittlung des Drehpunktes eines wie in Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder} betrachteten Pendels genutzt werden.
-Der Drehpol eines Gliedes welches mit dem Gestell verbunden ist sollte sich im Momentanpol befinden.
+Der Drehpol eines Gliedes, welches mit dem Gestell verbunden ist, sollte sich im Momentanpol befinden.
 Für diesen Versuch wurde entsprechend das Pendel aus Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder} verwendet.
 
 \begin{figure}
@@ -187,7 +187,7 @@ Im Gegenteil lässt hier ein besonders ungenaues Ergebnis den Schluss zu, dass e
 Um zu verhindern, dass der Momentanpol fälschlicherweise auf der Gliedebene des sich bewegten Elementes befindet wird der eingeschlossene Winkel durch \lstinline{dw = dw > Math.PI / 2 ? dw - Math.PI : dw;} korrigiert wie in Listing~\ref{lst:group_momentanpol} gesehen werden kann, damit jeweils den kleineren der beiden eingeschlossenen Winkel bevorzugt.
 Der rote Punkt in Abbildung~\ref{fig:translatives_glied_3} stellt hier den verfolgten Punkt dar und nicht den Momentanpol.
 Die Standardabweichung zu vergleichen scheint an dieser Stelle weniger sinnvoll.
-Sie ist in beiden Fällen sehr hoch und wird nur durch die Tatsache niedrig gehalten, dass \lstinline{Data} Koordinaten au{\ss}erhalb des Canvas ignoriert um die Gau{\ss}-Verteilung mit den gemessenen Werten vergleichbar zu halten\footnote{Teilweise auftretende extreme Ausschläge haben einen gro{\ss}en Einfluss auf die Varianz.}.
+Sie ist in beiden Fällen sehr hoch und wird nur durch die Tatsache niedrig gehalten, dass \lstinline{Data} Koordinaten au{\ss}erhalb des Canvas ignoriert, um die Gau{\ss}-Verteilung mit den gemessenen Werten vergleichbar zu halten\footnote{Teilweise auftretende extreme Ausschläge haben einen gro{\ss}en Einfluss auf die Varianz.}.
 
 \begin{figure}
     \centering

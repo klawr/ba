@@ -31,7 +31,7 @@ Der vorgeschlagene Ansatz trifft im vorherein jedoch mehrere Annahmen.
 Die erste Annahme ist, dass die Bewegung nicht sehr gro{\ss} ist.
 Zu schnelle Bewegungen können durch diesen Ansatz wahrscheinlich nicht, oder nur schlecht erkannt werden.
 Eine weitere Annahme ist, dass die zu untersuchende Bildsequenz in Graustufen immernoch nutzbar ist.
-Es werden in dieser Methode die Helligkeitswerte der Pixel untersucht, sodass eine Szene welche in einer solchen Darstellung keine zu erkennende Bewegung hat entsprechend keine sinnvollen Ergebnisse verspricht.
+Es werden in dieser Methode die Helligkeitswerte der Pixel untersucht, sodass eine Szene, welche in einer solchen Darstellung keine zu erkennende Bewegung hat, entsprechend keine sinnvollen Ergebnisse verspricht.
 
 Die Überlegung die in diesem Algorithmus verfolgt wird ist, dass für einen Pixel sich die Helligkeit genau dann verändert, wenn sich das zugrundeliegende Objekt bewegt hat.
 Die Bewegung sollte durch einen Abgleich mit Benachbarten Pixeln gefunden werden indem der entsprechende Fehler minimiert wird der durch eine Bewegung erzeugt wird.
@@ -41,36 +41,36 @@ Auf diese Weise kann versucht werden die Bewegung einzelner Objekte zu verfolgen
 
 Zunächst ist die Grö{\ss}e der Regionen unbekannt, deshalb wird ein pyramidischer Ansatz genutzt.
 Das bedeutet, dass um eine Region von Interesse mehrere Regionen festgelegt werden, für welche der Fehler entsprechend berechnet wird.
-Diese Fehler können dann verglichen werden und die passende Region wird genutzt um die Verschiebung des Punktes innerhalb des Bildes zu beschreiben.
+Diese Fehler können dann verglichen werden und die passende Region wird genutzt, um die Verschiebung des Punktes innerhalb des Bildes zu beschreiben.
 Anhand dieses Ansatzes kann die ungefähre Grö{\ss}e des sich bewegenden Objektes untersucht werden.
 Eine Implementation dieses Ansatzes wird von Jean-Yves Bouget beschrieben~\cite{Bouguet2000}.
 
 Was für eine Nutzung nun noch fehlt ist die Festlegung der entsprechenden Regionen von Interesse.
 Hierfür wird ein Algorithmus genutzt, welcher in einem Bild interessante Punkte anhand von Kantenerkennung identifiziert.
-Entwickelt wurde dieser von J. Shi und C. Tomasi~\cite{Shi1994} und wird im nachfolgenden genutzt um die Menge der zu verfolgenden Punkte zu bestimmen.
+Entwickelt wurde dieser von J. Shi und C. Tomasi~\cite{Shi1994} und wird im nachfolgenden genutzt, um die Menge der zu verfolgenden Punkte zu bestimmen.
 
 \subsection{Implementation des Lucas-Kanade Algorithmus}
 
 Um diesen Algorithmus in die nun bestehende Struktur zu implementieren, wird für die \lstinline{Group} Klasse eine weitere Eigenschaft definiert.
 Diese Eigenschaft verweist auf ein Objekt der \lstinline{LucasKanade} Klasse.
-Objekte der \lstinline{LucasKanade} Klasse enthalten wiederum alle Parameter welche für die Nutzung der Algorithmen notwendig sind.
+Objekte der \lstinline{LucasKanade} Klasse enthalten wiederum alle Parameter, welche für die Nutzung der Algorithmen notwendig sind.
 
 Die Funktionen zur Bestimmung interessanter Punkte und dessen Verfolgung wird von \name{opencv.js} bezogen~\cite{OpenCV2021}.
 \name{opencv}\footnote{\name{opencv} ist eine Abkürzung für Open Computer Vision.} ist eine Sammlung von Funktionen im Bereich der Bildverarbeitung und des Maschniellen sehens.
 Implementiert ist \name{opencv} in \name{C++}.
 Es gibt jedoch Unterstüzung für eine Vielzahl von anderen Programmiersprachen, wie zum Beispiel \name{Python}, \name{Java} und \name{JavaScript}.
 
-Für \name{JavaScript} wird das globale \lstinline{cv} Objekt genutzt um auf dessen Funktionen zuzugreifen.
+Für \name{JavaScript} wird das globale \lstinline{cv} Objekt genutzt, um auf dessen Funktionen zuzugreifen.
 Für die Bestimmung von vermeintlich sinnvollen Regionen zur Verfolgung wird die \lstinline{cv.goodFeaturesToTrack} Funktion verwendet.
 Diese implementiert den Shi-Tomasi Algorithmus.
-Als Parameter übergeben werden hier ein in Graustufen konvertiertes Bild, eine \lstinline{cv.Mat} Objekt in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte welche zur Verfolgung gesucht werden, die minimale Qualität einer Kante\footnote{Die Qualität einer Kante wird hier ins Verhältnis zur Kante mit bester Qualität gestellt.
+Als Parameter übergeben werden hier ein in Graustufen konvertiertes Bild, eine \lstinline{cv.Mat} Objekt, in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte, welche zur Verfolgung gesucht werden, die minimale Qualität einer Kante\footnote{Die Qualität einer Kante wird hier ins Verhältnis zur Kante mit bester Qualität gestellt.
 Die Qualität einer hier genutzten Kante berechnet sich durch \lstinline{cv.cornerMinEigenVal}, worauf hier jedoch nicht weiter eingegangen wird.
 Mehr Information kann unter \aka{https://docs.opencv.org/master/dd/d1a/group__imgproc__feature.html\#ga3dbce297c1feb859ee36707e1003e0a8} gefunden werden.} und der minimale euklidische Abstand der Punkte zueinander.
-Des weiteren können hier spezielle Regionen von Interesse übergeben werden und die durchschnittliche Grö{\ss}e der Blöcke welche bei der Berechnung genutzt werden.
+Des weiteren können hier spezielle Regionen von Interesse übergeben werden und die durchschnittliche Grö{\ss}e der Blöcke, welche bei der Berechnung genutzt werden.
 
 Nach der Bestimmung der zu verfolgenden Punkte wird versucht diese durch \lstinline{cv.calcOpticalFlowPyrLK} zu verfolgen.
 Die \lstinline{calcOpticalFlowPyrLK} Funktion benötigt als Parameter zunächst die beiden Bilder in zeitlicher Abfolge.
-Der dritte Parameter beinhaltet die Punkte welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt welcher die berechnet Punkte enthalten wird.
+Der dritte Parameter beinhaltet die Punkte, welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt, welcher die berechnet Punkte enthalten wird.
 Alles weitere sind Parameter zum Einstellen des Algorithmus, wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Grö{\ss}e der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung grö{\ss}er werdenen Regionen.
 Abschlie{\ss}end wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben, welcher eine Abbruchbedingung für die iterative Suche darstellt.
 Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfand, oder die Bewegung unterhalb eines Schwellenwertes vermutet wird.
@@ -118,11 +118,11 @@ step(frame) {
 \end{lstlisting}
 
 Es wird mittels der \lstinline{first_indicator} Eigenschaft geprüft, ob es sich um den ersten Aufruf mit einem Bild handelt.
-Entsprechend muss noch die \lstinline{very_first} Variable genutzt werden um den aller ersten Aufruf zu filtern.
+Entsprechend muss noch die \lstinline{very_first} Variable genutzt werden, um den aller ersten Aufruf zu filtern.
 \lstinline{goodFeaturesToTrack} wird nur einmal am Anfang ausgeführt, damit die Reihenfolge der gefundenen Punkte konsistent bleibt.
 Au{\ss}erdem ist nicht sichergestellt, dass die vorgeschlagenen Regionen bei Veränderungen im Bild die selben bleiben.
 Die gefundenen Punkte werden im \lstinline{LucasKanade} Objekt entsprechend gespeichert.
-Nachdem das Bild in Graustufen übersetzt wurde wird es in der \lstinline{calcOpticalFlowPyrLK} Funktion genutzt um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
+Nachdem das Bild in Graustufen übersetzt wurde wird es in der \lstinline{calcOpticalFlowPyrLK} Funktion genutzt, um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
 Diese Punkte werden dann in einer \lstinline{points} Liste gespeichert, welche die zuletzt ermittelten Koordinaten enthält.
 Daraufhin wird das \lstinline{oldGray} Bild überschrieben, damit es bei der nächsten Iteration entsprechend als erstes Bild dienen kann.
 Ebenso wird \lstinline{p0} für die nächste Iteration den zuletzt ermittelten Koordinaten gleichgestellt.
@@ -130,7 +130,7 @@ Ebenso wird \lstinline{p0} für die nächste Iteration den zuletzt ermittelten K
 Der Rückgabewert dieser Funktion ist die \lstinline{points} Liste.
 Aufgerufen wird diese Funktion durch die \lstinline{lucasKanade} Funktion des \lstinline{group} Objektes.
 Dieses ermittelt die Bildinformation von \lstinline{cnv1} durch \lstinline{cv.imread}, welches ein \lstinline{cv.Mat} Objekt zurückgibt.
-Daraufhin wird die in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} bereits angedeutete Funktion \lstinline{addPoints} genutzt um die nun für die nächste Iteration ermittelten Koordinaten der Punkte der Liste an Punkten hinzuzufügen.
+Daraufhin wird die in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} bereits angedeutete Funktion \lstinline{addPoints} genutzt, um die nun für die nächste Iteration ermittelten Koordinaten der Punkte der Liste an Punkten hinzuzufügen.
 Diese Punkte haben augenscheinlich eine sehr viel geringere Varianz als die Ansätze aus Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder}.
 
 \section{Andere Methoden}
@@ -144,7 +144,7 @@ Die Implementation wurde nicht sonderlich in den Text integriert, der entspreche
 
 Zu erwarten wäre für ein sich um einen festen Punkt drehendes Glied, dass alle Vektoren zur Bestimmung der Bewegung den selben Einheitsvektor haben.
 Der entsprechende Betrag des Vektors sollte linear mit Abstand zum Drehpunkt zunehmen.
-Diese Information sollte dann genutzt werden können um die Pole der ebenen Bewegung zu ermitteln.
+Diese Information sollte dann genutzt werden können, um die Pole der ebenen Bewegung zu ermitteln.
 
 Des Weiteren hätten die Glieder durch den Verlauf der gemessenen Geschwindigkeiten leicht unterscheidbar gewesen sein sollen.
 Da jedoch die Ungenauigkeiten hier zu gro{\ss} zu sein scheinen fällt die Implementation entsprechend schwierig und wird hier nicht weiter Gegenstand sein.
@@ -181,14 +181,14 @@ Der Stuhl wurde entsprechend verwendet weil er gute Bearbeitung auf den Training
     \centering
     \includegraphics[width=\textwidth]{gfx/flownet_flying_chairs.png}
     \label{fig:flownet_flying_chairs}
-    \caption[Beispiele aus dem \name{Flying Chair Dataset}]{Die ersten beiden Bilder sind ein Auszug aus dem \name{Flying Chair Dataset}. Das zweite Bild versetzt die Stühle ein wenig, wobei die Bewegung welche in der Kontrolle des Programmierers liegt entsprechend als Wert für das Training festgehalten wird. Im dritten Bild sieht man entsprechend die Vektoren welche als wahre Werte gehalten werden. Die Farben zeigen hierbei die Richtugn des Vektors und die Sättigung der Farbe gibt den Betrag an~\cite{Fischer2015}.}
+    \caption[Beispiele aus dem \name{Flying Chair Dataset}]{Die ersten beiden Bilder sind ein Auszug aus dem \name{Flying Chair Dataset}. Das zweite Bild versetzt die Stühle ein wenig, wobei die Bewegung, welche in der Kontrolle des Programmierers liegt entsprechend als Wert für das Training festgehalten wird. Im dritten Bild sieht man entsprechend die Vektoren, welche als wahre Werte gehalten werden. Die Farben zeigen hierbei die Richtugn des Vektors und die Sättigung der Farbe gibt den Betrag an~\cite{Fischer2015}.}
 \end{figure}
 
 Als eine Entwicklung von \name{FlowNet} wurde \name{FlowNet 2.0}~\cite{Ilg2016} mit dem Ziel eine Verbesserung der Ergebnisse zu erzielen.
 \name{FlowNet 2.0} hat einige Verbesserung im Umgang mit den Trainingsdaten eingeführt.
 Diese Verbesserungen basieren auf den gefundenen Mängeln von\name{FlowNet}, welcher auf Daten der echten Welt keine Verbesserung zur bis dahin genutzten Methoden hatte\footnote{\name{FlowNet} hat allerdings gezeigt, dass maschinelles Lernen dieses Problem bearbeiten kann.}.
 Zum einen wird hier ein grö{\ss}erer Fokus auf kleinere Änderungen in der Bewegung gelegt, was zu einer höheren Genauigkeit bei echten Bildern zur Folge hat.
-Es zeigte sich au{\ss}erdem, dass der Zeitplan mit welchem die Trainingsdaten an das Netzwerk geliefert werden Einfluss auf dessen Generalisierbarkeit hat.
+Es zeigte sich au{\ss}erdem, dass der Zeitplan mit, welchem die Trainingsdaten an das Netzwerk geliefert werden Einfluss auf dessen Generalisierbarkeit hat.
 
 \section{Betrachtung der Ergebnisse}
 

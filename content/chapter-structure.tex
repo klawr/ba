@@ -6,7 +6,7 @@
 
 \section{Die \name{index.html}}
 
-Die Versuche sind jeweils eigenständige HTML-Seiten welche über ein HTML-Iframe Element in einer zentralen \name{index.html} untersucht werden können.
+Die Versuche sind jeweils eigenständige HTML-Seiten, welche über ein HTML-Iframe Element in einer zentralen \name{index.html} untersucht werden können.
 Die Versuche sind wiederum in einzelne Sachverhalte gruppiert.
 Für diese Gruppierung wird in der \name{index.html} ein \lstinline{tests} Objekt definiert.
 
@@ -86,7 +86,7 @@ Die über viele Versuche wiederkehrenden Funktionalitäten sind in eine zentrale
 Durch die zentrale Definition wird der Aufwand zur Wartung des Codes und zur Behebung von Fehlern stark reduziert.
 Dieses Prinzip ist unter dem Akronym \name{DRY}\footnote{\textit{don't repeat yourself}, zu deutsch \textit{wiederhole dich nicht}.} bekannt~\cite{AndrewHunt2021}.
 
-Das \lstinline{simulation} Objekt beinhaltet alle Referenzen zu den HTML-Elementen auf welche im Zuge der Versuche zugegriffen werden können sowie den Referenzen zu den einzelnen \name{CanvasRenderingContext2D} Objekten, welche von \name{g2} genutzt werden um auf die entsprechenden HTML-Canvas Elemente zu zeichnen.
+Das \lstinline{simulation} Objekt beinhaltet alle Referenzen zu den HTML-Elementen, auf welche im Zuge der Versuche zugegriffen werden können, sowie den Referenzen zu den einzelnen \name{CanvasRenderingContext2D} Objekten, welche von \name{g2} genutzt werden, um auf die entsprechenden HTML-Canvas Elemente zu zeichnen.
 Au{\ss}erdem werden unter Anderem globale Konstanten wie die Höhe und Breite der HTML-Canvas Elemente zentral bereitgestellt.
 
 Auf die in \lstinline{simulation} definierten Funktionen soll im Folgenden näher eingegangen werden.
@@ -120,7 +120,7 @@ async run(step) {
 },
 \end{lstlisting}
 
-Existiert ein \name{mec2} Modell, so wird dessen Simulation an dieser Stelle um einen Zeitschritt vorangetrieben und zur Animation verwendet.
+Existiert ein \name{mec2} Modell, so wird dessen Simulation an dieser Stelle, um einen Zeitschritt vorangetrieben und zur Animation verwendet.
 Die Definition des \name{mec2} Modells findet in den Versuchsdateien statt.
 Innerhalb der an \lstinline{run} übergebenen \lstinline{step} Funktion darf dieses Modell nicht modifiziert werden, da es als Quelle für die Bildsequenzen dient.
 
@@ -132,7 +132,7 @@ Nachdem Rendern der Videosequenz wird die \lstinline{run} übergebene \lstinline
 Diese Funktion implementiert den jeweiligen Versuchsalgorithmus und wird dementsprechend in den jeweiligen Kapiteln der Versuche beschrieben.
 
 Abschlie{\ss}end wird hier noch die Zeit der \lstinline{step} Funktion vermerkt.
-In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now}\footnote{Für mehr Information zu \lstinline{performance.now} siehe \aka{https://developer.mozilla.org/en-US/docs/Web/API/Performance/now}.} ermittelt und einer Liste hinzugefügt welche die Historie der Geschwindigkeiten der einzelnen \lstinline{step} Aufrufe festhält.
+In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now}\footnote{Für mehr Information zu \lstinline{performance.now} siehe \aka{https://developer.mozilla.org/en-US/docs/Web/API/Performance/now}.} ermittelt und einer Liste hinzugefügt, welche die Historie der Geschwindigkeiten der einzelnen \lstinline{step} Aufrufe festhält.
 Es wird au{\ss}erdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist, um eine sinnvolle Bezeichnung der Achsen der Graphen zu ermöglichen.
 Dieser Graph wird anschlie{\ss}end auf einem HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
 \lstinline{ctx_times} ist der Kontext des vierten von \lstinline{createElements} erstellten HTML-Canvas Elementen.
@@ -145,10 +145,10 @@ Anschließend wird die \lstinline{run} Funktion durch \lstinline{requestAnimatio
 
 In \lstinline{register} wird zunächst der Titel festgelegt, welcher dem Namen der HTML-Datei entspricht.
 Dieser Titel wird in einem HTML-Anker Element platziert, damit diese in der \name{index.html} einfacher zugeordnet werden können.
-Es dient au{\ss}erdem als Hyperlink über welchen isoliert auf den Versuch zugegriffen werden kann, was sich während der Entwicklung als hilfreich herausgestellt hat.
+Es dient au{\ss}erdem als Hyperlink, über welchen isoliert auf den Versuch zugegriffen werden kann, was sich während der Entwicklung als hilfreich herausgestellt hat.
 
 An dieser Stelle wird au{\ss}erdem eine Funktion definiert, welche beim Laden der Seite ausgeführt wird.
-Diese Funktion instanziert alle Variablen welche für die Erstellung der Versuche notwendig sind.
+Diese Funktion instanziert alle Variablen, welche für die Erstellung der Versuche notwendig sind.
 
 Es wird zudem einmalig die \lstinline{run} Funktion aufgerufen, um das erste Bild zu rendern\footnote{Da \lstinline{simulation.running} mit den Wert \lstinline{false} initialisiert wird, wird innerhalb des \lstinline{run} Aufrufs \lstinline{requestAnimationFrame} nicht ausgeführt.}.
 Die Funktion, welche an \lstinline{run} übergeben werden soll, wird zunächst an \lstinline{register} übergeben.
@@ -170,7 +170,7 @@ Diese Funktion wurde in Kapitel~\ref{ch:sim_createElements} eingeführt und soll
 
 \begin{figure}
     \includegraphics[width=\textwidth]{gfx/canvasses.png}
-    \caption[Bild der Canvasse]{Beispiel für die Canvasse. Hier wird der Versuch \name{momentanpol1\_3} gezeigt. Von links nach rechts: Bild welches den Eingang darstellt. Bild welches visualisiert was in dem Test untersucht wird. Darstellung gesammelter Daten innerhalb des Tests. Bild zur Ermittlung der Performanz des Versuchs.}\label{fig:canvasses}
+    \caption[Bild der Canvasse]{Beispiel für die Canvasse. Hier wird der Versuch \name{momentanpol1\_3} gezeigt. Von links nach rechts: Bild, welches den Eingang darstellt. Bild, welches visualisiert was in dem Test untersucht wird. Darstellung gesammelter Daten innerhalb des Tests. Bild zur Ermittlung der Performanz des Versuchs.}\label{fig:canvasses}
 \end{figure}
 
 Die vier erstellten HTML-Canvas Elemente sollen in den Versuchen jeweils vergleichbare Rollen übernehmen.

@@ -24,7 +24,7 @@ Als problematisch stellt sich jedoch heraus, dass die Regressionsgerade nicht zw
 Daher kann die Regressionsgerade in seiner bisher genutzten Form nicht genutzt werden.
 Ein naiver Ansatz an dieser Stelle wäre die Berechnung des Fehlers der entsteht wenn eine Linie willkürlich in den Raum gelegt wird.
 Der Fehler berechnet sich entsprechend durch die Summe der orthogonalen Abstände aller Punktes zu dieser Linie.
-Damit Punkte welche weit von der Linie entfernt werden einen geringeren Einfluss auf den Fehler haben, kann stattdessen eine Wurzel der Distanz verwendet werden.
+Damit Punkte, welche weit von der Linie entfernt sind werden einen geringeren Einfluss auf den Fehler haben, kann stattdessen eine Wurzel der Distanz verwendet werden.
 Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf diese Weise misst, kann die am besten passende Gerade gewählt werden und alle Punkte innerhalb des vorher angesprochenen Schwellenwertes dieser als Gruppe zugeordnet werden.
 
 \begin{figure}
@@ -55,7 +55,7 @@ Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf dies
     \label{fig:gruppe1_2}
 \end{figure}
 
-Eine entsprechende Funktion um dies umzusetzen wurde auf der \lstinline{PointCloud} Klasse definiert.
+Eine entsprechende Funktion wurde auf der \lstinline{PointCloud} Klasse definiert.
 Diese hält die Punkte vor, welche gruppiert werden sollen.
 Ziel der Funktion ist es zunächst die Linien zu finden, welche den Mechanismus am ehesten repräsentieren.
 Zunächst wird eine Kopie der Punkteliste erstellt.
@@ -81,13 +81,13 @@ Auf diese Weise werden die Punkte neu gruppiert.
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/k_means_centroids_edit.png}
-    \caption[Versuch \lstinline{gruppe2_1.html}]{Versuch \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration grö{\ss}er um die Annäherung zu visualisieren. Es ist sichtbar, dass sie sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
+    \caption[Versuch \lstinline{gruppe2_1.html}]{Versuch \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration grö{\ss}er, um die Annäherung zu visualisieren. Es ist sichtbar, dass sie sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
     \label{fig:gruppe2_1}
 \end{figure}
 
 Eine andere Möglichkeit die Datenpunkte ihren Gruppen zuzuordnen ist durch den \name{k-Means} Algorithmus~\cite[S.~241]{Geron2019}.
-Dieser wird in der Statistik genutzt um Datenpunkte in Gruppen einzuteilen.
-Ein offensichtlier Nachteil dieses Ansatzes besteht darin, dass die Anzahl der Gruppen von vorneherein bekannt sein muss\footnote{Es gibt jedoch Methoden um diese Anzahl zu berechnen, zum Beispiel durch den Silhouettenkoeffizienten~\cite[S.~247]{Geron2019}.}.
+Dieser wird in der Statistik genutzt, um Datenpunkte in Gruppen einzuteilen.
+Ein offensichtlier Nachteil dieses Ansatzes besteht darin, dass die Anzahl der Gruppen von vorneherein bekannt sein muss\footnote{Es gibt jedoch Methoden, um diese Anzahl zu berechnen, zum Beispiel durch den Silhouettenkoeffizienten~\cite[S.~247]{Geron2019}.}.
 Eine Untersuchung, ob er für den vorliegenden Anwedungsfall nutzbar ist scheint jedoch angebracht.
 Eine entsprechende Funktion ist in der \lstinline{PointCloud} Klasse definiert.
 Hier werden zunächst zufällig $k$ Punkte auf dem Bild ausgewählt.
@@ -102,13 +102,13 @@ Dies wird jedoch an dieser Stelle nicht mehr getan.
 
 \section{\name{Dijkstra} Algorithmus}\label{ch:dijkstra}
 
-Die letzte Variante die hier untersucht werden soll um die Glieder des Mechanismus in entsprechende Gruppen zu zerteilen ist die Zuordnung aller Datenpunkte zueinander.
+Die letzte Variante die hier untersucht werden soll, um die Glieder des Mechanismus in entsprechende Gruppen zu zerteilen ist die Zuordnung aller Datenpunkte zueinander.
 Hierfür soll das \lstinline{PointCloud} Objekt in einen vollständigen Graphen überführt werden, auf welchem dann über den \name{Dijkstra-Algorithmus} die kürzesten Pfade ermittelt.
-Anschlie{\ss}end werden diese Pfade genutzt um Geraden zu definieren, welche dann Rückschluss auf die zugrundeliegenden Gruppen geben können.
+Anschlie{\ss}end werden diese Pfade genutzt, um Geraden zu definieren, welche dann Rückschluss auf die zugrundeliegenden Gruppen geben können.
 
 Zur Durchführung des \name{Dijkstra} Algorithmus wurde die \lstinline{Dijkstra} Klasse definiert.
 Der Konstruktor dieser Klasse nimmt hierfür ein \lstinline{PointCloud} Objekt und einen Punkt entgegen\footnote{Ein Punkt sei definiert als Objekt mit den Eigenschaften \lstinline{x} und \lstinline{y}.} entgegen, welcher hier als \lstinline{anchor} bezeichnet werden soll.
-Ziel ist es den kürzesten Pfad zu bestimmen um vom \lstinline{anchor} zu jedem Punkt des übergebenen \lstinline{PointCloud} Objektes zu gelangen.
+Ziel ist es den kürzesten Pfad zu bestimmen, um vom \lstinline{anchor} zu jedem Punkt des übergebenen \lstinline{PointCloud} Objektes zu gelangen.
 Der offensichtliche kürzeste Weg ist laut der Dreiecksungleichung natürlich immer der direkte Weg vom \lstinline{anchor} zum entsprechenden Punkt.
 Deshalb sollen die Distanzen zwischen den Werten jeweils potenziert werden.
 An den Konstruktur kann dafür der Parameter \lstinline{warp} übergeben werden, welcher standardmä{\ss}ig den Wert zwei einnimmt.
@@ -146,12 +146,12 @@ Die \lstinline{id} entspricht dem Index des Punktes innerhalb der \lstinline{poi
 Hierbei ist zu beachten, dass es sich nicht um die tatsächliche Distanz, sondern um die Summe der Einzelpfade handelt, welche jeweils mit \lstinline{warp} potenziert werden.
 Diese Wert ist also eher als Wert zum Vergleichen mit anderen Punkten zu verstehen.
 Er ist initial \lstinline{Infinity}, damit er später bis zum kleinsten gefundenen Pfad reduziert werden kann.
-\lstinline{known} wird genutzt um bei der Berechnung jene Punkte überspringen zu können dessen \lstinline{dist} Wert bereits ermittelt wurde.
+\lstinline{known} wird genutzt, um bei der Berechnung jene Punkte überspringen zu können dessen \lstinline{dist} Wert bereits ermittelt wurde.
 Die \lstinline{edges} Eigenschaft hält von jedem Punkt jeden anderen Punkt mittels des entsprechenden Index und der Distanz vor.
-Diese Distanz wird hier als \lstinline{weight} bezeichnet um zu unterstreichen, dass es nicht die euklidische Distanz ist, sondern diese mit dem \lstinline{warp} Parameter potenziert wird.
-Zuletzt wird \lstinline{pred} genutzt um jeweils der Vorgänger jedes Knotens auf dem Graphen betiteln zu können.
+Diese Distanz wird hier als \lstinline{weight} bezeichnet, um zu unterstreichen, dass es nicht die euklidische Distanz ist, sondern diese mit dem \lstinline{warp} Parameter potenziert wird.
+Zuletzt wird \lstinline{pred} genutzt, um jeweils der Vorgänger jedes Knotens auf dem Graphen betiteln zu können.
 
-Daraufhin wird dieser Graph als \lstinline{unvisited} kopiert um alle unbesuchten Punkte festhalten zu können.
+Daraufhin wird dieser Graph als \lstinline{unvisited} kopiert, um alle unbesuchten Punkte festhalten zu können.
 Dieser kopierten Liste wird der \lstinline{anchor} an den Start angefügt\footnote{Mit der \lstinline{id} $-1$ und einer \lstinline{dist} von 0.}.
 
 \begin{lstlisting}[language=JavaScript, caption={Berechnung der \lstinline{dist} Eigenschaft der einzelnen Objekte aus dem Dijkstra-Graphen.}, label={lst:creation_dijkstra_graph}]
@@ -185,8 +185,8 @@ Dadurch, dass die \lstinline{dist} jeweils potenziert wird passiert dies bis all
 \subsection{Nutzung des Korrelationskoeffizienten}
 
 Der Graph erstellt für die Punktwolke einen Pfad für jeden Punkt zu dem \lstinline{anchor}.
-Dieser Pfad soll jetzt dazu genutzt werden um eine Linie zu bilden.
-Die Idee ist, dass wenn man die äu{\ss}ersten Punkte des Graphen nimmt um von diesen zum \lstinline{anchor} wandert, dann werden hierdurch Pfade gebildet, welche keine Ausläufer haben.
+Dieser Pfad soll jetzt dazu genutzt werden, um eine Linie zu bilden.
+Die Idee ist, dass wenn man die äu{\ss}ersten Punkte des Graphen nimmt, um von diesen zum \lstinline{anchor} wandert, dann werden hierdurch Pfade gebildet, welche keine Ausläufer haben.
 
 \begin{lstlisting}[language=JavaScript, caption={Bestimmung der äu{\ss}ersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part1}]
 let ends = this.graph
@@ -216,7 +216,7 @@ Diese Liste wird dann gefiltert, indem der Punkt der jeweils die grö{\ss}te Dis
 
 Dieser Vorgang wird solange wiederholt, bis die \lstinline{ends} Liste leer ist, sodass nurnoch äu{\ss}ere Knoten vorgehalten werden, welche keine gemeinsamen Vorgänger zum \lstinline{anchor} haben.
 
-Diese als \lstinline{winner} bezeichneten Knoten werden dann über ihre Vorgänger iterieren um zu prüfen ob sich mit diesen eine Gerade bilden lässt.
+Diese als \lstinline{winner} bezeichneten Knoten werden dann über ihre Vorgänger iterieren, um zu prüfen ob sich mit diesen eine Gerade bilden lässt.
 
 \begin{lstlisting}[language=JavaScript, caption={Bestimmung der äu{\ss}ersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part2}]
 let lines = [];
