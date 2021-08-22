@@ -1,40 +1,36 @@
 % !TEX root = ../document.tex
 
-\chapter{Informationserhalt aus dem Abgleich zweier Bilder}\label{ch:infoerhalt_aus_abgleich_bilder}
+\chapter{Informationgewinnung aus Videosequenzen}\label{ch:infoerhalt_aus_abgleich_bilder}
 
 \cleanchapterquote{Was kann ich wissen?\\Was soll ich tun?\\Was darf ich hoffen?}{Immanuel Kant}{Kritik der reinen Vernunft}
 
-Das erste Problem das hier untersucht werden soll ist welche Information aus dem Abgleich von Bildern in Bildsequenzen gewonnen werden kann und wie man daraus gewonnene Erkenntnisse auf die zugrundeliegenden mechanismentechnische Strukturen zurückführen kann.
-Deshalb wird statt der vollständigen Rekonstruktion eines Mechansimus zunächst mit einem einzelnem Glied in Form eines einfachen Pendels begonnen.
+Zunächst soll untersucht werden welche Informationen aus Videosequenzen gewonnen und die daraus abgeleiteten Erkenntnisse genutzt werden können.
+Es wird zunächst mit einem einzelnem Glied in Form eines einfachen Pendels gearbeitet.
 Dieses stellt im Grunde ein einzelnes Glied eines beliebigen Mechanismus dar.
-Die korrekte Erkennung eines Pendels ist also eine notwendige Bedingung für einen Ansatz der die Glieder des Mechanismus einzeln betrachtet\footnote{Das gilt im Grunde für alle Mechanismen welche rotierende Elemente beinhalten. Für alle Glieder welche keine Absolutpole besitzen sei die Relativbewegung gegenüber solchen heranziehbar.}.
+Die Methoden zur korrekten Erkennung eines Pendels sind also notwendige Werkzeuge für einen Ansatz der die Glieder eines Mechanismus einzeln betrachtet.
 
-Als zentrales Ziel dieses Kapitels wird die korrekte Bestimmung des Drehpunkts eines Pendels gesetzt; es sei jedoch angemerkt, dass ein Drehpunkt lediglich einen Sonderfall der Bestimmung des Momentanpols darstellt, auf dessen Bestimmung in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen wird.
-Zunächst wird die Erkennung des Drehpols als vereinfachtes Ziel genommen um herauszufinden, welche Information man durch die Beobachtung eines sich bewegenden Elementes gewinnen kann.
+Als zentrales Ziel dieser Methoden wird die Bestimmung des Drehpunkts eines Pendels gesetzt; es sei jedoch angemerkt, dass dieser als Absolutpol lediglich einen Sonderfall des Momentanpols darstellt, auf dessen Bestimmung in Kapitel~\ref{ch:ermittlung_momentanpol} eingegangen wird.
+Die Erkennung des Drehpols wird als vereinfachtes Ziel genommen, um herauszufinden mit welchen Informationen überhaupt gearbeitet werden kann.
 
-Für die Bestimmung des Endpunktes soll zunächst stets der Punkt genommen werden der am weitesten vom Drehpunkt ist.
-Diese Annahme ist für den Anfang hinreichend und wird im Zuge der Zusammensetzung mehrerer Glieder hinfällig, da Gelenke dann zwingend durch die Schnittpunkte entsprechender Glieder definiert sein müssen.
-
-Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden hier stets zwei Bilder miteinander verglichen, welche zeitlich etwa 16,7 Millisekunden auseinanderliegen.
+Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden hier stets zwei Bilder miteinander verglichen, welche zeitlich etwa $16,7$ Millisekunden auseinanderliegen.
 Die Frequenz wird vorgegeben durch \name{requestAnimationFrame} und beträgt im Optimalfall 60 Hertz.
-Dieser Optimalfall sei dadurch definiert, dass die \lstinline{step} Funktion aus \lstinline{run} (s. Listing~\ref{lst:sim_run}) weniger als 16,7 Millisekunden benötigt\footnote{Neben der an \lstinline{run} übergebenen \lstinline{step} Funktion werden natürlich noch andere Funktionen wie \lstinline{model.tick} und \lstinline{updateTimesChart} ausgeführt, diese sollen hier jedoch nicht betrachtet werden. Sie werden daher auch für die Zeitmessung innerhalb von \lstinline{run} ausgeschlossen.}.
+Dieser Optimalfall sei dadurch definiert, dass die \lstinline{step} Funktion aus \lstinline{run} (s. Listing~\ref{lst:sim_run}) weniger als $16,7$ Millisekunden benötigt\footnote{Neben der an \lstinline{run} übergebenen \lstinline{step} Funktion werden natürlich noch andere Funktionen wie \lstinline{model.tick} und \lstinline{updateTimesChart} ausgeführt, diese sollen hier jedoch nicht betrachtet werden. Sie werden daher auch für die Zeitmessung innerhalb von \lstinline{run} ausgeschlossen.}.
 
 \section{compareImages}
 
 Da sich in der modellierten Bildsequenz nur das Pendel bewegt, reicht es aus die Bilder pixelweise zu vergleichen und die Koordinaten der ungleichen Pixel aufzuzeichnen.
 Hierfür wurde eine Funktion \lstinline{stepCompareImages} definiert, welche durch die an die \lstinline{register} Funktion übergebene Funktion aufgerufen wird.
-Diese Funktion ruft den aktuellen Inhalt des ersten HTML-Canvas Elementes durch \lstinline{cnv1.getContext('2d').getImageData(0, 0, cnv1.width, cnv1.height).data} auf und speichert diesen.
-Dieses Bild soll dann mit vorher gespeichertem Bild verglichen werden.
-Da der erste Aufruf dieser Funktion keinen Vergleich mit einem vorangegangen Bild zulässt, wird geprüft ob ein solches existiert und es wird eine Iteration abgewartet bevor der erste Vergleich stattfindet.
+Diese Funktion speichert den aktuellen Inhalt des ersten HTML-Canvas Elementes durch \lstinline{cnv1.getContext('2d').getImageData(0, 0, cnv1.width, cnv1.height).data}.
+Dieses Bild wird dann mit dem in der letzten Iteration gespeichertem Bild verglichen werden.
+Da der erste Aufruf dieser Funktion keinen Vergleich mit einem vorangegangen Bild zulässt, wird geprüft, ob ein solches existiert und es wird eine Iteration abgewartet bevor der erste Vergleich stattfindet.
 
-Für solche Vergleiche wurde eine Klasse \lstinline{PointCloud} definiert.
-Diese Klasse beinhaltet alle Funktionen welche auf und mit Punktwolken in dieser Arbeit benötigt werden.
-Unter anderem wird hier eine \lstinline{fromImages} Funktion bereitgestellt, welche zwei Bilder auf Unterschiede untersucht und anhand derer eine Punktwolke zurückgibt.
+Für solche Vergleiche wird eine Klasse \lstinline{PointCloud} definiert.
+Diese Klasse beinhaltet alle Funktionen, welche auf und mit Punktwolken benötigt werden.
+Unter anderem wird hier eine \lstinline{fromImages} Funktion bereitgestellt, welche zwei Bilder auf Unterschiede untersucht und diese als Punktwolke zurückgibt.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{fromImages} Funktion, welche eine statische Funktion der \lstinline{PointCloud} Klasse darstellt.}, label={lst:PointCloud}]
 fromImages(image1, image2, width, height) {
     const difference = [];
-
     for (let y = 0; y < height; ++y) {
         for (let x = 0; x < width; ++x) {
             const i = y * width + x;
@@ -49,51 +45,35 @@ fromImages(image1, image2, width, height) {
 \end{lstlisting}
 
 Diese Funktion speichert eine \lstinline{difference} Liste, welche jeweils Objekte mit den Koordinaten von gefundenen Unterschieden speichert.
-
-Dieser Ansatz zeichnet sich durch seine Einfachheit aus, hat aber offensichtliche Nachteile.
-
+Dieser Ansatz zeichnet sich durch seine Einfachheit aus, birgt allerdings offensichtliche Nachteile.
 So würden Änderungen die durch Objekte welche trotz Bewegung auf dem Bild für einen Pixel keine Farbänderung verursachen nicht also solche erkannt werden.
 Es werden also nur dort Änderungen erkannt, wo sich die Farbe des entsprechenden Pixels ändert.
-
-Es ist au{\ss}erdem zu beachten, dass dadurch das die reine Änderung der Pixel betrachtet wird jedes sich bewegende Objekt zwei mal dargestellt wird.
-Das liegt daran, dass wenn die beiden Bilder verglichen werden, genau jene Pixel unterschiedlich sind an denen das Pendel im ersten Bild ist und im zweiten nicht mehr ist und genau dort wo das Pendel im zweiten Bild ist und im ersten nicht.
+Es ist au{\ss}erdem zu beachten, dass durch die Betrachtung der reinen Änderung der Pixel sich bewegende Objekte stets zweimal abzeichnen.
+Das liegt daran, dass wenn die beiden Bilder verglichen werden, genau jene Pixel unterschiedlich sind an denen das Pendel im ersten Bild ist und im zweiten nicht mehr ist und umgekehrt.
 Ohne weitere Analyse lässt sich jedoch nicht so einfach bestimmen in welche Richtung sich das Element bewegt hat.
+Au{\ss}erdem ist mit dieser Methode nicht von einer exakten Abmessung auzugehen, sondern die ermittelten Koordinaten ergeben eher eine Art Punktwolke bei der von einer gewissen Streuung auszugehen ist.
 
-Au{\ss}erdem ist mit dieser Methode nicht von einer exakten Abmessung auzugehen, sondern die ermittelten Koordinaten ergeben eher eine Art Punktwolke bei der von einem hohen Ma{\ss} an Unregelmä{\ss}igkeit auszugehen ist.
-
-Es sei an dieser Stelle jedoch lediglich auf diese Nachteile hingewiesen, sodass diese bei Betrachtungen der Ergebnisse berücksichtigt werden können.
-
-An die \lstinline{stepCompareImages} Funktion kann widerrum eine Funktion übergeben werden, welche dann mit dem von \lstinline{fromImages} zurückgegebenen \lstinline{PointCloud} Objekt aufgerufen wird.
-
-Diese Sammlung an Koordinaten wird verwendet um sie auf Regelmä{\ss}igkeiten zu untersuchen.
+An die \lstinline{stepCompareImages} Funktion kann wiederum eine Funktion übergeben werden, welche dann mit dem von \lstinline{fromImages} zurückgegebenen \lstinline{PointCloud} Objekt aufgerufen wird.
+Diese Sammlung an Koordinaten wird verwendet, um sie auf Regelmä{\ss}igkeiten zu untersuchen.
 Wie bereits angemerkt, wird als erstes versucht ein Pendel zu rekonstruieren.
-Im nachfolgenden sollen für diese Aufgabe unterschiedliche Ansätze untersucht werden.
-
-Die Versuche wurden in unterschiedliche Gruppen unterteilt.
-Alle Versuche die mit dem Pendel gemacht werden befinden sich im Verzeichnis \lstinline{src/pendel}.
-
-Die Versuchsgruppe \name{pendel1} beschäftigt sich mit der Untersuchung des kleinsten umfassenden Kreises.
+Im Nachfolgenden sollen für diese Aufgabe unterschiedliche Ansätze untersucht werden.
 
 \section{Bestimmung des kleinsten umfassenden Kreises}
 
-Die Koordinaten von Pixeln für die in zwei Bildern ein unterschied gemessen wird, werden in einem Objekt der dafür erstellten \lstinline{PointCloud} Klasse festgehalten.
-Diese Koordinaten sollten bei der Drehung eines Gliedes um einen festen Punkt einen Bogen definierbar machen, der Aufschluss über die Position dieses Drehpunktes gibt.
-
-Die genaue Bestimmung eines solchen Bogens durch Mittelpunkt, Radius und eingeschlossenem Winkel anhand der Punktwolke zu ermitteln erscheint zunächst schwierig.
+Die Koordinaten von Pixeln für die in zwei Bildern ein Unterschied gemessen wird, werden in einem Objekt der dafür erstellten \lstinline{PointCloud} Klasse festgehalten.
+Diese Koordinaten sollten bei der Drehung eines Gliedes um einen festen Punkt einen Bogen sichtbar machen, der Aufschluss über die Position dieses Drehpunktes gibt.
+Die genaue Bestimmung eines solchen Bogens durch den Mittelpunkt, den Radius und den eingeschlossenen Winkel anhand der Punktwolke zu ermitteln, erscheint zunächst schwierig.
 Stattdessen wird beim ersten untersuchten Ansatz der kleinste Kreis bestimmt, welcher alle bisher gesammelten Datenpunkte umfasst.
-
-Den kleinsten umfassenden Kreis zu ermitteln ist ein Problem für das ein Algorithmus existiert welcher in linearer Zeit\footnote{Das hei{\ss}t die Dauer des Algorithmus steht in linearem Verhältnis zur Menge der Datenpunkte.} durchgeführt werden kann.
+Der kleinste umfassende Kreis kann in linearer Zeit\footnote{Das hei{\ss}t die Dauer des Algorithmus steht in linearem Verhältnis zur Menge der Datenpunkte.} ermittelt werden.
 Der entsprechende Algorithmus wurde von Nimrod Megido~\cite{Megiddo1983} entwickelt und die Implementation wird von \aka{https://github.com/nayuki/Nayuki-web-published-code/blob/master/smallest-enclosing-circle/smallest-enclosing-circle-demo.js} bezogen.
 Eine anschauliche Demo kann unter \aka{https://www.nayuki.io/page/smallest-enclosing-circle}~\cite{Nayuki2021} betrachtet werden.
 
+Um einen solchen Kreis zu bestimmen müssen zunächst die Koordinaten, für die eine Änderung erkannt wurde, festgehalten werden.
+Da zu Beginn der Aufnahme die Region, welche durch die Punkte gefüllt wird, sehr schnell an Fläche zunimmt, ändern sich die Koordinaten und der Radius des Mittelpunktes des kleinsten umfassenden Kreises schnell.
+Sobald sich das drehende Glied einer halben Umdrehung nähert, verändert sich die Definition des kleinsten umfassenden Kreises augenscheinlich gar nicht mehr und dessen Mittelpunkt scheint mit einer sehr kleinen Abweichung dem tatsächlichen Drehpunkt zu entsprechen.
+Es wird bei diesem Versuch der zuletzt ermittelte Mittelpunkt als Drehpunkt der Gliedebene aufgefasst.
 
-Um einen solchen Kreis zu bestimmen müssen zunächst alle Koordinaten für die eine Änderung erkannt wurde in einer Liste festgehalten werden.
-Da zu Beginn der Aufnahme die Region welche durch die Punkte gefüllt wird sehr schnell an Fläche zunimmt, ändern sich die Koordinaten und der Radius des Mittelpunktes des kleinsten umfassenden Kreises relativ schnell.
-Sobald sich das drehende Glied einer halben Umdrehung nähert verändert sich die Definition des kleinsten umfassenden Kreises augenscheinlich garnicht mehr und dessen Mittelpunkt scheint mit einer sehr kleinen Abweichung dem tatsächlichen Drehpunkt zu entsprechen.
-Entsprechend wird bei diesem Versuch der Drehpunkt als der letzte ermittelte Mittelpunkt des Kreises angenommen.
-
-Das andere Ende des Pendels wird vorerst durch den Punkt definiert dessen Distanz die grö{\ss}te zum prognostizierten Drehpunkt ist.
-Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für die eigentliche Aufgabe vorerst irrelevant, da ein Pendel keinen Mechanismus darstellt.
+Zur Visualisierung des Modells wird das andere Ende des Pendels vorerst durch den Punkt definiert der die grö{\ss}te Distanz zum prognostizierten Drehpunkt aufweist.
 
 \begin{figure}
     \centering
@@ -103,44 +83,38 @@ Dies dient nur zur besseren Visualisierung des erkannten Modells und ist für di
     \end{subfigure}
     \begin{subfigure}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{gfx/pendel1_2.png}
-        \caption{Versuch \name{pendel1\_2.html}. Hier werden die Punkte welche nicht zum jeweils kleinsten umfassenden Kreis beitragen gefiltert. Der eingeschlossene Winkel ist jedoch kleiner, weshalb der Mittelpunkt des Kreises nicht dem Drehpunkt entspricht.}\label{fig:pendel1_2}
+        \caption{Versuch \name{pendel1\_2.html}. Hier werden die Punkte welche jeweils nicht zum Kreis beitragen gefiltert. Der eingeschlossene Winkel ist jedoch kleiner, weshalb der Mittelpunkt des Kreises hier nicht dem Drehpunkt entspricht.}\label{fig:pendel1_2}
     \end{subfigure}
     \caption[Versuche \name{pendel1\_1.html} und \name{pendel1\_2.html}]{}
     \label{fig:pendel1_1_2}
 \end{figure}
 
-Im ersten Test zeigt sich jedoch, dass die Menge aller erfassten Punkte zu speichern sehr schnell ein Problem in Bezug auf die Performanz wird.
-Es ist jedoch nicht notwendig alle Punkte zu behalten.
-Die Menge der Punkte die hier gesammelt werden kann in Abbildung~\ref{fig:pendel1_1} gezeigt.
-Für jeden Kreis welcher über den zeitlichen Verlauf gebildet werden können alle Punkte verworfen werden, welche nicht zur Erstellung dieses genutzt wurden.
-Dies sind je nach Verteilung der Punktwolke entweder drei oder auch nur zwei Punkte, da ein Kreis sich genau durch mindestens zwei, aber maximal durch bereits drei Punkte bestimmen lässt.
+Im ersten Versuch zeigt sich, dass die Menge aller erfassten Punkte zu speichern sehr schnell ein Performanzproblem verursacht.
+Es ist glücklicherweise nicht notwendig alle Punkte zu behalten.
+Für jeden Kreis, welcher über den zeitlichen Verlauf gebildet wird, können alle Punkte verworfen werden, welche nicht zur Erstellung dieses Kreises verwendet wurden.
+Dies sind je nach Verteilung der Punktwolke entweder drei oder auch nur zwei Punkte, da ein Kreis genau über zwei oder drei Punkte definierbar ist.
 
-Dafür wurde die Funktion des genutzten Algorithmus angepasst, sodass er nicht mehr nur den Kreis, sondern auch die entsprechenden Koordinaten zurückgibt, welche für die Erstellung des entsprechenden Kreises genutzt wurden\footnote{Die entsprechende Änderung kann auf \aka{https://github.com/klawr/ba/commit/7209dfee5ab0a70470e22862f26f7c45046cd98f} nachvollzogen werden.}.
+Dafür wurde die Funktion des genutzten Algorithmus angepasst, sodass er nicht mehr nur den Kreis, sondern auch die entsprechenden Punkte zurückgibt, welche für die Erstellung des entsprechenden Kreises genutzt wurden\footnote{Die entsprechende Änderung kann auf \aka{https://github.com/klawr/ba/commit/7209dfee5ab0a70470e22862f26f7c45046cd98f} nachvollzogen werden.}.
 Au{\ss}erdem wird nach der Ermittlung des Kreises zwischen den bereits bekannten und der aktuell ermittelten Punktwolke unterschieden, sodass die Liste der bekannten Punkte keine Duplikate enthält.
 
 Diese Anpassung reduziert die Menge der Punkte die im ersten Test in einer Sekunde ermittelt werden von 19880 auf 294 Datenpunkte.
 Von diesen 294 Datenpunkten sind lediglich 69 den bekannten Datenpunkten zuzuordnen.
-Die anderen 225 Punkte lassen sich den gemessenen Veränderungen der letzten beiden verglichenen Bildern zuordnen, was in etwa dem Durchschnitt der Punkte in diesen Tests mit einem Glied dieser Länge entspricht.
-Ein weiterer Vorteil ergibt sich noch dadurch, dass Glieder welche sich mehrfach im selben Winkel befinden keine neuen Einträge zu den bekannten Punkten hinzufügen.
-Ohne diesen Filter würde die Menge der Datenpunkte linear zunehmen, und die Dauer des Algorithmus, dessen Zeit ebenfalls linear zur Menge der Datenpunkte wächst, entsprechend quadratisch wachsen.
-Es zeigt sich, dass in vielen Fällen die Menge der Datenpunkte reduziert werden kann ohne das Einbu{\ss}en bei der Genauigkeit der Versuche in Kauf genommen werden muss.
+Die anderen 225 Punkte lassen sich den gemessenen Veränderungen der letzten beiden verglichenen Bildern zuordnen.
+Es zeigt sich, dass in vielen Fällen die Menge der Datenpunkte reduziert werden kann ohne das Einbu{\ss}en bei der Genauigkeit der Versuche in Kauf genommen werden müssen.
 
-Dieser Ansatz erkennt für ein Glied das sich mindestens $180^\circ$ um den definierten Punkt dreht ein sehr nahe am tatsächlichen Wert gelegenen Drehpunkt.
+Dieser Ansatz erkennt für ein Glied, dass sich mindestens $180^\circ$ um den definierten Punkt dreht ein sehr nahe am tatsächlichen Wert gelegenen Drehpunkt.
 Der offensichtliche Nachteil besteht jedoch darin, dass alle Glieder die sich um weit weniger als $180^\circ$ drehen mit Sicherheit kein gutes Ergebnis liefern, wie im zweiten Test nachvollzogen werden kann.
-
 Nähere Untersuchungen zum kleinsten umfassenden Kreis können jedoch weitere Erkenntnisse bringen.
 Zunächst ist der Pfad welcher vom Mittelpunkt des über die Zeit wachsenden kleinsten umfassenden Kreis interessant.
-Für die ersten $90^\circ$ die sich das Glied dreht bewegt sich der Mittelpunkt auf einer Geraden, die exakt Orthogonal zum Drehpunkt steht.
-Der Abstand zum Drehpunkt ist ebenfalls bekannt, da bekannt ist dass er exakt dem Radius des zuerst gemessenen kleinsten umfassenden Kreises entspricht\footnote{Das ist Äquivalent zur hälfte der Gliedlänge.}.
-Die weiterfolgenden $90^\circ$ durch auf einem Kreisbogen mit dem ersten Mittelpunkt des eben beschriebenen Pfades als Mittelpunkt beschrieben, wobei der Winkel dem des Gliedes entspricht (abzüglich der ersten $90^\circ$).
+Für die ersten $90^\circ$ die sich das Glied dreht, bewegt sich der Mittelpunkt auf einer Linie, die scheinbar Orthogonal zum Drehpunkt steht.
+Der Abstand zum Drehpunkt ist ebenfalls bekannt, da bekannt ist dass er exakt dem Radius des zuerst gemessenen kleinsten umfassenden Kreises entspricht\footnote{Das ist äquivalent zur hälfte der Gliedlänge.}.
+Die weiteren $90^\circ$ werden durch einen Kreisbogen, mit dem ersten Mittelpunkt des eben beschriebenen Pfades, als Mittelpunkt beschrieben.
 Abschlie{\ss}end landet der Mittelpunkt des kleinsten umfassenden Kreises im Drehpunkt des betrachteten Gliedes.
 
-Es kann au{\ss}erdem beobachtet werden, dass der kleinste umfassende Kreis, solange er eine Gerade bildet durch drei Punkte definiert wird\footnote{Mit Ausnahme der ersten Iterationen, wo er allein durch die Endpunkte des Gliedes beschrieben werden kann.}.
+Es kann au{\ss}erdem beobachtet werden, dass der kleinste umfassende Kreis, solange er eine Gerade bildet, durch drei Punkte definiert wird\footnote{Mit Ausnahme der ersten Iteration, wo er allein durch die Endpunkte des Gliedes beschrieben werden kann.}.
 Sobald das Glied jedoch eine Drehung von über $90^\circ$ vollführt, wird der Kreis nurnoch durch zwei Punkte beschrieben.
-Diese drei Punkte sind die beiden Punkte welche für die erste Iteration\footnote{In der Realität ist es mehr als eine Iteration die der Kreis durch nur zwei Punkte definiert wird, dass kann jedoch auf die Ungenauigkeit der Daten zurückgeführt werden mit denen hier gearbeitet wird.} und dem letzten erfassten Endpunkt des Pendels.
-Sobald eine Drehung von über $90^\circ$ vollführt wurde, ist der Kreis der durch den ersten sowie den letzten Drehpunkt definiert wird jedoch grö{\ss}er, weshalb der Drehpunkt selber nicht mehr zum kleinsten umfassenden Kreis beiträgt.
-
-% TODO Zeige dass das 1. wirklich eine Gerade ist und 2. sie wirklich Orthogonal zum Drehpunkt steht.
+Diese drei Punkte sind die beiden Punkte, welche für die erste Iteration\footnote{Tatsächlich wird der Kreis in mehr als nur einer Iteration durch nur zwei Punkte definiert wird, dass kann jedoch auf die Streuung der Daten zurückgeführt werden.} und dem letzten erfassten Endpunkt des Pendels.
+Sobald eine Drehung von über $90^\circ$ vollführt wurde, ist der Kreis, der durch den ersten sowie den letzten Drehpunkt definiert wird, jedoch grö{\ss}er, weshalb der Drehpunkt selber nicht mehr zum Kreis beiträgt.
 
 \begin{figure}
     \centering
@@ -156,10 +130,10 @@ Sobald eine Drehung von über $90^\circ$ vollführt wurde, ist der Kreis der dur
     \label{fig:pendel1_3_4}
 \end{figure}
 
-Aus diesen Erkenntnissen lässt sich jedoch eine Algorithmus bilden, welcher auch für Bewegungen weit unter $90^\circ$ eine hinreichend gute Vorhersage über die Position des Drehpunktes bringt.
-Hierfür wird, solange die Anzahl der Punkte die den zuletzt gebildeten Kreises bei über zwei liegt, die Steigung vom ersten zum letzten Punkt im Pfad des Mittelpunktes des kleinsten umfassenden Kreises gemessen.
+Aus diesen Erkenntnissen lässt sich ein Algorithmus bilden, welcher auch für Bewegungen weit unter $90^\circ$ eine hinreichend gute Vorhersage über die Position des Drehpunktes bringt.
+Hierfür wird, solange die Anzahl der Punkte, die den zuletzt gebildeten Kreises, bei über zwei liegt, die Steigung vom ersten zum letzten Punkt im Pfad des Mittelpunktes des kleinsten umfassenden Kreises gemessen.
 So kann der Drehpunkt erheblich früher mit hinreichender Genauigkeit bestimmt werden.
-Auf die Berechnung wird hier nicht näher eingegangen, weil es sich gezeigt hat, dass obwohl die Erkenntnisse aus diesem Versuch sehr hilfreich sind, der kleinste umfassende Kreis nicht genutzt wird.
+Auf die Berechnung wird hier nicht näher eingegangen, weil es sich gezeigt hat, dass obwohl die Erkenntnisse aus diesem Versuch sehr hilfreich sind, die Methoden zur Ermittlung des kleinsten umfassenden Kreises nicht weiter genutzt werden.
 Der hier genutzte Quellcode kann jedoch unter \aka{https://github.com/klawr/ba/blob/master/src/third_party/smallestEnclosingCircle.js} eingesehen werden.
 
 % TODO entscheide was mit diesem Abschnitt passiert.
@@ -214,17 +188,17 @@ Der hier genutzte Quellcode kann jedoch unter \aka{https://github.com/klawr/ba/b
 
 \section{Schnittpunkte von Geraden}\label{ch:schnittpunkt_gerade}
 
-Als ein weiterer Ansatz soll nun untersucht werden ob der Drehpunkt durch die Schnittpunkte von durch die Punktwolke definierten Geraden ermittelt werden kann.
-Die entsprechende Gerade soll durch die ermittelten Datenpunkte ermittelt werden.
+Als ein weiterer Ansatz soll nun untersucht werden, ob der Drehpunkt durch die Schnittpunkte von durch die Punktwolke definierten Geraden ermittelt werden kann.
+Die entsprechende Gerade soll durch die Punktwolke ermittelt werden.
 
 Zunächst soll die Gerade anhand der am weitesten voneinander entfernten Punkte definiert werden.
-Diese Gerade sollte in etwa den selben Winkel haben wie der Winkel des tatsächlichen Gelenkes.
-Eine Annahme die hierbei implizit getroffen wird, ist dass die Glieder länger sind als sie breit sind, wobei die Länge durch den Abstand der Gelenke definiert ist und die Breite entsprechend durch die Punkte welche orthogonal zu der Längenlinie stehen.
+Diese Gerade sollte in etwa denselben Winkel haben wie der Winkel des tatsächlichen Gelenkes.
+Hierbei wird implizit angenommen, dass die Glieder länger sind als sie breit sind, wobei die Länge durch den Abstand der Gelenke definiert ist und die Breite entsprechend durch den größten Abstand der Punkte orthogonal zu dieser Längenlinie stehen.
 
 Die am weitest voneinander entfernten Punkte einer \lstinline{PointCloud} lassen sich durch die auf dieser Klasse definierten Funktion \lstinline{getMaxDist} finden\footnote{Der entsprechende Quellcode kann unter \aka{https://github.com/klawr/ba/blob/master/src/scripts/pointCloud.js\#L63} eingesehen werden.}.
 In dieser Funktion wird für jeden Punkt der Punkt gesucht, welcher den grö{\ss}ten Abstand zu diesem hat. Es wird au{\ss}erdem festgehalten welches Paar den grö{\ss}ten Abstand hatte.
 Diese beiden Punkte können genutzt werden um ein Objekt der Klasse \lstinline{Line} zu erstellen.
-Diese Klasse stellt in dieser Arbeit alle Funktionen bereit welche für den Umgang mit Geraden benötigt werden.
+Diese Klasse stellt alle Funktionalitäten bereit, welche hier für den Umgang mit Geraden benötigt werden.
 Eine auf diese Weise definierte Gerade wird dann in einer Liste gespeichert und die nächste Iteration folgt.
 Bereits ab der zweiten Iteration können dann die Schnittpunkte dieser Geraden genutzt werden um den Drehpunkt zu bestimmen.
 
@@ -248,8 +222,6 @@ Der Schnittpunkt zweier Geraden berechnet sich durch
 
 Wobei für die Berechnung von $p_y$ entweder die Parameter der ersten, oder zweiten Gerade genommen werden können.
 
-Die Implementation wird in Listing~\ref{lst:line_intersection} gezeigt.
-
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{intersection} Funktion, welche eine Funktion der \lstinline{Line} Klasse darstellt.}, label={lst:line_intersection}]
 intersection(otherLine) {
     const x = (this.b - otherLine.b) / (otherLine.m - this.m);
@@ -260,21 +232,22 @@ intersection(otherLine) {
 
 \subsection{Der Umgang mit Ungenauigkeit}
 
-Im Optimalfall würden alle gemessenen Daten exakt den Punkten entsprechen welche gesucht werden.
-Allerdings ist bei den Messungen mit Ungenauigkeiten zu rechnen.
-Für die Verarbeitung der Daten wurden zwei weitere Klassen erstellt, welche die Daten verwalten die bei der Bestimmung der gesuchten Punkte erforderlich ist.
-Die \lstinline{Data} Klasse wird genutzt um einzelne Datenpunkte zu halten, dessen Erwartungswert, Varianz, Standardabweichung und die Gau{\ss}'sche Normalverteilung zu berechnen.
-Au{\ss}erdem bietet sie Funktionen zur Vorbereitung der Daten für den \lstinline{g2.chart} Befehl an.
+Im Optimalfall würden alle gemessenen Daten exakt den Punkten entsprechen, welche gesucht werden.
+Allerdings ist bei den Messungen mit Streuung zu rechnen.
+Für die Verarbeitung der Daten wurden zwei weitere Klassen erstellt, welche die Daten verwalten, die bei der Bestimmung der gesuchten Punkte erforderlich ist.
+Die \lstinline{Data} Klasse wird genutzt, um Daten zuverwalten.
+Funktionen Erwartungswert, Varianz, Standardabweichung und die Gau{\ss}'sche Normalverteilung zu berechnen werden hier ebenfalls bereitgestellt.
+Au{\ss}erdem bietet sie Funktionen für die Visualisierung der Daten im \lstinline{g2.chart} Befehl.
 
 Die zweite Klasse ist die \lstinline{DataXY} Klasse.
-Sie bietet die Möglichkeit, statt einzelner Werte, Punkte zu verwalten.
+Sie bietet die Möglichkeit statt einzelner Werte Punkte zu verwalten.
 Punkte sind in diesem Fall definiert als Objekte mit den Eigenschaften \lstinline{x} und \lstinline{y}.
-Ein \lstinline{DataXY} Objekt hat die Eigenschaften \lstinline{x} und \lstinline{y}, welche stattdessen als \lstinline{Data} Objekt vorliegen
-\lstinline{DataXY} bietet Funktionen an um diese Werte gemeinsam auf einem \lstinline{g2.chart} zeichnen zu können.
+Ein \lstinline{DataXY} Objekt hat die Eigenschaften \lstinline{x} und \lstinline{y}, welche wiederum als \lstinline{Data} Objekt vorliegen.
+Dementsprechend bietet \lstinline{DataXY} Funktionen an um diese Daten gemeinsam auf einem \lstinline{g2.chart} zeichnen zu können.
 
 In der \lstinline{Data} Klasse ist ein \lstinline{data} Objekt definiert, welches dazu dient die gesammelten Daten zu verwalten.
-Statt eine Liste zu Nutzen wird eine Map verwendet dessen Schlüssel dem Messwert entsprechen und der dazugehörige Wert die Anzahl darstellt wie oft dieser gemessen wurde\footnote{Für mehr Information zu Maps siehe \aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map}.}.
-Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert welche wie folgt aussieht:
+Statt eine Liste zu Nutzen wird eine Map verwendet, dessen Schlüssel Messwerten entsprechen und die dazugehörigen Werte die Anzahl darstellen wie oft diese gemessen wurden\footnote{Für mehr Information zu Maps siehe \aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map}.}.
+Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert, welche wie folgt aussieht:
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}, label={lst:data_add}]
 add(a) {
@@ -285,10 +258,10 @@ add(a) {
 };
 \end{lstlisting}
 
-Die Entscheidung eine Map statt einer Liste zu nutzen bietet bessere Verarbeitungsmöglichkeiten der Daten.
-Es sind beispielsweise weniger Iterationen notwendig um über die Daten zu iterieren.
-Listen bieten jedoch die in dieser Arbeit äußerst praktische \lstinline{reduce} Funktion.
-Diese wurde entsprechend auf der \lstinline{Data} Klasse für diese Map implementiert.
+Die Entscheidung eine Map statt einer Liste zu nutzen basiert auf den handlicheren Verarbeitungsmöglichkeiten der Daten.
+Es sind beispielsweise weniger Iterationen notwendig um über die Daten zu iterieren, wenn der Erwartungswert berechnet werden soll.
+Listen bieten jedoch die in dieser Arbeit häufig verwendete \lstinline{reduce} Funktion.
+Diese wurde entsprechend für die \lstinline{Data} Klasse implementiert.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{reduce} Funktion um die Standardfunktion der Liste nachzubilden}, label={lst:data_reduce}]
 reduce(callback, acc) {
@@ -301,15 +274,12 @@ reduce(callback, acc) {
 }
 \end{lstlisting}
 
-Diese Funktion wird beispielsweise in Listing~\ref{lst:data_mu} genutzt.
 Die Vorhersage eines gesuchten Punktes wird hier stets durch den Erwartungswert aller vorangegangen Messungen bestimmt.
-Der Erwartungswert $\mu$ berechnet sich durch
+Der Erwartungswert $\mu$ wird berechnet durch~\cite[S.~143]{KlausEden2014}
 
 \begin{equation}
     \mu = \frac{1}{n} \sum_{i=1}^n{x_i}
 \end{equation}
-
-Die entsprechende Funktion der \lstinline{Data} Klasse ist in Listing~\ref{lst:data_mu} definiert.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{mu} Funktion, welche den Erwartungswert der Daten in \lstinline{Data} berechnet.},label={lst:data_mu}]
 get mu() {
@@ -325,8 +295,6 @@ Hierfür berechnet sich zunächst die Varianz durch
     \sigma^2 = \frac{1}{n - 1} \sum_{i=1}^n(x_i - \mu)^2
 \end{equation}
 
-Die entsprechende Implementation ist durch Listing~\ref{lst:data_variance} gegeben.
-
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{variance} Funktion, welche die Varianz der Daten in \lstinline{Data} berechnet}, label={lst:data_variance}]
 get variance() {
     const mu = this.mu;
@@ -337,17 +305,14 @@ get variance() {
 \end{lstlisting}
 
 \lstinline{mu} wird hier zwischengespeichert, damit dieser nicht für jede Iteration innerhalb des \lstinline{reduce} aufrufes erneut berechnet werden muss.
-
 Die Standardabweichung $\sigma$ ist entspechend die Quadratwurzel der Varianz.
 
-Um die entsprechenden Ergebnisse mit der Gau{\ss}'schen Normalverteilung zu Vergleichen wurde eine Funktion geschrieben, welche vom \lstinline{g2.chart} genutzt werden kann um diese neben die gesammelten Daten zu zeichnen.
-Die Funktion für die Gau{\ss}'sche Normalverteilung ist gegeben sich durch
+Um die entsprechenden Ergebnisse mit der Gau{\ss}'schen Normalverteilung zu Vergleichen wurde eine Funktion geschrieben, welche vom \lstinline{g2.chart} genutzt werden kann um diese parallell zu den gesammelten Daten zu rendern.
+Die Funktion für die Gau{\ss}'sche Normalverteilung ist gegeben durch
 
 \begin{equation}
     f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}
 \end{equation}
-
-Die entsprechende Implementation ist gegeben durch Listing~\ref{lst:data_gauss}.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{gaussianDistribution} Funktion, welche die Normalverteilung für die gegebene Varianz und den Erwartungswert formt.}, label={lst:data_gauss}]
 gaussianDistribution(x) {
@@ -376,7 +341,7 @@ getChart(limit) {
 };
 \end{lstlisting}
 
-Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung der \lstinline{data} Map um durch \lstinline{g2.chart} dargestellt werden zu können.
+Die \lstinline{alignForChart} Funktion sorgt für die korrekte Formatierung der \lstinline{data} Map um durch \lstinline{g2.chart} dargestellt zu werden.
 Ein entsprechend gezeichneter Graph kann in Abbildung~\ref{fig:normalverteilung} gesehen werden.
 
 \begin{figure}
@@ -388,16 +353,17 @@ Ein entsprechend gezeichneter Graph kann in Abbildung~\ref{fig:normalverteilung}
 
 \subsection{Nutzung des Schwerpunktes mehrerer Datenpunkte}\label{ch:nutzung_des_schwerpunktes}
 
-Idealerweise sollten alle Schnittpunkte der berechneten Geraden die selben Koordinaten haben.
-Wäre dies der Fall, dann wäre die Varianz gleich null und bereits nach zwei Iterationen hätte man ein ideales Ergebnis.
+Idealerweise sollten alle Schnittpunkte der berechneten Geraden dieselben Koordinaten haben.
+Wäre dies der Fall, dann wäre die Varianz gleich null und bereits nach zwei Iterationen hätte man ein optimales Ergebnis.
 Da dies jedoch nicht der Fall ist, wird für jede neue Gerade jeder Schnittpunkt mit den vorangegangen Geraden dem \lstinline{Data} Objekt übergeben.
-Diese Methode liefert schnell einen Erwartungswert der nah an dem tatsächlichen Wert.
+Diese Methode liefert schnell einen Erwartungswert, der nah an dem tatsächlichen Wert.
 Dies gilt auch für vollzogene Winkel weit unter $180^\circ$.
 
-Nachteilig erscheint es, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr stark variiert, da bei dem Vergleich zweier zeitlich aufeinander folgenden Bilder sowohl die Position des ersten, als auch die Position des Pendels im zweiten Bild enthalten ist.
-Um dieses Problem zu behandeln sollen nun der Schwerpunkt mehrerer am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden\footnote{Für die Berechnung des Schwerpunktes wird davon ausgegeangen, dass das Gewicht der Punkte gleich ist. Die Berechnung ist also äquivalent zu der des Erwartungswertes.}.
+Es zeigt sich, dass der Winkel durch die am weitesten voneinander entfernten Punkte sehr starke Streuung aufweisen.
+Da im Abgleich zweier zeitlich aufeinander folgenden Bilder sowohl das Pendel des ersten als auch des zweiten Bildes enthalten ist.
+Um diesem Problem zu entgegenzuwirken sollen nun der Schwerpunkt mehrerer am weitesten auseinander liegenden Punkte ermittelt werden und die Prozedur mit diesen wiederholt werden\footnote{Für die Berechnung des Schwerpunktes wird davon ausgegeangen, dass das Gewicht der Punkte gleich ist. Die Berechnung ist also äquivalent zu der des Erwartungswertes.}.
 
-Die Standardabweichung für die selbe Menge an Iterationen bei der Nutzung des Schwerpunktes der 5 am weitesten auseinanderliegenden Punkte reduziert sich tatsächlich leicht, wie in Abbildung~\ref{fig:pendel2_1_2_stats} gesehen werden kann.
+Die Standardabweichung für dieselbe Menge an Iterationen bei der Nutzung des Schwerpunktes der fünf am weitesten auseinanderliegenden Punkte reduziert sich tatsächlich leicht, wie in Abbildung~\ref{fig:pendel2_1_2_stats} gesehen werden kann.
 
 \begin{figure}
     \centering
@@ -416,8 +382,8 @@ Die Standardabweichung für die selbe Menge an Iterationen bei der Nutzung des S
 
 \section{Bestimmung der Regressionsgeraden}\label{ch:bestimmung_regressionsgerade}
 
-Die Gerade welche den geringsten Fehler gegenüber einer Menge an Punkten darstellt wird als Regressionsgerade bezeichnet.
-Die Berechnung der Regressionsgeraden nach der Gau{\ss}'schen Methode der kleinsten Quadrate wird durch~\cite[S.~694]{Papula2016}
+Die Gerade, welche den geringsten Fehler gegenüber einer Menge an Punkten darstellt, wird als Regressionsgerade bezeichnet.
+Die Regressionsgeraden nach der Gau{\ss}'schen Methode der kleinsten Quadrate wird durch~\cite[S.~694]{Papula2016}
 
 \begin{equation}
     \begin{split}
@@ -430,16 +396,16 @@ Die Berechnung der Regressionsgeraden nach der Gau{\ss}'schen Methode der kleins
 
 berechnet.
 Diese Berechnung unterstellt jedoch einen vernachlässigbar kleinen Fehler auf der X-Achse.
-Dies resultiert hier in der berechneten Gerade wenn sie vertikal sein sollte.
-
+Dies resultiert hier in einer horizontalen Linie wenn sie vertikal sein sollte.
 Die Berechnung durch die Methode der kleinsten Quadate hat jedoch ein anderes Problem aufgezeigt.
-Wenn zwei Bilder die eine Drehung darstellen miteinander verglichen werden, indem jene Pixel behalten werden in denen eine Änderung zu erkennen ist, dann werden typischerweise mehr Änderungen erkannt, je weiter man sich radial von Drehpunkt entfernt.
+Wenn zwei Bilder die eine Drehung darstellen miteinander verglichen werden indem jene Pixel behalten werden in denen eine Änderung zu erkennen ist, dann werden typischerweise mehr Änderungen erkannt, je weiter man sich radial von Drehpunkt entfernt.
 Diese Beobachtung ist nicht überraschend, denn die absolute Geschwindigkeit eines Punktes nimmt mit Abstand zum Drehpunkt zu.
-Diese tatsache sorgt jedoch dafür, dass die Dichte der Punktwolke in einigen Regionen höher ist, was die Berechnung der Regressionsgerade beeinflusst.
+Diese Tatsache sorgt jedoch dafür, dass die Dichte der Punktwolke in einigen Regionen höher ist, was die Berechnung der Regressionsgerade beeinflusst.
 Um dieses Problem zu umgehen soll die Dichte der Punktwolken limitiert werden.
-Diese Überlegung ist inspiriert aus der in der Bilderkennung verwendeten Methode der Non-Max Suppression~\cite{Geron2019}, welche dafür genutzt wird, dass durch Bilderkennung klassifizierte Objekte die direkt nebeneinander liegen gefiltert werden.
-Behalten wird dann jenes Objekt, dass den höchsten Konfidenzwert besitzt.
-Da innerhalb der Punktwolke jedoch nicht mit Konfidenzwerten gearbeitet wird, kann dieser Ansatz stark reduziert werden.
+Diese Überlegung ist inspiriert durch der in der Bilderkennung verwendeten Methode der Non-Max Suppression~\cite[S.~486]{Geron2019}.
+Diese wird verwendet, um durch Bilderkennung klassifizierte Objekte, die direkt nebeneinander liegen, zu filtern.
+Berechnet wird das Objekt dann unter Nutzung eines Konfidenzwertes.
+Da die Punktwolke jedoch keine Konfidenzwerte aufweist, kann dieser Ansatz stark vereinfacht werden.
 Hierfür wurde der \lstinline{PointCloud} Klasse die \lstinline{removeOverlaps} Funktion definiert, welche für ein \lstinline{PointCloud} Objekt ein neues gefiltertes Objekt zurückgibt.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{removeOverlaps} Funktion der \lstinline{PointCloud} Klasse.}, label={lst:pointcloud_removeOverlaps}]
@@ -459,7 +425,7 @@ removeOverlaps(dist = 5) {
 };
 \end{lstlisting}
 
-Um jedoch die Berechnung der Regressionsgerade für diesen Anwendungsfall zu korrigieren wird auf eine andere Methode zurückgegriffen.
+Um die Berechnung der Regressionsgerade für diesen Anwendungsfall zu korrigieren wird auf eine andere Methode zur Berechnung dieser zurückgegriffen.
 
 \subsection{Orthogonale Regression}\label{ch:orthogonale_regression}
 
@@ -474,7 +440,8 @@ Während die vorher angesprochene Regressionsgerade den Abstand der Punkte in Y-
 \end{equation}
 
 Diese Gleichung nutzt die Varianz der einzelnen Datensammlungen um damit die entsprechende Steigung der Geraden zu ermitteln.
-Unter der Berücksichtigung, dass diese bereits Implementationen haben, welche in Listing~\ref{lst:data_variance} nachgesehen werden können, muss hierfür also nurnoch die Ermittlung der Kovarianz $\sigma_{xy}^2$ implementiert werden\footnote{Die Varianz nutzt in ihrer Berechnung jeweils die Menge der Daten. Diese Variable könnte aus der Gleichung gekürzt werden, was in einer abschlie{\ss}enden Implementation berücksichtigt werden sollte um ein paar Rechenschritte zu sparen.}.
+Die Berechnung dieser Parameter kann aus der \lstinline{Data} Klasse wiederverwendet werden, was in Listing~\ref{lst:data_variance} gezeigt wird.
+Hierfür muss also nur noch die Ermittlung der Kovarianz $\sigma_{xy}^2$ implementiert werden\footnote{Die Varianz nutzt in ihrer Berechnung jeweils die Anzahl der Datenpunkte. Diese könnte aus der Gleichung gekürzt werden, was in einer abschlie{\ss}enden Implementation berücksichtigt werden sollte um ein paar Rechenschritte zu sparen.}.
 Diese kann passend der \lstinline{DataXY} Klasse hinzugefügt werden, welche für die Tests die entsprechenden Punkte bereithält.
 
 \begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{covariance} Funktion in der \lstinline{DataXY} Klasse}., label={lst:dataxy_covariance}]
@@ -490,7 +457,7 @@ get() covariance() {
 
 Hier werden die entsprechenden Erwartungswerte analog zu Listing~\ref{lst:data_variance} festgehalten, damit diese nicht öfters ermittelt werden müssen.
 
-Die erzeugung der Regressionsgerade kann dann auf der \lstinline{List} Klasse defniert werden.
+Die Erzeugung der Regressionsgerade wird auf der \lstinline{Line} Klasse defniert werden.
 Die Implementation kann in Listing~\ref{lst:line_fromRegressionLine} nachvollzogen werden.
 
 \begin{lstlisting}[language=JavaScript, caption={Erstellung von \lstinline{Line} Objekten durch die orthogonale Regressionsgerade für Datenpunkte} , label={lst:line_fromRegressionLine}]
@@ -529,46 +496,44 @@ Die so ermittelte Regressionsgerade ist nun für jede Steigung der Punktwolke de
 
 \section{Vergleich des Verlaufes von Randpunkten}\label{ch:vergleich_verlauf_randpunkte}
 
-Die letzte Versuchsreihe die gemacht werden soll ist der Abgleich zweier durch die Punktwolke entstandener Pfade von Punkten.
+Die letzte Versuchsreihe, die gemacht werden soll, ist der Abgleich zweier durch die Punktwolke entstandener Pfade von Punkten.
 Die ausgewählten Punkte bestehen jeweils aus dem Punktepaar mit grö{\ss}ter Distanz pro Abgleich.
-Hierfür wird zur Ermittlung zunächst die selbe Methodik verwendet wie in Kapitel~\ref{ch:schnittpunkt_gerade}.
+Hierfür wird zur Ermittlung zunächst dieselbe Methodik verwendet wie in Kapitel~\ref{ch:schnittpunkt_gerade}.
 
 Allerdings muss hier sichergestellt werden, dass jeweils der korrekte Nachfolger für einen Pfad der dazu gehörigen Liste hinzugefügt wird.
-Der bisherige Ansatz beinhaltet keine Information über die zugehörigkeit von einzelnen Punkten in aufeinander folgenden Bildabgleichen.
-Um den Verlauf von solchen Messdaten über Zeit nutzbar zu machen wurde die \lstinline{Groups} Klasse erstellt.
-Bei diesem Abgleich von Randpunkten ist diese lediglich für die zuordnung dieser in die entsprechenden Messungen der letzten Iterationen verantwortlich.
-Entsprechend wird bei jeder Iteration der Abstand des Punktpaares mit dem letzten Eintrag der entsprechenden Listen verglichen und können so entsprechend zugeordnet werden.
+Der bisherige Ansatz beinhaltet keine Information über die Zugehörigkeit von einzelnen Punkten in aufeinanderfolgenden Bildabgleichen.
+Um den Verlauf solcher Messdaten über Zeit nutzbar zu machen wurde die \lstinline{Groups} Klasse erstellt.
+Entsprechend wird bei jeder Iteration der Abstand des Punktpaares mit dem letzten Eintrag der entsprechenden Listen verglichen und können so entsprechend gruppiert werden.
 Zuständig für diesen Abgleich ist die \lstinline{addPoints} Funktion.
 
-Um mit dieser Information den Drehpunkt des Pendels zu ermitteln reicht es dann aus die Länge des gesamten Pfades zu messen, da der gesamtweg des Mittelpunktes erheblich kürzer sein sollte, als der des Enpunktes.
-Diese Beobachtung hält jedoch dem Test nicht zwingend stand.
-Das liegt vorallem daran, dass die in Kapitel~\ref{ch:bestimmung_regressionsgerade} gemacht Beobachtung, dass je weiter der Abgleich zweier Bilder vom tatsächlichen Drehpunkt entfernt ist die absolute Geschwindigkeit höher und die Dichte der Punktwolke entsprechend in solchen Regionen höher ist.
-Das hat zur Folge das die Fluktuationen erheblich zur Länge des Pfades der Bewegung des ermittelten Mittelpunktes beiträgt.
-
-Wird dieser Umstand versucht mit dem Schwerpunkt der Endpunkte zu behandeln, wie es in Kapitel~\ref{ch:nutzung_des_schwerpunktes}, scheint es diesen Fehler noch zu verstärken.
-Beheben lässt sich dieser indem der kleinte umfassende Kreis um die beiden gesammelten Gruppen gebildet wird und derjeniger mit dem kleinerem Radius den Mittelpunkt darstellt.
+Um mit dieser Information den Drehpunkt des Pendels zu ermitteln reicht es dann aus die Länge des gesamten Pfades zu messen, da der Gesamtweg des Mittelpunktes erheblich kürzer sein sollte, als der des Enpunktes.
+Diese Überlegung entspricht nicht der Beobachtung.
+Das liegt vorallem daran, dass die in Kapitel~\ref{ch:bestimmung_regressionsgerade} gemachte Beobachtung, dass je weiter der Abgleich zweier Bilder vom tatsächlichen Drehpunkt entfernt ist die absolute Geschwindigkeit höher und die Dichte der Punktwolke entsprechend in solchen Regionen höher ist.
+Das hat zur Folge, dass die Streuung der über die Iteration unterschiedlichen Punktwolken erheblich zur Länge des Pfades der Bewegung des eigentlichen Drehpunktes beiträgt.
+Die Nutzung mehrerer maximal distanzierter Punkte, wie es in Kapitel~\ref{ch:nutzung_des_schwerpunktes} gemacht wurde, scheint diesen Fehler zu verstärken.
+Minimieren lässt sich dieser indem der kleinte umfassende Kreis um die beiden gesammelten Gruppen gebildet wird und derjeniger mit dem kleinerem Radius den Mittelpunkt darstellt.
 
 \section{Auswertung der Beobachtungen}
 
-Die hier besprochenen Ansätze haben viele Erkenntnisse eingebracht welche Information aus dem Abgleich zweier Bilder gewonnen werden kann.
-Es wurden für die Struktur der Versuche vier Klassen erstellt welche im Verlauf dieser Arbeit eine zentrale Rolle spielen werden.
+Die hier besprochenen Ansätze haben viele Erkenntnisse gebracht, welche Informationen aus Videosequenzen gewonnen werden können.
+Es wurden für die Struktur der Versuche vier zentrale Klassen implementiert, welche im Verlauf dieser Arbeit eine zentrale Rolle spielen werden\footnote{Es existieren vereinzelt Klassen, welche in Relation zu diesen vier Klassen stehen, wie zum Beispiel \lstinline{DataXY} zu \lstinline{Data}.}.
 
-Die \lstinline{PointCloud} Klasse wird stets dann genutzt, wenn Anhand des Abgleichs zweier Bilder die Punktwolke genutzt werden soll um daraus weitere Informationen zu gewinnen.
-Bisher wird diese vorallem genutzt um die Regressionsgerade zu bilden, jedoch werden in den nachfolgenden Kapiteln weitere Funktionen dieser Klasse genutzt um Beispielsweise die Punkte der Punktwolken einzelner Glieder eines Mechanismus zuzuordnen.
+Die \lstinline{PointCloud} Klasse wird ordnet den Umgang mit Punktwolken.
+Bisher wird diese vorallem genutzt um die Regressionsgerade zu bilden, jedoch werden in den nachfolgenden Kapiteln weitere Funktionen dieser Klasse genutzt um beispielsweise die Punkte der Punktwolken einzelner Glieder eines Mechanismus zuzuordnen.
 
-Die \lstinline{Line} Klasse hat ihren Fokus auf der Verarbeitung aller Methoden welche auf der Basis von Geraden gemacht werden sollen.
+Die \lstinline{Line} Klasse beinhaltet alle Methoden, welche auf der Basis von Geraden gemacht werden können.
 Hier werden Funktionen für die Berechnung der Schnittpunkte definiert, sowie die Berechnung von Winkelhalbierenden zweier Geraden.
-Auch die Ermittlung von Orthogonalen zu einer Geraden wird hier definiert.
+Auch die Ermittlung von Orthogonalen zu einer Geraden und andere Hilfsfunktionen werden hier definiert.
 
-Die \lstinline{Group} Klasse wurde in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} kurz angesprochen, wird allerdings eine grö{\ss}ere Rolle in den nachfolgenden Kapiteln darstellen.
-Die Zuordnung von Punkten im Verlauf über mehrere Iterationen hat sich als ein notwendiges Werkzeug für die Berechnung von Polen herausgestellt.
-Als besonders wichtig hat sich die statistische Analyse der Beobachtungen gezeigt.
+Die \lstinline{Group} Klasse wurde in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} kurz angesprochen, wird allerdings vermehrt in nachfolgenden Kapiteln genutzt.
+Die Zuordnung von Punkten im Verlauf über mehrere Iterationen hat sich als ein notwendiges Werkzeug für die Berechnung von Relativpolen herausgestellt.
 
-Die \lstinline{Data} Klasse beinhaltet alle Funktionen welche zur Berechnung dieser notwendig ist.
-Unter anderem werden Funktionen hierraus auch genutzt, wenn die entsprechenden Kennwerte für die Berechnung anderer Funktionen notwendig ist, wie in Listing~\ref{lst:line_fromRegressionLine} gesehen werden kann.
+Als besonders wichtig hat sich die statistische Analyse der Messungen gezeigt.
+Die \lstinline{Data} Klasse beinhaltet alle Funktionen, welche zur Berechnung dieser notwendig ist.
+Unter anderem werden dessen Methoden auch genutzt, wenn sie für die Berechnung anderer Funktionen hilfreich sind, wie das in Listing~\ref{lst:line_fromRegressionLine} der Fall ist.
 Der Erwartungswert ist der intuitive Ansatz für die Ermittlung der Koordinaten gesuchter Punkte, wenn diese eine Streuung aufweisen.
 Die Standardabweichung ermöglicht es die unterschiedlichen Ansätze qualitativ zu vergleichen.
 
-Jede der hier genannten Klassen hat zudem entsprechende \lstinline{draw} Funktionen, welche es ermöglicht die durch diese Klassen verwalteten Objekte visuell darzustellen um so die Ergebnisse zumeist im zweiten Canvas der Versuchsreihen darzustellen.
+Jede der hier genannten Klassen hat zudem entsprechende \lstinline{draw} Funktionen, welche es ermöglichen die durch diese Klassen verwalteten Objekte visuell darzustellen, um so die Ergebnisse zumeist im zweiten Canvas der Versuchsreihen zu rendern.
 
-Im Nachfolgenden soll noch eine weitere Möglichtkeit untersucht werden nutzbare Information aus Veränderungen in Bildern zu ermitteln.
+Im Folgenden soll noch eine weitere Möglichtkeit untersucht werden nutzbare Information aus Veränderungen in Bildern zu ermitteln, nämlich über die Berechnung des optischen Flusses.
