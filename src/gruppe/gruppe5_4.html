@@ -29,7 +29,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { 'id': 'A0', 'x': 100, 'y': 50, 'base': true },
@@ -44,11 +44,11 @@
             ]
         };
 
-        const { model } = globalTestVariables;
+        const { model } = simulation;
         function cartesian(p) {
             return {
                 x: p.x,
-                y: globalTestVariables.cnv_height - p.y,
+                y: simulation.cnv_height - p.y,
             }
         }
 
@@ -80,10 +80,10 @@
 
             rel.forEach(p => g.nod({ ...p }));
 
-            g.exe(globalTestVariables.ctx2);
+            g.exe(simulation.ctx2);
         }
 
-        globalTestVariables.register(() => fn());
+        simulation.register(() => fn());
     </script>
 </body>
 

@@ -27,7 +27,7 @@
         Durch die Nutzung von orthogonaler Regression ist nun die Gerade auch in der Vertikalen korrekt.
     </p>
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { id: 'A0', x: 149.9, y: 100, base: true },
@@ -70,13 +70,13 @@
                 gnd.y /= pts.length;
 
                 data.fillText(
-                    globalTestVariables.txt2,
-                    globalTestVariables.txt3);
+                    simulation.txt2,
+                    simulation.txt3);
 
                 g.cir({ ...gnd, r: 5 });
 
                 data.add(gnd);
-                data.getChart().exe(globalTestVariables.ctx3);
+                data.getChart().exe(simulation.ctx3);
 
                 if (gnd) {
                     for (let i = 0, max = 0; i < result.length; ++i) {
@@ -99,10 +99,10 @@
 
             filtered.draw(g);
 
-            g.exe(globalTestVariables.ctx2);
+            g.exe(simulation.ctx2);
         };
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        simulation.register(() => stepCompareImages(fn));
     </script>
 </body>
 

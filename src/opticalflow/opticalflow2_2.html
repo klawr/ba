@@ -27,7 +27,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             "nodes": [
                 { "id": "A0", "x": 60, "y": 60, "base": true },
                 { "id": "A", "x": 60, "y": 110 },
@@ -42,12 +42,12 @@
         }
 
         const fn = (result) => {
-            const g = g2().use({ grp: globalTestVariables.g });
+            const g = g2().use({ grp: simulation.g });
             globalOpticalFlow2Variables.group.draw(g, true);
-            g.exe(globalTestVariables.ctx2);
+            g.exe(simulation.ctx2);
         }
 
-        globalTestVariables.register(() =>
+        simulation.register(() =>
             globalOpticalFlow2Variables.group.lucasKanade(fn));
     </script>
 </body>

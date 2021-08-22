@@ -228,7 +228,7 @@ class PointCloud {
             for (let i = 0; i < groups.length; ++i) {
                 groups[i].forEach(e => g.cir({
                     ...e, r: 5,
-                    fs: globalTestVariables.hsv2rgb(i / groups.length * 360)
+                    fs: simulation.hsv2rgb(i / groups.length * 360)
                 })
                 );
             }
@@ -364,7 +364,7 @@ class PointCloud {
                 .filter(d => d.n === i));
 
         g && groups.forEach((c, i) => {
-            const color =  globalTestVariables.hsv2rgb(i / winner.length * 360);
+            const color =  simulation.hsv2rgb(i / winner.length * 360);
             c.forEach(p => g.cir({...p, r: 1, ls: color}));
         });
 
@@ -420,7 +420,7 @@ class PointCloud {
 
 
         g && groups.forEach((c, i) => {
-            const color =  globalTestVariables.hsv2rgb(i / winner.length * 360);
+            const color =  simulation.hsv2rgb(i / winner.length * 360);
             const dijk = new Dijkstra(c, winner[i]);
             dijk.draw(g);
             c.forEach(p => g.cir({...p, r: 3, ls: color + "22", fs: '@ls'}));
@@ -490,7 +490,7 @@ class Dijkstra {
             const pred = this.graph[i].pred;
             const p1 = pred.id < 0 ? this.anchor : this.points[pred.id];
 
-            g.lin({ p1, p2, ls: `${globalTestVariables.hsv2rgb(c)} ` });
+            g.lin({ p1, p2, ls: `${simulation.hsv2rgb(c)} ` });
         })
     }
 
@@ -554,14 +554,14 @@ class Dijkstra {
 }
 
 function stepCompareImages(fn) {
-    const { cnv1 } = globalTestVariables;
-    const gtv = globalTestVariables;
+    const { cnv1 } = simulation;
+    const sim = simulation;
     const new_image = cnv1.getContext('2d').getImageData(0, 0, cnv1.width, cnv1.height).data;
-    if (gtv.temp_image) {
-        const result = PointCloud.fromImages(gtv.temp_image, new_image, cnv1.width, cnv1.height);
+    if (sim.temp_image) {
+        const result = PointCloud.fromImages(sim.temp_image, new_image, cnv1.width, cnv1.height);
 
         fn?.call(undefined, result);
     }
 
-    gtv.temp_image = new_image;
+    sim.temp_image = new_image;
 }

@@ -27,7 +27,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             "nodes": [
                 { "id": "A0", "x": 60, "y": 60, "base": true },
                 { "id": "A", "x": 60, "y": 110 },
@@ -50,10 +50,10 @@
                 globalGruppe2Variables.previousClusters = [cluster[0]];
             }
 
-            g.exe(globalTestVariables.ctx2);
+            g.exe(simulation.ctx2);
         }
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        simulation.register(() => stepCompareImages(fn));
     </script>
 </body>
 

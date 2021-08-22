@@ -26,7 +26,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             "nodes": [
                 { "id": "A0", "x": 60, "y": 60, "base": true },
                 { "id": "A", "x": 60, "y": 110 },
@@ -43,7 +43,7 @@
         const fn = (result) => {
         }
 
-        globalTestVariables.register(() => stepOpenCVFarneback(fn));
+        simulation.register(() => stepOpenCVFarneback(fn));
     </script>
 </body>
 

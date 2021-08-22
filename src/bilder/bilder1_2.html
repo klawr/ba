@@ -25,7 +25,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { id: 'A0', x: 100, y: 0, base: true },
@@ -52,36 +52,36 @@
         video.muted = true;
 
         video.addEventListener('ended', () => {
-            globalTestVariables.model.reset();
+            simulation.model.reset();
         });
 
         // First is used to counter missing cartesian at the beginning...
         let first = true;
 
         function fn() {
-            const gtv = globalTestVariables;
+            const sim = simulation;
             video.play();
 
-            if (!gtv.running) {
+            if (!sim.running) {
                 video.pause();
             }
             if (!first) {
-                gtv.ctx3.transform(1, 0, 0, -1, 0, gtv.cnv_height);
+                sim.ctx3.transform(1, 0, 0, -1, 0, sim.cnv_height);
             }
             first = false;
 
-            gtv.ctx2.drawImage(
-                video, 0, gtv.cnv_height, gtv.cnv_width, -gtv.cnv_height);
+            sim.ctx2.drawImage(
+                video, 0, sim.cnv_height, sim.cnv_width, -sim.cnv_height);
 
             const g = g2();
-            globalTestVariables.model.draw(g.view({ cartesian: true }));
-            gtv.ctx3.drawImage(
-                video, 0, gtv.cnv_height, gtv.cnv_width, -gtv.cnv_height);
+            simulation.model.draw(g.view({ cartesian: true }));
+            sim.ctx3.drawImage(
+                video, 0, sim.cnv_height, sim.cnv_width, -sim.cnv_height);
 
-            g.exe(globalTestVariables.ctx3);
+            g.exe(simulation.ctx3);
         }
 
-        globalTestVariables.register(fn);
+        simulation.register(fn);
     </script>
 </body>
 

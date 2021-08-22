@@ -31,8 +31,8 @@
     </p>
 
     <script>
-        const gtv = globalTestVariables;
-        gtv.g = g2();
+        const sim = simulation;
+        sim.g = g2();
 
         const video = document.createElement('video');
         video.src = '../../gfx/werkzeugkoffer.MP4';
@@ -41,7 +41,7 @@
 
         video.addEventListener('ended', () => {
             ended = true;
-            globalTestVariables.running = false;
+            simulation.running = false;
         });
 
         let ended = false;
@@ -51,15 +51,15 @@
 
 
         function fn(result) {
-            gtv.txt1.innerHTML = 'Tatsächlich: x: 245, y: 15';
+            sim.txt1.innerHTML = 'Tatsächlich: x: 245, y: 15';
             video.play();
 
-            if (!gtv.running) {
+            if (!sim.running) {
                 video.pause();
             }
             if (!ended) {
-                gtv.ctx1.drawImage(video, 0, gtv.cnv_height,
-                    gtv.cnv_width, -gtv.cnv_height);
+                sim.ctx1.drawImage(video, 0, sim.cnv_height,
+                    sim.cnv_width, -sim.cnv_height);
                 const g = g2().clr();
                 data.add(group.momentanpol(50));
 
@@ -67,18 +67,18 @@
                 const y = data.y.reduce((pre, cur) => cur = pre[1] > cur[1] ? pre : cur)[0];
 
                 g.gnd({ x, y });
-                g.cir({ x: 245, y: gtv.cnv_height - 15, r: 10 });
+                g.cir({ x: 245, y: sim.cnv_height - 15, r: 10 });
                 data.draw(g);
-                data.fillText(gtv.txt2, gtv.txt3);
-                gtv.txt2.innerHTML += `, meist gefunden: ${x}`;
-                gtv.txt3.innerHTML += `, meist gefunden: ${gtv.cnv_height - y}`;
+                data.fillText(sim.txt2, sim.txt3);
+                sim.txt2.innerHTML += `, meist gefunden: ${x}`;
+                sim.txt3.innerHTML += `, meist gefunden: ${sim.cnv_height - y}`;
                 group.draw(g, true);
-                g.exe(gtv.ctx2);
-                data.getChart().exe(gtv.ctx3);
+                g.exe(sim.ctx2);
+                data.getChart().exe(sim.ctx3);
             }
         }
 
-        gtv.register(() => group.stepBisector(fn));
+        sim.register(() => group.stepBisector(fn));
     </script>
 </body>
 

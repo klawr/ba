@@ -1,5 +1,5 @@
 
-const globalTestVariables = {
+const simulation = {
     cnv_width: 320,
     cnv_height: 180,
     txt1: undefined,

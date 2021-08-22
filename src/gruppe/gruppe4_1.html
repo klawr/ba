@@ -30,7 +30,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             "nodes": [
                 { "id": "A0", "x": 60, "y": 60, "base": true },
                 { "id": "A", "x": 60, "y": 110 },
@@ -61,8 +61,8 @@
                 groups.forEach((c, i) => {
                     c.lines.push(lines[i]);
                     c.lucasKanade();
-                    data[i].add(c.momentanpol(5, 1));
-                    const color = globalTestVariables.hsv2rgb(i / groups.length * 360);
+                    data[i].add(c.momentanpol(10, 1));
+                    const color = simulation.hsv2rgb(i / groups.length * 360);
                     data[i].pts.forEach(p => g.cir({ ...p, r: 3, fs: color, ls: '@fs' }));
                     data[i].drawDeviation(g);
                 });
@@ -70,29 +70,35 @@
 
             const h = g2().clr();
 
-
             const copy = [...data];
             const meh = data.map(e => e.covariance);
             const idx = meh.indexOf(Math.max(...meh));
             const noGnd = copy.splice(idx, 1)[0];
 
-            copy.forEach(d => h.gnd({...d.mu}));
-            h.cir({...noGnd.mu, r: 5, label: (noGnd.x.mu + noGnd.y.mu) / 2});
+            console.log(idx);
+
+            copy.forEach(d => h.gnd({ ...d.mu }));
+            h.cir({ ...noGnd.pts[noGnd.pts.length - 1], r: 5, fs: '#1115' });
 
             const rel = [];
             const len = groups[0].lines.length;
-            for (let i = 0; i < groups.length; ++i) {
+            groups.forEach((gr, i) => {
                 for (j = i + 1; j < groups.length; ++j) {
-                    rel.push(groups[i].lines[len - 1]
-                        .intersection(groups[j].lines[len - 1]));
+                    const p2 = gr.lines[len - 1].intersection(
+                        groups[j].lines[len - 1])
+                    rel.push(p2);
+
+                    if (j === idx) {
+                        h.bar({ p1: data[i].mu, p2 }).nod({ ...p2 });
+                    }
                 }
-            }
-            rel.forEach(r => h.nod({...r}));
-            h.exe(globalTestVariables.ctx3);
-            g.exe(globalTestVariables.ctx2);
+            });
+            rel.forEach(p => h.cir({ ...p, r: 10, fs: '#ff05' }));
+            h.exe(simulation.ctx3);
+            g.exe(simulation.ctx2);
         }
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        simulation.register(() => stepCompareImages(fn));
     </script>
 </body>
 

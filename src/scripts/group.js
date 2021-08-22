@@ -26,7 +26,7 @@ class Group {
 
     // NOTE CAREFUL THIS CREATES FALSE POSITIVES FOR ROTATION AND TRANSLATION
     stepBisector(fn, frames = 1) {
-        const frame = cv.imread(globalTestVariables.cnv1);
+        const frame = cv.imread(simulation.cnv1);
         this.addPoints(this.lk.step(frame));
 
         const len = this.pts[0]?.length;
@@ -39,18 +39,18 @@ class Group {
     }
 
     regressionLine() {
-        const { cnv1 } = globalTestVariables;
-        const gtv = globalTestVariables;
+        const { cnv1 } = simulation;
+        const sim = simulation;
         const new_image = cnv1.getContext('2d')
             .getImageData(0, 0, cnv1.width, cnv1.height).data;
         let pts;
-        if (gtv.temp_image) {
+        if (sim.temp_image) {
             pts = PointCloud.fromImages(
-                gtv.temp_image, new_image, cnv1.width, cnv1.height);
+                sim.temp_image, new_image, cnv1.width, cnv1.height);
             this.lines.push(Line.fromRegressionLine(pts));
         }
 
-        gtv.temp_image = new_image;
+        sim.temp_image = new_image;
 
         return pts;
     }
@@ -102,7 +102,7 @@ class Group {
     }
 
     lucasKanade(fn) {
-        const frame = cv.imread(globalTestVariables.cnv1);
+        const frame = cv.imread(simulation.cnv1);
         this.addPoints(this.lk.step(frame));
         fn?.call();
     }
@@ -134,7 +134,7 @@ class Group {
     }
 
     draw(g, history) {
-        const { width, hsv2rgb } = globalTestVariables;
+        const { width, hsv2rgb } = simulation;
 
         const line = this.lines[this.lines.length - 1];
         const pts = this.pts?.map(p => p[p.length - 1]);

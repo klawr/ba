@@ -1,23 +1,23 @@
 
-const gtv = globalTestVariables;
+const sim = simulation;
 
 const globalGruppe2Variables = {
     tmp: new cv.Mat(),
     prvs: new cv.Mat(),
-    magLimit: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1, new cv.Scalar(5)),
+    magLimit: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_32FC1, new cv.Scalar(5)),
 
     hsv: new cv.Mat(),
-    hsv0: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC1),
-    hsv1: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC1, new cv.Scalar(255)),
-    hsv2: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC1),
+    hsv0: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_8UC1),
+    hsv1: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_8UC1, new cv.Scalar(255)),
+    hsv2: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_8UC1),
     hsvVec: new cv.MatVector(),
-    next: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC1),
-    flow: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC2),
+    next: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_8UC1),
+    flow: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_32FC2),
     flowVec: new cv.MatVector(),
-    mag: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1),
-    ang: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_32FC1),
-    rgb: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC3),
-    irgb: new cv.Mat(gtv.cnv_height, gtv.cnv_width, cv.CV_8UC3),
+    mag: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_32FC1),
+    ang: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_32FC1),
+    rgb: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_8UC3),
+    irgb: new cv.Mat(sim.cnv_height, sim.cnv_width, cv.CV_8UC3),
     frame1: undefined,
 }
 
@@ -27,7 +27,7 @@ globalGruppe2Variables.hsvVec.push_back(globalGruppe2Variables.hsv2);
 
 
 function stepOpenCVFarneback(fn) {
-    const { cnv1, ctx2 } = globalTestVariables;
+    const { cnv1, ctx2 } = simulation;
     const { prvs, next, flow, flowVec, ang, hsv, hsv0, hsv2, mag, magLimit, hsvVec, rgb, irgb } = globalGruppe2Variables;
 
     const frame2 = cv.imread(cnv1);

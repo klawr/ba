@@ -52,7 +52,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. -->
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             id: 'pumpjack',
             nodes: [
                 { id: 'A0', x: 284.8, y: 223.2, base: true },
@@ -96,10 +96,10 @@ SOFTWARE. -->
             return this;
         };
 
-        globalTestVariables.cnv_height = 600;
-        globalTestVariables.cnv_width = 600;
+        simulation.cnv_height = 600;
+        simulation.cnv_width = 600;
 
-        globalTestVariables.g.view({ x: -100, y: -50 })
+        simulation.g.view({ x: -100, y: -50 })
         let previousClusters = null;
         const k = 3;
 
@@ -114,11 +114,11 @@ SOFTWARE. -->
             if (cluster[1].filter(g => g.length).length === k) {
                 cluster[1].forEach(e => Line.fromRegressionLine(e, g));
             }
-            g.exe(globalTestVariables.ctx2);
+            g.exe(simulation.ctx2);
         }
 
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        simulation.register(() => stepCompareImages(fn));
     </script>
 </body>
 

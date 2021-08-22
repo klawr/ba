@@ -31,7 +31,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { id: 'A0', x: 150, y: 90, base: true },
@@ -49,11 +49,11 @@
             group.draw(g, true);
             data.add(group.momentanpol());
             data.draw(g);
-            data.getChart(false).exe(globalTestVariables.ctx3);
-            g.exe(globalTestVariables.ctx2);
+            data.getChart(false).exe(simulation.ctx3);
+            g.exe(simulation.ctx2);
         };
 
-        globalTestVariables.register(() =>
+        simulation.register(() =>
             globalMomentanpol4Variables.group.stepBisector(fn));
     </script>
 </body>

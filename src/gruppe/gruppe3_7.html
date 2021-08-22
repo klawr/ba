@@ -30,7 +30,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { 'id': 'A0', 'x': 100, 'y': 20, 'base': true },
@@ -62,10 +62,10 @@
                 cluster[1] = Line.realignGroups(cluster[1], g);
                 cluster[1].forEach(e => Line.fromRegressionLine(e, g));
             }
-            g.exe(globalTestVariables.ctx2);
+            g.exe(simulation.ctx2);
         }
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        simulation.register(() => stepCompareImages(fn));
     </script>
 </body>
 

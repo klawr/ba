@@ -24,7 +24,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { id: 'A0', x: 100, y: 0, base: true },
@@ -44,17 +44,17 @@
 
         const image = {
             uri: '../../gfx/werkzeugkoffer.png',
-            b: globalTestVariables.cnv_width,
-            h: globalTestVariables.cnv_height
+            b: simulation.cnv_width,
+            h: simulation.cnv_height
         };
 
-        globalTestVariables.g.img(image);
+        simulation.g.img(image);
 
-        globalTestVariables.register(() => {
-            g2().img(image).exe(globalTestVariables.ctx2);
+        simulation.register(() => {
+            g2().img(image).exe(simulation.ctx2);
             const g = g2().clr().view({cartesian: true});
-            globalTestVariables.model.draw(g);
-            g.exe(globalTestVariables.ctx3);
+            simulation.model.draw(g);
+            g.exe(simulation.ctx3);
         });
     </script>
 </body>

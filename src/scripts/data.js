@@ -70,12 +70,12 @@ class Data {
     }
 
     getChart(limit, gaussian = true, align = true) {
-        const gtv = globalTestVariables;
+        const sim = simulation;
         const data = align ? this.alignForChart(limit) : this.arr;
         const fn = (i) => gaussian ? this.gaussianDistribution(i) : [];
 
         return g2().clr().view({ cartesian: true }).chart({
-            x: 20, y: 20, b: gtv.cnv_width - 40, h: gtv.cnv_height - 30,
+            x: 20, y: 20, b: sim.cnv_width - 40, h: sim.cnv_height - 30,
             funcs: [{ data }, { fn, dx: 1 },],
             xaxis: {}, yaxis: {},
         });
@@ -101,17 +101,17 @@ class DataXY {
 
     fillText(el1, el2) {
         this.x.fillText(el1, "x");
-        this.y.fillText(el2, "y", globalTestVariables.cnv_height);
+        this.y.fillText(el2, "y", simulation.cnv_height);
     }
 
     add(a, save = true) {
         if (!a) return;
-        const gtv = globalTestVariables;
+        const sim = simulation;
         if (!save || (
             a.x > 0 &&
             a.y > 0 &&
-            a.x < gtv.cnv_width &&
-            a.y < gtv.cnv_height)) {
+            a.x < sim.cnv_width &&
+            a.y < sim.cnv_height)) {
             this.pts.push(a);
             this.x.add(a.x);
             this.y.add(a.y);
@@ -119,10 +119,10 @@ class DataXY {
     };
 
     getChart(showX = true, showY = true, options = {}) {
-        const gtv = globalTestVariables;
+        const sim = simulation;
 
-        const x = showX ? this.x.alignForChart(gtv.cnv_width) : [];
-        const y = showY ? this.y.alignForChart(gtv.cnv_height) : [];
+        const x = showX ? this.x.alignForChart(sim.cnv_width) : [];
+        const y = showY ? this.y.alignForChart(sim.cnv_height) : [];
 
         const fnX = showX ?
             (i) => this.x.gaussianDistribution(i) :
@@ -132,7 +132,7 @@ class DataXY {
             () => { };
 
         return g2().clr().view({ cartesian: true }).chart({
-            x: 20, y: 20, b: gtv.cnv_width - 40, h: gtv.cnv_height - 30,
+            x: 20, y: 20, b: sim.cnv_width - 40, h: sim.cnv_height - 30,
             funcs: [{ data: x }, { data: y },
             { fn: fnY, dx: 1 }, { fn: fnX, dx: 1 }
             ],

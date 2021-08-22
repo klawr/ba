@@ -28,7 +28,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { id: 'A0', x: 149.9, y: 100, base: true },
@@ -58,10 +58,10 @@
             filtered.draw(g);
 
             g.lin({ x1: 0, y1: b, x2: 300, y2: m * 300 + b });
-            g.exe(globalTestVariables.ctx2)
+            g.exe(simulation.ctx2)
         };
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        simulation.register(() => stepCompareImages(fn));
     </script>
 </body>
 

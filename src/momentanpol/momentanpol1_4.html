@@ -43,12 +43,12 @@
             group.draw(g, true);
             data.add(group.momentanpol(20));
             data.draw(g);
-            data.getChart(0, 1, {ymax: 0.3}).exe(globalTestVariables.ctx3);
-            data.y.fillText(globalTestVariables.txt2, "y", globalTestVariables.cnv_height)
-            g.exe(globalTestVariables.ctx2);
+            data.getChart(0, 1, {ymax: 0.3}).exe(simulation.ctx3);
+            data.y.fillText(simulation.txt2, "y", simulation.cnv_height)
+            g.exe(simulation.ctx2);
         };
 
-        globalTestVariables.register(() =>
+        simulation.register(() =>
             globalMomentanpol1Variables.group.stepRegression(fn));
     </script>
 </body>

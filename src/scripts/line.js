@@ -50,9 +50,9 @@ class Line {
     draw(g, opts) {
         g.lin({
             x1: 0,
-            x2: globalTestVariables.cnv_width,
+            x2: simulation.cnv_width,
             y1: this.b,
-            y2: this.m * globalTestVariables.cnv_width + this.b,
+            y2: this.m * simulation.cnv_width + this.b,
             ...opts
         });
     }
@@ -109,9 +109,9 @@ class Line {
 
         g?.lin({
             x1: 0,
-            x2: globalTestVariables.cnv_width,
+            x2: simulation.cnv_width,
             y1: b,
-            y2: m * globalTestVariables.cnv_width + b
+            y2: m * simulation.cnv_width + b
         });
 
         return !(Number.isNaN(m) || Number.isNaN(b)) ?
@@ -149,7 +149,7 @@ class Line {
             });
 
         g && newGroups.forEach((c, i) => {
-            const color = globalTestVariables.hsv2rgb(i / copy.length * 360);
+            const color = simulation.hsv2rgb(i / copy.length * 360);
             c.forEach(p => {
                 g.cir({ ...p, r: 3, ls: color, fs: '@ls' });
             });

@@ -32,7 +32,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { id: 'A0', x: 150, y: 90, base: true },
@@ -54,13 +54,13 @@
 
             data.draw(g);
             data.drawDeviation(g);
-            data.getChart(1, 1, { ymax: 0.25 }).exe(globalTestVariables.ctx3);
-            data.fillText(globalTestVariables.txt2, globalTestVariables.txt3);
+            data.getChart(1, 1, { ymax: 0.25 }).exe(simulation.ctx3);
+            data.fillText(simulation.txt2, simulation.txt3);
 
-            g.exe(globalTestVariables.ctx2);
+            g.exe(simulation.ctx2);
         };
 
-        globalTestVariables.register(() =>
+        simulation.register(() =>
             globalMomentanpol2Variables.group.stepRegression(fn));
     </script>
 </body>

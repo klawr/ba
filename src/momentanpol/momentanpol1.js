@@ -13,7 +13,7 @@ const globalMomentanpol1Variables = {
 
 function roll(n = 1) {
     const gmv = globalMomentanpol1Variables;
-    const { cnv_height, g } = globalTestVariables;
+    const { cnv_height, g } = simulation;
 
     const w = globalMomentanpol1Variables.i / 180 * Math.PI;
     g.del().clr()

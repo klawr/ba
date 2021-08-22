@@ -26,7 +26,7 @@
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { id: 'A0', x: 80, y: 120, base: true },
@@ -47,10 +47,10 @@
             const groups = filtered.groupUp(g);
             filtered.draw(g);
 
-            g.exe(globalTestVariables.ctx2);
+            g.exe(simulation.ctx2);
         }
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        simulation.register(() => stepCompareImages(fn));
     </script>
 </body>
 

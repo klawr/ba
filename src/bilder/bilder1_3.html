@@ -25,8 +25,8 @@
     </p>
 
     <script>
-        const gtv = globalTestVariables;
-        gtv.g = g2();
+        const sim = simulation;
+        sim.g = g2();
 
         const video = document.createElement('video');
         video.src = '../../gfx/werkzeugkoffer.MP4';
@@ -35,7 +35,7 @@
 
         video.addEventListener('ended', () => {
             ended = true;
-            globalTestVariables.running = false;
+            simulation.running = false;
         });
 
         let ended = false;
@@ -43,19 +43,19 @@
         function fn(result) {
             video.play();
 
-            if (!globalTestVariables.running) {
+            if (!simulation.running) {
                 video.pause();
             }
             if (!ended) {
-                gtv.ctx1.drawImage(video, 0, gtv.cnv_height,
-                    gtv.cnv_width, -gtv.cnv_height);
+                sim.ctx1.drawImage(video, 0, sim.cnv_height,
+                    sim.cnv_width, -sim.cnv_height);
                 const g = g2().clr();
                 result?.removeOverlaps(10).draw(g)
-                g.exe(gtv.ctx2);
+                g.exe(sim.ctx2);
             }
         }
 
-        gtv.register(() => stepCompareImages(fn));
+        sim.register(() => stepCompareImages(fn));
     </script>
 </body>
 

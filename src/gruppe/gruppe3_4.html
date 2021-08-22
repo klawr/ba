@@ -21,14 +21,13 @@
     <script src='../scripts/line.js'></script>
     <script src='../scripts/pointCloud.js'></script>
     <script src="../scripts/data.js"></script>
-    <script src='gruppe1.js'></script>
 
     <p>
         Test zur Unterscheidung der Glieder eines Mechanismus'.
     </p>
 
     <script>
-        globalTestVariables.model = {
+        simulation.model = {
             gravity: true,
             nodes: [
                 { 'id': 'A0', 'x': 100, 'y': 20, 'base': true },
@@ -47,8 +46,6 @@
             ]
         };
 
-        const { ply } = globalGruppe1Variables;
-
         const fn = (result) => {
             const filtered = result.removeOverlaps(5);
 
@@ -58,12 +55,11 @@
             dijkstras.draw(g);
             dijkstras.groupsByCorrelation(g, 0.6, 0.05);
             filtered.draw(g);
-            filtered.points.forEach(r => ply.push({ ...r }));
 
-            g.exe(globalTestVariables.ctx2);
+            g.exe(simulation.ctx2);
         }
 
-        globalTestVariables.register(() => stepCompareImages(fn));
+        simulation.register(() => stepCompareImages(fn));
     </script>
 </body>
 
