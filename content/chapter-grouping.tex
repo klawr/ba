@@ -10,7 +10,7 @@ Es ist entsprechend notwendig bevor man die bereits besprochenen Methoden anwend
 Die hier untersuchten Mechanismen folgen der Getriebedefinition aus~\cite[G167]{Grote2014} mit genau einem angetriebenem Glied.
 Für eine solche Zuordnung von Gliedern werden verschiedene Ansätze untersucht.
 
-\section{Zuordnung von Linien an Punkte}
+\section{Zuordnung von Linien an Punkte}\label{ch:naive_grouping_approach}
 
 Der zuerst untersuchte Ansatz geht von der Annahme aus, dass sich alle Punkte in etwa um sich auf Linien zurückzuführende Glieder herum befinden.
 Diese Annahme ist ähnlich wie bei den vorangegangen Methoden, dass die Glieder immer länger sind als sie breit sind (s. Kapitel~\ref{ch:schnittpunkt_gerade}).
@@ -103,15 +103,15 @@ Dies wird jedoch an dieser Stelle nicht mehr getan.
 \section{\name{Dijkstra} Algorithmus}\label{ch:dijkstra}
 
 Die letzte Variante die hier untersucht werden soll, um die Glieder des Mechanismus in entsprechende Gruppen zu zerteilen ist die Zuordnung aller Datenpunkte zueinander.
-Hierfür soll das \lstinline{PointCloud} Objekt in einen vollständigen Graphen überführt werden, auf welchem dann über den \name{Dijkstra-Algorithmus} die kürzesten Pfade ermittelt.
+Hierfür soll das \lstinline{PointCloud} Objekt in einen vollständigen Graphen überführt werden, auf welchem dann über eine Implementation des \name{Dijkstra-Algorithmus} die kürzesten Pfade ermittelt werden.
 Anschlie{\ss}end werden diese Pfade genutzt, um Geraden zu definieren, welche dann Rückschluss auf die zugrundeliegenden Gruppen geben können.
 
-Zur Durchführung des \name{Dijkstra} Algorithmus wurde die \lstinline{Dijkstra} Klasse definiert.
-Der Konstruktor dieser Klasse nimmt hierfür ein \lstinline{PointCloud} Objekt und einen Punkt entgegen\footnote{Ein Punkt sei definiert als Objekt mit den Eigenschaften \lstinline{x} und \lstinline{y}.} entgegen, welcher hier als \lstinline{anchor} bezeichnet werden soll.
+Zur Durchführung des \name{Dijkstra} Algorithmus wurde die \lstinline{Dijkstra} Klasse erstellt.
+Der Konstruktor dieser Klasse nimmt hierfür ein \lstinline{PointCloud} Objekt und optional einen Punkt entgegen\footnote{Ein Punkt sei definiert als Objekt mit den Eigenschaften \lstinline{x} und \lstinline{y}. Wird kein Punkt übergeben wird als \lstinline{anchor} ein Punkt der \lstinline{PointCloud} genommen.} entgegen, welcher hier als \lstinline{anchor} bezeichnet werden soll.
 Ziel ist es den kürzesten Pfad zu bestimmen, um vom \lstinline{anchor} zu jedem Punkt des übergebenen \lstinline{PointCloud} Objektes zu gelangen.
 Der offensichtliche kürzeste Weg ist laut der Dreiecksungleichung natürlich immer der direkte Weg vom \lstinline{anchor} zum entsprechenden Punkt.
 Deshalb sollen die Distanzen zwischen den Werten jeweils potenziert werden.
-An den Konstruktur kann dafür der Parameter \lstinline{warp} übergeben werden, welcher standardmä{\ss}ig den Wert zwei einnimmt.
+An den Konstruktor kann dafür der Parameter \lstinline{warp} übergeben werden, welcher standardmä{\ss}ig den Wert zwei einnimmt.
 Eine hohe Potenzierung begünstigt entsprechend Pfade über mehr Knoten des Graphen.
 Hierfür wird der Graph gebildet indem alle Objekte des übergebenen \lstinline{PointCloud} Objektes in ein Objekt überführt werden.
 
@@ -143,13 +143,13 @@ const graph = points.map((p, id) => ({
 
 Die \lstinline{id} entspricht dem Index des Punktes innerhalb der \lstinline{points} Liste.
 \lstinline{dist} beschreibt die Distanz, welche zum entsprechendem \lstinline{anchor} ermittelt wurde.
-Hierbei ist zu beachten, dass es sich nicht um die tatsächliche Distanz, sondern um die Summe der Einzelpfade handelt, welche jeweils mit \lstinline{warp} potenziert werden.
+Hierbei ist zu beachten, dass es sich nicht um die euklidische Distanz, sondern um die Summe der durch \lstinline{warp} beeinflussten Einzelpfade handelt.
 Diese Wert ist also eher als Wert zum Vergleichen mit anderen Punkten zu verstehen.
 Er ist initial \lstinline{Infinity}, damit er später bis zum kleinsten gefundenen Pfad reduziert werden kann.
 \lstinline{known} wird genutzt, um bei der Berechnung jene Punkte überspringen zu können dessen \lstinline{dist} Wert bereits ermittelt wurde.
 Die \lstinline{edges} Eigenschaft hält von jedem Punkt jeden anderen Punkt mittels des entsprechenden Index und der Distanz vor.
-Diese Distanz wird hier als \lstinline{weight} bezeichnet, um zu unterstreichen, dass es nicht die euklidische Distanz ist, sondern diese mit dem \lstinline{warp} Parameter potenziert wird.
-Zuletzt wird \lstinline{pred} genutzt, um jeweils der Vorgänger jedes Knotens auf dem Graphen betiteln zu können.
+Diese Distanz wird hier als \lstinline{weight} bezeichnet, um zu unterstreichen, dass es nicht die euklidische Distanz wiederspiegelt, sondern diese mit dem \lstinline{warp} Parameter potenziert wird.
+Zuletzt wird \lstinline{pred} genutzt, um jeweils der Vorgänger jedes Knotens auf dem Graphen ermitteln zu können.
 
 Daraufhin wird dieser Graph als \lstinline{unvisited} kopiert, um alle unbesuchten Punkte festhalten zu können.
 Dieser kopierten Liste wird der \lstinline{anchor} an den Start angefügt\footnote{Mit der \lstinline{id} $-1$ und einer \lstinline{dist} von 0.}.
@@ -172,20 +172,19 @@ while (unvisited.length) {
 }
 \end{lstlisting}
 
-Hier wird es sich zu nutze gemacht, dass Obwohl die Liste \lstinline{unvisited} nur eine Kopie von \lstinline{graph} ist, die Referenzen der einzelnen darin enthaltenen Objekte jedoch jeweils die selben sind.
-So können die Elemente in \lstinline{unvisited} dort jeweils der \lstinline{dist} nach aufsteigend sortiert und verschoben werden und die Objekte in \lstinline{graph} werden hierbei mit Information gefüllt.
-Das Sortieren lässt die Objekte mit aufsteigener Distanz in \lstinline{unvisited} erscheinen.
+Hier wird es sich zunutze gemacht, dass Obwohl die Liste \lstinline{unvisited} nur eine Kopie von \lstinline{graph} ist, die Referenzen der einzelnen darin enthaltenen Objekte jedoch jeweils die selben sind.
+So können die Elemente in \lstinline{unvisited} dort jeweils der \lstinline{dist} nach aufsteigend sortiert und verschoben werden und die Objekte in \lstinline{graph} werden hierbei mit den Berechnungen aktualisiert.
 Das erste Objekt wird entsprechend aus der Liste entfernt und die \lstinline{known} Eigenschaft wird auf \lstinline{true} gesetzt.
-Bei der ersten Iteration ist dies in jedem Fall \lstinline{anchor}.
+Bei der ersten Iteration ist dies in jedem Fall \lstinline{anchor}, da \lstinline{dist} offensichtlich $0$ ist.
 Daraufhin wird für jedes Element in der \lstinline{edges} Liste des entsprechenden Punktes die Distanz mit seiner eigenen addiert.
 Nach der ersten Iteration ist also davon auszugehen, dass jeder Punkt direkt mit dem \lstinline{anchor} verbunden ist.
 Bei der zweiten Iteration werden alle Punkte aus \lstinline{unvisited} wieder sortiert und jeder Punkt der nun zusammen mit der Distanz dieses Punktes eine kürzere Distanz aufweist wird seinen \lstinline{dist} und entsprechend den \lstinline{pred} Wert aktualisieren.
-Dadurch, dass die \lstinline{dist} jeweils potenziert wird passiert dies bis alle Punkte durchlaufen wurden.
+Dadurch, dass die \lstinline{dist} jeweils potenziert werden, werden hier für die Aufgabe nutzbare Pfade ermittelt.
 
 \subsection{Nutzung des Korrelationskoeffizienten}
 
-Der Graph erstellt für die Punktwolke einen Pfad für jeden Punkt zu dem \lstinline{anchor}.
-Dieser Pfad soll jetzt dazu genutzt werden, um eine Linie zu bilden.
+Der \name{Dijkstra} Algorithmus erstellt für die Punktwolke Pfade für jeden Punkt zu dem \lstinline{anchor}.
+Diese Pfade soll jetzt dazu genutzt werden, um eine Linie zu bilden.
 Die Idee ist, dass wenn man die äu{\ss}ersten Punkte des Graphen nimmt, um von diesen zum \lstinline{anchor} wandert, dann werden hierdurch Pfade gebildet, welche keine Ausläufer haben.
 
 \begin{lstlisting}[language=JavaScript, caption={Bestimmung der äu{\ss}ersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part1}]
@@ -212,10 +211,9 @@ while (ends.length) {
 
 Hierfür werden zunächst die Knoten im Graphen gesucht, welche keinen Vorgänger haben.
 Dann wird eine Liste dieser, welche als \lstinline{ends} bezeichnet wird, der \lstinline{dist} nach absteigend sortiert.
-Diese Liste wird dann gefiltert, indem der Punkt der jeweils die grö{\ss}te Distanz hat andere Punkte filtert, nach dem Prädikat ob diese, oder rekursiv dessen \lstinline{pred} Eigenschaften gemeinsame Vorgänger haben.
+Diese Liste wird dann gefiltert, indem der Punkt der jeweils die grö{\ss}te Distanz hat andere Punkte filtert, nach dem Prädikat ob diese, oder dessen verkettete \lstinline{pred} Eigenschaften gemeinsame Vorgänger haben.
 
 Dieser Vorgang wird solange wiederholt, bis die \lstinline{ends} Liste leer ist, sodass nurnoch äu{\ss}ere Knoten vorgehalten werden, welche keine gemeinsamen Vorgänger zum \lstinline{anchor} haben.
-
 Diese als \lstinline{winner} bezeichneten Knoten werden dann über ihre Vorgänger iterieren, um zu prüfen ob sich mit diesen eine Gerade bilden lässt.
 
 \begin{lstlisting}[language=JavaScript, caption={Bestimmung der äu{\ss}ersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part2}]
@@ -257,9 +255,38 @@ und dessen Berechnung ist als statische Funktion auf der \lstinline{PointCloud} 
 
 In Listing~\ref{lst:dijkstra_correlation_part2} wird für jeden Eintrag aus \lstinline{winner} der Vorgänger gewählt und diese werden einer Liste \lstinline{group} hinzugefügt.
 Für diese Gruppe an Punkten wird dann der Korrelationskoeffizient bemessen.
-Ist dieser niederiger als der Schwellenwert wird noch geprüft ob eine Mindestanzahl an Punkten erreicht ist, damit aus diesen dann die Regressionsgerade gebildet werden kann\footnote{Der Standardwert für den Schwellenwert der Regressionsgeraden liegt bei $0.6$ und die Mindestanzahl an Punkten liegt bei $10\%$ der Gesamtzahl der Punkte des Graphen.}.
-
+Ist dieser niederiger als ein Schwellenwert wird noch geprüft ob eine Mindestanzahl an Punkten erreicht ist, damit aus diesen dann die Regressionsgerade gebildet werden kann\footnote{Der Standardwert für den Schwellenwert der Regressionsgeraden liegt bei $0,6$ und die Mindestanzahl an Punkten liegt bei $10\%$ der Gesamtzahl der Punkte des Graphen.}.
 Diese Geraden werden dann vorgehalten und könnten für weitere Analysen genutzt werden.
+
+\section{Kombination der Ansätze}
+
+Die Ermittlung der Pfade durch den \name{Dijkstra} Algorithmus führte zu der Idee die dadurch ermittelten Distanzen zu nutzen um die \name{Centroids} des \name{k-Means} Algorithmus zu verwenden.
+Dies führte zur Erstellung der \lstinline{kMeansDijkstra} Funktion der \lstinline{PointCloud}.
+Diese nutzt größtenteils die selbe Implentation wie die \lstinline{kMeansClustering} Funktion aus Kapitel~\ref{ch:kMeans}, jedoch wird hier eine andere Methode zur Ermittlung des nächsten \name{Centroids} der Punkte genutzt.
+
+\begin{lstlisting}[language=JavaScript, caption={Bestimmung des nächsten \name{Centroids} in der \lstinline{kMeansDijkstra} Funktion.}, label={lst:findNearestCentroidDijkstra}]
+function findNearestCentroid(pointIdx, dijkstras) {
+    return dijkstras.indexOf(dijkstras.reduce((pre, cur) =>
+        pre.graph[pointIdx].dist > cur.graph[pointIdx].dist ?
+            cur : pre));
+}
+\end{lstlisting}
+
+Die \lstinline{findNearestCentroid} Funktion von \lstinline{kMeansClustering} nuzt für die Ermittlung des nächsten \name{Centroids} jeweils die euklidische Distanz.
+Hier wird stattdessen für jeden \name{Centroid} ein Graph erstellt, welcher dann die Distanzen zu den Punkten mittels der \name{Dijkstra} Implementation ermittelt.
+Auf diese Weise wird verhindert, dass Punkte in der nähe von Totlagen des Mechanismus die Punkte falsch zuweist.
+Diese Implementation zeigt weniger Fluktuation als die anderen Ansätze.
+Werden diese Gruppen dann noch durch die in Kapitel~\ref{ch:naive_grouping_approach} erwähnte \lstinline{realignGroups} Funktion den Regressionsgeraden entsprechend angeglichen, so werden die Gruppierungen für einen durch \name{mec2} animierten Mechanismus nahezu stabil.
+Dementsprechend wurde in Versuch \name{gruppe4\_1.html} Versucht ein Viergelenk zu rekonstruieren, indem für ein Viergelenk die Absolutpole als jene definiert wurden, welche eine geringe Standardabweichung aufweisen, da davon auszugehen ist, dass andere Pole naturgemäß eine höhere aufweisen.
+Daraufhin wurden die Relativpole als die Schnittpunkte der durch die Gruppen gezogenen Regressionsgeraden definiert.
+Der entsprechend rekonstruierte Mechanismus wird in Abbildung~\ref{fig:final_fourbar} gezeigt.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/gruppe4_1.png}
+    \caption[Versuch \lstinline{gruppe4_1.html}]{Versuch \lstinline{gruppe4_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Regressionsgeraden, die Gruppen, sowie die Momentanpole welche durch die Gruppen ermittelt werden. Die Kreise zeigen jeweils die Standardabweichung der Verteilungen als Ellipsen in ihren Vielfachen dar. Im rechten Bild ist das rekonstruierte Viergelenk zu sehen.}
+    \label{fig:gruppe3_3}
+\end{figure}
 
 \section{Rekonstruktion eines Mechanismus durch die Relativpole}
 
