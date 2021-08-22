@@ -101,20 +101,19 @@ Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen
 Als eine Erweiterung des \name{k-Means} Algorithmus könnte noch der EM-Algorithmus untersucht werden, welcher weniger das Problem hat Gruppen von unterschiedlicher Grö{\ss}e zu erstellen~\cite[S.~262]{Geron2019}.
 Dies wird jedoch an dieser Stelle nicht mehr getan.
 
-\section{Dijkstra-Algorithmus}\label{ch:dijkstra}
+\section{\name{Dijkstra} Algorithmus}\label{ch:dijkstra}
 
 Die letzte Variante die hier untersucht werden soll um die Glieder des Mechanismus in entsprechende Gruppen zu zerteilen ist die Zuordnung aller Datenpunkte zueinander.
-Hierfür soll das \lstinline{PointCloud} Objekt in einen Graphen überführt werden welcher dann über den \name{Dijkstra-Algorithmus} Pfade definiert.
+Hierfür soll das \lstinline{PointCloud} Objekt in einen vollständigen Graphen überführt werden auf welchem dann über den \name{Dijkstra-Algorithmus} die kürzesten Pfade ermittelt.
 Anschlie{\ss}end werden diese Pfade genutzt um Geraden zu definieren welche dann Rückschluss auf die zugrundeliegenden Gruppen geben können.
 
-Zur Durchführung des Dijkstra-Algorithmus wurde die \lstinline{Dijkstra} Klasse definiert.
-Der Konstruktor dieser Klasse nimmt hierfür ein Objekt der \lstinline{PointCloud} Klasse und ein Objekt welches eine X- und Y-Koordinate hat entgegen, welcher hier als \lstinline{anchor} bezeichnet werden soll.
+Zur Durchführung des \name{Dijkstra} Algorithmus wurde die \lstinline{Dijkstra} Klasse definiert.
+Der Konstruktor dieser Klasse nimmt hierfür ein \lstinline{PointCloud} Objekt und einen Punkt entgegen\footnote{Ein Punkt sei definiert als Objekt mit den Eigenschaften \lstinline{x} und \lstinline{y}.} entgegen, welcher hier als \lstinline{anchor} bezeichnet werden soll.
 Ziel ist es den kürzesten Pfad zu bestimmen um vom \lstinline{anchor} zu jedem Punkt des übergebenen \lstinline{PointCloud} Objektes zu gelangen.
 Der offensichtliche kürzeste Weg ist laut der Dreiecksungleichung natürlich immer der direkte Weg vom \lstinline{anchor} zum entsprechenden Punkt.
 Deshalb sollen die Distanzen zwischen den Werten jeweils potenziert werden.
 An den Konstruktur kann dafür der Parameter \lstinline{warp} übergeben werden, welcher standardmä{\ss}ig den Wert zwei einnimmt.
-Dieser \lstinline{warp} Parameter unterscheidet sich von der traditionellen Implementation des \name{Dijkstra-Algorithmus}.
-Diese Anpassung ist jedoch notwendig, da hier keine Annahmen über die Verbindungen einzelner Datenpunkte gemacht werden kann, sondern der Pfad jedes Punktes zu jedem anderem gemessen wird.
+Eine hohe Potenzierung begünstigt entsprechend Pfade über mehr Knoten des Graphen.
 Hierfür wird der Graph gebildet indem alle Objekte des übergebenen \lstinline{PointCloud} Objektes in ein Objekt überführt werden welche in Listing~\ref{lst:dijkstra_points_graph} gesehen werden kann.
 
 \begin{lstlisting}[language=JavaScript, caption={Im \lstinline{Dijkstra} Konstruktor werden die Punkte des übergebenen \lstinline{PointCloud} Objektes in einen Graphen überführt.}, label={lst:dijkstra_points_graph}]
@@ -138,7 +137,7 @@ const graph = points.map((p, id) => ({
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/dijkstra_edit.png}
-    \caption[Versuch \lstinline{gruppe3_2.html}]{Versuch \lstinline{gruppe3_2.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Verbindung des lstinline{anchor}, welcher im linken Gestellpunkt ist. Die Farbe der Verbindung zwischen den Punkte weist auf den \lstinline{dist} Wert hin.
+    \caption[Versuch \lstinline{gruppe3_2.html}]{Versuch \lstinline{gruppe3_2.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Verbindung des \lstinline{anchor}, welcher im linken Gestellpunkt ist. Die Farbe der Verbindung zwischen den Punkte weist auf den \lstinline{dist} Wert hin.
     Wie im rechten Bild zu sehen ist, werden die Verbindungen bei sehr kleinen eingeschlossenen Winkeln fehlerbehaftet.}
     \label{fig:gruppe3_1}
 \end{figure}

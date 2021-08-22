@@ -5,9 +5,8 @@
 \cleanchapterquote{Die allgemeine ebene Starrkörperbewegung kann augenblicklich als reine Drehung um einen ausgezeichneten Punkt -- den Momentanpol oder Geschwindigkeitspol -- aufgefasst werden}{Stefan Gössner}{Mechanismentechnik}
 
 In Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder} wurde die Ermittlung eines Drehpunktes von sich einem rotierendem Glied beschrieben.
-Diese Bewegung stellt einen häufigen Fall in Mechanismen dar, jedoch ist der feste Drehpunkt ein Spezialfall für die Bestimmung des Momentanpols eines Gliedes.
-
-Der Momentanpol ist definiert als der Punkt, welcher sich bei Bewegung eines Elementes nicht bewegt.
+Diese Bewegung stellt einen häufigen Fall in Mechanismen dar, jedoch ist der feste Drehpunkt ein Spezialfall für die Bestimmung des Momentanpols einer Gliedebene.
+Der Momentanpol ist definiert als jener Punkt, welcher sich momentan bei einer Bewegung einer Gliedebene nicht bewegt.
 Das kann auch interpretiert werden als der Punkt um den sich ein Element in dieser Momentbetrachtung dreht.
 
 \begin{wrapfigure}{r}{0.5\textwidth}
@@ -20,9 +19,9 @@ Es ist zu beachten, dass der Momentanpol ein virtueller Punkt und damit nicht an
 Tatsächlich kann entsprechend die Bewegung des ebenen starren Gliedes als ein Vektorfeld extrapoliert werden, was ebenfalls den entsprechenden Momentanpol als eine Koordinate ohne Bewegung innerhalb dieses vorhersagen würde.
 Wären die Methoden der Berechnung des optischen Flusses also mit nur sehr kleinem Fehler behaftet, würde sich so möglicherweise auch direkt der Momentanpol ermitteln lassen.
 
-Der Momentanpol kann im Bezug zum Koordinatensystem konstant sein, was einen Drehpunkt definiert, welcher dann auch als Absolutpol bezeichnet wird.
+Die Position des Momentanpols kann konstant sein, wodurch dann der Drehpunkt definiert wird, welcher dann auch als Absolutpol bezeichnet wird.
 Ein translatives Elemtent, dessen Bewegung durch die abwesenheit einer Rotation definiert ist dreht sich in dem Sinne um einen Momentanpol welcher sich orthogonal zur Bewegungsrichtung in unendlicher Distanz befinidet.
-Bei einer Parallelkurbel bei welcher sich die Koppel nicht bewegt, würde der Momentanpol stets im Unendlichen liegen.
+Bei einer Parallelkurbel bei welcher sich die Koppel nicht bewegt, würde der Momentanpol ebenfalls stets im Unendlichen liegen.
 Entsprechend findet bei dieser auch keine Drehung statt.
 
 Eine Möglichkeit der Ermittlung des Momentanpols ist die Ermittlung der Bewegung durch den \name{ersten Satz von Euler}\cite{Goessner2016}.
@@ -60,13 +59,12 @@ Diese kann dann nach $r_{AP}$ umgestellt werden,
 
 sodass der Momentanpol $P$ über die Beziehung $\vec{r}_P = \vec{r}_A + \vec{r}_{AP}$ ermittelt werden kann.
 
-Diese Formel soll nun angewendet werden um den Momentanpol von Elementen zu bestimmen dessen Bewegung in Videos nachvollzogen wird.
+Diese Formel soll nun angewendet werden um den Momentanpol von Elementen zu bestimmen dessen Bewegung in Videosequenzen nachvollzogen wird.
 
 \section{Implementation}
 
 Die \lstinline{group} Klasse hat eine entsprechende \lstinline{momentanpol} Funktion erhalten.
-Dieser implementiert hier zunächst eine Berechnung des Erwartungswertes für einen Punkt.
-Im Grunde ist diese Implementation äquivalent zu Listing~\ref{lst:data_mu}, jedoch wird hier ein Punkt zurückgegeben, welcher also die Eigenschaften \lstinline{x} und \lstinline{y} stellt.
+Diese implementiert hier zunächst eine Berechnung des Erwartungswertes für einen Punkt.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{momentanpol} Funktion, welche in der \lstinline{group} Klasse definiert ist Die Ermittlung der Punkte \lstinline{p1} und \lstinline{p2}, sowie der Winkel \lstinline{w1} und \lstinline{w2} wurde hier aus Platzgründen weggelassen.}, label={lst:group_momentanpol}]
 momentanpol(threshold = 1) {
@@ -88,17 +86,18 @@ momentanpol(threshold = 1) {
 \lstinline{p1} und \lstinline{p2} sind jeweils der letzte Punkt und jener der vor \lstinline{threshold} Iterationen hinzugefügt wurde.
 Analog dazu sind \lstinline{w1} und \lstinline{w2} die Winkel der Geraden welche als letztes und vor \lstinline{threshold} Iterationen hinzugefügt wurden.
 Hierfür hat die \lstinline{Group} Klasse die Eigenschaft \lstinline{lines} bekommen, welche in etwa die selbe Aufgabe wie die \lstinline{pts} Eigenschaft erfüllen soll.
-Diese Liste wird entsprechend von den Tests analog zu \lstinline{pts} gefüllt.
-Es muss hier noch garantiert werden, dass in jedem Fall ein Winkel unter $\pi$ eingesetzt wird und anschlie{\ss}end wird dieser noch auf einen Wert gesetzt dessen Betrag in jedem Fall unter $\pi / 2$ ist. Damit wird sichergestellt, dass wenn durch den eingeschlossenen Winkel geteilt wird in jedem Fall der kleinere Betrag genommen wird.
+Diese Liste wird entsprechend von den Tests analog zu \lstinline{pts} befüllt.
+Es muss hier noch garantiert werden, dass in jedem Fall ein Winkel kleiner $\pi$ eingesetzt wird und anschlie{\ss}end wird dieser noch auf einen Wert gesetzt dessen Betrag in jedem Fall kleiner $\pi / 2$ ist.
+Damit wird sichergestellt, dass wenn durch den eingeschlossenen Winkel geteilt wird in jedem Fall der kleinere Betrag genommen wird.
 Ein ansonsten daraus resultierender Fehler würde sich bei der Berechnung des sich translativ bewegenden Gliedes zeigen.
 
 \section{Das drehende Rad}\label{ch:drehendesRad}
 
 Als erster Test soll der Momentanpol eines sich drehenden Rades bestimmt werden.
-Von diesem Rad soll eine Speiche sichtbar sein, welche es erlaubt die Drehung zu erkennen, da der Momentanpol für die Bewegung jedes starren Körpers im Raum definiert ist und nicht auf Glieder von Mechanismen beschränkt ist.
+Von diesem Rad soll eine Speiche sichtbar sein, welche es erlaubt die Drehung zu erkennen.
 Interessant ist die Bestimmung des Momentanpols eines Rades, weil dieses als erster der bisher gemachteten Tests keinen Absolutpol darstellt.
 Bekannt ist, dass die Drehung eines Rades im Wälzpunkt liegt.
-Andererseits würde dieses nicht schlupffrei rollen können\footnote{Bei einem rutschendem Rad würde sich der Drehpunkt entsprechend im Mittelpunkt des Rades befinden.}.
+Andererseits würde dieses nicht schlupffrei rollen können\footnote{Bei einem rutschendem Rad würde sich der Momentanpol entsprechend im Mittelpunkt des Rades befinden.}.
 Es wird also erwartet, dass die über die Zeit ermittelten Momentanpole eine Linie bilden, welche sich auf genau der Höhe befindet, auf welcher das Rad rollt.
 
 Für die Animation des Rades wurde eine \name{g2} Animation erstellt,
@@ -106,9 +105,9 @@ da sich dieses Modell so leichter darstellen lässt als mit einem \name{mec2} Mo
 Das Rad wird durch eine Linie und einen Kreis definiert.
 Das Rollen wird durch den \lstinline{g2.use} Befehl simuliert, indem die Rotation durch eine Laufvariable bestimmt wird und die Position in X-Richtung durch $x = x_0 + r * i * \pi$, wobei $x_0$ entsprechend der Startwert ist, $r$ der Radius des Kreises und $i$ die Laufvariable, welche hier den Radianten bestimmt.
 Die Animation wird dann an \lstinline{simulation.g} übergeben.
-Da kein \name{mec2} Modell definiert ist werden dessen Befehle, wie in Kapitel~\ref{ch:simulation_js} beschrieben, ignoriert.
+Da kein \name{mec2} Modell definiert ist werden die entsprechenden Befehle, wie in Kapitel~\ref{ch:simulation_js} beschrieben, ignoriert.
 
-Zur Ermittlung des Momentanpols ist es nun notwendig die absolute Geschwindigkeit eines fest mit dem Glied verbundenen Punktes, sowie die Rotationsgeschwindigkeit des Gliedes zu ermitteln.
+Zur Ermittlung des Momentanpols ist es nun notwendig die absolute Geschwindigkeit eines auf dem Glied befindlichen Punktes, sowie die Rotationsgeschwindigkeit der Gliedebene zu ermitteln.
 Die absolute Geschwindigkeit wird zunächst ermittelt, indem wie in Kapitel~\ref{ch:vergleich_verlauf_randpunkte} beschrieben die Bewegung der äu{\ss}ersten Randpunkte gemessen wird.
 Unter der Vorausetzung, dass diese in etwa den selben Punkt auf dem Glied bezeichnen, sollten diese eine ausreichende Approximation darstellen.
 Die \lstinline{Group} Klasse speichert hierbei den Pfad der gemessenen Punkte und ordnet diese entsprechend zu.
@@ -158,7 +157,7 @@ Die Standardabweichung hat sich durch den neuen Ansatz von $4.8$ auf $1.9$ reduz
 
 Diese herangehensweise soll nun für die Ermittlung des Drehpunktes eines wie in Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder} betrachteten Pendels genutzt werden.
 Der Drehpol eines Gliedes welches mit dem Gestell verbunden ist sollte sich im Momentanpol befinden.
-Für diesen Versuch wurde entsprechend das Pendel aus Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder} wiederverwendet.
+Für diesen Versuch wurde entsprechend das Pendel aus Kapitel~\ref{ch:infoerhalt_aus_abgleich_bilder} verwendet.
 
 \begin{figure}
     \centering
@@ -184,10 +183,8 @@ Die Standardabweichung reduziert sich für die X- und Y-Koordinate jeweils von $
 Für ein sich translativ bewegendes Glied ist entsprechend zu erwarten, dass der Momentanpol sich im unendlichen befindet.
 Die numerische Herangehensweise lässt hierbei also vermuten, dass die Varianz der berechnten Punkte sehr hoch ist.
 Ein eindeutiges Ergebnis zu bekommen ist hier nicht zu erwarten.
-Im Gegenteil lässt hier ein besonders schlechtes Ergebnis den Schluss zu, dass es sich entsprechend um ein sich translativ bewegendes Glied handelt.
-Bei der Berechnung des Momentanpols des sich translativ bewegenden Gelenkes teilweise ein Winkel von in etwa $\pi$ ermittelt wird, weshalb in Abbildung~\ref{fig:translatives_glied_1} die Momentanpole teilweise auf dem Pfad des Gelenkes liegen.
-Im Vergleich mit dem Ansatz welcher die absolute Geschwindigkeit über Lucas-Kanade und die Winkelgeschwindigkeit über die Regressionsgerade bestimmt wird dieser Fehler allerdings nicht weiter beachtet, da der letztere dem ersten offensichtlich überlegen ist.
-Beim zweiten Ansatz wurde aus diesem Grund der eingeschlossene Winkel durch \lstinline{dw = dw > Math.PI / 2 ? dw - Math.PI : dw;} korrigiert wie in Listing~\ref{lst:group_momentanpol} gesehen werden kann, damit jeweils den kleineren der beiden eingeschlossenen Winkel bevorzugt.
+Im Gegenteil lässt hier ein besonders ungenaues Ergebnis den Schluss zu, dass es sich entsprechend um ein sich translativ bewegendes Glied handelt.
+Um zu verhindern, dass der Momentanpol fälschlicherweise auf der Gliedebene des sich bewegten Elementes befindet wird der eingeschlossene Winkel durch \lstinline{dw = dw > Math.PI / 2 ? dw - Math.PI : dw;} korrigiert wie in Listing~\ref{lst:group_momentanpol} gesehen werden kann, damit jeweils den kleineren der beiden eingeschlossenen Winkel bevorzugt.
 Der rote Punkt in Abbildung~\ref{fig:translatives_glied_3} stellt hier den verfolgten Punkt dar und nicht den Momentanpol.
 Die Standardabweichung zu vergleichen scheint an dieser Stelle weniger sinnvoll.
 Sie ist in beiden Fällen sehr hoch und wird nur durch die Tatsache niedrig gehalten, dass \lstinline{Data} Koordinaten au{\ss}erhalb des Canvas ignoriert um die Gau{\ss}-Verteilung mit den gemessenen Werten vergleichbar zu halten\footnote{Teilweise auftretende extreme Ausschläge haben einen gro{\ss}en Einfluss auf die Varianz.}.
@@ -207,6 +204,7 @@ Sie ist in beiden Fällen sehr hoch und wird nur durch die Tatsache niedrig geha
 \end{figure}
 
 \section{Beobachtungen}
+
 Es hat sich gezeigt, dass die naive herangehensweise von den am weitest entfernten Punkten in Verbindung mit der Regressionsgerade durchaus Erwartungswerte liefert welche dem tatsächlichen Momentanpol entsprechen.
 Werden jedoch lediglich Momentaufnahmen betrachtet, so sind diese wahrscheinlich nicht als gute Bezugspunkte für weitere Prognosen zur Rekonstruktion eines Mechanismus geeignet.
 Die Kombination aus der Ermittlung der Regressionsgeraden und der Verfolgung von Punkten durch den Lucas-Kanade Algorithmus haben jedoch eine geringere Streuung.
