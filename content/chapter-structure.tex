@@ -1,14 +1,14 @@
 % !TEX root = ../document.tex
 
-\chapter{Erstellung der Tests}
+\chapter{Erstellung der Versuchsumgebung}
 
 \cleanchapterquote{Wenn Sie der Meinung sind, dass gutes Design teuer ist, sollten Sie sich die Kosten für schlechtes Design ansehen.}{Ralf Speth}{Ehem. Geschäftsführer bei Jaguar Land Rover}
 
 \section{Die \name{index.html}}
 
-Die Testseiten sind jeweils eigenständige HTML-Seiten welche über ein HTML-Iframe Element in einer zentralen \name{index.html} untersucht werden können.
-Die Tests sind widerrum gruppiert in einzelne zu untersuchende Fragmente.
-Für diese Gruppierung wurde in der \name{index.html} ein \lstinline{tests} Objekt definiert welches Information über die entsprechenden Versuchsgruppen bereithält.
+Die Versuche sind jeweils eigenständige HTML-Seiten welche über ein HTML-Iframe Element in einer zentralen \name{index.html} untersucht werden können.
+Die Versuche sind wiederum in einzelne Sachverhalte gruppiert.
+Für diese Gruppierung wird in der \name{index.html} ein \lstinline{tests} Objekt definiert.
 
 \begin{lstlisting}[language=JavaScript, caption={Ausschnitt der Definition des \lstinline{tests} Objekts in der \name{index.html}.}, label={lst:tests_objekt}]
 const tests = {
@@ -27,24 +27,23 @@ const tests = {
             // ...
 \end{lstlisting}
 
-In diesem \lstinline{tests} Objekt ist durch die Schlüssel festgehalten, welche Gruppen es gibt. Die Eigenschaften der einzelnen Schlüssel von \lstinline{tests} bezeichnen welche Versuche in dieser Gruppe gemacht werden.
-In diesen wird letztlich eine Liste mit kurzen Beschreibungen festgehalten was in dem entsprechenden Versuch untersucht wird.
+Über die Schlüssel des \lstinline{tests} Objekts werden die Gruppen festgehalten.
+Die Werte von \lstinline{tests} definieren die in dieser Gruppe gemachten Versuche.
+Es sind entsprechend Listen von Titeln für die Versuche darin enthalten.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{gfx/index.png}
-    \caption[Bild der index.html]{Bild der index.html, wobei in der Navigationsleiste der Versuch zur Ermittlung des Drehpunktes ausgewählt ist. Der Hauptteil der Seite wird durch das \name{iframe} belegt, welches den entsprechenden Versuch enthält.}\label{fig:index.html}
+    \caption[Bild der \name{index.html}]{Bild der \name{index.html}, wobei in der Navigationsleiste der Versuch zur Ermittlung des Drehpunktes ausgewählt ist. Der Hauptteil der Seite wird durch das HTML-Iframe Element gefüllt, welches den entsprechenden Versuch enthält.}\label{fig:index.html}
 \end{figure}
 
-Für die automatische Einbindung der Dateien ist die Ordnerstruktur des Projektes von Bedeutung.
-Jede Eigenschaft des \lstinline{tests} Objekts hat im \name{src} Ordner relativ zum Projektverzeichnis ein passende Verzeichnis.
-Dieses enthält die einzelnen HTML-Testseiten welche ebenfalls nach einem festen Schema benannt sind.
-So ist der relative Pfad eines Versuchs \name{src/[Gruppe]/[Gruppe][Index1]\_[Index2].html}.
-Im Verlauf dieser Arbeit wurden auf diese Weise drei Gruppen gebildet: \name{pendel}, \name{momentanpol} und \name{gruppen}.
+Die automatische Einbindung der Versuchsdateien geschieht über die analoge Ordnerstruktur des Projektes.
+Jede Eigenschaft des \lstinline{tests} Objekts hat im \name{src} Ordner relativ zum Projektverzeichnis einen genauso bezeichneten Ordner.
+Dieser enthält die einzelnen HTML-Versuchsseiten, welche ebenfalls nach einem festen Schema benannt sind.
+Die Versuchsgruppen sind \name{pendel}, \name{opticalflow}, \name{momentanpol}, \name{gruppen} und \name{bilder}.
 Der in Abbildung~\ref{fig:index.html} gezeigte Test ist entsprechend unter dem Relativpfad \name{src/pendel/pendel1\_4.html} zu finden.
+Anhand dieser Strukturierung werden alle Versuche durch den in Listing~\ref{lst:tests_objekt_reason} beschriebenen Aufruf dynamisch in die \name{index.html} eingebunden.
 
-Dieser zunächst komplex wirkende Aufbau erlaubt es allerdings alle Tests durch Listing~\ref{lst:tests_objekt_reason} in die \name{index.html} einbauen.
-
-\begin{lstlisting}[language=JavaScript, caption={Iteration über das tests Objekt zur Population der index.html.}, label={lst:tests_objekt_reason}]
+\begin{lstlisting}[language=JavaScript, caption={Iteration über das tests Objekt zur Befüllung der Navigationsleiste.}, label={lst:tests_objekt_reason}]
 Object.entries(tests).forEach((kv, i) => {
     const title = create('h2', null, kv[1].title);
     const details = create('details', byId('sidenav'));
@@ -72,48 +71,40 @@ Object.entries(tests).forEach((kv, i) => {
 });
 \end{lstlisting}
 
-Hier wird für jeden Eintrag im \lstinline{tests} Objekt ein neues HTML-Details Element erstellt\footnote{Für mehr Information zum HTML-Details Element siehe \aka{https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details}.}.
-Über die Listen der einzelnen Einträge wird dann iteriert um die einzelnen Gruppen gemeinsam in ein weiteres HTML-Details Element zu platzieren.
-Über die Länge dieser Listen wird dann festgestellt wie viele HTML-Iframe Elemente erstellt werden sollen und welchen Pfad diese als Quelle (\lstinline{src}) besitzen.
-Sollte eine Datei also nicht diesem Wert entsprechen wird ein Fehler geworfen.
+Hier wird für jeden Eintrag im \lstinline{tests} Objekt ein neues HTML-Details Element erstellt.
+Über die Listen der einzelnen Einträge wird iteriert, um die einzelnen Gruppen gemeinsam in ein weiteres HTML-Details Element zu platzieren\footnote{Hier als \lstinline{innerDetails} bezeichnet.}.
+Diese Listen werden durch HTML-Listen Elemente gerendert.
+Für die Einträge der Listen werden entsprechende \lstinline{EventListener}\footnote{Für mehr Information über \lstinline{EventListener} siehe \aka{https://developer.mozilla.org/en-US/docs/web/api/eventlistener}.} registriert, welche die \lstinline{src} Eigenschaft des HTML-Iframe Elements aktualisieren.
+Sollte der Pfad einer Datei also nicht diesem Aufbau entsprechen, wird ein Fehler geworfen.
 
-Damit die Seite eine anständige Formatierung besitzt wurden die entsprechenden Elemente durch CSS gestaltet, worauf hier jedoch nicht weiter eingegangen werden soll.
-Die Seite ist so gestaltet, dass die Navigation auf der linken Seite in der Breite verstellbar ist und die Versuchsseite sich entsprechend anpasst.
-JavaScript kam für die Gestaltung nicht zum Einsatz.
+Für die Formatierung der \name{index.html} wurden die entsprechenden Elemente mit Hilfe von CSS gestaltet, worauf hier jedoch nicht weiter eingegangen werden soll.
 Der Quelltext kann unter \aka{https://github.com/klawr/ba/blob/master/index.html} eingesehen werden.
 
-\section{globalTestVariables}\label{ch:simulation_js}
+\section{simulation}\label{ch:simulation_js}
 
-Die Versuche teilen sich zu einem gro{\ss}en Anteil die benötigten Variablen.
-Deshalb ist es sinnvoll den meisten Programmcode in einer zentralen Datei abzulegen.
-Diese soll dann in den Versuchsdateien eingebunden werden.
-Die Datei welche diese zentralen Definitionen enthält wurde als \name{simulation.js} bezeichnet.
+Die über viele Versuche wiederkehrenden Funktionalitäten sind in eine zentrale Bibliothek ausgelagert worden.
 Durch die zentrale Definition wird der Aufwand zur Wartung des Codes und zur Behebung von Fehlern stark reduziert.
-Dieses Prinzip ist als \name{DRY}\footnote{Englisch für \textit{don't repeat yourself}, zu deutsch \textit{wiederhole dich nicht}.} bekannt~\cite{AndrewHunt2021}.
+Dieses Prinzip ist unter dem Akronym \name{DRY}\footnote{\textit{don't repeat yourself}, zu deutsch \textit{wiederhole dich nicht}.} bekannt~\cite{AndrewHunt2021}.
 
-In \name{simulation.js} wird ausschlie{\ss}lich das \lstinline{globalTestVariables} Objekt definiert.
-Dieses Objekt soll dazu dienen die genutzten globalen Variablen zu begrenzen und enthhält entsprechend alle zur Simulation benötigten Variablen und Funktionen.
-Das \lstinline{globalTestVariable} Objekt beinhaltet alle Referenzen zu den HTML-Elementen auf welche im Zuge der Versuche zugegriffen werden können, sowie den Referenzen zu den einzelnen \name{CanvasRenderingContext2D} Objekten welche von \name{g2} genutzt werden um auf die entsprechenden HTML-Canvas Elemente zu zeichnen.
-Au{\ss}erdem werden globale Konstanten wie unter Anderem die Höhe und Breite der HTML-Canvas Elemente hier zentral bestimmt.
+Das \lstinline{simulation} Objekt beinhaltet alle Referenzen zu den HTML-Elementen auf welche im Zuge der Versuche zugegriffen werden können sowie den Referenzen zu den einzelnen \name{CanvasRenderingContext2D} Objekten, welche von \name{g2} genutzt werden um auf die entsprechenden HTML-Canvas Elemente zu zeichnen.
+Au{\ss}erdem werden unter Anderem globale Konstanten wie die Höhe und Breite der HTML-Canvas Elemente zentral bereitgestellt.
 
-Auf die in \lstinline{globalTestVariables} definierten Funktionen soll im nachfolgenden näher eingegangen werden.
-Diese Funktionen bestimmen den Aufbau welchem die einzelnen Versuche folgen müssen.
-Alle nachfolgenden Funktionen sind als Eigenschaften des \lstinline{globalTestVariables} Objektes zu verstehen.
+Auf die in \lstinline{simulation} definierten Funktionen soll im Folgenden näher eingegangen werden.
+Diese bestimmen die Schnittstelle, welche die Versuchsseiten implementieren müssen.
+Alle nachfolgenden Funktionen sind als Eigenschaften des \lstinline{simulation} Objektes zu verstehen.
 
-\subsection{createElements}\label{ch:gtv_createElements}
+\subsection{createElements}\label{ch:sim_createElements}
 
-Die HTML-Elemente welche innerhalb der Testseiten verwendet werden sind grundsätzlich stets die gleichen.
-Aus dem Grund beschreibt die \lstinline{createElements} Funktion die Befüllung der Testseiten mit den entsprechenden HTML-Elementen.
-So muss bei entsprechendem Wunsch zur Änderung nur an dieser zentralen Stelle beispielsweise das \lstinline{innerHTML} eines Elementes geändert werden.
-Hier werden alle Knöpfe erstellt die für die Versuche notwendig sind so wie vier HTML-Canvas Elemente welche bei Vergleichen der Versuche helfen.
-Au{\ss}erdem werden in dieser Funktion die Eigenschaften von \lstinline{globalTestVariables} gesetzt, welche zunächst undefiniert sind.
-Auf diese Funktion wird im genaueren in Kapitel~\ref{ch:aufbau_der_testseiten} eingegangen.
+Die HTML-Elemente, welche innerhalb der Testseiten verwendet werden, sind grundsätzlich stets die Gleichen.
+Aus diesem Grund kann die Befüllung der Testseiten mit den entsprechenden HTML-Elementen zentral definiert werden.
+Hier werden alle Interaktionen, welche für die Versuche notwendig sind sowie vier HTML-Canvas Elemente zur einheitlichen Darstellung der Versuchsmetriken definiert.
+Auf \lstinline{createElements} wird in Kapitel~\ref{ch:aufbau_der_testseiten} genauer eingegangen.
 
-\subsection{run}\label{ch:gtv_run}
+\subsection{run}\label{ch:sim_run}
 
-Die \lstinline{run} Funktion trägt Sorge dafür, dass alle Tests unter den selben Konditionen aufgerufen werden.
+Die \lstinline{run} Funktion sorgt dafür, dass alle Versuche unter vergleichbaren Bedingungen ablaufen.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{globalTestVariables.run} Funktion.}, label={lst:gtv_run}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{simulation.run} Funktion.}, label={lst:sim_run}]
 async run(step) {
     this.model?.tick(1 / 60);
     await this.g.exe(this.ctx1);
@@ -129,95 +120,79 @@ async run(step) {
 },
 \end{lstlisting}
 
-Sollte ein \name{mec2} Modell definiert sein wird dieses an dieser Stelle seine \lstinline{tick} Funktion anwenden.
-Die \lstinline{tick} Funktion eines \name{mec2} Modells lässt die Simulation entsprechend um einen Zeitschritt weiterlaufen.
-Hierbei wird davon ausgegangen, dass wenn ein \name{mec2} Modell auf dem \lstinline{globalTestVariables} Objekt definiert ist, dieses zur Animation verwendet werden soll.
-Die Definition der Modelle soll in den entsprechenden Versuchsdateien stattfinden.
-Innerhalb der an \lstinline{run} übergebenen Funktion sollte dieses Modell jedoch nicht modifiziert werden, da es als Quelle für die Bildsequenzen dient.
+Existiert ein \name{mec2} Modell, so wird dessen Simulation an dieser Stelle um einen Zeitschritt vorangetrieben und zur Animation verwendet.
+Die Definition des \name{mec2} Modells findet in den Versuchsdateien statt.
+Innerhalb der an \lstinline{run} übergebenen \lstinline{step} Funktion darf dieses Modell nicht modifiziert werden, da es als Quelle für die Bildsequenzen dient.
 
-Anschlie{\ss}end wird der \name{CanvasRenderingContext2D} des ersten der vier HTML-Canavs Elemente \lstinline{ctx1} beschrieben\footnote{Vor der \lstinline{exe} Funktion steht hier ein \lstinline{await}, da wenn Bilder geladen werden die \lstinline{exe} Funktion leicht abgewandelt werden muss. Anwedung findet dies in der Versuchsgruppe \name{bilder2} (s. \aka{https://klawr.github.io/ba/src/bilder/bilder2_1.html}).
-Entsprechend ist die \lstinline{run} Funktion als \lstinline{async} deklariert.}.
-Dieser sollte ausschlie{\ss}lich hier beschrieben werden, damit der Versuch nicht versehentlich Einfluss auf die Zeichnung nimmt.
-Es sollte sichergestellt werden, dass die gesuchte Funktion zur Ermittlung des Mechanismus ausschlie{\ss}lich Anhand der Bildsequenzen funktioniert und selbst keinen Einfluss auf diese hat.
+Anschlie{\ss}end wird der \name{CanvasRenderingContext2D} des ersten  HTML-Canavs Elements \lstinline{ctx1} beschrieben\footnote{Vor der \lstinline{exe} Funktion steht hier ein \lstinline{await}. Wenn Bilder geladen werden, muss die \lstinline{exe} Funktion leicht modifiziert werden. Notwendig ist dies in der Versuchsgruppe \name{bilder2} (siehe \aka{https://klawr.github.io/ba/src/bilder/bilder2_1.html}).
+Dementsprechend ist die \lstinline{run} Funktion als \lstinline{async} deklariert.}.
+Dieses HTML-Canvas Element sollte ausschlie{\ss}lich hier beschrieben werden, damit der Versuch nicht versehentlich Einfluss auf die Zeichnung nimmt und sich somit selbst beeinflusst.
 
-Nachdem der HTML-Canvas gezeichnet wurde, wird eine an \lstinline{run} übergebene Funktion, welche hier als \lstinline{step} step deklariert ist, ausgeführt.
-Diese Funktion wird durch den Versuch selber definiert und führt alle Vergleiche und Berechnungen aus welche durchgeführt werden sollen.
-Entsprechend werden die an die \lstinline{run} übergebenen Funktionen in den entsprechenden Kapiteln für die Versuche beschrieben.
+Nachdem Rendern der Videosequenz wird die \lstinline{run} übergebene \lstinline{{step} Funktion ausgeführt.
+Diese Funktion implementiert den jeweiligen Versuchsalgorithmus und wird dementsprechend in den jeweiligen Kapiteln der Versuche beschrieben.
 
-Abschlie{\ss}end wird hier noch die Zeit welche diese \lstinline{step} benötigt vermerkt, indem \lstinline{updateTimesChart} aufgerufen wird.
-In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now()} gemessen\footnote{Für mehr Information zu \lstinline{performance.now} siehe \aka{https://developer.mozilla.org/en-US/docs/Web/API/Performance/now}.}.
-ermittelt und in einer Liste hinzugefügt welche die Historie der Geschwindigkeiten der einzelnen \lstinline{step} Aufrufe festhält.
-Es wird au{\ss}erdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist um eine sinnvolle Bezeichnung der Achsen der Graphen zu ermöglichen.
+Abschlie{\ss}end wird hier noch die Zeit der \lstinline{step} Funktion vermerkt.
+In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now}\footnote{Für mehr Information zu \lstinline{performance.now} siehe \aka{https://developer.mozilla.org/en-US/docs/Web/API/Performance/now}.} ermittelt und einer Liste hinzugefügt welche die Historie der Geschwindigkeiten der einzelnen \lstinline{step} Aufrufe festhält.
+Es wird au{\ss}erdem gemessen wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist, um eine sinnvolle Bezeichnung der Achsen der Graphen zu ermöglichen.
 Dieser Graph wird anschlie{\ss}end auf einem HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
-\lstinline{ctx_times} ist der Kontext des vierten von \lstinline{createElements} erstellten HTML-Canvas Elements.
+\lstinline{ctx_times} ist der Kontext des vierten von \lstinline{createElements} erstellten HTML-Canvas Elementen.
 
-Nachdem anschlie{\ss}end geprüft wurde ob der Test weiter laufen soll \footnote{\lstinline{running} kann beispielsweise durch einen Start/Stop Knopf umgeschaltet werden.} wird die \lstinline{run} Funktion erneut durch \lstinline{requestAnimationFrame} aufgerufen.
+Anschließend wird die \lstinline{run} Funktion durch \lstinline{requestAnimationFrame} erneut aufgerufen, sofern der Versuch nicht pausiert wird\footnote{\lstinline{running} kann beispielsweise durch einen Start/Stop Knopf umgeschaltet werden.}.
 
-\subsection{register}\label{ch:gtv_register}
+\subsection{register}\label{ch:sim_register}
 
-\lstinline{register} ist die Funktion, welche von den einzelnen Tests aufgerufen wird um die HTML-Seite zu befüllen und die Versuchsfunktion zu injizieren.
+\lstinline{register} ist die Funktion, welche von den einzelnen Tests aufgerufen wird, um die HTML-Seite zu befüllen und die Versuchsalgorithmus zu injizieren.
 
-In \lstinline{register} wird zunächst der Titel festgelegt, welcher hier dem Namen der HTML-Datei entspricht.
-Dieser Titel wird in einem HTML-Anker Element % MDN Link
-platziert, damit diese in der \name{index.html} einfacher zugeordnet werden können.
-Es dient au{\ss}erdem als Hyperlink, der genutzt werden kann um isoliert auf den Test zuzugreifen, was sich während der Entwicklung als hilfreich herausgestellt hat.
+In \lstinline{register} wird zunächst der Titel festgelegt, welcher dem Namen der HTML-Datei entspricht.
+Dieser Titel wird in einem HTML-Anker Element platziert, damit diese in der \name{index.html} einfacher zugeordnet werden können.
+Es dient au{\ss}erdem als Hyperlink über welchen isoliert auf den Versuch zugegriffen werden kann, was sich während der Entwicklung als hilfreich herausgestellt hat.
 
-An dieser Stelle wird au{\ss}erdem eine Funktion erzeugt, welche durch das Laden der Seite ausgeführt wird.
-Diese Funktion führt \lstinline{createElements} aus und sollte ein \name{mec2} Modell definiert sein, so wird die \lstinline{mec.model.extend} Funktion mit diesem aufgerufen und dann dessen \lstinline{init} Funktion bemüht um dieses zu instanzieren.
+An dieser Stelle wird au{\ss}erdem eine Funktion definiert, welche beim Laden der Seite ausgeführt wird.
+Diese Funktion instanziert alle Variablen welche für die Erstellung der Versuche notwendig sind.
 
-Es wird zudem einmalig die \lstinline{run} Funktion aufgerufen um das erste Bild zu zeigen\footnote{Da \lstinline{globalTestVariables.running} initial den Wert \lstinline{false} hat wird innerhalb des \lstinline{run} Aufrufs \lstinline{requestAnimationFrame} nicht ausgeführt.}.
-Die Funktion welche an \lstinline{run} übergeben werden soll muss an \lstinline{register} übergeben werden, damit dieses das an diese weitergeben kann.
-Es wird au{\ss}erdem noch die Erstellung des Knopfes zum Starten und Pausieren der Tests definiert.
-Die Betätigung dieses Knopfes resultiert in einem Umschalten der \lstinline{globalTestVariables.running} Variable und dem Ausführen von \lstinline{run}.
+Es wird zudem einmalig die \lstinline{run} Funktion aufgerufen, um das erste Bild zu rendern\footnote{Da \lstinline{simulation.running} mit den Wert \lstinline{false} initialisiert wird, wird innerhalb des \lstinline{run} Aufrufs \lstinline{requestAnimationFrame} nicht ausgeführt.}.
+Die Funktion, welche an \lstinline{run} übergeben werden soll, wird zunächst an \lstinline{register} übergeben.
+Es wird au{\ss}erdem noch der Knopf zum Starten und Pausieren der Tests definiert.
+Die Betätigung dieses Knopfes schaltet mittelbar die \lstinline{simulation.running} Variable um.
 
-Das \lstinline{globalTestVariables} Objekt enthält noch weitere Variablen und Funktionen welche Einfluss auf den Ablauf der Tests haben.
-Um die Beschreibung hier jedoch auf das wesentliche zu reduzieren, sei hier auf die Definition des kompletten Objektes im Quellcode, welcher unter \aka{https://github.com/klawr/ba/blob/master/src/scripts/simulation.js} nachgesehen werden kann, hingewiesen.
+Das \lstinline{simulation} Objekt enthält noch weitere Variablen und Funktionen, welche Einfluss auf den Ablauf der Tests haben.
+Um die Beschreibung hier jedoch auf das Wesentliche zu reduzieren, sei hier auf den Quellcode hingewiesen, welcher unter \aka{https://github.com/klawr/ba/blob/master/src/scripts/simulation.js} eingesehen werden kann.
 
 \section{Aufbau der Versuchsseiten}\label{ch:aufbau_der_testseiten}
 
-Die HTML-Seiten wurden einheitlich gestaltet, sodass an diesen nicht viel geändert werden muss um die verschiedenen Versuche zu definieren.
-Sie unterscheiden sich untereinander vorallem durch die unterschiedlichen Dateien welche eingebunden werden um die Versuche auszuführen.
-Die eingebundenen Dateien jeder Versuchsdatei beinhalten in jedem Fall \name{g2.full.js}, \name{mec2.min.js} und \name{simulation.js}.
-Neben diesen wurden jedoch viele Skripte geschrieben welche sich einzelne Tests teilen.
+Die Versuche unterscheiden sich, abgesehen von der an die \lstinline{register} Funktion übergebenen Funktion, vorallem durch die notwendigerweise eingebundenen Dateien.
+Alle Versuchsdateien binden \name{g2.full.js}, \name{mec2.min.js} und \name{simulation.js} ein.
+Neben diesen existieren noch andere Hilfsbibliotheken, welche nicht von allen Versuchen genutzt werden.
+Jede Versuchsdatei beinhaltet zusätzlich eine kurze Beschreibung des Algorithmus.
 
-Des weiteren enthalten Gruppen an Tests weitere etwas spezialisiertere globale Variablen, welche entsprechend \lstinline{globalTestVariables} für diese Versuche erweitern sollen.
-
-Jede Versuchsdatei enthält au{\ss}erdem noch jeweils ein HTML-Paragraph Element\footnote{Für mehr Information zum HTML-Paragraph Element siehe \aka{https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p}.}, 
-in welchem beschrieben wird was in dem entsprechenden Versuch untersucht wird.
-
-Wie bereits angemerkt dient die \lstinline{globalTestVariables.createElements} Funktion der einhetlichen Befüllung aller Versuchsseiten.
-Diese Funktion wurde in Kapitel~\ref{ch:gtv_createElements} eingeführt.
-An dieser Stelle soll nun darauf eingegangen werden was für HTML-Elemente von ihr erstellt werden.
+Wie bereits angemerkt dient die \lstinline{createElements} Funktion der Abstraktion der Struktur aller Versuchsseiten.
+Diese Funktion wurde in Kapitel~\ref{ch:sim_createElements} eingeführt und soll nun konkret beschrieben werden.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{gfx/canvasses.png}
     \caption[Bild der Canvasse]{Beispiel für die Canvasse. Hier wird der Versuch \name{momentanpol1\_3} gezeigt. Von links nach rechts: Bild welches den Eingang darstellt. Bild welches visualisiert was in dem Test untersucht wird. Darstellung gesammelter Daten innerhalb des Tests. Bild zur Ermittlung der Performanz des Versuchs.}\label{fig:canvasses}
 \end{figure}
 
-
-Die vier erstellten HTML-Canvas Elemente sollen in jedem Versuch jeweils vergleichbare Rollen übernehmen.
-Das erste dieser Elemente dazu verwendet den getesteten Algorithmus mit Bildern zu versorgen auf dessen Basis dieser dann den entsprechenden Mechanismus rekonstruieren soll.
-Das zweite HTML-Canvas Element wird genutzt um zu visualisieren was in einem Versuch getestet wird.
-Diese Visualisierung soll dazu dienen einen besseren Eindruck davon zu bekommen ob die darunterliegenden Funktionen funktionieren und welche Erkenntnisse daraus gezogen werden können.
-Das dritte HTML-Canvas Element dient zur Auswertung der ermittelten Daten.
-In den meisten Tests wird dieses Element dazu genutzt um die ermittelten Koordinaten in einem Graphen darzustellen und dessen Form nach Regelmä{\ss}igkeiten zu untersuchen.
-Das zweite und dritte HTML-Canvas Element wird durch die an \lstinline{register} übergebenen Funktionenen selbst gezeichnet.
-Sie dienen entsprechend lediglich der Untersuchung der Ansätze und spielen für die Entwicklung eines abschlie{\ss}enden Verfahrens keine Rolle.
-Das befüllen des vierten HTML-Canvas Elementes wurde bereits in Kapitel~\ref{ch:gtv_run} ausführlich beschrieben.
-Es zeichnet den Graphen welcher dabei helfen soll einen Eindruck über die Performanz des Ansatzes zu bekommen.
+Die vier erstellten HTML-Canvas Elemente sollen in den Versuchen jeweils vergleichbare Rollen übernehmen.
+Das erste dieser Elemente wird dazu verwendet den Versuchsalgorithmus mit Bildern zu versorgen.
+Im zweiten HTML-Canvas Element werden die Ergebnisse des Versuchsalgorithmus visualisiert.
+Hierdurch soll ein besserer Eindruck darüber entstehen, ob die Implementation funktioniert und welche Erkenntnisse gewonnen werden können.
+Das dritte HTML-Canvas Element dient der Auswertung der ermittelten Daten.
+In den meisten Tests wird dieses Element genutzt, um die ermittelten Koordinaten in einem Graphen darzustellen.
+Das Rendering des zweiten und dritten HTML-Canvas Element wird durch die an \lstinline{register} übergebene Funktionen übernommen.
+Das Befüllen des vierten HTML-Canvas Elementes wurde bereits in Kapitel~\ref{ch:sim_run} beschrieben.
 
 \section{Definition eines \name{mec2} Modells}
 
-In vielen der im Nachfolgenden beschriebenen Tests werden \name{mec2} Modelle verwendet um eine kontrollierte Videosequenz eines Mechanismus zu erstellen.
-An dieser Stelle wird die Definition eines einfach Pendels beschrieben werden.
-Dieses Pendel wurde in der ersten Versuchsreihe so, oder leicht abgewandelt verwendet.
+In den meisten Versuchen werden \name{mec2} Modelle verwendet, um eine kontrollierte Videosequenz eines Mechanismus zu erstellen.
+Hier wird die Beschreibung eines Pendels durch \name{mec2} gezeigt.
+Eingliedrige Modelle dieser Art werden in der ersten Versuchsreihe verwendet.
 Es wird durch den Drehpunkt, den Endpunkt und dessen konstante Länge zueinander definiert.
-Bewegt wird das Pendel, sofern es keinen Antrieb hat, lediglich durch das Gewicht des Endpunktes, da durch die Annahme von geschwichtslosen Gliedern diese keinen Einfluss haben.
-Entsprechend wird in den \name{mec2} Simulationen Gravitation simuliert.
-Ein Beispiel für die Definition eines solchen Modells für \name{mec2} wird in Listing~\ref{lst:pendel} und in Abbildung~\ref{fig:index.html} gezeigt.
+Bewegt wird das Modell, sofern es keinen Antrieb hat, lediglich durch das Gewicht des Endpunktes.
+Ein Beispiel für die Definition eines solchen Modells wird in Listing~\ref{lst:pendel} und in Abbildung~\ref{fig:index.html} gezeigt.
 
 \begin{lstlisting}[language=JavaScript, caption={Definition eines einfachen Pendels in \name{mec2}, inklusive animation.}, label={lst:pendel}]
-globalTestVariables.model = {
+simulation.model = {
     gravity: true,
     nodes: [
         { id: 'A0', x: 150, y: 100, base: true },
@@ -229,12 +204,10 @@ globalTestVariables.model = {
 };
 \end{lstlisting}
 
-Das \name{mec2} Modell wird in der entsprechenden Testdatei auf dem \lstinline{globalTestVariables} Objekt definiert, damit dieses in den in Kapitel~\ref{ch:simulation_js} beschriebenen Funktionen korrekt referenziert werden kann.
-Es ist also notwendig die \name{simulation.js} vor dieser Definition einzubinden, da dies sonst undefiniert ist.
+Das \name{mec2} Modell wird in der entsprechenden Versuchsdatei definiert, damit dieses in den in Kapitel~\ref{ch:simulation_js} beschriebenen Funktionen korrekt referenziert werden kann.
 
-Das Pendel besteht aus zwei \lstinline{nodes}, welche die Endpunkte des Pendels darstellen.
-Einer dieser beiden Punkte wird als \lstinline{base} deklariert.
-Das hat zur Folge, dass es unbeweglich ist, womit es den Drehpunkt, beziehungsweise Absolutpol des Pendels darstellt.
+Dieses Modell besteht aus zwei \lstinline{nodes}, welche die Endpunkte des Pendels darstellen.
+Einer dieser beiden Punkte wird als \lstinline{base} deklariert, was es mit dem Gestell verbindet.
 Aus diesem regulären JavaScript Objekt wird ein \name{mec2} Modell, indem es durch \lstinline{mec.model.extend} erweitert wird.
-Dieser Vorgang wurde bereits in Kapitel~\ref{ch:gtv_register} beschrieben.
-Die Animation wird durch die \lstinline{globalTestVariables.run} Funktion gesteuert, welche ebenfalls in Kapitel~\ref{ch:gtv_run} beschrieben wurde.
+Dieser Vorgang wurde bereits in Kapitel~\ref{ch:sim_register} beschrieben.
+Die Animation wird durch die \lstinline{simulation.run} Funktion gesteuert, welche ebenfalls in Kapitel~\ref{ch:sim_run} beschrieben wurde.

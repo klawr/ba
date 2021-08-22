@@ -17,7 +17,7 @@ Diese Annahme ist für den Anfang hinreichend und wird im Zuge der Zusammensetzu
 
 Um die Bewegung innerhalb einer Bildsequenz zu erkennen werden hier stets zwei Bilder miteinander verglichen, welche zeitlich etwa 16,7 Millisekunden auseinanderliegen.
 Die Frequenz wird vorgegeben durch \name{requestAnimationFrame} und beträgt im Optimalfall 60 Hertz.
-Dieser Optimalfall sei dadurch definiert, dass die \lstinline{step} Funktion aus \lstinline{run} (s. Listing~\ref{lst:gtv_run}) weniger als 16,7 Millisekunden benötigt\footnote{Neben der an \lstinline{run} übergebenen \lstinline{step} Funktion werden natürlich noch andere Funktionen wie \lstinline{model.tick} und \lstinline{updateTimesChart} ausgeführt, diese sollen hier jedoch nicht betrachtet werden. Sie werden daher auch für die Zeitmessung innerhalb von \lstinline{run} ausgeschlossen.}.
+Dieser Optimalfall sei dadurch definiert, dass die \lstinline{step} Funktion aus \lstinline{run} (s. Listing~\ref{lst:sim_run}) weniger als 16,7 Millisekunden benötigt\footnote{Neben der an \lstinline{run} übergebenen \lstinline{step} Funktion werden natürlich noch andere Funktionen wie \lstinline{model.tick} und \lstinline{updateTimesChart} ausgeführt, diese sollen hier jedoch nicht betrachtet werden. Sie werden daher auch für die Zeitmessung innerhalb von \lstinline{run} ausgeschlossen.}.
 
 \section{compareImages}
 
@@ -205,7 +205,7 @@ Der hier genutzte Quellcode kann jedoch unter \aka{https://github.com/klawr/ba/b
 % \end{equation}
 
 % gefunden werden.
-% Es sei darauf hingewiesen, dass $p_{0y}$ sich auch direkt mithilfe von Gleichgung~\ref{eq:steigungsdreieck} berechnen lie{\ss}e, indem das ursprüngliche $m$ genutzt wird, gemä{\ss} des Orthogonaloperators auf diesem Vektor.
+% Es sei darauf hingewiesen, dass $p_{0y}$ sich auch direkt mit Hilfe von Gleichgung~\ref{eq:steigungsdreieck} berechnen lie{\ss}e, indem das ursprüngliche $m$ genutzt wird, gemä{\ss} des Orthogonaloperators auf diesem Vektor.
 
 % Dieser Ansatz basiert auf der Annahme, dass die Steigung die berechnet wird hinreichend genau ist.
 % Da der kleinste umfassende Kreis mit Sicherheit durch die au{\ss}enliegensten Punkte definiert wird, ist es jedoch unwahrscheinlich das exakt der Drehpunkt getroffen wird, da der Radius des Drehgelenkes nicht berücksichtigt werden kann.
@@ -364,7 +364,7 @@ Die Implementation eines solchen Aufrufs wird in Listing~\ref{lst:data_getChart}
 
 \begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{getChart} Funktion der \lstinline{Data} Klasse.}, label={lst:data_getChart}]
 getChart(limit) {
-    const gtv = globalTestVariables;
+    const sim = simulation;
     const data = this.alignForChart(limit);
     const fn = (i) => this.gaussianDistribution(i);
 

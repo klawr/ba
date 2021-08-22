@@ -105,7 +105,7 @@ Für die Animation des Rades wurde eine \name{g2} Animation erstellt,
 da sich dieses Modell so leichter darstellen lässt als mit einem \name{mec2} Modell.
 Das Rad wird durch eine Linie und einen Kreis definiert.
 Das Rollen wird durch den \lstinline{g2.use} Befehl simuliert, indem die Rotation durch eine Laufvariable bestimmt wird und die Position in X-Richtung durch $x = x_0 + r * i * \pi$, wobei $x_0$ entsprechend der Startwert ist, $r$ der Radius des Kreises und $i$ die Laufvariable, welche hier den Radianten bestimmt.
-Die Animation wird dann an \lstinline{globalTestVariables.g} übergeben.
+Die Animation wird dann an \lstinline{simulation.g} übergeben.
 Da kein \name{mec2} Modell definiert ist werden dessen Befehle, wie in Kapitel~\ref{ch:simulation_js} beschrieben, ignoriert.
 
 Zur Ermittlung des Momentanpols ist es nun notwendig die absolute Geschwindigkeit eines fest mit dem Glied verbundenen Punktes, sowie die Rotationsgeschwindigkeit des Gliedes zu ermitteln.
