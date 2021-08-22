@@ -55,22 +55,29 @@ class Group {
         return pts;
     }
 
-    momentanpol(threshold = 1) {
+    momentanpol(threshold = 1, maxDist = 0) {
         if (!(this.pts.length > 0) ||
             !(this.pts[0].length > threshold) ||
             !(this.lines.length > threshold)) {
             return;
         }
 
+        const filtered = maxDist ? this.pts.filter(pt => {
+            const l = this.lines[this.lines.length - 1];
+            const p = pt[pt.length - 1];
+
+            return l.orthogonalDistance(p) < maxDist;
+        }) : this.pts;
+
         const mu = (i) => {
-            const pt = this.pts.map(p => p[p.length - i])
+            const pt = filtered.map(p => p[p.length - i])
                 .reduce((pre, cur) => ({
                     x: pre.x + cur.x,
                     y: pre.y + cur.y,
                 }), { x: 0, y: 0 });
             return {
-                x: pt.x / this.pts.length,
-                y: pt.y / this.pts.length,
+                x: pt.x / filtered.length,
+                y: pt.y / filtered.length,
             };
         }
 

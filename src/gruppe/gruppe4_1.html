@@ -19,70 +19,80 @@
     <script src="../third_party/mec2.min.js"></script>
     <script src="../third_party/opencv.js"></script>
     <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
+    <script src="../scripts/data.js"></script>
     <script src="../scripts/line.js"></script>
+    <script src="../scripts/group.js"></script>
 
     <p>
-        Ermittlung von Gelenken über die Relativpole.
-        2 der 3 Punkte auf jeder Gerade werden durch die vorangegangen Methoden zu ermitteln.
-        Der andere ist dann der gesucht Gelenkpunkt.
+        Hier wird eine Gruppierung durch den K-Means Algorithmus versucht.
+        Zu den Gruppen wird jeweils noch die Regressionsgerade ermittelt.
     </p>
 
     <script>
         globalTestVariables.model = {
-            gravity: true,
-            nodes: [
-                { 'id': 'A0', 'x': 100, 'y': 50, 'base': true },
-                { 'id': 'A1', 'x': 100, 'y': 90 },
-                { 'id': 'B1', 'x': 200, 'y': 120 },
-                { 'id': 'B0', 'x': 200, 'y': 50, 'base': true },
+            "nodes": [
+                { "id": "A0", "x": 60, "y": 60, "base": true },
+                { "id": "A", "x": 60, "y": 110 },
+                { "id": "B", "x": 210, "y": 120 },
+                { "id": "B0", "x": 210, "y": 60, "base": true },
             ],
-            constraints: [
-                { id: 'a', p1: 'A0', p2: 'A1', len: { type: 'const' }, ori: { type: 'drive', Dw: 100, Dt: 100 } },
-                { id: 'b', p1: 'B0', p2: 'B1', len: { type: 'const' } },
-                { id: 'c', p1: 'B1', p2: 'A1', len: { type: 'const' } }
+            "constraints": [
+                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
+                { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
+                { "id": "c", "p1": "B0", "p2": "B", "len": { "type": "const" } }
             ]
-        };
-
-        const { model } = globalTestVariables;
-        function cartesian(p) {
-            return {
-                x: p.x,
-                y: globalTestVariables.cnv_height - p.y,
-            }
         }
 
-        const fn = () => {
+        const k = 3;
+
+        const groups = Array(3).fill(null).map(_ => new Group({ lk: { maxCorners: 6 } }));
+        const data = Array(3).fill(null).map(_ => new DataXY());
+        let previousClusters = null;
+
+        const fn = (result) => {
+            const filtered = result.removeOverlaps(5);
             const g = g2().clr();
+            const cluster = filtered.kMeansDijkstra(previousClusters || k);
+            if (cluster[1].filter(g => g.length).length === k) {
+                cluster[1] = Line.realignGroups(cluster[1], g);
+                previousClusters = [cluster[0]];
+                const lines = cluster[1].map(e => Line.fromRegressionLine(e, g));
+                groups.forEach((c, i) => {
+                    c.lines.push(lines[i]);
+                    c.lucasKanade();
+                    data[i].add(c.momentanpol(5, 1));
+                    const color = globalTestVariables.hsv2rgb(i / groups.length * 360);
+                    data[i].pts.forEach(p => g.cir({ ...p, r: 3, fs: color, ls: '@fs' }));
+                    data[i].drawDeviation(g);
+                });
+            }
 
-            const lines = model.constraints.map(c => new Line({
-                p1: cartesian(c.p1),
-                p2: cartesian(c.p2),
-            }));
+            const h = g2().clr();
 
-            model.nodes.forEach(n => g.cir({ ...cartesian(n), r: 10 }));
 
-            const A0 = cartesian(model.nodes.find(e => e.id === 'A0'));
-            const B0 = cartesian(model.nodes.find(e => e.id === 'B0'));
-            const abs_line = new Line({ p1: A0, p2: B0 });
-            abs_line.draw(g, { ld: [3, 0, 3] });
+            const copy = [...data];
+            const meh = data.map(e => e.covariance);
+            const idx = meh.indexOf(Math.max(...meh));
+            const noGnd = copy.splice(idx, 1)[0];
+
+            copy.forEach(d => h.gnd({...d.mu}));
+            h.cir({...noGnd.mu, r: 5, label: (noGnd.x.mu + noGnd.y.mu) / 2});
 
             const rel = [];
-            for (let i = 0; i < lines.length; ++i) {
-                for (j = i + 1; j < lines.length; ++j) {
-                    rel.push(lines[i].intersection(lines[j]));
+            const len = groups[0].lines.length;
+            for (let i = 0; i < groups.length; ++i) {
+                for (j = i + 1; j < groups.length; ++j) {
+                    rel.push(groups[i].lines[len - 1]
+                        .intersection(groups[j].lines[len - 1]));
                 }
             }
-            lines.forEach(l => {
-                rel.push(abs_line.intersection(l));
-                l.draw(g);
-            });
-
-            rel.forEach(p => g.nod({ ...p }));
-
+            rel.forEach(r => h.nod({...r}));
+            h.exe(globalTestVariables.ctx3);
             g.exe(globalTestVariables.ctx2);
         }
 
-        globalTestVariables.register(() => fn());
+        globalTestVariables.register(() => stepCompareImages(fn));
     </script>
 </body>
 
