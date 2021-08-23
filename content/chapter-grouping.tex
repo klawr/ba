@@ -292,6 +292,8 @@ Der entsprechend rekonstruierte Mechanismus wird in Abbildung~\ref{fig:gruppe4_1
 
 Die vorangegangen Methoden geben scheinbar akzeptable Ergebnisse für Viergelenke.
 Sie scheitern jedoch, sobald die Anzahl der Glieder höher wird, wie in Abbildung~\ref{fig:gruppe1_3_2_6_3_4} gesehen werden kann.
+Aus diesem Grund soll in diesem Kapitel davon ausgegangen werden, dass sowohl die Ermittlung der Gliedebenen also auch die dazugehörigen Momentanpole ideal sind.
+Es wird untersucht werden, inwiefern die Menge der Relativpole nach den gesuchten Gelenken gefiltert werden können.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{gfx/gruppe_failed_edit.png}
@@ -299,11 +301,9 @@ Sie scheitern jedoch, sobald die Anzahl der Glieder höher wird, wie in Abbildun
     \label{fig:gruppe1_3_2_6_3_4}
 \end{figure}
 
-Aus diesem Grund soll nun davon ausgegangen werden, dass sowohl die Ermittlung der Gliedebenen also auch die dazugehörigen Momentanpole erfolgreich ermittelt wurden.
-
 \subsection{Ermittlung der Anzahl der gesuchten Punkte}
 
-Der Freiheitsgrad für einen planaren Mechanismus berechnet sich nach Grübler durch
+Der Freiheitsgrad für einen planaren Mechanismus berechnet sich nach Grübler durch~\cite{Goessner2016}
 
 \begin{equation}
     F = 3n - 3 - b_1 - 2b_2
@@ -335,7 +335,7 @@ Aus der Annahme heraus, dass die hier betrachteten Mechanismen jeweils zwangläu
 
 vereinfachen.
 So kann neben der Anzahl der gesuchten Gelenke des weiteren festgestellt werden, dass die Gliederzahl der hier für die Berechnung genutzten kinematischen Ketten in jedem Fall einer geraden Zahl entspricht.
-
+Wird während der Ermittlung der Momentanpole festgestellt, dass translative Bewegungen enthalten sind, zählen diese entsprechend doppelt.
 
 \subsection{Betrachtung aller Relativpole}
 
@@ -350,8 +350,7 @@ Die Anzahl der Relativpole eines Mechanismus berechnet sich durch~\cite{Goessner
 
 Wobei $n$ hier wieder die Anzahl der Glieder ist.
 Hier lassen sich in jedem Fall die durch die in den angeführten Methoden bestimmten Momentanpole der bewegten Gliedebenen ausschlie{\ss}en, wobei die Absolutpole dann direkt als gefundene Gelenke identifiziert werden können.
-
-Allerdings ist auch zu beachten, dass sobald ein Relativpol durch den Schnittpunkt zweier Gliedebenen definiert ist, welche mehr als einen Absolutpol als Parameter besitzen kein Gelenk sein kann, da er sonst starr wäre.
+Allerdings ist auch zu beachten, dass Relativpole im Schnittpunkt zweier Gliedebenen, welche gemeinsam mehr als einen Absolutpol aufweisen keine Gelenke darstellen können, da diese sonst starr wären.
 Die Relativpole, welche durch zwei nicht benachbarte Gliedebenen gebildet werden lassen sich dennoch nicht einfach ausschlie{\ss}en, sodass hier weitere Analysen notwendig sein werden.
 
 \begin{figure}
@@ -362,8 +361,7 @@ Die Relativpole, welche durch zwei nicht benachbarte Gliedebenen gebildet werden
 
 Nach dem Satz von Aronhold-Kennedy~\cite{Goessner2016, Kerle2016}, welcher auch als 3-Polsatz bezeichnet wird, befinden sich für drei bewegte Gliedebenen jeweils drei Relativpole auf einer Geraden.
 Die Punkte, welche nicht ausgeschlossen werden können bewegen sich entsprechend auf diesen Geraden.
-Eine Analyse des Momentanpols dieser Punkte würde diesen entsprechend in unendlicher Distanz äquivalent zur translativen Bewegung identifizieren, sodass auch diese ausgeschlossen werden können.
-
-Die gleichen Methoden können auch genutzt werden, wenn der Mechanismus translativ bewegende Glieder enthält, was in den Versuchen \name{gruppe4\_4} und \name{gruppe4\_5} gezeigt wird.
+Eine Analyse des Momentanpols dieser Punkte würde diesen entsprechend in unendlicher Distanz äquivalent zur translativen Bewegung identifizieren, sodass dann auch diese ausgeschlossen werden können.
+Es sei darauf hingewiesen, dass Glieder, welche translativ sind aber nicht am Gestell befestigt sind entgegen den Grundannahmen stehen.
+Die gleichen Methoden können auch genutzt werden, wenn der Mechanismus translativ bewegende Gestellglieder enthält, was in den Versuchen \name{gruppe5\_4.html} und \name{gruppe5\_5.html} gezeigt wird.
 Die translativen Elemente können ausgeschlossen werden, weil jenes, welches am Gestell befestigt ist bereits als Absolutpol ermittelt wurde.
-Es sei jedoch darauf hingewiesen, dass Glieder, welche translativ sind aber nicht am Gestell befestigt sind hier ausgeschlossen sind.
