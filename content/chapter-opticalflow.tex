@@ -4,7 +4,7 @@
 
 \cleanchapterquote{Ich glaube, es ist verlockend, wenn das einzige Werkzeug, das man hat, ein Hammer ist, alles zu behandeln, als ob es ein Nagel wäre.}{Abraham Maslow}{US-amerikanischer Psychologe}
 
-Die wahrgenommene Bewegung von Objekten innerhalb zweier Bilder wird als \name{optischer Fluss}(zu engl. \name{Optical Flow}) bezeichnet~\cite[S.~939, Russell2010].
+Die wahrgenommene Bewegung von Objekten innerhalb zweier Bilder wird als \name{optischer Fluss} (zu engl. \name{Optical Flow}) bezeichnet~\cite[S.~939]{ Russell2010}.
 Der optische Fluss kann durch ein Vektorfeld interpretiert werden, wobei die Vektoren jeweils die relative Bewegung des betrachteten Punktes darstellen.
 Die Bewegung eines Pixels innerhalb zweier Bilder lässt sich durch
 
@@ -26,28 +26,28 @@ Durch die Berechnung der Bewegung aller Pixel lässt sich so ein Vektorfeld erst
 
 \section{Optischer Fluss nach Lucas-Kanade}\label{ch:lucas_kanade}
 
-Einen Vorschlag einer nutzbaren Implementation des optischen Flusses wurde von Lucas und Kanade bereits 1981 vorgeschlagen~\cite{Lucas1981}.
-Der vorgeschlagene Ansatz trifft im vorherein jedoch mehrere Annahmen.
+Eine nutzbare Implementation des optischen Flusses wurde von Brude Lucas und Takeo Kanade bereits 1981 vorgeschlagen~\cite{Lucas1981}.
+Der vorgeschlagene Ansatz trifft jedoch mehrere Annahmen.
 Die erste Annahme ist, dass die Bewegung nicht sehr gro{\ss} ist.
-Zu schnelle Bewegungen können durch diesen Ansatz wahrscheinlich nicht, oder nur schlecht erkannt werden.
+Zu schnelle Bewegungen können durch diesen Ansatz wahrscheinlich nicht oder nur schlecht erkannt werden.
 Eine weitere Annahme ist, dass die zu untersuchende Bildsequenz in Graustufen immernoch nutzbar ist.
-Es werden in dieser Methode die Helligkeitswerte der Pixel untersucht, sodass eine Szene, welche in einer solchen Darstellung keine zu erkennende Bewegung hat, entsprechend keine sinnvollen Ergebnisse verspricht.
+Es werden in dieser Methode die Helligkeitswerte der Pixel untersucht.
+Eine Bewegung welche keine Änderung der Helligkeitswerte verursacht kann also offensichtlich nicht erkannt werden.
 
-Die Überlegung die in diesem Algorithmus verfolgt wird ist, dass für einen Pixel sich die Helligkeit genau dann verändert, wenn sich das zugrundeliegende Objekt bewegt hat.
-Die Bewegung sollte durch einen Abgleich mit Benachbarten Pixeln gefunden werden indem der entsprechende Fehler minimiert wird der durch eine Bewegung erzeugt wird.
+Die Bewegung sollte durch einen Abgleich mit benachbarten Pixeln gefunden werden, indem der entsprechende Fehler minimiert wird, der durch eine Bewegung erzeugt wird.
 Wird das erste Bild für die entsprechenden Pixelwerte als eine Funktion $F(x)$ und die Pixelwerte des zweiten Bildes entsprechend als $G(x)$ beschrieben, so wird also jener Vektor gesucht, welcher den Fehler zwischen diesen beiden Funktionen minimiert.
-Beschreiben diese Funktionen stattdessen Regionen auf entsprechenden Bildern, so kann der Vektor gesucht werden, welcher für die Bewegung dieser Regionen innerhalb der Bilder den geringsten Fehler ausschreibt.
+Beschreiben diese Funktionen stattdessen Regionen auf entsprechenden Bildern, so können die Vektoren gesucht werden, welche für die Bewegung dieser Regionen innerhalb der Bilder die geringsten Fehler aufweisen.
 Auf diese Weise kann versucht werden die Bewegung einzelner Objekte zu verfolgen.
 
 Zunächst ist die Grö{\ss}e der Regionen unbekannt, deshalb wird ein pyramidischer Ansatz genutzt.
-Das bedeutet, dass um eine Region von Interesse mehrere Regionen festgelegt werden, für welche der Fehler entsprechend berechnet wird.
-Diese Fehler können dann verglichen werden und die passende Region wird genutzt, um die Verschiebung des Punktes innerhalb des Bildes zu beschreiben.
+Pyramidisch bedeutet, dass um Regionen von Interesse Quadrate unterschiedlicher Größe definiert werden, für welche der Fehler entsprechend berechnet wird.
+Diese Fehler können dann verglichen werden und das passendste Quadrat wird genutzt, um die Verschiebung der Region innerhalb des Bildes zu beschreiben.
 Anhand dieses Ansatzes kann die ungefähre Grö{\ss}e des sich bewegenden Objektes untersucht werden.
 Eine Implementation dieses Ansatzes wird von Jean-Yves Bouget beschrieben~\cite{Bouguet2000}.
 
-Was für eine Nutzung nun noch fehlt ist die Festlegung der entsprechenden Regionen von Interesse.
+Was für eine Nutzung nun noch fehlt, ist die Festlegung der entsprechenden Regionen von Interesse.
 Hierfür wird ein Algorithmus genutzt, welcher in einem Bild interessante Punkte anhand von Kantenerkennung identifiziert.
-Entwickelt wurde dieser von J. Shi und C. Tomasi~\cite{Shi1994} und wird im nachfolgenden genutzt, um die Menge der zu verfolgenden Punkte zu bestimmen.
+Entwickelt wurde dieser von J. Shi und C. Tomasi~\cite{Shi1994} und wird im Nachfolgenden genutzt, um die Menge der zu verfolgenden Punkte zu bestimmen.
 
 \subsection{Implementation des Lucas-Kanade Algorithmus}
 
@@ -55,25 +55,24 @@ Um diesen Algorithmus in die nun bestehende Struktur zu implementieren, wird fü
 Diese Eigenschaft verweist auf ein Objekt der \lstinline{LucasKanade} Klasse.
 Objekte der \lstinline{LucasKanade} Klasse enthalten wiederum alle Parameter, welche für die Nutzung der Algorithmen notwendig sind.
 
-Die Funktionen zur Bestimmung interessanter Punkte und dessen Verfolgung wird von \name{opencv.js} bezogen~\cite{OpenCV2021}.
-\name{opencv}\footnote{\name{opencv} ist eine Abkürzung für Open Computer Vision.} ist eine Sammlung von Funktionen im Bereich der Bildverarbeitung und des Maschniellen sehens.
+Die Funktionen zur Bestimmung interessanter Punkte und deren Verfolgung wird von \name{opencv.js} bezogen~\cite{OpenCV2021}.
+\name{opencv}\footnote{\name{opencv} ist eine Abkürzung für Open Computer Vision.} ist eine Sammlung von Funktionen im Bereich der Bildverarbeitung und des maschinellen Sehens.
 Implementiert ist \name{opencv} in \name{C++}.
-Es gibt jedoch Unterstüzung für eine Vielzahl von anderen Programmiersprachen, wie zum Beispiel \name{Python}, \name{Java} und \name{JavaScript}.
+Für eine Vielzahl von anderen Programmiersprachen wie zum Beispiel \name{Python}, \name{Java} und \name{JavaScript} gibt es jedoch entsprechende Schnittstellen.
 
-Für \name{JavaScript} wird das globale \lstinline{cv} Objekt genutzt, um auf dessen Funktionen zuzugreifen.
-Für die Bestimmung von vermeintlich sinnvollen Regionen zur Verfolgung wird die \lstinline{cv.goodFeaturesToTrack} Funktion verwendet.
-Diese implementiert den Shi-Tomasi Algorithmus.
-Als Parameter übergeben werden hier ein in Graustufen konvertiertes Bild, eine \lstinline{cv.Mat} Objekt, in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte, welche zur Verfolgung gesucht werden, die minimale Qualität einer Kante\footnote{Die Qualität einer Kante wird hier ins Verhältnis zur Kante mit bester Qualität gestellt.
+Für \name{JavaScript} wird das globale \lstinline{cv} Objekt genutzt, um auf die Funktionen zuzugreifen.
+Für die Bestimmung von vermeintlich sinnvollen Regionen zur Verfolgung wird die \lstinline{cv.goodFeaturesToTrack} Funktion verwendet, welche den Shi-Tomasi Algorithmus implementiert.
+Die hier übergebenen Parameter sind ein in Graustufen konvertiertes Bild, eine \lstinline{cv.Mat} Objekt, in welchem die Ergebnisse gespeichert werden, die maximale Anzahl der Punkte, welche zur Verfolgung gesucht werden, die minimale Qualität einer Kante\footnote{Die Qualität einer Kante wird hier ins Verhältnis zur Kante mit bester Qualität gestellt.
 Die Qualität einer hier genutzten Kante berechnet sich durch \lstinline{cv.cornerMinEigenVal}, worauf hier jedoch nicht weiter eingegangen wird.
 Mehr Information kann unter \aka{https://docs.opencv.org/master/dd/d1a/group__imgproc__feature.html\#ga3dbce297c1feb859ee36707e1003e0a8} gefunden werden.} und der minimale euklidische Abstand der Punkte zueinander.
-Des weiteren können hier spezielle Regionen von Interesse übergeben werden und die durchschnittliche Grö{\ss}e der Blöcke, welche bei der Berechnung genutzt werden.
+Des Weiteren können hier spezielle Regionen von Interesse übergeben werden und die durchschnittliche Grö{\ss}e der Blöcke, welche bei der Berechnung genutzt werden.
 
 Nach der Bestimmung der zu verfolgenden Punkte wird versucht diese durch \lstinline{cv.calcOpticalFlowPyrLK} zu verfolgen.
 Die \lstinline{calcOpticalFlowPyrLK} Funktion benötigt als Parameter zunächst die beiden Bilder in zeitlicher Abfolge.
 Der dritte Parameter beinhaltet die Punkte, welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt, welcher die berechnet Punkte enthalten wird.
-Alles weitere sind Parameter zum Einstellen des Algorithmus, wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Grö{\ss}e der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung grö{\ss}er werdenen Regionen.
+Alles weitere sind Parameter zum Einstellen des Algorithmus wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Grö{\ss}e der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung grö{\ss}er werdenen Regionen.
 Abschlie{\ss}end wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben, welcher eine Abbruchbedingung für die iterative Suche darstellt.
-Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfand, oder die Bewegung unterhalb eines Schwellenwertes vermutet wird.
+Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfand oder die Bewegung unterhalb eines Schwellenwertes vermutet wird.
 
 \begin{figure}
     \centering
@@ -122,10 +121,10 @@ Entsprechend muss noch die \lstinline{very_first} Variable genutzt werden, um de
 \lstinline{goodFeaturesToTrack} wird nur einmal am Anfang ausgeführt, damit die Reihenfolge der gefundenen Punkte konsistent bleibt.
 Au{\ss}erdem ist nicht sichergestellt, dass die vorgeschlagenen Regionen bei Veränderungen im Bild die selben bleiben.
 Die gefundenen Punkte werden im \lstinline{LucasKanade} Objekt entsprechend gespeichert.
-Nachdem das Bild in Graustufen übersetzt wurde wird es in der \lstinline{calcOpticalFlowPyrLK} Funktion genutzt, um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
+Nachdem das Bild in Graustufen übersetzt wurde, wird es in der \lstinline{calcOpticalFlowPyrLK} Funktion genutzt, um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
 Diese Punkte werden dann in einer \lstinline{points} Liste gespeichert, welche die zuletzt ermittelten Koordinaten enthält.
 Daraufhin wird das \lstinline{oldGray} Bild überschrieben, damit es bei der nächsten Iteration entsprechend als erstes Bild dienen kann.
-Ebenso wird \lstinline{p0} für die nächste Iteration den zuletzt ermittelten Koordinaten gleichgestellt.
+Ebenso wird \lstinline{p0} für die nächste Iteration auf die zuletzt ermittelten Koordinaten gesetzt.
 
 Der Rückgabewert dieser Funktion ist die \lstinline{points} Liste.
 Aufgerufen wird diese Funktion durch die \lstinline{lucasKanade} Funktion des \lstinline{group} Objektes.
@@ -137,17 +136,17 @@ Diese Punkte haben augenscheinlich eine sehr viel geringere Varianz als die Ans�
 
 \subsection{Optischer Fluss nach Farneback}
 
-Bei der Ermittlung des optischen Flusses wird zwischen dichtem und spärlichen optischen Fluss unterschieden.
-Während der spärliche optische Fluss einzelne Regionen von Interesse im Bild verfolgt und entsprechend dessen Bewegung nachvollzieht, ist der Anspruch von Algorithmen zur Berechnung von dichten optischem Fluss die Berechnung der Bewegung jedes einzelnen Pixels.
-Während ich auf die Implementation nicht weiter eingehen möchte, da dieser Ansatz wegen augenscheinlich zu gro{\ss}en Varianzen nicht weiter verfolgt wird, verdient dieser dennoch eine Erwähnung.
+Bei der Ermittlung des optischen Flusses wird zwischen dichtem und spärlichem optischen Fluss unterschieden.
+Während der spärliche optische Fluss einzelne Regionen von Interesse im Bild verfolgt und entsprechend dessen Bewegung nachvollzieht, ist der Anspruch von Algorithmen zur Berechnung vom dichten optischem Fluss die Berechnung der Bewegung jedes einzelnen Pixels.
+Während ich auf die Implementierung nicht weiter eingehen möchte, da dieser Ansatz wegen augenscheinlich zu gro{\ss}en Varianzen nicht weiter verfolgt wird, verdient dieser dennoch eine Erwähnung.
 Die Implementation wurde nicht sonderlich in den Text integriert, der entsprechende Test kann jedoch unter \name{src/opticalflow/opticalflow1\_1.html} eingesehen werden.
 
-Zu erwarten wäre für ein sich um einen festen Punkt drehendes Glied, dass alle Vektoren zur Bestimmung der Bewegung den selben Einheitsvektor haben.
+Für ein sich um einen festen Punkt drehendes Glied wäre zu erwarten, dass alle Vektoren zur Bestimmung der Bewegung denselben Einheitsvektor haben.
 Der entsprechende Betrag des Vektors sollte linear mit Abstand zum Drehpunkt zunehmen.
 Diese Information sollte dann genutzt werden können, um die Pole der ebenen Bewegung zu ermitteln.
 
-Des Weiteren hätten die Glieder durch den Verlauf der gemessenen Geschwindigkeiten leicht unterscheidbar gewesen sein sollen.
-Da jedoch die Ungenauigkeiten hier zu gro{\ss} zu sein scheinen fällt die Implementation entsprechend schwierig und wird hier nicht weiter Gegenstand sein.
+Des Weiteren sollten die Glieder durch den Verlauf der gemessenen Geschwindigkeiten leicht unterscheidbar sein.
+Da jedoch die Ungenauigkeiten hier zu gro{\ss} zu sein scheinen, wäre die Implementierung entsprechend komplex und wird hier nicht weiter Gegenstand sein.
 
 \begin{figure}
     \centering
@@ -168,14 +167,13 @@ Da jedoch die Ungenauigkeiten hier zu gro{\ss} zu sein scheinen fällt die Imple
 Eine weitere Erwähnung verdienen Ansätze zur Ermittlung des optischen Flusses durch maschinellen Lernens.
 Sie versprechen eine höhere Genauigkeit bei vergleichbarer Performanz.
 Hierzu gehören Ansätze zur Segmentierung einzelner Objekte durch die Verfolgung der Punkttrajektorien~\cite{Ochs2014, Keuper2015}.
-Diese Segmentierungen könnten dann im einzelnen analysiert werden, was die Problemstellung von Kapitel~\ref{ch:gruppierung_von_datenpunkten} darstellen wird.
+Diese Segmentierungen könnten dann im Einzelnen analysiert werden, was die Problemstellung von Kapitel~\ref{ch:gruppierung_von_datenpunkten} darstellen wird.
 
 Auch für die Ermittlung des Vektorfeldes werden Neuronale Netze entwickelt, welche eine höhere Genauigkeit und weniger Streuung der Ergebnisse versprechen.
 \name{FlowNet}~\cite{Fischer2015} ist ein \textit{Convolutional Neural Network}\footnote{Zu deutsch in etwa \textit{Faltendes neurales Netwerk}.}, welches durch automatisiert erstellte Trainingsdaten trainiert wurde.
-Es wurden hierfür beliebige Hintergründe verwendet auf denen dann Bilder von Stühlen platziert wurden.
+Es wurden hierfür beliebige Hintergründe verwendet, auf denen dann Bilder von Stühlen platziert wurden.
 Diese Stühle wurden dann für das Training entsprechend ein wenig versetzt, damit das neurale Netz mit diesen vorgegebenen \textit{Ground Truth} Werten trainiert werden konnte.
 Es muss hierbei berücksichtigt werden, dass das neurale Netz nicht durch die Objekte, sondern dessen Bewegung trainiert wird.
-Der Stuhl wurde entsprechend verwendet weil er gute Bearbeitung auf den Trainingsdaten verspricht.
 
 \begin{figure}
     \centering
@@ -184,21 +182,21 @@ Der Stuhl wurde entsprechend verwendet weil er gute Bearbeitung auf den Training
     \caption[Beispiele aus dem \name{Flying Chair Dataset}]{Die ersten beiden Bilder sind ein Auszug aus dem \name{Flying Chair Dataset}. Das zweite Bild versetzt die Stühle ein wenig, wobei die Bewegung, welche in der Kontrolle des Programmierers liegt entsprechend als Wert für das Training festgehalten wird. Im dritten Bild sieht man entsprechend die Vektoren, welche als wahre Werte gehalten werden. Die Farben zeigen hierbei die Richtugn des Vektors und die Sättigung der Farbe gibt den Betrag an~\cite{Fischer2015}.}
 \end{figure}
 
-Als eine Entwicklung von \name{FlowNet} wurde \name{FlowNet 2.0}~\cite{Ilg2016} mit dem Ziel eine Verbesserung der Ergebnisse zu erzielen.
+Als eine Entwicklung von \name{FlowNet} wurde \name{FlowNet 2.0}~\cite{Ilg2016} entworfen.
 \name{FlowNet 2.0} hat einige Verbesserung im Umgang mit den Trainingsdaten eingeführt.
-Diese Verbesserungen basieren auf den gefundenen Mängeln von\name{FlowNet}, welcher auf Daten der echten Welt keine Verbesserung zur bis dahin genutzten Methoden hatte\footnote{\name{FlowNet} hat allerdings gezeigt, dass maschinelles Lernen dieses Problem bearbeiten kann.}.
-Zum einen wird hier ein grö{\ss}erer Fokus auf kleinere Änderungen in der Bewegung gelegt, was zu einer höheren Genauigkeit bei echten Bildern zur Folge hat.
-Es zeigte sich au{\ss}erdem, dass der Zeitplan mit, welchem die Trainingsdaten an das Netzwerk geliefert werden Einfluss auf dessen Generalisierbarkeit hat.
+Diese Verbesserungen basieren auf den gefundenen Mängeln von \name{FlowNet}, welcher auf Daten der echten Welt keine Verbesserung zur bis dahin genutzten Methoden aufweist\footnote{\name{FlowNet} hat allerdings gezeigt, dass maschinelles Lernen dieses Problem bearbeiten kann.}.
+Zum einen wird hier ein grö{\ss}erer Fokus auf kleinere Änderungen in der Bewegung gelegt, was zu einer höheren Genauigkeit bei echten Bildern führt.
+Es zeigte sich au{\ss}erdem, dass der Zeitplan, mit welchem die Trainingsdaten an das Netzwerk geliefert werden, Einfluss auf dessen Generalisierbarkeit hat.
 
 \section{Betrachtung der Ergebnisse}
 
 Die Bestimmung des optischen Flusses war zunächst die zugrundeliegende Überlegung zur Lösung dieser Arbeit.
-Das Bild, welches diese Arbeit initial inspieriert hat ist Abbildung~\ref{fig:ai_modern_approach_optical_flow}.
+Tatsächlich kam die ursprüngliche Inspiration zu dieser Arbeit durch  Abbildung~\ref{fig:ai_modern_approach_optical_flow}.
 Es hat sich jedoch schnell gezeigt, dass es sehr schwierig sein könnte die Ungenauigkeiten der Vektorfelder unter Kontrolle zu bringen.
 Ansätze des maschinellen Lernens sind vielversprechend.
-Die Entwicklung dieser zeigt, dass die in dieser Arbeit untersuchten Algorithmen durch die Nutzung der Methoden durch diese durchaus verbessert werden können und schlussendlich die Genauigkeit erhöhen können.
+Die Entwicklung dieser zeigt, dass die in dieser Arbeit untersuchten Algorithmen durch diese verbessert und schlussendlich die Genauigkeit erhöht werden kann.
 Zur Zeit der Bearbeitung ist jedoch der Mehraufwand einer Implementierung solcher Ansätze zu hoch.
-Um den Rahmen dieser Arbeit nicht zu übersteigen finden diese hier daher keine Anwendung.
+Um den Rahmen dieser Arbeit nicht zu übersteigen finden, diese hier daher keine Anwendung.
 
 \begin{figure}
     \centering
@@ -207,5 +205,5 @@ Um den Rahmen dieser Arbeit nicht zu übersteigen finden diese hier daher keine 
     \caption[Vergleich \name{FlowNet} zu \name{FlowNet 2.0}]{Vergleich der Genauigkeit von \name{FlowNet} gegenüber \name{FlowNet 2.0}. Die hier sichtbar verbesserte Genauigkeit ist laut den Autoren vier mal höher als beim Vorgänger~\cite{Ilg2016}}
 \end{figure}
 
-Die Implementation des Algorithmus nach Lucas-Kanade scheint jedoch eine stabile Methode zu sein Bewegung einzelner Punkte zu verfolgen.
-Dieser findet vorallem im nachfolgenden Kapitel Anwendung.
+Die Implementation des Algorithmus nach Lucas-Kanade scheint jedoch eine stabile Methode zu sein, die Bewegung einzelner Punkte zu verfolgen.
+Dieser findet vor allem im nachfolgenden Kapitel Anwendung.
