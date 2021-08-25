@@ -9,7 +9,7 @@ In dieser Arbeit wird die automatisierte Erkennung von planaren Mechanismen durc
 \begin{figure}
 \centering
     \includegraphics[width=\textwidth]{gfx/werkzeugkoffer_impl.png}
-    \caption[Versuch \name{bilder1\_1.html}]{Versuch \name{bilder1\_1.html}. Im linken Bild wird der Mechanismus mit darüberliegendem \name{mec2} Modell gezeigt. Das mittlere Bild zeigt den ursprünglichen Mechanismus. Im rechten Bild ist zur verbesserten Ansicht nurnoch das \name{mec2} Modell zu sehen. Ein Mensch ist durch Erfahrung und Intuition in der Lage diesen Mechanismus direkt zu modellieren.}
+    \caption[Versuch \name{bilder1\_1.html}]{Versuch \name{bilder1\_1.html}. Im linken Bild wird der Mechanismus mit darüberliegendem \name{mec2} Modell gezeigt. Das mittlere Bild zeigt den ursprünglichen Mechanismus. Im rechten Bild ist zur verbesserten Ansicht nur das \name{mec2} Modell zu sehen. Ein Mensch ist durch Erfahrung und Intuition in der Lage diesen Mechanismus direkt zu modellieren.}
     \label{fig:werkzeugkoffer_impl}
 \end{figure}
 
@@ -19,10 +19,10 @@ Hierfür wird auf Erfahrung und Intuition zurückgreifen, über die ein Programm
 Neuronale Netzwerke könnten sicherlich trainiert werden, um die Gelenkpunkte eines Mechanismus anhand einer Momentaufnahme zu bestimmen.
 In dieser Arbeit soll jedoch untersucht werden, welche Informationen über planare Mechanismen innerhalb von Videosequenzen auf analytischem Wege gewonnen werden können.
 
-Für die Bestimmung von Posen bekannter kinematischer Ketten existieren Lösungen, welche bereits in der Praxis angewandt werden.
+Für die Bestimmung der Posen bekannter kinematischer Ketten existieren Lösungen, welche bereits in der Praxis angewandt werden.
 Diese Ansätze werden unter dem Begriff der \name{Pose-Estimation} zusammengefasst.
 Besonders prominent sind hierrunter Ansätze, welche die Pose eines auf Menschen definierten Modells ermitteln und visualisieren~\cite{Papandreou2018, Google2021, Google2021a}.
-Im Unterschied zur Problemstellung dieser Arbeit, in der die kinematischen Ketten ermittelt werden sollen, gehen solche von bereits bekannten kinematischen Ketten aus.
+Im Unterschied zur Problemstellung dieser Arbeit, in der die kinematischen Ketten ermittelt werden sollen, gehen solche Methoden von bereits bekannten kinematischen Ketten aus.
 
 \begin{figure}
     \centering
@@ -39,7 +39,7 @@ Im Unterschied zur Problemstellung dieser Arbeit, in der die kinematischen Kette
 Die Erkennung der Bewegung soll durch den Vergleich von Bildern in Videosequenzen erfolgen.
 Ziel ist das Untersuchen von Algorithmen, welche die Bewegung einzelner Glieder ermitteln.
 Die Ergebnisse sollen dann genutzt werden, um die Pole der ebenen Bewegung für die entsprechenden Glieder zu finden.
-Da der Mechanismus aus mehreren Gliedern besteht müssen dann Methoden entwickelt werden um diese Glieder zu isolieren.
+Da ein Mechanismus aus mehreren Gliedern besteht, müssen dann Methoden entwickelt werden, um diese Glieder zu isolieren.
 Anhand der Gliedebenen und derer Momentanpole werden die übrigen Relativpole ermittelt.
 Unter den Relativpolen können dann die Gelenkpunkte gesucht werden.
 
