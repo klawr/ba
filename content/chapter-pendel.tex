@@ -305,6 +305,13 @@ get variance() {
 }
 \end{lstlisting}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{gfx/normalverteilung.png}
+    \caption[Beispiel für in etwa normal verteilte Daten.]{Ein Beispiel zu einem durch \lstinline{g2.chart} gezeichneten Graphen. Die X-Achse bezeichnet die Koordinate des gefundenen Punktes und die Y-Achse den Anteil der auf dieser Koordinate gefundenen Punkte. Hier wird Versuch \name{momentanpol1\_1.html} gezeigt.}
+    \label{fig:normalverteilung}
+\end{figure}
+
 \lstinline{mu} wird hier zwischengespeichert, damit dieser nicht für jede Iteration innerhalb des \lstinline{reduce} Aufrufs erneut berechnet werden muss.
 Die Standardabweichung $\sigma$ ist entspechend die Quadratwurzel der Varianz.
 
@@ -344,13 +351,6 @@ getChart(limit) {
 
 Die \lstinline{alignForChart} Funktion bereitet die \lstinline{data} Map für die Darstellung durch \lstinline{g2.chart} auf.
 Ein entsprechend gezeichneter Graph kann in Abbildung~\ref{fig:normalverteilung} gesehen werden.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{gfx/normalverteilung.png}
-    \caption[Beispiel für in etwa normal verteilte Daten.]{Ein Beispiel zu einem durch \lstinline{g2.chart} gezeichneten Graphen. Die X-Achse bezeichnet die Koordinate des gefundenen Punktes und die Y-Achse den Anteil der auf dieser Koordinate gefundenen Punkte. Hier wird Versuch \name{momentanpol1\_1.html} gezeigt.}
-    \label{fig:normalverteilung}
-\end{figure}
 
 \subsection{Nutzung des Schwerpunktes mehrerer Datenpunkte}\label{ch:nutzung_des_schwerpunktes}
 

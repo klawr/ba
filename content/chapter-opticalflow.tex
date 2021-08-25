@@ -67,13 +67,6 @@ Die Qualität einer hier genutzten Kante berechnet sich durch \lstinline{cv.corn
 Mehr Information kann unter \aka{https://docs.opencv.org/master/dd/d1a/group__imgproc__feature.html\#ga3dbce297c1feb859ee36707e1003e0a8} gefunden werden.} und der minimale euklidische Abstand der Punkte zueinander.
 Des Weiteren können hier spezielle Regionen von Interesse übergeben werden und die durchschnittliche Grö{\ss}e der Blöcke, welche bei der Berechnung genutzt werden.
 
-Nach der Bestimmung der zu verfolgenden Punkte wird versucht diese durch \lstinline{cv.calcOpticalFlowPyrLK} zu verfolgen.
-Die \lstinline{calcOpticalFlowPyrLK} Funktion benötigt als Parameter zunächst die beiden Bilder in zeitlicher Abfolge.
-Der dritte Parameter beinhaltet die Punkte, welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt, welcher die berechnet Punkte enthalten wird.
-Alles weitere sind Parameter zum Einstellen des Algorithmus wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Grö{\ss}e der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung grö{\ss}er werdenen Regionen.
-Abschlie{\ss}end wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben, welcher eine Abbruchbedingung für die iterative Suche darstellt.
-Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfand oder die Bewegung unterhalb eines Schwellenwertes vermutet wird.
-
 \begin{figure}
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
@@ -87,6 +80,13 @@ Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfa
     \caption[Versuche \name{opticalflow2\_1.html} und \name{opticalflow2\_2.html}]{}
     \label{fig:opticalflow2_1_2}
 \end{figure}
+
+Nach der Bestimmung der zu verfolgenden Punkte wird versucht diese durch \lstinline{cv.calcOpticalFlowPyrLK} zu verfolgen.
+Die \lstinline{calcOpticalFlowPyrLK} Funktion benötigt als Parameter zunächst die beiden Bilder in zeitlicher Abfolge.
+Der dritte Parameter beinhaltet die Punkte, welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt, welcher die berechnet Punkte enthalten wird.
+Alles weitere sind Parameter zum Einstellen des Algorithmus wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Grö{\ss}e der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung grö{\ss}er werdenen Regionen.
+Abschlie{\ss}end wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben, welcher eine Abbruchbedingung für die iterative Suche darstellt.
+Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfand oder die Bewegung unterhalb eines Schwellenwertes vermutet wird.
 
 Die in der \lstinline{LucasKanade} Klasse definierte \lstinline{step} Funktion ist in Listing~\ref{lst:LucasKanade_step} abgebildet.
 
@@ -136,18 +136,6 @@ Diese Punkte haben augenscheinlich eine sehr viel geringere Varianz als die Ans�
 
 \subsection{Optischer Fluss nach Farneback}
 
-Bei der Ermittlung des optischen Flusses wird zwischen dichtem und spärlichem optischen Fluss unterschieden.
-Während der spärliche optische Fluss einzelne Regionen von Interesse im Bild verfolgt und entsprechend dessen Bewegung nachvollzieht, ist der Anspruch von Algorithmen zur Berechnung vom dichten optischem Fluss die Berechnung der Bewegung jedes einzelnen Pixels.
-Während ich auf die Implementierung nicht weiter eingehen möchte, da dieser Ansatz wegen augenscheinlich zu gro{\ss}en Varianzen nicht weiter verfolgt wird, verdient dieser dennoch eine Erwähnung.
-Die Implementation wurde nicht sonderlich in den Text integriert, der entsprechende Test kann jedoch unter \name{src/opticalflow/opticalflow1\_1.html} eingesehen werden.
-
-Für ein sich um einen festen Punkt drehendes Glied wäre zu erwarten, dass alle Vektoren zur Bestimmung der Bewegung denselben Einheitsvektor haben.
-Der entsprechende Betrag des Vektors sollte linear mit Abstand zum Drehpunkt zunehmen.
-Diese Information sollte dann genutzt werden können, um die Pole der ebenen Bewegung zu ermitteln.
-
-Des Weiteren sollten die Glieder durch den Verlauf der gemessenen Geschwindigkeiten leicht unterscheidbar sein.
-Da jedoch die Ungenauigkeiten hier zu gro{\ss} zu sein scheinen, wäre die Implementierung entsprechend komplex und wird hier nicht weiter Gegenstand sein.
-
 \begin{figure}
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
@@ -162,18 +150,24 @@ Da jedoch die Ungenauigkeiten hier zu gro{\ss} zu sein scheinen, wäre die Imple
     \label{fig:gruppe_2_1}
 \end{figure}
 
+Bei der Ermittlung des optischen Flusses wird zwischen dichtem und spärlichem optischen Fluss unterschieden.
+Während der spärliche optische Fluss einzelne Regionen von Interesse im Bild verfolgt und entsprechend dessen Bewegung nachvollzieht, ist der Anspruch von Algorithmen zur Berechnung vom dichten optischem Fluss die Berechnung der Bewegung jedes einzelnen Pixels.
+Während ich auf die Implementierung nicht weiter eingehen möchte, da dieser Ansatz wegen augenscheinlich zu gro{\ss}en Varianzen nicht weiter verfolgt wird, verdient dieser dennoch eine Erwähnung.
+Die Implementation wurde nicht sonderlich in den Text integriert, der entsprechende Test kann jedoch unter \name{src/opticalflow/opticalflow1\_1.html} eingesehen werden.
+
+Für ein sich um einen festen Punkt drehendes Glied wäre zu erwarten, dass alle Vektoren zur Bestimmung der Bewegung denselben Einheitsvektor haben.
+Der entsprechende Betrag des Vektors sollte linear mit Abstand zum Drehpunkt zunehmen.
+Diese Information sollte dann genutzt werden können, um die Pole der ebenen Bewegung zu ermitteln.
+
+Des Weiteren sollten die Glieder durch den Verlauf der gemessenen Geschwindigkeiten leicht unterscheidbar sein.
+Da jedoch die Ungenauigkeiten hier zu gro{\ss} zu sein scheinen, wäre die Implementierung entsprechend komplex und wird hier nicht weiter Gegenstand sein.
+
 \subsection{Ermittlung von Bewegung durch maschinelles Lernen.}
 
 Eine weitere Erwähnung verdienen Ansätze zur Ermittlung des optischen Flusses durch maschinellen Lernens.
 Sie versprechen eine höhere Genauigkeit bei vergleichbarer Performanz.
 Hierzu gehören Ansätze zur Segmentierung einzelner Objekte durch die Verfolgung der Punkttrajektorien~\cite{Ochs2014, Keuper2015}.
 Diese Segmentierungen könnten dann im Einzelnen analysiert werden, was die Problemstellung von Kapitel~\ref{ch:gruppierung_von_datenpunkten} darstellen wird.
-
-Auch für die Ermittlung des Vektorfeldes werden Neuronale Netze entwickelt, welche eine höhere Genauigkeit und weniger Streuung der Ergebnisse versprechen.
-\name{FlowNet}~\cite{Fischer2015} ist ein \textit{Convolutional Neural Network}\footnote{Zu deutsch in etwa \textit{Faltendes neurales Netwerk}.}, welches durch automatisiert erstellte Trainingsdaten trainiert wurde.
-Es wurden hierfür beliebige Hintergründe verwendet, auf denen dann Bilder von Stühlen platziert wurden.
-Diese Stühle wurden dann für das Training entsprechend ein wenig versetzt, damit das neurale Netz mit diesen vorgegebenen \textit{Ground Truth} Werten trainiert werden konnte.
-Es muss hierbei berücksichtigt werden, dass das neurale Netz nicht durch die Objekte, sondern dessen Bewegung trainiert wird.
 
 \begin{figure}
     \centering
@@ -182,11 +176,24 @@ Es muss hierbei berücksichtigt werden, dass das neurale Netz nicht durch die Ob
     \caption[Beispiele aus dem \name{Flying Chair Dataset}]{Die ersten beiden Bilder sind ein Auszug aus dem \name{Flying Chair Dataset}. Das zweite Bild versetzt die Stühle ein wenig, wobei die Bewegung, welche in der Kontrolle des Programmierers liegt entsprechend als Wert für das Training festgehalten wird. Im dritten Bild sieht man entsprechend die Vektoren, welche als wahre Werte gehalten werden. Die Farben zeigen hierbei die Richtugn des Vektors und die Sättigung der Farbe gibt den Betrag an~\cite{Fischer2015}.}
 \end{figure}
 
+Auch für die Ermittlung des Vektorfeldes werden Neuronale Netze entwickelt, welche eine höhere Genauigkeit und weniger Streuung der Ergebnisse versprechen.
+\name{FlowNet}~\cite{Fischer2015} ist ein \textit{Convolutional Neural Network}\footnote{Zu deutsch in etwa \textit{Faltendes neurales Netwerk}.}, welches durch automatisiert erstellte Trainingsdaten trainiert wurde.
+Es wurden hierfür beliebige Hintergründe verwendet, auf denen dann Bilder von Stühlen platziert wurden.
+Diese Stühle wurden dann für das Training entsprechend ein wenig versetzt, damit das neurale Netz mit diesen vorgegebenen \textit{Ground Truth} Werten trainiert werden konnte.
+Es muss hierbei berücksichtigt werden, dass das neurale Netz nicht durch die Objekte, sondern dessen Bewegung trainiert wird.
+
 Als eine Entwicklung von \name{FlowNet} wurde \name{FlowNet 2.0}~\cite{Ilg2016} entworfen.
 \name{FlowNet 2.0} hat einige Verbesserung im Umgang mit den Trainingsdaten eingeführt.
 Diese Verbesserungen basieren auf den gefundenen Mängeln von \name{FlowNet}, welcher auf Daten der echten Welt keine Verbesserung zur bis dahin genutzten Methoden aufweist\footnote{\name{FlowNet} hat allerdings gezeigt, dass maschinelles Lernen dieses Problem bearbeiten kann.}.
 Zum einen wird hier ein grö{\ss}erer Fokus auf kleinere Änderungen in der Bewegung gelegt, was zu einer höheren Genauigkeit bei echten Bildern führt.
 Es zeigte sich au{\ss}erdem, dass der Zeitplan, mit welchem die Trainingsdaten an das Netzwerk geliefert werden, Einfluss auf dessen Generalisierbarkeit hat.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{gfx/flownet_vs_flownet2.png}
+    \label{fig:flownet_vs_flownet2}
+    \caption[Vergleich \name{FlowNet} zu \name{FlowNet 2.0}]{Vergleich der Genauigkeit von \name{FlowNet} gegenüber \name{FlowNet 2.0}. Die hier sichtbar verbesserte Genauigkeit ist laut den Autoren vier mal höher als beim Vorgänger~\cite{Ilg2016}}
+\end{figure}
 
 \section{Betrachtung der Ergebnisse}
 
@@ -197,13 +204,6 @@ Ansätze des maschinellen Lernens sind vielversprechend.
 Die Entwicklung dieser zeigt, dass die in dieser Arbeit untersuchten Algorithmen durch diese verbessert und schlussendlich die Genauigkeit erhöht werden kann.
 Zur Zeit der Bearbeitung ist jedoch der Mehraufwand einer Implementierung solcher Ansätze zu hoch.
 Um den Rahmen dieser Arbeit nicht zu übersteigen finden, diese hier daher keine Anwendung.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.45\textwidth]{gfx/flownet_vs_flownet2.png}
-    \label{fig:flownet_vs_flownet2}
-    \caption[Vergleich \name{FlowNet} zu \name{FlowNet 2.0}]{Vergleich der Genauigkeit von \name{FlowNet} gegenüber \name{FlowNet 2.0}. Die hier sichtbar verbesserte Genauigkeit ist laut den Autoren vier mal höher als beim Vorgänger~\cite{Ilg2016}}
-\end{figure}
 
 Die Implementation des Algorithmus nach Lucas-Kanade scheint jedoch eine stabile Methode zu sein, die Bewegung einzelner Punkte zu verfolgen.
 Dieser findet vor allem im nachfolgenden Kapitel Anwendung.

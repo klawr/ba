@@ -31,11 +31,6 @@ const tests = {
 Die Werte von \lstinline{tests} definieren die in dieser Gruppe gemachten Versuche.
 Es sind entsprechend Listen von Titeln für die Versuche darin enthalten.
 
-\begin{figure}
-    \includegraphics[width=\textwidth]{gfx/index.png}
-    \caption[Bild der \name{index.html}]{Bild der \name{index.html}, wobei in der Navigationsleiste der Versuch zur Ermittlung des Drehpunktes ausgewählt ist. Der Hauptteil der Seite wird durch das HTML-Iframe Element gefüllt, welches den entsprechenden Versuch enthält.}\label{fig:index.html}
-\end{figure}
-
 Die automatische Einbindung der Versuchsdateien geschieht über die analoge Ordnerstruktur des Projektes.
 Jede Eigenschaft des \lstinline{tests} Objekts hat im \name{src} Ordner relativ zum Projektverzeichnis einen genauso bezeichneten Ordner.
 Dieser enthält die einzelnen HTML-Versuchsseiten, welche ebenfalls nach einem festen Schema benannt sind.
@@ -70,6 +65,11 @@ Object.entries(tests).forEach((kv, i) => {
     });
 });
 \end{lstlisting}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{gfx/index.png}
+    \caption[Bild der \name{index.html}]{Bild der \name{index.html}, wobei in der Navigationsleiste der Versuch zur Ermittlung des Drehpunktes ausgewählt ist. Der Hauptteil der Seite wird durch das HTML-Iframe Element gefüllt, welches den entsprechenden Versuch enthält.}\label{fig:index.html}
+\end{figure}
 
 Hier wird für jeden Eintrag im \lstinline{tests} Objekt ein neues HTML-Details Element erstellt.
 Über die Listen der einzelnen Einträge wird iteriert, um die einzelnen Gruppen gemeinsam in ein weiteres HTML-Details Element zu platzieren\footnote{Hier als \lstinline{innerDetails} bezeichnet.}.

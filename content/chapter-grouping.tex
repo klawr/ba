@@ -210,6 +210,13 @@ while (ends.length) {
 }
 \end{lstlisting}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/correlation_edit.png}
+    \caption[Versuch \lstinline{gruppe3_3.html}]{Versuch \lstinline{gruppe3_3.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Regressionsgeraden, welche durch die vorgeschlagene Methode meistens ermittelt werden. Das rechte Bild zeigt einen entsprechenden Fehler, welcher der falschen Zuordnung der Pfade im Graphen zugrunde liegt.}
+    \label{fig:gruppe3_3}
+\end{figure}
+
 Hierfür werden zunächst die Knoten im Graphen gesucht, welche keinen Vorgänger haben.
 Dann wird eine Liste dieser, welche als \lstinline{ends} bezeichnet wird, der \lstinline{dist} nach absteigend sortiert.
 Diese Liste wird dann gefiltert, indem der Punkt der jeweils die grö{\ss}te Distanz hat andere Punkte filtert, nach dem Prädikat ob diese oder deren verkettete \lstinline{pred} Eigenschaften gemeinsame Vorgänger haben.
@@ -246,13 +253,6 @@ Der Korrelationskoeffizient berechnet sich durch~\cite{Papula2014}
 \end{equation}
 
 und dessen Berechnung ist als statische Funktion auf der \lstinline{PointCloud} definiert.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/correlation_edit.png}
-    \caption[Versuch \lstinline{gruppe3_3.html}]{Versuch \lstinline{gruppe3_3.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Regressionsgeraden, welche durch die vorgeschlagene Methode meistens ermittelt werden. Das rechte Bild zeigt einen entsprechenden Fehler, welcher der falschen Zuordnung der Pfade im Graphen zugrunde liegt.}
-    \label{fig:gruppe3_3}
-\end{figure}
 
 In Listing~\ref{lst:dijkstra_correlation_part2} wird für jeden Eintrag aus \lstinline{winner} der Vorgänger gewählt und diese werden einer Liste \lstinline{group} hinzugefügt.
 Für diese Gruppe an Punkten wird dann der Korrelationskoeffizient berechnet.
