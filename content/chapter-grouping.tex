@@ -6,26 +6,27 @@
 
 Im vorangegangen Abschnitt wurde die Erkennung der Pole ebener Gliedebenen durch ihre Bewegung betrachtet.
 Alle Methoden gingen jedoch davon aus, dass sich alle Datenpunkte einem Glied zuordnen lassen.
-Es ist entsprechend notwendig bevor man die bereits besprochenen Methoden anwenden kann eine Zuordnung der Punkte in entsprechende Gruppen zu unternehmen, welche dann an die bekannten Methoden weiter gegeben werden können.
+Es ist entsprechend notwendig, bevor man die bereits besprochenen Methoden anwenden kann, eine Zuordnung der Punkte in entsprechende Gruppen zu unternehmen, welche dann an die bekannten Methoden weiter gegeben werden können.
 Die hier untersuchten Mechanismen folgen der Getriebedefinition aus~\cite[G167]{Grote2014} mit genau einem angetriebenem Glied.
 Für eine solche Zuordnung von Gliedern werden verschiedene Ansätze untersucht.
 
-\section{Zuordnung von Linien an Punkte}\label{ch:naive_grouping_approach}
+\section{Zuordnung von Geraden an Punkte}\label{ch:naive_grouping_approach}
 
-Der zuerst untersuchte Ansatz geht von der Annahme aus, dass sich alle Punkte in etwa um sich auf Linien zurückzuführende Glieder herum befinden.
-Diese Annahme ist ähnlich wie bei den vorangegangen Methoden, dass die Glieder immer länger sind als sie breit sind (s. Kapitel~\ref{ch:schnittpunkt_gerade}).
+Der zuerst untersuchte Ansatz geht von der Annahme aus, dass die hier untersuchten Mechanismen hinreichend durch Geraden beschrieben werden können.
+Die Punkte der Punktwolken lassen sich entsprechend einzelnen Geraden zuordnen.
+Diese Annahme umfasst ähnlich wie bei den vorangegangen Methoden, dass die Glieder immer länger sind als sie breit sind (s. Kapitel~\ref{ch:schnittpunkt_gerade}).
 
-Hierfür wird ein Punkt aus den Datenpunkten genommen und dann eine Linie definiert, welche am ehesten dem Glied entspricht, welche diesem Punkt zugeordnet werden kann.
-Dann werden alle Punkte genommen dessen Abstand zu dieser Linie kleiner ist als ein Schwellenwert, welcher vorher definiert werden muss.
+Hierfür wird ein Punkt aus den Datenpunkten genommen und dann eine Gerade definiert, welche am ehesten dem Glied entspricht, welche diesem Punkt zugeordnet werden kann.
+Dann werden alle Punkte genommen deren Abstand zu dieser Gerade kleiner ist als ein Schwellenwert, welcher vorher definiert werden muss.
 
-Alle Punkte dessen Abstand unter diesem Schwellenwert sind werden dann der ersten Gruppen zugeordnet und der Prozess wird mit allen ungruppierten Punkten wiederholt.
-Hierfür soll die Linie ähnlich zur Regressionsgerade bestimmt werden.
-Als problematisch stellt sich jedoch heraus, dass die Regressionsgerade nicht zwischen Punkten unterscheiden kann, welche vermutlich zu einem Glied des gewählten Punktes gehören und welche nicht.
-Daher kann die Regressionsgerade in seiner bisher genutzten Form nicht genutzt werden.
-Ein naiver Ansatz an dieser Stelle wäre die Berechnung des Fehlers der entsteht wenn eine Linie willkürlich in den Raum gelegt wird.
-Der Fehler berechnet sich entsprechend durch die Summe der orthogonalen Abstände aller Punktes zu dieser Linie.
-Damit Punkte, welche weit von der Linie entfernt sind werden einen geringeren Einfluss auf den Fehler haben, kann stattdessen eine Wurzel der Distanz verwendet werden.
-Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf diese Weise misst, kann die am besten passende Gerade gewählt werden und alle Punkte innerhalb des vorher angesprochenen Schwellenwertes dieser als Gruppe zugeordnet werden.
+Alle Punkte deren Abstand unter diesem Schwellenwert sind werden dann der ersten Gruppen zugeordnet und der Prozess wird mit allen ungruppierten Punkten wiederholt.
+Hierfür soll die Gerade ähnlich zur Regressionsgerade bestimmt werden.
+Als problematisch stellt sich jedoch heraus, dass die Methode zur Berechnung dieser Geraden nicht zwischen Punkten unterscheidet, welche zu einem Glied des gewählten Punktes gehören.
+Daher kann die Methode zur Berechnung der Regressionsgeraden in ihrer bisherigen Form nicht genutzt werden.
+Ein naiver Ansatz an dieser Stelle wäre die Berechnung der Fehler von willkürlich in die Ebene gelegten Geraden.
+Der Fehler berechnet sich dann durch die Summe der orthogonalen Abstände aller Punkte zu dieser Geraden.
+Damit Punkte, welche weit von der Geraden entfernt sind, einen geringeren Einfluss auf den Fehler haben, kann stattdessen eine Wurzel der Distanz verwendet werden.
+Wenn man den Fehler für genug Geraden im Winkel äquidistant zueinander auf diese Weise misst, kann die am besten passende Gerade gewählt werden und alle Punkte innerhalb des vorher angesprochenen Schwellenwertes dieser als Gruppe zugeordnet werden.
 
 \begin{figure}
     \centering
@@ -57,23 +58,23 @@ Wenn man den Fehler für genug Linien im Winkel äquidistant zueinander auf dies
 
 Eine entsprechende Funktion wurde auf der \lstinline{PointCloud} Klasse definiert.
 Diese hält die Punkte vor, welche gruppiert werden sollen.
-Ziel der Funktion ist es zunächst die Linien zu finden, welche den Mechanismus am ehesten repräsentieren.
+Ziel der Funktion ist es, zunächst die Linien zu finden, welche den Mechanismus am ehesten repräsentieren.
 Zunächst wird eine Kopie der Punkteliste erstellt.
-Dann wird, solange es noch mehr als $10\%$ der initial ungruppierten Punkte gibt eine solche Linie ermittelt.
+Dann wird, solange es noch mehr als $10\%$ der initial ungruppierten Punkte gibt, eine solche Linie ermittelt.
 Es wird zunächst der Punkt gewählt, welcher den geringsten Wert für die X-Koordinate aufweist.
-Dann wird für eine festgelegte Anzahl an Linien, welche alle im gleichen Winkel zueinander stehen und einen gemeinsamen Schnittpunkt in dem zuvor gewählten Punkt haben, die orthogonale Distanz aller anderen Punkte gemessen.
+Dann wird für eine festgelegte Anzahl an Geraden, welche jeweils um den gleichen Winkel versetzt sind und einen gemeinsamen Schnittpunkt in dem zuvor gewählten Punkt haben, die orthogonale Distanz aller anderen Punkte gemessen.
 In Abbildung~\ref{fig:gruppe1_2} ist die Anzahl dieser Punkte 36, welche durch die grauen Linien gezeigt werden.
-Von dieser orthogonale Distanz wird jeweils noch die dritte Wurzel genommen, damit Punkte die weiter weg von der geraden weniger Einfluss auf diese Summe haben.
-Ziel ist es die Gerade zu finden, welche hierbei die geringste Summe aufweist, welcher als \lstinline{score} bezeichnet wird.
+Von dieser orthogonalen Distanz wird jeweils noch die dritte Wurzel genommen, damit Punkte, die weiter weg von der Geraden sind, weniger Einfluss auf diese Summe haben.
+Ziel ist es, die Gerade zu finden, welche hierbei die geringste, als \lstinline{score} bezeichnete, Summe aufweist.
 Ohne einen weiteren Ausgleichswert würden hier entsprechend jene Linien, welche wenig Punkte treffen bevorzugt werden.
-Daher wird der \lstinline{score} noch durch die Anzahl der Punkte geteilt, dessen Distanz zur Gerade unterhalb des Schwellenwertes liegt.
+Daher wird der \lstinline{score} noch durch die Anzahl der Punkte geteilt, deren Distanz zur Gerade unterhalb des Schwellenwertes liegt.
 
-Der Schwellenwert so wie die Skalierung der Ausgleichswerte wurden experimentell bestimmt.
-Es ist davon auszugehen, dass Mechanismen, welche eine andere Form aufweisen als die \name{mec2} Modelle, andere Schwellenwerte zur korrekten Berechnung benötigen würden.
+Der Schwellenwert sowie die Skalierung der Ausgleichswerte wurden experimentell bestimmt.
+Es ist davon auszugehen, dass Mechanismen, welche eine andere Form aufweisen als von \name{mec2} gezeichnete Modelle, andere Schwellenwerte zur korrekten Berechnung benötigen.
 
-Nachdem die entsprechenden Linien bestimmt wurden, wird als nächstes die auf der \lstinline{Line} Klasse definierte statische Funktion \lstinline{realignGroups} aufgerufen.
+Nachdem die entsprechenden Linien bestimmt wurden, wird die auf der \lstinline{Line} Klasse definierte statische Funktion \lstinline{realignGroups} aufgerufen.
 Diese bestimmt für jede der Gruppen die entsprechende Regressionsgerade.
-Dann wird für jeder Punkt der Gerade zugeordnet, welche die geringste orthogonale Distanz aufweist.
+Dann wird jeder Punkt der Geraden zugeordnet, welche die geringste orthogonale Distanz aufweist.
 Auf diese Weise werden die Punkte neu gruppiert.
 
 \section{\name{k-Means} Algorithmus}\label{ch:kMeans}
@@ -85,24 +86,24 @@ Auf diese Weise werden die Punkte neu gruppiert.
     \label{fig:gruppe2_1}
 \end{figure}
 
-Eine andere Möglichkeit die Datenpunkte ihren Gruppen zuzuordnen ist durch den \name{k-Means} Algorithmus~\cite[S.~241]{Geron2019}.
+Eine andere Möglichkeit die Datenpunkte ihren Gruppen zuzuordnen ist der \name{k-Means} Algorithmus~\cite[S.~241]{Geron2019}.
 Dieser wird in der Statistik genutzt, um Datenpunkte in Gruppen einzuteilen.
 Ein offensichtlier Nachteil dieses Ansatzes besteht darin, dass die Anzahl der Gruppen von vorneherein bekannt sein muss\footnote{Es gibt jedoch Methoden, um diese Anzahl zu berechnen, zum Beispiel durch den Silhouettenkoeffizienten~\cite[S.~247]{Geron2019}.}.
-Eine Untersuchung, ob er für den vorliegenden Anwedungsfall nutzbar ist scheint jedoch angebracht.
+Eine Untersuchung, ob er für den vorliegenden Anwedungsfall nutzbar ist, scheint dennoch angebracht.
 Eine entsprechende Funktion ist in der \lstinline{PointCloud} Klasse definiert.
 Hier werden zunächst zufällig $k$ Punkte auf dem Bild ausgewählt.
 Diese Punkte werden als \name{Centroids} bezeichnet.
 Jeder Punkt der Punktwolke ordnet sich dann demjenigen \name{Centroid} zu, welcher die geringste euklidische Distanz aufweist.
-Dies sollte ein bis drei Gruppen zur Folge haben, welche die entsprechenden Punkte enthalten.
-Daraufhin werden neue \name{Centroids} definiert, indem der Erwartungswert dieser Gruppen ermittelt wird.
-Dieser Vorgang soll sich dann eine festgelegte Anzahl an Iterationen wiederholen.
+Dies sollte drei Gruppen ergeben, welche die entsprechenden Punkte enthalten.
+Daraufhin werden neue \name{Centroids} durch die Erwartungswerte dieser Gruppen definiert.
+Dieser Vorgang soll dann mehrfach (hier zehn mal) wiederholt werden.
 
-Als eine Erweiterung des \name{k-Means} Algorithmus könnte noch der EM-Algorithmus untersucht werden, welcher weniger das Problem hat Gruppen von unterschiedlicher Grö{\ss}e zu erstellen~\cite[S.~262]{Geron2019}.
+Als eine Erweiterung des \name{k-Means} Algorithmus könnte noch der EM-Algorithmus untersucht werden, welcher weniger dazu tendiert Gruppen gleicher Grö{\ss}e zu erstellen~\cite[S.~262]{Geron2019}.
 Dies wird jedoch an dieser Stelle nicht mehr getan.
 
 \section{\name{Dijkstra} Algorithmus}\label{ch:dijkstra}
 
-Die letzte Variante die hier untersucht werden soll, um die Glieder des Mechanismus in entsprechende Gruppen zu zerteilen ist die Zuordnung aller Datenpunkte zueinander.
+Die letzte Variante die hier untersucht werden soll, um die Glieder des Mechanismus in entsprechende Gruppen zu zerteilen, ist die Zuordnung aller Datenpunkte zueinander.
 Hierfür soll das \lstinline{PointCloud} Objekt in einen vollständigen Graphen überführt werden, auf welchem dann über eine Implementation des \name{Dijkstra-Algorithmus} die kürzesten Pfade ermittelt werden.
 Anschlie{\ss}end werden diese Pfade genutzt, um Geraden zu definieren, welche dann Rückschluss auf die zugrundeliegenden Gruppen geben können.
 
@@ -113,7 +114,7 @@ Der offensichtliche kürzeste Weg ist laut der Dreiecksungleichung natürlich im
 Deshalb sollen die Distanzen zwischen den Werten jeweils potenziert werden.
 An den Konstruktor kann dafür der Parameter \lstinline{warp} übergeben werden, welcher standardmä{\ss}ig den Wert zwei einnimmt.
 Eine hohe Potenzierung begünstigt entsprechend Pfade über mehr Knoten des Graphen.
-Hierfür wird der Graph gebildet indem alle Objekte des übergebenen \lstinline{PointCloud} Objektes in ein Objekt überführt werden.
+Hierfür wird der Graph gebildet, indem alle Objekte des übergebenen \lstinline{PointCloud} Objektes in ein Objekt überführt werden.
 
 \begin{lstlisting}[language=JavaScript, caption={Im \lstinline{Dijkstra} Konstruktor werden die Punkte des übergebenen \lstinline{PointCloud} Objektes in einen Graphen überführt.}, label={lst:dijkstra_points_graph}]
 const compEdges = (p) => points
@@ -142,14 +143,14 @@ const graph = points.map((p, id) => ({
 \end{figure}
 
 Die \lstinline{id} entspricht dem Index des Punktes innerhalb der \lstinline{points} Liste.
-\lstinline{dist} beschreibt die Distanz, welche zum entsprechendem \lstinline{anchor} ermittelt wurde.
+\lstinline{dist} beschreibt die Distanz, welche zum entsprechenden \lstinline{anchor} ermittelt wurde.
 Hierbei ist zu beachten, dass es sich nicht um die euklidische Distanz, sondern um die Summe der durch \lstinline{warp} beeinflussten Einzelpfade handelt.
-Diese Wert ist also eher als Wert zum Vergleichen mit anderen Punkten zu verstehen.
+Dieser Wert ist also eher als Wert zum Vergleichen mit anderen Punkten zu verstehen.
 Er ist initial \lstinline{Infinity}, damit er später bis zum kleinsten gefundenen Pfad reduziert werden kann.
-\lstinline{known} wird genutzt, um bei der Berechnung jene Punkte überspringen zu können dessen \lstinline{dist} Wert bereits ermittelt wurde.
+\lstinline{known} wird genutzt, um bei der Berechnung jene Punkte überspringen zu können deren \lstinline{dist} Wert bereits ermittelt wurde.
 Die \lstinline{edges} Eigenschaft hält von jedem Punkt jeden anderen Punkt mittels des entsprechenden Index und der Distanz vor.
 Diese Distanz wird hier als \lstinline{weight} bezeichnet, um zu unterstreichen, dass es nicht die euklidische Distanz wiederspiegelt, sondern diese mit dem \lstinline{warp} Parameter potenziert wird.
-Zuletzt wird \lstinline{pred} genutzt, um jeweils der Vorgänger jedes Knotens auf dem Graphen ermitteln zu können.
+Zuletzt wird \lstinline{pred} genutzt, um jeweils den Vorgänger jedes Knotens auf dem Graphen ermitteln zu können.
 
 Daraufhin wird dieser Graph als \lstinline{unvisited} kopiert, um alle unbesuchten Punkte festhalten zu können.
 Dieser kopierten Liste wird der \lstinline{anchor} an den Start angefügt\footnote{Mit der \lstinline{id} $-1$ und einer \lstinline{dist} von 0.}.
@@ -172,7 +173,7 @@ while (unvisited.length) {
 }
 \end{lstlisting}
 
-Hier wird es sich zunutze gemacht, dass Obwohl die Liste \lstinline{unvisited} nur eine Kopie von \lstinline{graph} ist, die Referenzen der einzelnen darin enthaltenen Objekte jedoch jeweils die selben sind.
+Hier wird ausgenutzt, dass obwohl die Liste \lstinline{unvisited} nur eine Kopie von \lstinline{graph} ist, die Referenzen der einzelnen darin enthaltenen Objekte jedoch jeweils dieselben sind.
 So können die Elemente in \lstinline{unvisited} dort jeweils der \lstinline{dist} nach aufsteigend sortiert und verschoben werden und die Objekte in \lstinline{graph} werden hierbei mit den Berechnungen aktualisiert.
 Das erste Objekt wird entsprechend aus der Liste entfernt und die \lstinline{known} Eigenschaft wird auf \lstinline{true} gesetzt.
 Bei der ersten Iteration ist dies in jedem Fall \lstinline{anchor}, da \lstinline{dist} offensichtlich $0$ ist.
@@ -211,9 +212,9 @@ while (ends.length) {
 
 Hierfür werden zunächst die Knoten im Graphen gesucht, welche keinen Vorgänger haben.
 Dann wird eine Liste dieser, welche als \lstinline{ends} bezeichnet wird, der \lstinline{dist} nach absteigend sortiert.
-Diese Liste wird dann gefiltert, indem der Punkt der jeweils die grö{\ss}te Distanz hat andere Punkte filtert, nach dem Prädikat ob diese, oder dessen verkettete \lstinline{pred} Eigenschaften gemeinsame Vorgänger haben.
+Diese Liste wird dann gefiltert, indem der Punkt der jeweils die grö{\ss}te Distanz hat andere Punkte filtert, nach dem Prädikat ob diese oder deren verkettete \lstinline{pred} Eigenschaften gemeinsame Vorgänger haben.
 
-Dieser Vorgang wird solange wiederholt, bis die \lstinline{ends} Liste leer ist, sodass nurnoch äu{\ss}ere Knoten vorgehalten werden, welche keine gemeinsamen Vorgänger zum \lstinline{anchor} haben.
+Dieser Vorgang wird solange wiederholt, bis die \lstinline{ends} Liste leer ist, so dass nurnoch äu{\ss}ere Knoten vorgehalten werden, welche keine gemeinsamen Vorgänger zum \lstinline{anchor} haben.
 Diese als \lstinline{winner} bezeichneten Knoten werden dann über ihre Vorgänger iterieren, um zu prüfen ob sich mit diesen eine Gerade bilden lässt.
 
 \begin{lstlisting}[language=JavaScript, caption={Bestimmung der äu{\ss}ersten Knoten zur Bestimmung von Geraden durch den Korrelationskoeffizienten in der \lstinline{groupsByCorrelation} Funktion innerhalb der \lstinline{Dijkstra} Klasse.}, label={lst:dijkstra_correlation_part2}]
@@ -254,8 +255,8 @@ und dessen Berechnung ist als statische Funktion auf der \lstinline{PointCloud} 
 \end{figure}
 
 In Listing~\ref{lst:dijkstra_correlation_part2} wird für jeden Eintrag aus \lstinline{winner} der Vorgänger gewählt und diese werden einer Liste \lstinline{group} hinzugefügt.
-Für diese Gruppe an Punkten wird dann der Korrelationskoeffizient bemessen.
-Ist dieser niederiger als ein Schwellenwert wird noch geprüft ob eine Mindestanzahl an Punkten erreicht ist, damit aus diesen dann die Regressionsgerade gebildet werden kann\footnote{Der Standardwert für den Schwellenwert der Regressionsgeraden liegt bei $0,6$ und die Mindestanzahl an Punkten liegt bei $10\%$ der Gesamtzahl der Punkte des Graphen.}.
+Für diese Gruppe an Punkten wird dann der Korrelationskoeffizient berechnet.
+Ist dieser niederiger als ein Schwellenwert, wird noch geprüft ob eine Mindestanzahl an Punkten erreicht ist, damit aus diesen dann die Regressionsgerade gebildet werden kann\footnote{Der Standardwert für den Schwellenwert der Regressionsgeraden liegt bei $0,6$ und die Mindestanzahl an Punkten liegt bei $10\%$ der Gesamtzahl der Punkte des Graphen.}.
 Diese Geraden werden dann vorgehalten und könnten für weitere Analysen genutzt werden.
 
 \section{Kombination der Ansätze}
@@ -267,9 +268,9 @@ Diese Geraden werden dann vorgehalten und könnten für weitere Analysen genutzt
     \label{fig:gruppe4_1}
 \end{figure}
 
-Die Ermittlung der Pfade durch den \name{Dijkstra} Algorithmus führte zu der Idee die dadurch ermittelten Distanzen zu nutzen um die \name{Centroids} des \name{k-Means} Algorithmus zu verwenden.
+Die Ermittlung der Pfade durch den \name{Dijkstra} Algorithmus führte zu der Idee, die dadurch ermittelten Distanzen zu nutzen, um die \name{Centroids} des \name{k-Means} Algorithmus zu verwenden.
 Dies führte zur Erstellung der \lstinline{kMeansDijkstra} Funktion der \lstinline{PointCloud}.
-Diese nutzt größtenteils die selbe Implentation wie die \lstinline{kMeansClustering} Funktion aus Kapitel~\ref{ch:kMeans}, jedoch wird hier eine andere Methode zur Ermittlung des nächsten \name{Centroids} der Punkte genutzt.
+Diese nutzt grö{\ss}tenteils die selbe Implentation wie die \lstinline{kMeansClustering} Funktion aus Kapitel~\ref{ch:kMeans}, jedoch wird hier eine andere Methode zur Ermittlung des nächsten \name{Centroids} der Punkte genutzt.
 
 \begin{lstlisting}[language=JavaScript, caption={Bestimmung des nächsten \name{Centroids} in der \lstinline{kMeansDijkstra} Funktion.}, label={lst:findNearestCentroidDijkstra}]
 function findNearestCentroid(pointIdx, dijkstras) {
@@ -281,18 +282,18 @@ function findNearestCentroid(pointIdx, dijkstras) {
 
 Die \lstinline{findNearestCentroid} Funktion von \lstinline{kMeansClustering} nuzt für die Ermittlung des nächsten \name{Centroids} jeweils die euklidische Distanz.
 Hier wird stattdessen für jeden \name{Centroid} ein Graph erstellt, welcher dann die Distanzen zu den Punkten mittels der \name{Dijkstra} Implementation ermittelt.
-Auf diese Weise wird verhindert, dass Punkte in der nähe von Totlagen des Mechanismus die Punkte falsch zuweist.
+Auf diese Weise wird verhindert, dass Punkte in der Nähe von Totlagen des Mechanismus falsch zugewiesen werden.
 Diese Implementation zeigt weniger Fluktuation als die anderen Ansätze.
 Werden diese Gruppen dann noch durch die in Kapitel~\ref{ch:naive_grouping_approach} erwähnte \lstinline{realignGroups} Funktion den Regressionsgeraden entsprechend angeglichen, so werden die Gruppierungen für einen durch \name{mec2} animierten Mechanismus nahezu stabil.
-Dementsprechend wurde in Versuch \name{gruppe4\_1.html} Versucht ein Viergelenk zu rekonstruieren, indem für ein Viergelenk die Absolutpole als jene definiert wurden, welche eine geringe Standardabweichung aufweisen, da davon auszugehen ist, dass andere Pole naturgemäß eine höhere aufweisen.
+Dementsprechend wurde in Versuch \name{gruppe4\_1.html} versucht ein Viergelenk zu rekonstruieren, indem für ein Viergelenk die Absolutpole als jene definiert wurden, welche eine geringe Standardabweichung aufweisen, da davon auszugehen ist, dass andere Pole naturgemä{\ss} eine höhere aufweisen.
 Daraufhin wurden die Relativpole als die Schnittpunkte der durch die Gruppen gezogenen Regressionsgeraden definiert.
 Der entsprechend rekonstruierte Mechanismus wird in Abbildung~\ref{fig:gruppe4_1} gezeigt.
 
 \section{Rekonstruktion eines Mechanismus durch die Relativpole}
 
 Die vorangegangen Methoden geben scheinbar akzeptable Ergebnisse für Viergelenke.
-Sie scheitern jedoch, sobald die Anzahl der Glieder höher wird, wie in Abbildung~\ref{fig:gruppe1_3_2_6_3_4} gesehen werden kann.
-Aus diesem Grund soll in diesem Kapitel davon ausgegangen werden, dass sowohl die Ermittlung der Gliedebenen also auch die dazugehörigen Momentanpole ideal sind.
+Sie scheitern jedoch, sobald die Anzahl der Glieder erhöht wird, wie in Abbildung~\ref{fig:gruppe1_3_2_6_3_4} gesehen werden kann.
+Aus diesem Grund soll in diesem Kapitel davon ausgegangen werden, dass sowohl die Ermittlung der Gliedebenen als auch die dazugehörigen Momentanpole ideal sind.
 Es wird untersucht werden, inwiefern die Menge der Relativpole nach den gesuchten Gelenken gefiltert werden können.
 
 \begin{figure}
@@ -316,13 +317,13 @@ Hierbei sei anzumerken, dass ein $b_1$ jederzeit durch zwei $b_2$ ersetzt werden
 \begin{equation}
     \begin{split}
         F &= 3((n+c)-1) - (b_1 - c) - 2(b_2 + 2c) \\
-        F &= 3n + 3c - 3 - b_1 + c - 2b_2 - 4c \\
+        F &= 3n + \cancel{3c} - 3 - b_1 + \cancel{c} - 2b_2 - \cancel{4c} \\
         F &= 3n - 3 - b_1 - 2b_2
     \end{split}
 \end{equation}
 
 gezeigt wird.
-$c$ kann hierbei beliebig, also auch als $c = b_1$, gewählt werden.
+$c$ kann hierbei beliebig also auch als $c = b_1$ gewählt werden.
 Entsprechend darf in den folgenden Überlegungen von lediglich zweiwertigen Gelenken ausgegangen werden.
 Aus der Annahme heraus, dass die hier betrachteten Mechanismen jeweils zwangläufige Mechanismen mit genau einem angetriebenem Glied sind lässt sich diese Gleichung durch
 
@@ -334,8 +335,8 @@ Aus der Annahme heraus, dass die hier betrachteten Mechanismen jeweils zwangläu
 \end{equation}
 
 vereinfachen.
-So kann neben der Anzahl der gesuchten Gelenke des weiteren festgestellt werden, dass die Gliederzahl der hier für die Berechnung genutzten kinematischen Ketten in jedem Fall einer geraden Zahl entspricht.
-Wird während der Ermittlung der Momentanpole festgestellt, dass translative Bewegungen enthalten sind, zählen diese entsprechend doppelt.
+So kann neben der Anzahl der gesuchten Gelenke des Weiteren festgestellt werden, dass die Gliederzahl der hier für die Berechnung genutzten kinematischen Ketten in jedem Fall einer geraden Zahl entspricht.
+Wird also während den Ermittlungen ein Schubgelenk vermutet, so zählt dieses entsprechend doppelt.
 
 \subsection{Betrachtung aller Relativpole}
 
@@ -351,7 +352,7 @@ Die Anzahl der Relativpole eines Mechanismus berechnet sich durch~\cite{Goessner
 Wobei $n$ hier wieder die Anzahl der Glieder ist.
 Hier lassen sich in jedem Fall die durch die in den angeführten Methoden bestimmten Momentanpole der bewegten Gliedebenen ausschlie{\ss}en, wobei die Absolutpole dann direkt als gefundene Gelenke identifiziert werden können.
 Allerdings ist auch zu beachten, dass Relativpole im Schnittpunkt zweier Gliedebenen, welche gemeinsam mehr als einen Absolutpol aufweisen keine Gelenke darstellen können, da diese sonst starr wären.
-Die Relativpole, welche durch zwei nicht benachbarte Gliedebenen gebildet werden lassen sich dennoch nicht einfach ausschlie{\ss}en, sodass hier weitere Analysen notwendig sein werden.
+Die Relativpole, welche durch zwei nicht benachbarte Gliedebenen gebildet werden, lassen sich dennoch nicht einfach ausschlie{\ss}en, so dass hier weitere Analysen notwendig sind.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{gfx/gruppe4_3_edit.png}
@@ -360,8 +361,8 @@ Die Relativpole, welche durch zwei nicht benachbarte Gliedebenen gebildet werden
 \end{figure}
 
 Nach dem Satz von Aronhold-Kennedy~\cite{Goessner2016, Kerle2016}, welcher auch als 3-Polsatz bezeichnet wird, befinden sich für drei bewegte Gliedebenen jeweils drei Relativpole auf einer Geraden.
-Die Punkte, welche nicht ausgeschlossen werden können bewegen sich entsprechend auf diesen Geraden.
-Eine Analyse des Momentanpols dieser Punkte würde diesen entsprechend in unendlicher Distanz äquivalent zur translativen Bewegung identifizieren, sodass dann auch diese ausgeschlossen werden können.
-Es sei darauf hingewiesen, dass Glieder, welche translativ sind aber nicht am Gestell befestigt sind entgegen den Grundannahmen stehen.
-Die gleichen Methoden können auch genutzt werden, wenn der Mechanismus translativ bewegende Gestellglieder enthält, was in den Versuchen \name{gruppe5\_4.html} und \name{gruppe5\_5.html} gezeigt wird.
-Die translativen Elemente können ausgeschlossen werden, weil jenes, welches am Gestell befestigt ist bereits als Absolutpol ermittelt wurde.
+Die Punkte, welche nicht ausgeschlossen werden können, bewegen sich entsprechend auf einer solchen Geraden.
+Der Abstand dieser Gelenke müsste konstant zu mindestens einem benachbarten Gelenk sein, da die Annahme besteht, dass Schubgelenke stets mit dem Gestell verbunden sind.
+Hierüber können weitere Relativpole als Gelenke ausgeschlossen werden.
+Schubgelenke werden als Absolutpole im Vorfeld erkannt.
+Für diese können ansonsten die gleichen Methoden genutzt werden, was in den Versuchen \name{gruppe5\_4.html} und \name{gruppe5\_5.html} gezeigt wird.
