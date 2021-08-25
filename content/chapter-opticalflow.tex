@@ -40,7 +40,7 @@ Beschreiben diese Funktionen stattdessen Regionen auf entsprechenden Bildern, so
 Auf diese Weise kann versucht werden die Bewegung einzelner Objekte zu verfolgen.
 
 Zunächst ist die Grö{\ss}e der Regionen unbekannt, deshalb wird ein pyramidischer Ansatz genutzt.
-Pyramidisch bedeutet, dass um Regionen von Interesse Quadrate unterschiedlicher Größe definiert werden, für welche der Fehler entsprechend berechnet wird.
+Pyramidisch bedeutet, dass um Regionen von Interesse Quadrate unterschiedlicher Grö{\ss}e definiert werden, für welche der Fehler entsprechend berechnet wird.
 Diese Fehler können dann verglichen werden und das passendste Quadrat wird genutzt, um die Verschiebung der Region innerhalb des Bildes zu beschreiben.
 Anhand dieses Ansatzes kann die ungefähre Grö{\ss}e des sich bewegenden Objektes untersucht werden.
 Eine Implementation dieses Ansatzes wird von Jean-Yves Bouget beschrieben~\cite{Bouguet2000}.
@@ -119,7 +119,7 @@ step(frame) {
 Es wird mittels der \lstinline{first_indicator} Eigenschaft geprüft, ob es sich um den ersten Aufruf mit einem Bild handelt.
 Entsprechend muss noch die \lstinline{very_first} Variable genutzt werden, um den aller ersten Aufruf zu filtern.
 \lstinline{goodFeaturesToTrack} wird nur einmal am Anfang ausgeführt, damit die Reihenfolge der gefundenen Punkte konsistent bleibt.
-Au{\ss}erdem ist nicht sichergestellt, dass die vorgeschlagenen Regionen bei Veränderungen im Bild die selben bleiben.
+Au{\ss}erdem ist nicht sichergestellt, dass die vorgeschlagenen Regionen bei Veränderungen im Bild dieselben bleiben.
 Die gefundenen Punkte werden im \lstinline{LucasKanade} Objekt entsprechend gespeichert.
 Nachdem das Bild in Graustufen übersetzt wurde, wird es in der \lstinline{calcOpticalFlowPyrLK} Funktion genutzt, um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
 Diese Punkte werden dann in einer \lstinline{points} Liste gespeichert, welche die zuletzt ermittelten Koordinaten enthält.

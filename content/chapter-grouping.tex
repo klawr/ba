@@ -270,7 +270,7 @@ Diese Geraden werden dann vorgehalten und könnten für weitere Analysen genutzt
 
 Die Ermittlung der Pfade durch den \name{Dijkstra} Algorithmus führte zu der Idee, die dadurch ermittelten Distanzen zu nutzen, um die \name{Centroids} des \name{k-Means} Algorithmus zu verwenden.
 Dies führte zur Erstellung der \lstinline{kMeansDijkstra} Funktion der \lstinline{PointCloud}.
-Diese nutzt grö{\ss}tenteils die selbe Implentation wie die \lstinline{kMeansClustering} Funktion aus Kapitel~\ref{ch:kMeans}, jedoch wird hier eine andere Methode zur Ermittlung des nächsten \name{Centroids} der Punkte genutzt.
+Diese nutzt grö{\ss}tenteils dieselbe Implentation wie die \lstinline{kMeansClustering} Funktion aus Kapitel~\ref{ch:kMeans}, jedoch wird hier eine andere Methode zur Ermittlung des nächsten \name{Centroids} der Punkte genutzt.
 
 \begin{lstlisting}[language=JavaScript, caption={Bestimmung des nächsten \name{Centroids} in der \lstinline{kMeansDijkstra} Funktion.}, label={lst:findNearestCentroidDijkstra}]
 function findNearestCentroid(pointIdx, dijkstras) {
