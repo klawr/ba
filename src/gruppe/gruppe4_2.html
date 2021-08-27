@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="title"></a>
+    <script src="../third_party/g2.full.js"></script>
+    <script src="../third_party/mec2.min.js"></script>
+    <script src="../third_party/opencv.js"></script>
+    <script src="../scripts/simulation.js"></script>
+    <script src="../scripts/pointCloud.js"></script>
+    <script src="../scripts/data.js"></script>
+    <script src="../scripts/line.js"></script>
+    <script src="../scripts/group.js"></script>
+
+    <p>
+        Dies ist ein finaler Test zur Rekonstruktion eines Schubgelenks.
+    </p>
+
+    <script>
+        simulation.model = {
+            "nodes": [
+                { "id": "A0", "x": 80, "y": 80, "base": true },
+                { "id": "A", "x": 100, "y": 140 },
+                { "id": "B", "x": 150, "y": 80 },
+                { "id": "B0", "x": 300, "y": 80, "base": true },
+            ],
+            "constraints": [
+                { "id": "a", "p1": "A0", "p2": "A", "len": { "type": "const" }, "ori": { "type": "drive", "Dt": 1, "Dw": 6.283185307179586, repeat: 1000 } },
+                { "id": "b", "p1": "A", "p2": "B", "len": { "type": "const" } },
+                { "id": "c", "p1": "B0", "p2": "B", "ori": { "type": "const" } }
+            ]
+        }
+
+        const k = 2;
+
+        const groups = Array(k).fill(null).map(_ => new Group({ lk: { maxCorners: 6 } }));
+        const data = Array(k).fill(null).map(_ => new DataXY());
+        let previousClusters = null;
+
+        let first = true;
+        let keep = simulation.run;
+        simulation.run = function (fn) {
+            if (first) {
+                first = false;
+                simulation.g.commands.splice(4, 1);
+                simulation.g.commands.splice(7, 1);
+            }
+            keep.call(this, fn);
+        }
+
+        const fn = (result) => {
+            const filtered = result.removeOverlaps(5);
+            const g = g2().clr();
+
+
+            const cluster = filtered.kMeansDijkstra(previousClusters || k);
+            if (cluster[1].filter(g => g.length).length === k) {
+                cluster[1] = Line.realignGroups(cluster[1], g);
+                previousClusters = [cluster[0]];
+                const lines = cluster[1].map(e => Line.fromRegressionLine(e, g));
+                groups.forEach((c, i) => {
+                    c.lines.push(lines[i]);
+                    c.lucasKanade();
+                    data[i].add(c.momentanpol(10, 1));
+                    const color = simulation.hsv2rgb(i / groups.length * 360);
+                    data[i].pts.forEach(p => g.cir({ ...p, r: 3, fs: color, ls: '@fs' }));
+                    data[i].drawDeviation(g);
+                });
+            }
+
+            const h = g2().clr();
+
+            const copy = data.map(e => e.mu);
+            const mp = data.map(e => Math.hypot(e.x.deviation, e.y.deviation));
+            const rot_idx = mp.indexOf(Math.min(...mp));
+
+            const dreh = rot_idx !== -1 ? data[rot_idx].mu : null;
+
+
+            const corrs = groups[0].pts.map(p => {
+                const pts = new PointCloud(p).removeOverlaps(10).points;
+                return Math.abs(PointCloud.correlation(pts));
+            });
+
+            const lin_idx = corrs.indexOf(Math.max(...corrs));
+            const schubgelenk = lin_idx !== -1 ?
+                groups[0].pts[lin_idx][groups[0].pts[lin_idx].length - 1] :
+                null;
+
+            if (dreh && schubgelenk) {
+                const l1 = groups[0].lines;
+                const l2 = groups[1].lines;
+                const p2 = l1[l1.length - 1].intersection(l2[l2.length - 1]);
+
+                h.bar({ p1: dreh, p2 })
+                    .bar({ p1: schubgelenk, p2 })
+                    .nod({ ...p2 });
+            }
+            dreh && h.gnd({ ...dreh });
+            schubgelenk && h.nodflt({ ...schubgelenk, w: Math.PI });
+
+            h.exe(simulation.ctx3);
+            groups[0].draw(g, true);
+            g.exe(simulation.ctx2);
+        }
+
+        simulation.register(() => stepCompareImages(fn));
+    </script>
+</body>
+
+</html>

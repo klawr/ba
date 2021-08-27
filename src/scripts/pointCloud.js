@@ -126,7 +126,8 @@ class PointCloud {
     static correlation(pts) {
         const len = pts.length;
 
-        if (len < 2) return 1;
+        if (len < 2) return 0;
+        else if (len === 2) return 1;
 
         const s = pts.reduce((pre, cur) => ({
             x: pre.x + cur.x,
