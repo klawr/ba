@@ -24,7 +24,8 @@
     <script src='gruppe1.js'></script>
 
     <p>
-        Test zur Unterscheidung der Glieder eines Mechanismus'.
+        Zuordnung der Punkte zueinander durch einen Dijkstra-Algorithmus bei einem Viergelenk.
+        Hier werden außerdem Gruppen durch die Bestimmung des Korrelationskoeffizienten gebildet.
     </p>
 
     <script>
@@ -43,8 +44,6 @@
             ]
         };
 
-        const { ply } = globalGruppe1Variables;
-
         const fn = (result) => {
             const filtered = result.removeOverlaps(5);
 
@@ -54,7 +53,6 @@
             dijkstras.draw(g);
             dijkstras.groupsByCorrelation(g);
             filtered.draw(g);
-            filtered.points.forEach(r => ply.push({ ...r }));
 
             g.exe(simulation.ctx2);
         }
