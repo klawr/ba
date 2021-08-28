@@ -32,10 +32,10 @@ Die erste Annahme ist, dass die Bewegung nicht sehr gro{\ss} ist.
 Zu schnelle Bewegungen können durch diesen Ansatz wahrscheinlich nicht oder nur schlecht erkannt werden.
 Eine weitere Annahme ist, dass die zu untersuchende Bildsequenz in Graustufen immernoch nutzbar ist.
 Es werden in dieser Methode die Helligkeitswerte der Pixel untersucht.
-Eine Bewegung welche keine Änderung der Helligkeitswerte verursacht kann also offensichtlich nicht erkannt werden.
+Eine Bewegung welche keine Änderung der Helligkeitswerte verursacht, kann also offensichtlich nicht erkannt werden.
 
-Die Bewegung sollte durch einen Abgleich mit benachbarten Pixeln gefunden werden, indem der entsprechende Fehler minimiert wird, der durch eine Bewegung erzeugt wird.
-Wird das erste Bild für die entsprechenden Pixelwerte als eine Funktion $F(x)$ und die Pixelwerte des zweiten Bildes entsprechend als $G(x)$ beschrieben, so wird also jener Vektor gesucht, welcher den Fehler zwischen diesen beiden Funktionen minimiert.
+Die Bewegung sollte durch einen Abgleich mit benachbarten Pixeln gefunden werden, indem der entsprechende durch eine Bewegung erzeugte Fehler minimiert wird.
+Definiert man das erste Bild für die entsprechenden Pixelwerte als eine Funktion $F(x)$ und die Pixelwerte des zweiten Bildes entsprechend als $G(x)$, so wird also jener Vektor gesucht, welcher den Fehler zwischen diesen beiden Funktionen minimiert.
 Beschreiben diese Funktionen stattdessen Regionen auf entsprechenden Bildern, so können die Vektoren gesucht werden, welche für die Bewegung dieser Regionen innerhalb der Bilder die geringsten Fehler aufweisen.
 Auf diese Weise kann versucht werden die Bewegung einzelner Objekte zu verfolgen.
 
@@ -83,14 +83,14 @@ Des Weiteren können hier spezielle Regionen von Interesse übergeben werden und
 
 Nach der Bestimmung der zu verfolgenden Punkte wird versucht diese durch \lstinline{cv.calcOpticalFlowPyrLK} zu verfolgen.
 Die \lstinline{calcOpticalFlowPyrLK} Funktion benötigt als Parameter zunächst die beiden Bilder in zeitlicher Abfolge.
-Der dritte Parameter beinhaltet die Punkte, welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt, welcher die berechnet Punkte enthalten wird.
-Alles weitere sind Parameter zum Einstellen des Algorithmus wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Grö{\ss}e der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung grö{\ss}er werdenen Regionen.
+Der dritte Parameter beinhaltet die Punkte, welche verfolgt werden sollen und der vierte Parameter ist das \lstinline{cv.Mat} Objekt, welcher die berechneten Punkte enthalten wird.
+Alles Weitere sind Parameter zum Einstellen des Algorithmus wie etwa der Status, einem Objekt zur Fehlerbehandlung, der Grö{\ss}e der Fenster für den pyramidischen Ablauf und die Anzahl der Iterationen von den im Verlauf der Berechnung grö{\ss}er werdenden Regionen.
 Abschlie{\ss}end wird dem Algorithmus ein \lstinline{criteria} Parameter übergeben, welcher eine Abbruchbedingung für die iterative Suche darstellt.
-Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen stattfand oder die Bewegung unterhalb eines Schwellenwertes vermutet wird.
+Ein Abbruch findet dann statt, wenn eine maximale Anzahl von Iterationen erreicht ist oder die Bewegung unterhalb eines Schwellenwertes vermutet wird.
 
 Die in der \lstinline{LucasKanade} Klasse definierte \lstinline{step} Funktion ist in Listing~\ref{lst:LucasKanade_step} abgebildet.
 
-\begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{step} Funktion der \lstinline{LucasKanade} Klasse}, label={lst:LucasKanade_step}]
+\begin{lstlisting}[language=JavaScript, caption={Implementation der \lstinline{step} Funktion der \lstinline{LucasKanade} Klasse.}, label={lst:LucasKanade_step}]
 step(frame) {
     if (this.very_first) {
         this.very_first = false;
@@ -117,9 +117,9 @@ step(frame) {
 \end{lstlisting}
 
 Es wird mittels der \lstinline{first_indicator} Eigenschaft geprüft, ob es sich um den ersten Aufruf mit einem Bild handelt.
-Entsprechend muss noch die \lstinline{very_first} Variable genutzt werden, um den aller ersten Aufruf zu filtern.
+Entsprechend muss noch die \lstinline{very_first} Variable genutzt werden, um den ersten Aufruf zu filtern.
 \lstinline{goodFeaturesToTrack} wird nur einmal am Anfang ausgeführt, damit die Reihenfolge der gefundenen Punkte konsistent bleibt.
-Au{\ss}erdem ist nicht sichergestellt, dass die vorgeschlagenen Regionen bei Veränderungen im Bild dieselben bleiben.
+Au{\ss}erdem ist nicht sichergestellt, ob die vorgeschlagenen Regionen bei Veränderungen im Bild dieselben bleiben.
 Die gefundenen Punkte werden im \lstinline{LucasKanade} Objekt entsprechend gespeichert.
 Nachdem das Bild in Graustufen übersetzt wurde, wird es in der \lstinline{calcOpticalFlowPyrLK} Funktion genutzt, um die entsprechend neuen Koordinaten der Punkte zu ermitteln.
 Diese Punkte werden dann in einer \lstinline{points} Liste gespeichert, welche die zuletzt ermittelten Koordinaten enthält.
@@ -162,7 +162,7 @@ Diese Information sollte dann genutzt werden können, um die Pole der ebenen Bew
 Des Weiteren sollten die Glieder durch den Verlauf der gemessenen Geschwindigkeiten leicht unterscheidbar sein.
 Da jedoch die Ungenauigkeiten hier zu gro{\ss} zu sein scheinen, wäre die Implementierung entsprechend komplex und wird hier nicht weiter Gegenstand sein.
 
-\subsection{Ermittlung von Bewegung durch maschinelles Lernen.}
+\subsection{Ermittlung von Bewegung durch maschinelles Lernen}
 
 Eine weitere Erwähnung verdienen Ansätze zur Ermittlung des optischen Flusses durch maschinellen Lernens.
 Sie versprechen eine höhere Genauigkeit bei vergleichbarer Performanz.
@@ -176,15 +176,15 @@ Diese Segmentierungen könnten dann im Einzelnen analysiert werden, was die Prob
     \caption[Beispiele aus dem \name{Flying Chair Dataset}]{Die ersten beiden Bilder sind ein Auszug aus dem \name{Flying Chair Dataset}. Das zweite Bild versetzt die Stühle ein wenig, wobei die Bewegung, welche in der Kontrolle des Programmierers liegt entsprechend als Wert für das Training festgehalten wird. Im dritten Bild sieht man entsprechend die Vektoren, welche als wahre Werte gehalten werden. Die Farben zeigen hierbei die Richtugn des Vektors und die Sättigung der Farbe gibt den Betrag an~\cite{Fischer2015}.}
 \end{figure}
 
-Auch für die Ermittlung des Vektorfeldes werden Neuronale Netze entwickelt, welche eine höhere Genauigkeit und weniger Streuung der Ergebnisse versprechen.
-\name{FlowNet}~\cite{Fischer2015} ist ein \textit{Convolutional Neural Network}\footnote{Zu deutsch in etwa \textit{Faltendes neurales Netwerk}.}, welches durch automatisiert erstellte Trainingsdaten trainiert wurde.
+Auch für die Ermittlung des Vektorfeldes werden Neurale Netze entwickelt, welche eine höhere Genauigkeit und weniger Streuung der Ergebnisse versprechen.
+\name{FlowNet}~\cite{Fischer2015} ist ein \textit{Convolutional Neural Network}\footnote{Zu deutsch in etwa \textit{Faltendes neurales Netwerk}.}, welches durch automatisiert erstellte Daten trainiert wurde.
 Es wurden hierfür beliebige Hintergründe verwendet, auf denen dann Bilder von Stühlen platziert wurden.
 Diese Stühle wurden dann für das Training entsprechend ein wenig versetzt, damit das neurale Netz mit diesen vorgegebenen \textit{Ground Truth} Werten trainiert werden konnte.
 Es muss hierbei berücksichtigt werden, dass das neurale Netz nicht durch die Objekte, sondern dessen Bewegung trainiert wird.
 
 Als eine Entwicklung von \name{FlowNet} wurde \name{FlowNet 2.0}~\cite{Ilg2016} entworfen.
-\name{FlowNet 2.0} hat einige Verbesserung im Umgang mit den Trainingsdaten eingeführt.
-Diese Verbesserungen basieren auf den gefundenen Mängeln von \name{FlowNet}, welcher auf Daten der echten Welt keine Verbesserung zur bis dahin genutzten Methoden aufweist\footnote{\name{FlowNet} hat allerdings gezeigt, dass maschinelles Lernen dieses Problem bearbeiten kann.}.
+\name{FlowNet 2.0} hat einige Verbesserungen im Umgang mit den Trainingsdaten eingeführt.
+Diese Entwicklungen basieren auf den gefundenen Mängeln von \name{FlowNet}, welcher auf Daten der echten Welt keine Verbesserung zur bis dahin genutzten Methoden aufweist\footnote{\name{FlowNet} hat allerdings gezeigt, dass maschinelles Lernen dieses Problem bearbeiten kann.}.
 Zum einen wird hier ein grö{\ss}erer Fokus auf kleinere Änderungen in der Bewegung gelegt, was zu einer höheren Genauigkeit bei echten Bildern führt.
 Es zeigte sich au{\ss}erdem, dass der Zeitplan, mit welchem die Trainingsdaten an das Netzwerk geliefert werden, Einfluss auf dessen Generalisierbarkeit hat.
 
@@ -192,7 +192,7 @@ Es zeigte sich au{\ss}erdem, dass der Zeitplan, mit welchem die Trainingsdaten a
     \centering
     \includegraphics[width=0.45\textwidth]{gfx/flownet_vs_flownet2.png}
     \label{fig:flownet_vs_flownet2}
-    \caption[Vergleich \name{FlowNet} zu \name{FlowNet 2.0}]{Vergleich der Genauigkeit von \name{FlowNet} gegenüber \name{FlowNet 2.0}. Die hier sichtbar verbesserte Genauigkeit ist laut den Autoren vier mal höher als beim Vorgänger~\cite{Ilg2016}}
+    \caption[Vergleich \name{FlowNet} zu \name{FlowNet 2.0}]{Vergleich der Genauigkeit von \name{FlowNet} gegenüber \name{FlowNet 2.0}. Die hier sichtbar verbesserte Genauigkeit ist laut den Autoren vier mal höher als beim Vorgänger~\cite{Ilg2016}.}
 \end{figure}
 
 \section{Betrachtung der Ergebnisse}
@@ -203,7 +203,7 @@ Es hat sich jedoch schnell gezeigt, dass es sehr schwierig sein könnte die Unge
 Ansätze des maschinellen Lernens sind vielversprechend.
 Die Entwicklung dieser zeigt, dass die in dieser Arbeit untersuchten Algorithmen durch diese verbessert und schlussendlich die Genauigkeit erhöht werden kann.
 Zur Zeit der Bearbeitung ist jedoch der Mehraufwand einer Implementierung solcher Ansätze zu hoch.
-Um den Rahmen dieser Arbeit nicht zu übersteigen finden, diese hier daher keine Anwendung.
+Um den Rahmen dieser Arbeit nicht zu übersteigen, finden diese hier daher keine Anwendung.
 
 Die Implementation des Algorithmus nach Lucas-Kanade scheint jedoch eine stabile Methode zu sein, die Bewegung einzelner Punkte zu verfolgen.
 Dieser findet vor allem im nachfolgenden Kapitel Anwendung.

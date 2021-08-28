@@ -52,7 +52,7 @@ Wenn man den Fehler für genug Geraden im Winkel äquidistant zueinander auf die
     \end{subfigure}
     \caption[Versuch \lstinline{gruppe1_1.html}]{Versuch \lstinline{gruppe1_1.html}. In Bild~\ref{fig:gruppe1_2_0} wird der Mechanismus gezeigt, dessen Glieder nun zugeordnet werden sollen.
     Bild~\ref{fig:gruppe1_2_1} zeigt die Vorhersage zur Zuordnung dieser Punkte.
-    Bild~\ref{fig:gruppe1_2_2} zeigt die Zuordnung der Punkte in den Totlagen des Mechanismus. Hier wird das linke Glied und die Koppel einer einzelnen Gruppe zugeordnet. Bild~\ref{fig:gruppe1_2_2} zeigt, dass der genutzte Algorithmus manchmal auch falsche vorhersagen trifft. Hier liegt das daran, dass zuerst die grüne Gruppe ermittelt wurde, bei welcher die Dichte der weit entfernten Punkte des Gelenkes des rechten Gliedes zu einer falschen Gerade geführt hat. Danach hat sich der Fehler in den übrigen Gruppen entsprechend fortgepflanzt.}
+    Bild~\ref{fig:gruppe1_2_2} zeigt die Zuordnung der Punkte in den Totlagen des Mechanismus. Hier wird das linke Glied und die Koppel einer einzelnen Gruppe zugeordnet. Bild~\ref{fig:gruppe1_2_2} zeigt, dass der genutzte Algorithmus manchmal auch falsche vorhersagen trifft. Das liegt daran, dass zuerst die grüne Gruppe ermittelt wurde, bei welcher die Dichte der weit entfernten Punkte des Gelenkes des rechten Gliedes zu einer falschen Gerade geführt hat. Danach hat sich der Fehler in den übrigen Gruppen entsprechend fortgepflanzt.}
     \label{fig:gruppe1_2}
 \end{figure}
 
@@ -82,7 +82,7 @@ Auf diese Weise werden die Punkte neu gruppiert.
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/k_means_centroids_edit.png}
-    \caption[Versuch \lstinline{gruppe2_1.html}]{Versuch \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration grö{\ss}er, um die Annäherung zu visualisieren. Es ist sichtbar, dass sie sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
+    \caption[Versuch \lstinline{gruppe2_1.html}]{Versuch \lstinline{gruppe2_1.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Gruppen in jeweils unterschiedlichen Farben an. Die \name{Centroids} werden bei jeder Iteration grö{\ss}er, um die Annäherung zu visualisieren. Es ist sichtbar, dass sie gegen einen Punkt konvertieren. Das rechte Bild zeigt einen darauffolgenden Aufruf des Algorithmus. Die \name{Centroids} des letzten Aufrufs werden hierbei als Ausgangspunkte gewählt. So bleiben die Gruppen über den Verlauf der Bildsequenz hinweg konstant. Entsprechend wandern die \name{Centroids} kaum über die internen Iterationen.}
     \label{fig:gruppe2_1}
 \end{figure}
 
@@ -108,9 +108,9 @@ Hierfür soll das \lstinline{PointCloud} Objekt in einen vollständigen Graphen 
 Anschlie{\ss}end werden diese Pfade genutzt, um Geraden zu definieren, welche dann Rückschluss auf die zugrundeliegenden Gruppen geben können.
 
 Zur Durchführung des \name{Dijkstra} Algorithmus wurde die \lstinline{Dijkstra} Klasse erstellt.
-Der Konstruktor dieser Klasse nimmt hierfür ein \lstinline{PointCloud} Objekt und optional einen Punkt entgegen\footnote{Ein Punkt sei definiert als Objekt mit den Eigenschaften \lstinline{x} und \lstinline{y}. Wird kein Punkt übergeben wird als \lstinline{anchor} ein Punkt der \lstinline{PointCloud} genommen.} entgegen, welcher hier als \lstinline{anchor} bezeichnet werden soll.
+Der Konstruktor dieser Klasse nimmt hierfür ein \lstinline{PointCloud} Objekt und optional einen Punkt\footnote{Ein Punkt sei definiert als Objekt mit den Eigenschaften \lstinline{x} und \lstinline{y}. Wird kein Punkt übergeben wird als \lstinline{anchor} ein Punkt der \lstinline{PointCloud} genommen.} entgegen, welcher hier als \lstinline{anchor} bezeichnet werden soll.
 Ziel ist es den kürzesten Pfad zu bestimmen, um vom \lstinline{anchor} zu jedem Punkt des übergebenen \lstinline{PointCloud} Objektes zu gelangen.
-Der offensichtliche kürzeste Weg ist laut der Dreiecksungleichung natürlich immer der direkte Weg vom \lstinline{anchor} zum entsprechenden Punkt.
+Der offensichtlich kürzeste Weg ist laut der Dreiecksungleichung natürlich immer der direkte Weg vom \lstinline{anchor} zum entsprechenden Punkt.
 Deshalb sollen die Distanzen zwischen den Werten jeweils potenziert werden.
 An den Konstruktor kann dafür der Parameter \lstinline{warp} übergeben werden, welcher standardmä{\ss}ig den Wert zwei einnimmt.
 Eine hohe Potenzierung begünstigt entsprechend Pfade über mehr Knoten des Graphen.
@@ -137,7 +137,7 @@ const graph = points.map((p, id) => ({
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/dijkstra_edit.png}
-    \caption[Versuch \lstinline{gruppe3_2.html}]{Versuch \lstinline{gruppe3_2.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Verbindung des \lstinline{anchor}, welcher im linken Gestellpunkt ist. Die Farbe der Verbindung zwischen den Punkte weist auf den \lstinline{dist} Wert hin.
+    \caption[Versuch \lstinline{gruppe3_2.html}]{Versuch \lstinline{gruppe3_2.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Verbindung des \lstinline{anchor}, welcher im linken Gestellpunkt ist. Die Farbe der Verbindung zwischen den Punkten weist auf den \lstinline{dist} Wert hin.
     Wie im rechten Bild zu sehen ist, werden die Verbindungen bei sehr kleinen eingeschlossenen Winkeln fehlerbehaftet.}
     \label{fig:gruppe3_1}
 \end{figure}
@@ -244,7 +244,7 @@ for (const win of winner) {
 }
 \end{lstlisting}
 
-Die Punkte werden auf ihre nähe zu einer Regressionsgeraden über den Korrelationskoeffizienten geprüft.
+Die Punkte werden auf ihre Nähe zu einer Regressionsgeraden über den Korrelationskoeffizienten geprüft.
 Der Korrelationskoeffizient berechnet sich durch~\cite{Papula2014}
 
 \begin{equation}
@@ -286,10 +286,10 @@ Auf diese Weise wird verhindert, dass Punkte in der Nähe von Totlagen des Mecha
 Diese Implementation zeigt weniger Fluktuation als die anderen Ansätze.
 Werden diese Gruppen dann noch durch die in Kapitel~\ref{ch:naive_grouping_approach} erwähnte \lstinline{realignGroups} Funktion den Regressionsgeraden entsprechend angeglichen, so werden die Gruppierungen für einen durch \name{mec2} animierten Mechanismus nahezu stabil.
 
-In Versuch \name{gruppe4\_1.html} wird ein Viergelenk zu rekonstruiert.
+In Versuch \name{gruppe4\_1.html} wird ein Viergelenk rekonstruiert.
 Die Absolutpole werden als jene definiert, welche eine geringe Standardabweichung aufweisen.
 Es ist davon auszugehen, dass die anderen Pole durch ihre Polbahn naturgemä{\ss} eine höhere Standardabweichung haben.
-Daraufhin wurden die Relativpole als die Schnittpunkte der durch die Gruppen gezogenen Regressionsgeraden definiert.
+Daraufhin werden die Relativpole als die Schnittpunkte der durch die Gruppen gezogenen Regressionsgeraden definiert.
 Der entsprechend rekonstruierte Mechanismus wird in Abbildung~\ref{fig:gruppe4_1} gezeigt.
 
 \begin{figure}
@@ -310,14 +310,14 @@ Das ist notwendig, da obwohl dort keine Bewegung vorhanden ist, dennoch kleine U
 
 \begin{figure}
     \includegraphics[width=\textwidth]{gfx/gruppe_failed_edit.png}
-    \caption[Versuche \name{gruppe1\_3.html}, \name{gruppe2\_6.html} und \name{gruppe3\_4.html}.]{Links ist der Ausgangsmechanismus, welcher durch die Wattsche Kette gebildet wird. Von links nach rechts sind jeweils der Versuch \name{gruppe1\_3.html}, welcher so offensichtlich keine nutzbaren Ergebnisse hervorbringt, \name{gruppe2\_6.html}, welcher etwas bessere Ergebnisse zeigt und der Versuch \name{gruppe3\_4.html}, welcher hier die stabilsten Ergebnisse zu produzieren scheint scheint, jedoch sind auch diese für weitere Analysen kaum brauchbar.}
+    \caption[Versuche \name{gruppe1\_3.html}, \name{gruppe2\_6.html} und \name{gruppe3\_4.html}.]{Links ist der Ausgangsmechanismus, der durch die wattsche Kette gebildet wird. Von links nach rechts sind jeweils der Versuch \name{gruppe1\_3.html}, welcher so offensichtlich keine nutzbaren Ergebnisse hervorbringt. \name{gruppe2\_6.html} zeigt etwas bessere und der Versuch \name{gruppe3\_4.html} produziert hier scheinbar die stabilsten Ergebnisse, jedoch sind auch diese für weitere Analysen kaum brauchbar.}
     \label{fig:gruppe1_3_2_6_3_4}
 \end{figure}
 
 Die vorangegangen Methoden geben scheinbar akzeptable Ergebnisse für Viergelenke.
 Sie scheitern jedoch, sobald die Anzahl der Glieder erhöht wird, wie in Abbildung~\ref{fig:gruppe1_3_2_6_3_4} gesehen werden kann.
 Aus diesem Grund soll in diesem Kapitel davon ausgegangen werden, dass sowohl die Ermittlung der Gliedebenen als auch die dazugehörigen Momentanpole ideal sind.
-Es wird untersucht werden, inwiefern die Menge der Relativpole nach den gesuchten Gelenken gefiltert werden können.
+Es wird untersucht, inwiefern die Menge der Relativpole nach den gesuchten Gelenken gefiltert werden können.
 
 \subsection{Ermittlung der Anzahl der gesuchten Punkte}
 
@@ -373,7 +373,8 @@ Die Anzahl der Relativpole eines Mechanismus berechnet sich durch~\cite{Goessner
 \end{equation}
 
 Wobei $n$ hier wieder die Anzahl der Glieder ist.
-Hier lassen sich in jedem Fall die durch die in den angeführten Methoden bestimmten Momentanpole der bewegten Gliedebenen ausschlie{\ss}en, wobei die Absolutpole dann direkt als gefundene Gelenke identifiziert werden können.
+Hier lassen sich in jedem Fall die durch die in den angeführten Methoden bestimmten Momentanpole der bewegten Gliedebenen ausschlie{\ss}en.
+Die Absolutpole können direkt als gefundene Gelenke identifiziert werden.
 Allerdings ist auch zu beachten, dass Relativpole im Schnittpunkt zweier Gliedebenen, welche gemeinsam mehr als einen Absolutpol aufweisen keine Gelenke darstellen können, da diese sonst starr wären.
 Die Relativpole, welche durch zwei nicht benachbarte Gliedebenen gebildet werden, lassen sich dennoch nicht einfach ausschlie{\ss}en, so dass hier weitere Analysen notwendig sind.
 

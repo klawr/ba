@@ -16,13 +16,13 @@ Das kann auch interpretiert werden, als der Punkt um den sich ein Element in die
 \end{wrapfigure}
 
 Es ist zu beachten, dass der Momentanpol ein virtueller Punkt und damit nicht an den untersuchten Körper gebunden ist.
-Tatsächlich kann entsprechend die Bewegung des ebenen starren Gliedes als ein Vektorfeld extrapoliert werden, was ebenfalls den entsprechenden Momentanpol als eine Koordinate ohne Bewegung innerhalb dieses vorhersagen würde.
+Tatsächlich kann entsprechend die Bewegung einer starren Gliedebene als ein Vektorfeld extrapoliert werden.
+Der Momentanpol wird in diesem dann als jener Vektor mit einem Betrag von $0$ identifiziert.
 Wären die Methoden der Berechnung des optischen Flusses also mit nur sehr kleinem Fehler behaftet, würde sich so möglicherweise auch direkt der Momentanpol ermitteln lassen.
 
 Die Position des Momentanpols kann konstant sein, wodurch dann der Drehpunkt definiert wird, welcher dann auch als Absolutpol bezeichnet wird.
 Ein translatives Elemtent, dessen Bewegung durch die Abwesenheit einer Rotation definiert ist dreht sich in dem Sinne um einen Momentanpol, welcher sich orthogonal zur Bewegungsrichtung in unendlicher Distanz befindet.
 Bei einer Parallelkurbel, bei welcher die Koppel keine Drehung aufweist, würde der Momentanpol ebenfalls stets im Unendlichen liegen.
-Entsprechend findet bei dieser auch keine Drehung statt.
 
 Eine Möglichkeit zur Ermittlung des Momentanpols ist die Ermittlung der Bewegung durch den \name{ersten Satz von Euler}\cite{Goessner2016}.
 Die Bewegung eines Körpers berechnet sich nach diesem durch
@@ -95,7 +95,7 @@ Ein ansonsten daraus resultierender Fehler würde sich bei der Berechnung des si
 
 Als erster Test soll der Momentanpol eines sich drehenden Rades bestimmt werden.
 Von diesem Rad soll eine Speiche sichtbar sein, welche es erlaubt die Drehung zu erkennen.
-Interessant ist die Bestimmung des Momentanpols eines Rades, weil dieses als erster der bisher gemachteten Tests keinen Absolutpol darstellt.
+Interessant ist die Bestimmung des Momentanpols eines Rades, weil dieses als erster der bisher gemachten Tests keinen Absolutpol darstellt.
 Bekannt ist, dass die Drehung eines Rades im Wälzpunkt liegt.
 Ansonsten würde dieses nicht schlupffrei rollen\footnote{Bei einem rutschendem Rad würde sich der Momentanpol entsprechend im Mittelpunkt des Rades befinden.}.
 Es wird also erwartet, dass die über die Zeit ermittelten Momentanpole eine Linie bilden, welche sich genau auf der Ebene befindet, auf der das Rad abrollt.
@@ -136,7 +136,7 @@ Tatsächlich befindet sich der Erwartungswert des Momentanpols unter Berücksich
     \label{fig:drehendes_rad_1_4}
 \end{figure}
 
-Weitere Versuche wurden dann unternommen, indem nicht mehr die am weitesten voneinander entfernten Punkte sondern die in Kapitel~\ref{ch:lucas_kanade} verwendete Methode genutzt wird.
+Weitere Versuche wurden unternommen, indem nicht mehr die am weitesten voneinander entfernten Punkte sondern die in Kapitel~\ref{ch:lucas_kanade} verwendete Methode genutzt wird.
 Hierfür wird zunächst ein Punkt über den Shi-Tomasi Algorithmus gewählt.
 Dieser nutzt die am besten sichtbare Kante, welche in diesem Fall durch den von \name{g2} definierten \lstinline{nod} verursacht wird.
 Der Verlauf der nun verfolgten Punkte verspricht weniger Streuung der Koordinaten und entsprechend eine höhere Genauigkeit bei der Berechnung der Geschwindigkeit.
@@ -144,7 +144,7 @@ Der Verlauf der nun verfolgten Punkte verspricht weniger Streuung der Koordinate
 Des Weiteren soll nicht mehr die Gerade der am weitesten auseinander liegenden Punkte genutzt werden sondern die orthogonale Regressionsgerade, welche in Kapitel~\ref{ch:orthogonale_regression} beschrieben wurde.
 Diese verspricht ebenfalls weniger Streuung bei der Ermittlung des vom Glied eingelegten Winkels.
 
-Die beschriebene Implementation erfordert hier jedoch nur eine andersartige Befüllung der \lstinline{pts} und \lstinline{lines} Eigenschaften des entsprechenden \lstinline{Group} Objekt.
+Die beschriebene Implementation erfordert hier jedoch nur eine andersartige Befüllung der \lstinline{pts} und \lstinline{lines} Eigenschaften des entsprechenden \lstinline{Group} Objektes.
 Die Berechnung des Momentanpols und die genutzten Funktionen sind ansonsten gleich.
 In Abbildung~\ref{fig:drehendes_rad_1_4} ist zu sehen, dass die Berechnung in der Tat eine erheblich geringere Streuung aufweisen.
 Die gezeigten Ansätze überspringen jeweils 20 Iterationen.
@@ -181,13 +181,13 @@ Die Standardabweichung reduziert sich für die X- und Y-Koordinate jeweils von $
 \subsection{Translatives Gestellglied}
 
 Für ein sich translativ bewegendes Glied ist entsprechend zu erwarten, dass der Momentanpol sich im Unendlichen befindet.
-Die numerische Herangehensweise lässt hierbei also vermuten, dass die Varianz der berechnten Punkte sehr hoch ist.
+Die numerische Herangehensweise lässt hierbei also vermuten, dass die Varianz der berechneten Punkte sehr hoch ist.
 Ein eindeutiges Ergebnis zu bekommen, ist numerisch unwahrscheinlich.
 Im Gegenteil lie{\ss}e hier ein besonders ungenaues Ergebnis den Schluss zu, dass es sich um ein Schubgelenk handelt.
 Um zu verhindern, dass sich der Momentanpol fälschlicherweise auf der Gliedebene des sich bewegten Elementes befindet, wird der eingeschlossene Winkel durch \lstinline{dw = dw > Math.PI / 2 ? dw - Math.PI : dw;} korrigiert, wie in Listing~\ref{lst:group_momentanpol} gesehen werden kann, damit jeweils der kleinere der beiden eingeschlossenen Winkel bevorzugt wird.
 Der rote Punkt in Abbildung~\ref{fig:translatives_glied_3} stellt hier den verfolgten Punkt dar und nicht den Momentanpol.
 Die Standardabweichung zu vergleichen scheint an dieser Stelle weniger sinnvoll.
-Sie ist in beiden Fällen sehr hoch und wird nur durch die Tatsache niedrig gehalten, dass \lstinline{Data} die Punkte au{\ss}erhalb des Canvas ignoriert, um die Gau{\ss}-Verteilung mit den gemessenen Werten vergleichbar zu halten\footnote{Teilweise auftretende extreme Ausschläge haben einen gro{\ss}en Einfluss auf die Varianz.}.
+Sie ist in beiden Fällen sehr hoch und wird nur durch die Tatsache niedrig gehalten, dass \lstinline{Data} die Punkte au{\ss}erhalb des Canvas ignoriert, um die Gau{\ss}-Verteilung der gemessenen Werte nutzbar zu halten\footnote{Teilweise auftretende extreme Ausschläge haben einen gro{\ss}en Einfluss auf die Varianz.}.
 
 \begin{figure}
     \centering

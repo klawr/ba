@@ -51,7 +51,7 @@ Es werden also nur dort Änderungen erkannt, wo sich die Farbe des entsprechende
 Es ist au{\ss}erdem zu beachten, dass durch die Betrachtung der reinen Änderung der Pixel sich bewegende Objekte stets zweimal abzeichnen.
 Dass hei{\ss}t wenn die beiden Bilder verglichen werden, dass genau jene Pixel unterschiedlich sind, an denen das Ding im ersten Bild und im zweiten nicht mehr ist und umgekehrt.
 Ohne weitere Analyse lässt sich jedoch nicht so einfach bestimmen in welche Richtung sich das Element bewegt hat.
-Au{\ss}erdem ist mit dieser Methode nicht von einer exakten Abmessung auzugehen, sondern die ermittelten Koordinaten ergeben eher eine Art Punktwolke, bei der von einer gewissen Streuung auszugehen ist.
+Au{\ss}erdem ist mit dieser Methode nicht von einer exakten Abmessung auszugehen, sondern die ermittelten Koordinaten ergeben eher eine Art Punktwolke, bei der von einer gewissen Streuung auszugehen ist.
 
 An die \lstinline{stepCompareImages} Funktion kann wiederum eine Funktion übergeben werden, welche dann mit dem von \lstinline{fromImages} zurückgegebenen \lstinline{PointCloud} Objekt aufgerufen wird.
 Diese Sammlung an Koordinaten wird verwendet, um sie auf Regelmä{\ss}igkeiten zu untersuchen.
@@ -113,7 +113,7 @@ Abschlie{\ss}end landet der Mittelpunkt des kleinsten umfassenden Kreises im Dre
 
 Es kann au{\ss}erdem beobachtet werden, dass der kleinste umfassende Kreis, solange er eine Gerade bildet, durch drei Punkte definiert wird\footnote{Mit Ausnahme der ersten Iteration, wo er allein durch die Endpunkte des Gliedes beschrieben werden kann.}.
 Sobald das Glied jedoch eine Drehung von über $90^\circ$ vollführt, wird der Kreis nur noch durch zwei Punkte beschrieben.
-Diese drei Punkte beinhalten die beiden Punkte des zuerst gebildeten Kreises\footnote{Tatsächlich wird der Kreis in mehr als nur einer Iteration durch nur zwei Punkte definiert wird, dass kann jedoch auf die Streuung der Punkte zurückgeführt werden.} und den letzten erfassten Endpunkt des Pendels.
+Diese drei Punkte beinhalten die beiden Punkte des zuerst gebildeten Kreises\footnote{Tatsächlich wird der Kreis in mehr als nur einer Iteration durch nur zwei Punkte definiert wird. Dies kann jedoch auf die Streuung der Punkte zurückgeführt werden.} und den letzten erfassten Endpunkt des Pendels.
 Sobald eine Drehung von über $90^\circ$ vollführt wurde, ist der Kreis, der durch den ersten sowie den letzten Drehpunkt definiert wird, jedoch grö{\ss}er, weshalb der Drehpunkt nicht mehr zum Kreis beiträgt.
 
 \begin{figure}
@@ -247,10 +247,10 @@ Ein \lstinline{DataXY} Objekt hat die Eigenschaften \lstinline{x} und \lstinline
 Dementsprechend bietet \lstinline{DataXY} Funktionen an, um diese Daten gemeinsam auf einem \lstinline{g2.chart} zeichnen zu können.
 
 In der \lstinline{Data} Klasse ist ein \lstinline{data} Objekt definiert, welches die gesammelten Daten beinhaltet.
-Statt einer Liste wird eine Map verwendet, deren Schlüssel den Messwerten entsprechen und die dazugehörigen Werte die Anzahl darstellen, wie oft diese gemessen wurden\footnote{Für mehr Information zu Maps siehe \aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map}.}.
+Statt einer Liste wird eine Map verwendet, deren Schlüssel den Messwerten entsprechen und die dazugehörigen Werte die Anzahl darstellen, wie oft diese gemessen wurden\footnote{Für mehr Informationen zu Maps siehe \aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map}.}.
 Entsprechend wurde eine \lstinline{add} Funktion für die \lstinline{Data} Klasse definiert, welche wie folgt aussieht:
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion, welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen}, label={lst:data_add}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{add} Funktion, welche dazu genutzt wird der \lstinline{Data} Klasse neue Werte hinzuzufügen.}, label={lst:data_add}]
 add(a) {
     const r = Math.round(a);
     if (Number.isSafeInteger(r)) {
@@ -264,7 +264,7 @@ Es sind beispielsweise weniger Iterationen notwendig, wenn der Erwartungswert be
 Listen bieten jedoch die, in dieser Arbeit häufig verwendete, \lstinline{reduce} Funktion.
 Diese wurde entsprechend für die \lstinline{Data} Klasse implementiert.
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{reduce} Funktion, um die Standardfunktion der Liste nachzubilden}, label={lst:data_reduce}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{reduce} Funktion, um die Standardfunktion der Liste nachzubilden.}, label={lst:data_reduce}]
 reduce(callback, acc) {
     const itr = this.data.entries();
     acc = acc !== undefined ? acc : itr.next();
@@ -296,7 +296,7 @@ Hierfür berechnet sich zunächst die Varianz durch
     \sigma^2 = \frac{1}{n - 1} \sum_{i=1}^n(x_i - \mu)^2
 \end{equation}
 
-\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{variance} Funktion, welche die Varianz der Daten in \lstinline{Data} berechnet}, label={lst:data_variance}]
+\begin{lstlisting}[language=JavaScript, caption={Definition der \lstinline{variance} Funktion, welche die Varianz der Daten in \lstinline{Data} berechnet.}, label={lst:data_variance}]
 get variance() {
     const mu = this.mu;
     return this.reduce((pre, cur) =>
@@ -362,7 +362,7 @@ Dies gilt auch für vollzogene Winkel weit unter $180^\circ$.
 
 Es zeigt sich, dass der Winkel der Geraden, die durch die am weitesten voneinander entfernten Punkte gebildet werden, eine sehr starke Streuung aufweist.
 Da im Abgleich zweier zeitlich aufeinander folgenden Bilder sowohl das Pendel des ersten als auch des zweiten Bildes enthalten ist.
-Um diesem Problem zu entgegenzuwirken sollen nun die Schwerpunkte mehrerer am weitesten auseinander liegenden Punkte ermittelt und die Prozedur mit diesen wiederholt werden\footnote{Für die Berechnung des Schwerpunktes wird davon ausgegeangen, dass das Gewicht der Punkte gleich ist. Die Berechnung ist also äquivalent zu der des Erwartungswertes.}.
+Um diesem Problem zu entgegenzuwirken sollen nun die Schwerpunkte mehrerer am weitesten auseinander liegenden Punkte ermittelt und die Prozedur mit diesen wiederholt werden\footnote{Für die Berechnung des Schwerpunktes wird davon ausgegegangen, dass das Gewicht der Punkte gleich ist. Die Berechnung ist also äquivalent zu der des Erwartungswertes.}.
 
 Die Standardabweichung für dieselbe Menge an Iterationen bei der Nutzung des Schwerpunktes der fünf am weitesten auseinanderliegenden Punkte reduziert sich tatsächlich leicht, wie in Abbildung~\ref{fig:pendel2_1_2_stats} gesehen werden kann.
 
@@ -384,7 +384,7 @@ Die Standardabweichung für dieselbe Menge an Iterationen bei der Nutzung des Sc
 \section{Bestimmung der Regressionsgeraden}\label{ch:bestimmung_regressionsgerade}
 
 Die Gerade, welche den geringsten Fehler gegenüber einer Menge an Punkten darstellt, wird als Regressionsgerade bezeichnet.
-Die Regressionsgeraden nach der Gau{\ss}'schen Methode der kleinsten Quadrate wird durch~\cite[S.~694]{Papula2016}
+Die Regressionsgerade nach der Gau{\ss}'schen Methode der kleinsten Quadrate wird durch~\cite[S.~694]{Papula2016}
 
 \begin{equation}
     \begin{split}
@@ -399,7 +399,7 @@ berechnet.
 Diese Berechnung unterstellt jedoch einen vernachlässigbar kleinen Fehler auf der X-Achse.
 Dies resultiert hier in einer horizontalen Linie, wenn sie vertikal sein sollte.
 Die Berechnung durch die Methode der kleinsten Quadrate hat jedoch ein anderes Problem aufgezeigt.
-Wenn zwei Bilder die eine Drehung darstellen miteinander verglichen werden, indem jene Pixel behalten werden, in denen eine Änderung zu erkennen ist, dann werden typischerweise mehr Änderungen erkannt, je weiter man sich radial von Drehpunkt entfernt.
+Wenn zwei Bilder die eine Drehung darstellen miteinander verglichen werden, indem jene Pixel behalten werden, für die eine Änderung zu erkennen ist, dann werden typischerweise mehr Änderungen erkannt, je weiter man sich radial von Drehpunkt entfernt.
 Diese Beobachtung ist nicht überraschend, denn die absolute Geschwindigkeit eines Punktes nimmt mit Abstand zum Drehpunkt zu.
 Diese Tatsache sorgt jedoch dafür, dass die Dichte der Punktwolke in einigen Regionen höher ist, was die Berechnung der Regressionsgerade beeinflusst.
 Um dieses Problem zu umgehen, soll die Dichte der Punktwolken limitiert werden.
@@ -458,7 +458,7 @@ get() covariance() {
 
 Hier werden die entsprechenden Erwartungswerte analog zu Listing~\ref{lst:data_variance} festgehalten, damit diese nicht öfters ermittelt werden müssen.
 
-Die Erzeugung der Regressionsgerade wird auf der \lstinline{Line} Klasse defniert werden.
+Die Erzeugung der Regressionsgerade wird auf der \lstinline{Line} Klasse definiert werden.
 Die Implementation kann in Listing~\ref{lst:line_fromRegressionLine} nachvollzogen werden.
 
 \begin{lstlisting}[language=JavaScript, caption={Erstellung von \lstinline{Line} Objekten durch die orthogonale Regressionsgerade für Datenpunkte} , label={lst:line_fromRegressionLine}]
@@ -538,4 +538,4 @@ Die Standardabweichung ermöglicht es die unterschiedlichen Ansätze qualitativ 
 
 Jede der hier genannten Klassen hat zudem entsprechende \lstinline{draw} Funktionen, welche es ermöglichen die durch diese Klassen verwalteten Objekte visuell darzustellen, um so die Ergebnisse zumeist im zweiten Canvas der Versuchsreihen zu rendern.
 
-Im Folgenden soll noch eine weitere Möglichtkeit untersucht werden, um nutzbare Information aus Veränderungen in Bildern zu ermitteln nämlich über die Berechnung des optischen Flusses.
+Im Folgenden soll noch eine weitere Möglichkeit untersucht werden, um nutzbare Informationen aus Veränderungen in Bildern zu ermitteln nämlich über die Berechnung des optischen Flusses.

@@ -133,7 +133,7 @@ Diese Funktion implementiert den jeweiligen Versuchsalgorithmus und wird dements
 
 Abschlie{\ss}end wird hier noch die Dauer der \lstinline{step} Funktion vermerkt.
 In \lstinline{updateTimesChart} wird der aktuelle Zeitpunkt mittels \lstinline{performance.now}\footnote{Für mehr Information zu \lstinline{performance.now} siehe \aka{https://developer.mozilla.org/en-US/docs/Web/API/Performance/now}.} ermittelt und einer Liste hinzugefügt, welche die Historie der Ausführungszeiten der einzelnen \lstinline{step} Aufrufe festhält.
-Es wird au{\ss}erdem gemessen, wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist, um eine sinnvolle Bezeichnung der Achsen der Graphen zu ermöglichen.
+Es wird au{\ss}erdem gemessen, wie viel Zeit seit dem Beginn der Aufzeichnung vergangen ist, um eine sinnvolle Darstellung der Daten im Graphen zu ermöglichen.
 Dieser Graph wird anschlie{\ss}end auf einem HTML-Canvas Element durch den \lstinline{exe(ctx_times)} Aufruf gezeichnet.
 \lstinline{ctx_times} ist der Kontext des vierten der von \lstinline{createElements} erstellten HTML-Canvas Elementen.
 
@@ -207,7 +207,7 @@ simulation.model = {
 Das \name{mec2} Modell wird in der entsprechenden Versuchsdatei definiert, damit dieses in den in Kapitel~\ref{ch:simulation_js} beschriebenen Funktionen korrekt referenziert werden kann.
 
 Dieses Modell besteht aus zwei \lstinline{nodes}, welche die Endpunkte des Pendels darstellen.
-Einer dieser beiden Punkte wird als \lstinline{base} deklariert, was es mit dem Gestell verbindet.
+Einer dieser beiden Punkte wird als \lstinline{base} deklariert, was ihn mit dem Gestell verbindet.
 Aus diesem regulären JavaScript Objekt wird ein \name{mec2} Modell, indem es durch \lstinline{mec.model.extend} erweitert wird.
 Dieser Vorgang wurde bereits in Kapitel~\ref{ch:sim_register} beschrieben.
 Die Animation wird durch die \lstinline{simulation.run} Funktion gesteuert, welche ebenfalls in Kapitel~\ref{ch:sim_run} beschrieben wurde.
