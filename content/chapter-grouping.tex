@@ -280,27 +280,44 @@ function findNearestCentroid(pointIdx, dijkstras) {
 }
 \end{lstlisting}
 
-Die \lstinline{findNearestCentroid} Funktion von \lstinline{kMeansClustering} nuzt für die Ermittlung des nächsten \name{Centroids} jeweils die euklidische Distanz.
-Hier wird stattdessen für jeden \name{Centroid} ein Graph erstellt, welcher dann die Distanzen zu den Punkten mittels der \name{Dijkstra} Implementation ermittelt.
+Die \lstinline{findNearestCentroid} Funktion von \lstinline{kMeansClustering} nutzt für die Ermittlung des nächsten \name{Centroids} jeweils die euklidische Distanz.
+Stattdessen wird hier für jeden \name{Centroid} ein Graph erstellt, welcher dann die Distanzen zu den Punkten mittels der \name{Dijkstra} Implementation ermittelt.
 Auf diese Weise wird verhindert, dass Punkte in der Nähe von Totlagen des Mechanismus falsch zugewiesen werden.
 Diese Implementation zeigt weniger Fluktuation als die anderen Ansätze.
 Werden diese Gruppen dann noch durch die in Kapitel~\ref{ch:naive_grouping_approach} erwähnte \lstinline{realignGroups} Funktion den Regressionsgeraden entsprechend angeglichen, so werden die Gruppierungen für einen durch \name{mec2} animierten Mechanismus nahezu stabil.
-Dementsprechend wurde in Versuch \name{gruppe4\_1.html} versucht ein Viergelenk zu rekonstruieren, indem für ein Viergelenk die Absolutpole als jene definiert wurden, welche eine geringe Standardabweichung aufweisen, da davon auszugehen ist, dass andere Pole naturgemä{\ss} eine höhere aufweisen.
+
+In Versuch \name{gruppe4\_1.html} wird ein Viergelenk zu rekonstruiert.
+Die Absolutpole werden als jene definiert, welche eine geringe Standardabweichung aufweisen.
+Es ist davon auszugehen, dass die anderen Pole durch ihre Polbahn naturgemä{\ss} eine höhere Standardabweichung haben.
 Daraufhin wurden die Relativpole als die Schnittpunkte der durch die Gruppen gezogenen Regressionsgeraden definiert.
 Der entsprechend rekonstruierte Mechanismus wird in Abbildung~\ref{fig:gruppe4_1} gezeigt.
 
-\section{Rekonstruktion eines Mechanismus durch die Relativpole}
+\begin{figure}
+    \includegraphics[width=\textwidth]{gfx/gruppe4_2.png}
+    \caption[Versuch \lstinline{gruppe4_2.html}]{Versuch \lstinline{gruppe4_2.html}. Das linke Bild zeigt den Mechanismus. Das mittlere Bild zeigt die Regressionsgeraden, die Gruppen und die Momentanpole, welche durch die Gruppen ermittelt werden, sowie den Pfad der durch den Lucas-Kanade Algorithmus verfolgten Punkte. Die Kreise zeigen jeweils die Standardabweichung der Verteilungen als Ellipsen in ihren Vielfachen dar.
+    Das Schubgelenk wird durch den verfolgten Punkt gebildet, dessen Pfad den höchsten Korrelationskoeffizienten als Betrag aufweist. Im rechten Bild ist das rekonstruierte Schubgelenk zu sehen.}
+    \label{fig:gruppe4_2}
+\end{figure}
 
-Die vorangegangen Methoden geben scheinbar akzeptable Ergebnisse für Viergelenke.
-Sie scheitern jedoch, sobald die Anzahl der Glieder erhöht wird, wie in Abbildung~\ref{fig:gruppe1_3_2_6_3_4} gesehen werden kann.
-Aus diesem Grund soll in diesem Kapitel davon ausgegangen werden, dass sowohl die Ermittlung der Gliedebenen als auch die dazugehörigen Momentanpole ideal sind.
-Es wird untersucht werden, inwiefern die Menge der Relativpole nach den gesuchten Gelenken gefiltert werden können.
+Ebenso wird ein Schubgelenk in Versuch \name{gruppe4\_2.html} rekonstruiert.
+Hierfür wurde der Absolutpol wie in Versuch \name{gruppe4\_1.html} nachgebildet.
+Das Schubgelenk wird durch den Korrelationskoeffizienten der durch den \name{Lucas-Kanade} Algorithmus ermittelten Pfade bestimmt.
+Der letzte Punkt des Pfades mit dem höchsten Betrag des Korrelationskoeffizienten ist entsprechend das Schubgelenk.
+Für diesen Versuch wird die von \name{mec2} definierte \lstinline{base} und das zugehörige Glied, welche zur Definition des Schubgelenkes dort notwendig sind, daran gehindert gezeichnet zu werden.
+Das ist notwendig, da obwohl dort keine Bewegung vorhanden ist, dennoch kleine Unterschiede beim Rendern erkannt werden, was die Gruppierung fehlerhaft macht.
+
+\section{Rekonstruktion eines Mechanismus durch die Relativpole}
 
 \begin{figure}
     \includegraphics[width=\textwidth]{gfx/gruppe_failed_edit.png}
     \caption[Versuche \name{gruppe1\_3.html}, \name{gruppe2\_6.html} und \name{gruppe3\_4.html}.]{Links ist der Ausgangsmechanismus, welcher durch die Wattsche Kette gebildet wird. Von links nach rechts sind jeweils der Versuch \name{gruppe1\_3.html}, welcher so offensichtlich keine nutzbaren Ergebnisse hervorbringt, \name{gruppe2\_6.html}, welcher etwas bessere Ergebnisse zeigt und der Versuch \name{gruppe3\_4.html}, welcher hier die stabilsten Ergebnisse zu produzieren scheint scheint, jedoch sind auch diese für weitere Analysen kaum brauchbar.}
     \label{fig:gruppe1_3_2_6_3_4}
 \end{figure}
+
+Die vorangegangen Methoden geben scheinbar akzeptable Ergebnisse für Viergelenke.
+Sie scheitern jedoch, sobald die Anzahl der Glieder erhöht wird, wie in Abbildung~\ref{fig:gruppe1_3_2_6_3_4} gesehen werden kann.
+Aus diesem Grund soll in diesem Kapitel davon ausgegangen werden, dass sowohl die Ermittlung der Gliedebenen als auch die dazugehörigen Momentanpole ideal sind.
+Es wird untersucht werden, inwiefern die Menge der Relativpole nach den gesuchten Gelenken gefiltert werden können.
 
 \subsection{Ermittlung der Anzahl der gesuchten Punkte}
 
@@ -340,6 +357,12 @@ Wird also während den Ermittlungen ein Schubgelenk vermutet, so zählt dieses e
 
 \subsection{Betrachtung aller Relativpole}
 
+\begin{figure}
+    \includegraphics[width=\textwidth]{gfx/gruppe4_3_edit.png}
+    \caption[Versuch \name{gruppe4\_3.html}]{Versuch \name{gruppe4\_3.html}. Links ist der Ausgangsmechanismus. Fast alle Relativpole können durch die genannten Methoden als Gelenke ausgeschlossen werden. Jedoch bilden die nicht benachbarten Gliedebenen hier zwei weitere Kandidaten, welche ohne weitere Analyse nicht ausgeschlossen werden können.}
+    \label{fig:gruppe4_3}
+\end{figure}
+
 Die gemeinsame Drehung zweier Gliedebenen geschieht jeweils um einen Relativpol.
 Entsprechend sind alle gesuchten Gelenke auch Relativpole.
 Die Anzahl der Relativpole eines Mechanismus berechnet sich durch~\cite{Goessner2016}
@@ -353,12 +376,6 @@ Wobei $n$ hier wieder die Anzahl der Glieder ist.
 Hier lassen sich in jedem Fall die durch die in den angeführten Methoden bestimmten Momentanpole der bewegten Gliedebenen ausschlie{\ss}en, wobei die Absolutpole dann direkt als gefundene Gelenke identifiziert werden können.
 Allerdings ist auch zu beachten, dass Relativpole im Schnittpunkt zweier Gliedebenen, welche gemeinsam mehr als einen Absolutpol aufweisen keine Gelenke darstellen können, da diese sonst starr wären.
 Die Relativpole, welche durch zwei nicht benachbarte Gliedebenen gebildet werden, lassen sich dennoch nicht einfach ausschlie{\ss}en, so dass hier weitere Analysen notwendig sind.
-
-\begin{figure}
-    \includegraphics[width=\textwidth]{gfx/gruppe4_3_edit.png}
-    \caption[Versuch \name{gruppe4\_3.html}]{Versuch \name{gruppe4\_3.html}. Links ist der Ausgangsmechanismus. Fast alle Relativpole können durch die genannten Methoden als Gelenke ausgeschlossen werden. Jedoch bilden die nicht benachbarten Gliedebenen hier zwei weitere Kandidaten, welche ohne weitere Analyse nicht ausgeschlossen werden können.}
-    \label{fig:gruppe4_3}
-\end{figure}
 
 Nach dem Satz von Aronhold-Kennedy~\cite{Goessner2016, Kerle2016}, welcher auch als 3-Polsatz bezeichnet wird, befinden sich für drei bewegte Gliedebenen jeweils drei Relativpole auf einer Geraden.
 Die Punkte, welche nicht ausgeschlossen werden können, bewegen sich entsprechend auf einer solchen Geraden.
