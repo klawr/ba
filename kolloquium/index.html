@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolloquium - Kai Lawrence</title>
+    <style>
+        html {
+            overflow: hidden;
+        }
+
+        body {
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            margin: 0;
+        }
+
+        iframe,
+        embed {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+
+        summary {
+            margin-left: 1em;
+        }
+
+        summary:hover,
+        ol>li:hover {
+            color: #fff;
+            cursor: pointer;
+        }
+
+        ol>li:hover * {
+            color: initial;
+        }
+
+        ol>li>ol {
+            margin-left: -1em;
+        }
+
+        ol>li>ol>li:hover {
+            color: #fff;
+        }
+
+        nav {
+            font-size: 1.5em;
+            width: 28rem;
+            resize: horizontal;
+            height: 100vh;
+            background-color: #aaa;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            right: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="sidenav" class="nav">
+        <h1 style="margin: 1rem">Kolloquium</h1>
+        <div class="footer">
+            <a href="../index.html">Link zu den Tests</a><br>
+            <a href="https://github.com/klawr/ba">Link zum Repository</a>
+            <p>© Kai Lawrence</p>
+        </div>
+    </nav>
+    <iframe name="iframe" id="iframe"></iframe>
+    <script src="slides.js"></script>
+    <script>
+        const r = document.querySelector(':root');
+
+        function create(s, parent, innerHTML = "") {
+            const el = document.createElement(s);
+            el.innerHTML = innerHTML;
+            return parent?.appendChild(el) || el;
+        }
+
+        function byId(id) {
+            return document.getElementById(id);
+        }
+        const iframe = byId('iframe');
+
+        const ol = create('ol', byId('sidenav'));
+        Object.entries(slides).forEach((kv, i) => {
+            const title = create('h2', null, kv[1].title);
+            const li = create('li', ol, kv[1]);
+            const src = `slides/${kv[0]}.html`;
+            li.addEventListener('click', () => {
+                cur.navigate(i, 0);
+            });
+
+            li.innerHTML = kv[1].title;
+            const innerOl = create('ol', li);
+
+            kv[1].slide.filter(e => e).forEach((e, j) => {
+                const innerLi = create('li', innerOl, e);
+                innerLi.addEventListener('click', (e) => {
+                    cur.navigate(i, j + 1);
+                    event.stopPropagation();
+                });
+            });
+        });
+
+        const cur = {
+            legitSlides(slide) {
+                return Object.values(slides)[cur.slide]
+                    .slide.filter(e => e);
+            },
+
+            slide: 0,
+            subSlide: 0,
+            navigate(s, sS) {
+                try {
+                    this.slide = s;
+                    this.subSlide = sS;
+
+                    iframe.src = `slides/${Object.keys(slides)[s]}.html#${sS}`;
+                    Array.from(ol.children).forEach(c => c.style.color = 'initial');
+
+                    Array.from(byId('sidenav').getElementsByTagName('li'))
+                        .forEach(e => e.style.color = 'initial');
+
+                    const current = ol.children[this.slide];
+                    current.style.color = '#fff';
+
+                    const child = Array.from(
+                        current.children[0].children)[this.subSlide - 1];
+                    if (child) {
+                        child.style.color = '#fff';
+                    }
+                }
+                catch {
+                    this.navigate(0, 0);
+                }
+            },
+            next() {
+                let s;
+                let sS;
+                const len = this.legitSlides(cur.slide).length;
+                if (cur.subSlide >= len) {
+                    s = cur.slide + 1;
+                    sS = 0;
+                } else {
+                    s = cur.slide;
+                    sS = cur.subSlide + 1;
+                }
+                this.navigate(s, sS);
+            },
+            pre() {
+                let s;
+                let sS;
+                if (cur.subSlide == 0) {
+                    s = cur.slide - 1;
+                    sS = this.legitSlides(s).length - 1;
+                } else {
+                    s = cur.slide;
+                    sS = cur.subSlide - 1;
+                }
+                this.navigate(s, sS);
+            }
+        }
+
+        cur.navigate(0, 0);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === " ") {
+                e.shiftKey ? cur.pre() : cur.next();
+            }
+        });
+    </script>
+</body>
+
+</html>

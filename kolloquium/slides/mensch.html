@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+    <style>
+        canvas {
+            outline: 2px solid black !important;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../slides.js"></script>
+    <script>
+        const div = createSlide(0, 0);
+        const title = document.createElement('h1');
+        title.innerHTML = 'Verfahren zur automatisierten Erkennung planarer Mechanismen in Videosequenzen';
+        const name = document.createElement('h3');
+        name.innerHTML = 'Name: Kai Lawrence';
+        const matr = document.createElement('h3');
+        matr.innerHTML = 'Matr. Nr.: 7090084';
+        div.appendChild(title);
+        div.appendChild(document.createElement('hr'));
+        div.appendChild(name);
+        div.appendChild(matr);
+
+        const iframe = document.createElement('iframe');
+        iframe.src = '../../src/bilder/bilder1_2.html';
+        div.appendChild(iframe);
+
+        const hiding = document.createElement('div');
+        hiding.clientWidth = iframe.clientWidth;
+        hiding.clientHeight = 1500;
+        hiding.style.backgroundColor = "#f00";
+        div.appendChild(hiding);
+    </script>
+</body>
+
+</html>
