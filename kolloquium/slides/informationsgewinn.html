@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="../slides.js"></script>
+    <script>
+        const arr = createSlides(1);
+        setIframe(arr[1], 'bilder/bilder2_1.html');
+
+        setIframe(arr[2], 'pendel/pendel1_2.html', 400);
+        setIframe(arr[2], 'pendel/pendel1_4.html');
+
+        setIframe(arr[3], 'pendel/pendel2_1.html', 450);
+        setIframe(arr[3], 'pendel/pendel2_5.html');
+
+        setImage(arr[4], 'ai_modern_approach_optical_flow.png',
+            'Tennisspielerin in zwei verschiedenen Frames mit dem dazugehörigen Vektorfeld. [Rus10, S. 941; BBM09]',
+            document.body.clientWidth * 0.8);
+
+        setIframe(arr[5], 'opticalflow/opticalflow2_2.html');
+    </script>
+</body>
+
+</html>

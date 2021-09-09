@@ -39,8 +39,9 @@
             color: initial;
         }
 
-        ol>li>ol {
-            margin-left: -1em;
+        ol>li>ul {
+            margin-left: -1.5em;
+            list-style-type: none;
         }
 
         ol>li>ol>li:hover {
@@ -60,7 +61,7 @@
         .footer {
             position: absolute;
             bottom: 0;
-            right: 1em;
+            left: 1em;
         }
     </style>
 </head>
@@ -100,7 +101,7 @@
             });
 
             li.innerHTML = kv[1].title;
-            const innerOl = create('ol', li);
+            const innerOl = create('ul', li);
 
             kv[1].slide.filter(e => e).forEach((e, j) => {
                 const innerLi = create('li', innerOl, e);
@@ -112,11 +113,6 @@
         });
 
         const cur = {
-            legitSlides(slide) {
-                return Object.values(slides)[cur.slide]
-                    .slide.filter(e => e);
-            },
-
             slide: 0,
             subSlide: 0,
             navigate(s, sS) {
@@ -144,29 +140,25 @@
                 }
             },
             next() {
-                let s;
-                let sS;
-                const len = this.legitSlides(cur.slide).length;
-                if (cur.subSlide >= len) {
-                    s = cur.slide + 1;
-                    sS = 0;
+                const len = Object.values(slides)[this.slide].slide.length;
+                if (this.subSlide >= len) {
+                    this.slide += 1;
+                    this.subSlide = 0;
                 } else {
-                    s = cur.slide;
-                    sS = cur.subSlide + 1;
+                    this.subSlide = this.subSlide + 1;
                 }
-                this.navigate(s, sS);
+                this.navigate(this.slide, this.subSlide);
             },
             pre() {
-                let s;
-                let sS;
-                if (cur.subSlide == 0) {
-                    s = cur.slide - 1;
-                    sS = this.legitSlides(s).length - 1;
+                if (this.subSlide <= 0 && this.slide > 0) {
+                    this.slide -= 1;
+                    this.subSlide = Object.values(slides)[this.slide]
+                        .slide.length;
                 } else {
-                    s = cur.slide;
-                    sS = cur.subSlide - 1;
+                    this.subSlide = Math.max(this.subSlide - 1, 0);
                 }
-                this.navigate(s, sS);
+
+                this.navigate(this.slide, this.subSlide);
             }
         }
 

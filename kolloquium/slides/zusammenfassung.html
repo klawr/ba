@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+    <style>
+        .slide {
+            height: 100vh;
+        }
+
+        p {
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="../slides.js"></script>
+    <script>
+        const arr = createSlides(4);
+
+        const p1 = document.createElement('p');
+        p1.innerHTML = `[Rus10]: Stuart Russell. Artificial intelligence : a modern approach. Upper Saddle River, New Jersey: Prentice Hall, 2010`;
+        arr[1].appendChild(p1);
+
+        const p2 = document.createElement('p');
+        p2.innerHTML = `[BBM09]: Thomas Brox, Christoph Bregler und Jitendra Malik. “Large displacement opti-cal flow”. In: 2009 IEEE Conference on Computer Vision and Pattern Recognition. IEEE, Juni 2009`;
+        arr[1].appendChild(p2);
+
+    </script>
+</body>
+
+</html>

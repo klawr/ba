@@ -17,27 +17,28 @@
 <body>
     <script src="../slides.js"></script>
     <script>
-        const div = createSlide(0, 0);
+        const cover = createSlide(0, 0);
         const title = document.createElement('h1');
         title.innerHTML = 'Verfahren zur automatisierten Erkennung planarer Mechanismen in Videosequenzen';
         const name = document.createElement('h3');
         name.innerHTML = 'Name: Kai Lawrence';
         const matr = document.createElement('h3');
         matr.innerHTML = 'Matr. Nr.: 7090084';
-        div.appendChild(title);
-        div.appendChild(document.createElement('hr'));
-        div.appendChild(name);
-        div.appendChild(matr);
-
+        cover.appendChild(title);
+        cover.appendChild(document.createElement('hr'));
+        cover.appendChild(name);
+        cover.appendChild(matr);
+        
+        const div1 = createSlide(0, 1);
         const iframe = document.createElement('iframe');
         iframe.src = '../../src/bilder/bilder1_2.html';
-        div.appendChild(iframe);
+        div1.appendChild(iframe);
 
-        const hiding = document.createElement('div');
-        hiding.clientWidth = iframe.clientWidth;
-        hiding.clientHeight = 1500;
-        hiding.style.backgroundColor = "#f00";
-        div.appendChild(hiding);
+        const list = Object.values(slides).map(e => e.title);
+        list.shift();
+        const ol = createList(list);
+        const div2 = createSlide(0, 2);
+        div2.appendChild(ol);
     </script>
 </body>
 
