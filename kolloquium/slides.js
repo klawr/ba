@@ -18,11 +18,20 @@ const slides = {
     },
     momentanpol: {
         title: 'Momentanpol',
-        slide: []
+        slide: [
+            'Berechnung',
+            'Drehendes Rad',
+            'Rotation',
+            'Translation',
+        ]
     },
     gruppierung: {
         title: 'Gruppierung',
-        slide: [],
+        slide: [
+            'K-Means',
+            'Dijkstra',
+            'Kombiniert'
+        ],
     },
     zusammenfassung: {
         title: 'Zusammenfassung',
