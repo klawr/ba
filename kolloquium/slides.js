@@ -110,13 +110,17 @@ function setIframe(parent, src, height, pre = '../../src/') {
 }
 
 function setImage(parent, src, text, width, pre = '../../gfx/') {
+    const div = document.createElement('div');
     const img = document.createElement('img');
     img.src = pre + src;
     img.width = width;
-    parent.appendChild(img);
+    div.appendChild(img);
 
     const sub = document.createElement('h4');
     sub.innerHTML = text;
 
-    parent.appendChild(sub);
+    div.appendChild(sub);
+    parent.appendChild(div);
+
+    return div;
 }

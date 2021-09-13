@@ -10,10 +10,28 @@
 </head>
 
 <body>
-<script src="../slides.js"></script>
-<script>
-    const arr = createSlides(2);
-</script>
+    <script src="../slides.js"></script>
+    <script>
+        const arr = createSlides(2);
+
+        const left = document.createElement('div');
+
+        setImage(left, 'euler.png', '1. Satz von Euler',
+            document.body.clientWidth * 0.4, '../gfx/');
+        setImage(left, 'momentanpol.png', 'Momentanpol',
+            document.body.clientWidth * 0.4 / 1.6794, '../gfx/');
+
+        left.style.float = 'left';
+        left.style.marginTop = '5%';
+        arr[1].appendChild(left);
+
+        const right = setImage(arr[1],
+            'mechanismentechnik_vektorfeld_momentanpol.png',
+            'Vektorfeld der bewegung einer Ebene. [Gös16]',
+            document.body.clientWidth * 0.3);
+        right.style.float = 'right';
+        right.style.marginTop = '5%';
+    </script>
 </body>
 
 </html>
