@@ -133,30 +133,32 @@ class Group {
         }
     }
 
+    // There is a correction after the deadline.
+    // This function did not work properly for test momentanpol1_3.html and momentanpol1_4.html.
     draw(g, history) {
-        const { width, hsv2rgb } = simulation;
+            const { width, hsv2rgb } = simulation;
 
-        const line = this.lines[this.lines.length - 1];
-        const pts = this.pts?.map(p => p[p.length - 1]);
+            const line = this.lines[this.lines.length - 1];
+            const pts = this.pts?.map(p => p[p.length - 1]);
 
-        const color = (i) => hsv2rgb(i / this.pts.length * 360) + '88';
+            const color = (i) => hsv2rgb(i / this.pts.length * 360) + '88';
 
-        if (this.pts && history) {
-            line && this.lines.forEach(l => g.lin({
+            if (this.pts && history) {
+                line && this.lines.filter(l => l).forEach(l => g.lin({
+                    x1: 0, x2: width,
+                    y1: l.b, y2: l.m * width,
+                    ls: '#fff8',
+                }))
+                this.pts.forEach((pt, i) => pt.forEach(p =>
+                    g.cir({ ...p, r: 1, fs: color(i), ls: "@fs" })));
+            }
+
+            line && g.lin({
                 x1: 0, x2: width,
-                y1: l.b, y2: l.m * width,
-                ls: '#fff8',
-            }))
-            this.pts.forEach((pt, i) => pt.forEach(p =>
-                g.cir({ ...p, r: 1, fs: color(i), ls: "@fs" })));
+                y1: line.b, y2: line.m * width + line.b,
+            });
+            pts?.forEach((p, i) => g.cir({ ...p, r: 5, fs: color(i), ls: "@fs" }));
         }
-
-        line && g.lin({
-            x1: 0, x2: width,
-            y1: line.b, y2: line.m * width + line.b,
-        });
-        pts?.forEach((p, i) => g.cir({ ...p, r: 5, fs: color(i), ls: "@fs" }));
-    }
 }
 
 class OpenCVLucasKanade {
