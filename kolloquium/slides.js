@@ -30,12 +30,15 @@ const slides = {
         slide: [
             'K-Means',
             'Dijkstra',
+            'Dijkstra - Ölpumpe',
             'Kombiniert'
         ],
     },
     zusammenfassung: {
         title: 'Zusammenfassung',
         slide: [
+            'Das Viergelenk',
+            'Die Schubkurbel',
             'Abbildungsverzeichnis'
         ]
     }
@@ -123,4 +126,10 @@ function setImage(parent, src, text, width, pre = '../../gfx/') {
     parent.appendChild(div);
 
     return div;
+}
+
+function bib(parent, str) {
+    const p = document.createElement('p');
+    p.innerHTML = str;
+    parent.appendChild(p);
 }
