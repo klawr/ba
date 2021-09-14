@@ -39,6 +39,7 @@ const slides = {
         slide: [
             'Das Viergelenk',
             'Die Schubkurbel',
+            'Ausblick',
             'Abbildungsverzeichnis'
         ]
     }
@@ -132,4 +133,17 @@ function bib(parent, str) {
     const p = document.createElement('p');
     p.innerHTML = str;
     parent.appendChild(p);
+}
+
+function list(parent, args) {
+    const ul = document.createElement('ul');
+    ul.style.textAlign = 'left';
+
+    for (const arg of args) {
+        const li = document.createElement('li');
+        li.innerHTML = arg;
+        ul.appendChild(li);
+    }
+
+    parent.appendChild(ul);
 }
