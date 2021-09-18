@@ -34,9 +34,9 @@
         iframe.src = '../../src/bilder/bilder1_2.html';
         div1.appendChild(iframe);
 
-        const list = Object.values(slides).map(e => e.title);
-        list.shift();
-        const ol = createList(list);
+        const ls = Object.values(slides).map(e => e.title);
+        ls.shift();
+        const ol = createList(ls);
         const div2 = createSlide(0, 2);
         div2.appendChild(ol);
     </script>
