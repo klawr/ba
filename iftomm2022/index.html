@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>IFTOMM2022 - FH Dortmund</title>
+</head>
+
+<body>
+    <img id="logo" src="./gfx/FHDO-Logo.png"></img>
+    <nav id="sidenav" class="nav">
+        <h1 style="margin: 1rem">IFTOMM-D-A-CH 2022</h1>
+        <div class="footer">
+            <a href="../index.html">Link zu den Tests</a><br>
+            <a href="https://github.com/klawr/ba">Link zum Repository</a>
+            <p>© Kai Lawrence</p>
+        </div>
+    </nav>
+    <div id="viewport"></div>
+    <script src="./scripts/slides.js"></script>
+    <script src="./scripts/pol.js"></script>
+    <script src="./scripts/group.js"></script>
+    <script src="../src/third_party/g2.full.js"></script>
+    <script src="../src/third_party/mec2.min.js"></script>
+    <script src="../src/scripts/pointCloud.js"></script>
+    <script src="./scripts/data.js"></script>
+    <script src="../src/scripts/simulation.js"></script>
+    <script src="../src/scripts/group.js"></script>
+    <script src="./scripts/line.js"></script>
+    <script src="./scripts/winkelgeschwindigkeit.js"></script>
+    <script src="./scripts/geschwindigkeit.js"></script>
+    <script src="../src/third_party/opencv.js"></script>
+    <script>
+        const r = document.querySelector(':root');
+
+        function create(s, parent, innerHTML = "") {
+            const el = document.createElement(s);
+            el.innerHTML = innerHTML;
+            return parent?.appendChild(el) || el;
+        }
+
+        function byId(id) {
+            return document.getElementById(id);
+        }
+
+        let cur = 0;
+        const ol = create('ol', byId('sidenav'));
+        slides.forEach((kv, i) => {
+            const li = create('li', ol);
+            const a = create('a', li, kv.title);
+            a.href = `index.html#${kv.title.split(" ").join("")}`
+            li.className = 'sidenav_element';
+            a.addEventListener('click', () => {
+                Array.from(byId('sidenav').getElementsByTagName('li'))
+                    .forEach(e => {
+                        e.style.color = 'initial';
+                        e.children[0].style.color = 'initial';
+                    });
+
+                a.style.color = '#fff';
+                a.parentElement.style.color = '#fff';
+                cur = i;
+            });
+        });
+
+        function next() {
+            cur += 1;
+            if (cur >= slides.length) {
+                cur = slides.length - 1;
+            }
+            navigate(cur);
+        }
+        function pre() {
+            cur -= 1;
+            if (cur <= 0) {
+                cur = 0;
+            }
+            navigate(cur);
+        }
+
+        function navigate(e) {
+            const a = ol.children[cur].children[0];
+            a.click();
+            const event = document.createEvent("HTMLEvents");
+            event.initEvent("click", true, true);
+            event.eventName = "click";
+            a.dispatchEvent(event);
+        }
+        navigate(0);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === " ") {
+                e.shiftKey ? pre() : next();
+            }
+        });
+
+        content = slides.map(createSlide);
+    </script>
+</body>
+
+</html>

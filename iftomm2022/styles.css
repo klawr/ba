@@ -1,0 +1,102 @@
+body, html {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    scroll-behavior: smooth;
+    animation: fadeInAnimation ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+body {
+    /* overflow: hidden; */
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+}
+
+#logo {
+    width: 15rem;
+    position: fixed;
+    right: 2%;
+    top: 2%;
+}
+
+iframe {
+    width: 30vw;
+    height: 40vh;
+    margin-top: 15%;
+    scale: 1.75;
+}
+
+nav {
+    position: fixed;
+    font-size: 1.5em;
+    width: 25rem;
+    resize: horizontal;
+    height: 100vh;
+    background-color: #aaa;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+#viewport {
+    margin-left: 25rem;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 1em;
+}
+
+.slidecontent {
+    width: 67.5vw;
+    height: 70vh;
+    /* background-color: green; */
+    /* margin-top: 15%; */
+    text-align: center;
+}
+
+.slide {
+    width: 75vw;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 5% 5% 5% 5%;
+    text-align: center;
+}
+
+li>a {
+    text-decoration: none;
+    color: #000;
+}
+
+.slide {
+    font-size: 2.4em;
+    overflow: hidden;
+}
+
+li {
+    padding: 2%;
+}
+
+.slide>p {
+    text-align: left;
+    font-size: 3em;
+}
+
+.math {
+    text-align: left;
+    display: block;
+}
+
+.math .small {
+    font-size: 0.9em;
+    height: 0.9em;
+}
+
+.math .big {
+    font-size: 1.4em;
+    height: 1.4em;
+}
