@@ -1,5 +1,5 @@
 const slides = [{
-    title: 'Titel',
+    title: 'IFTOMM-D-A-CH 2022',
     init: false,
     content(div) {
         const title = document.createElement('h1');
